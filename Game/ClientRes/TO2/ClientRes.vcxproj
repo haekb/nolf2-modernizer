@@ -160,12 +160,12 @@
     <ClCompile>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
-      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
       <Optimization>Disabled</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <MinimalRebuild>true</MinimalRebuild>
-      <AdditionalIncludeDirectories>..\STLPORT-4.0\STLPORT;..\shared;..\shared\lang\en;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\STLPORT-4.0\STLPORT_NO;..\shared;..\shared\lang\en;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\..\built\debug\ClientRes\TO2\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\..\..\built\debug\ClientRes\TO2\ClientRes.pch</PrecompiledHeaderOutputFile>

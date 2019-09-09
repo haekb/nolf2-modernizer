@@ -183,12 +183,12 @@ copy $(TargetPath) $(GAME_REZ_DIR) </Command>
     <ClCompile>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
-      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
       <Optimization>Disabled</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\Shared\TO2;.\;..\..\..\libs\STLPORT-4.0\STLPORT;..\ClientShellShared;..\..\clientres\shared;..\..\clientres\TO2;..\..\shared;..\..\..\Engine\sdk\inc;..\..\..\libs\stdlith;..\..\..\libs\butemgr;..\..\..\libs\cryptmgr;..\..\..\libs\lith;..\..\..\libs\mfcstub;..\..\libs\ltguimgr;..\..\..\libs\regmgr;..\..\libs\wonapi;..\..\libs\serverdir;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Shared\TO2;.\;..\..\..\libs\STLPORT-4.0\STLPORT_NO;..\ClientShellShared;..\..\clientres\shared;..\..\clientres\TO2;..\..\shared;..\..\..\Engine\sdk\inc;..\..\..\libs\stdlith;..\..\..\libs\butemgr;..\..\..\libs\cryptmgr;..\..\..\libs\lith;..\..\..\libs\mfcstub;..\..\libs\ltguimgr;..\..\..\libs\regmgr;..\..\libs\wonapi;..\..\libs\serverdir;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;_CLIENTBUILD;WIN32;_WINDOWS;NOPS2;MEMTRACK_CLIENT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\..\Built\Debug\ClientShellDll\TO2\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>

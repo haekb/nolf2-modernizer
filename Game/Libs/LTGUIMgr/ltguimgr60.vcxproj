@@ -114,12 +114,12 @@
     <ClCompile>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
-      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
       <Optimization>Disabled</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\..\libs\STLPORT-4.0\STLPORT;..\..\..\Engine\sdk\inc;..\..\..\Engine\sdk\inc\compat;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\libs\STLPORT-4.0\STLPORT_no;..\..\..\Engine\sdk\inc;..\..\..\Engine\sdk\inc\compat;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WIN32;_WINDOWS;_LITHTECH2;LT15_COMPAT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\..\built\Debug\libs\LTGuiMgr\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -127,6 +127,7 @@
       <PrecompiledHeader />
       <ObjectFileName>.\..\..\built\Debug\libs\LTGuiMgr\</ObjectFileName>
       <ProgramDataBaseFileName>.\..\..\built\Debug\libs\LTGuiMgr\</ProgramDataBaseFileName>
+      <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
     </ClCompile>
     <ResourceCompile>
       <Culture>0x0409</Culture>

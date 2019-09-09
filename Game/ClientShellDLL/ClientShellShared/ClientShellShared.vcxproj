@@ -117,14 +117,14 @@
     <ClCompile>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
-      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
       <Optimization>Disabled</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <MinimalRebuild>true</MinimalRebuild>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>.\;..\..\..\libs\STLPORT-4.0\STLPORT;..\..\clientres\shared;..\..\shared;..\..\..\Engine\sdk\inc;..\..\..\libs\stdlith;..\..\..\libs\butemgr;..\..\..\libs\cryptmgr;..\..\..\libs\lith;..\..\..\libs\mfcstub;..\..\libs\ltguimgr;..\..\..\libs\regmgr;..\;..\..\libs\serverdir;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\;..\..\..\libs\STLPORT-4.0\STLPORT_NO;..\..\clientres\shared;..\..\shared;..\..\..\Engine\sdk\inc;..\..\..\libs\stdlith;..\..\..\libs\butemgr;..\..\..\libs\cryptmgr;..\..\..\libs\lith;..\..\..\libs\mfcstub;..\..\libs\ltguimgr;..\..\..\libs\regmgr;..\;..\..\libs\serverdir;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CLIENTBUILD;NOPS2;MEMTRACK_CLIENT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\..\Built\Debug\ClientShellDLL\ClientShellShared\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>

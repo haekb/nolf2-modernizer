@@ -255,13 +255,13 @@ copy $(TargetPath) $(GAME_MAIN_DIR) </Command>
     <ClCompile>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
-      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
       <Optimization>Disabled</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <MinimalRebuild>true</MinimalRebuild>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>.\;..\;..\..\..\libs\STLPORT-4.0\STLPORT;..\..\..\Engine\sdk\inc;..\..\..\libs\regmgr32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\;..\;..\..\..\libs\STLPORT-4.0\STLPORT_NO;..\..\..\Engine\sdk\inc;..\..\..\libs\regmgr32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\..\Built\Debug\Launcher\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>

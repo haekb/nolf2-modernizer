@@ -1,14 +1,24 @@
 #if !defined(_BUTEMGR_H_)
 #define _BUTEMGR_H_
 
+#define _SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS
+
 // disable warning C4786: symbol greater than 255 character,
 // okay to ignore
 #pragma warning(disable: 4786)
 
 #include "limits.h"
 #include "float.h"
-#include "fstream.h"
+#if _MSC_VER >= 1300
+#include <strstream>
+
+#define STD std::
+
+#else
 #include "strstrea.h"
+
+#define STD 
+#endif
 #include "cryptmgr.h"
 #include "avector.h"
 #include "arange.h"
@@ -25,10 +35,82 @@
 #include <functional>
 #include <hash_set>
 #include <hash_map>
+#include <unordered_set>
+#include <unordered_map>
 #include <istream>
 #include <fstream>
-#include <strstrea.h>
+#include <vector>
 
+#if 1
+// Thanks: https://stackoverflow.com/questions/871838/how-to-use-stdexthash-map
+class ButeMgr_Hasher {
+public:
+	enum { bucket_size = 10 };
+
+	ButeMgr_Hasher() {}
+
+	size_t operator()(const char* key) const {
+		return hash(key);
+	}
+
+	bool operator()(const char* left, const char* right) const {
+		return compare(left, right);
+	}
+private:
+	// Was `equal_str_nocase`, need to left side.
+	bool compare(const char* s1, const char* s2) const
+	{
+		return stricmp(s1, s2) < 0;
+	}
+	// Was hash_str_nocase, still kinda is!
+	// Copied for stl-port's std::hash<const char*>.
+	// Added tolower function on the string.
+	unsigned long hash(const char* str) const
+	{
+		unsigned long hash = 0;
+		for (; *str; ++str)
+			hash = 5 * hash + tolower(*str);
+
+		return hash;
+	}
+};
+
+// StringHolder says it needs to be case sensitive,
+// if you've got a better way to handle this, PR it!
+class ButeMgr_Hasher_CS {
+public:
+	enum { bucket_size = 10 };
+
+	ButeMgr_Hasher_CS() {}
+
+	size_t operator()(const char* key) const {
+		return hash(key);
+	}
+
+	bool operator()(const char* left, const char* right) const {
+		return compare(left, right);
+	}
+private:
+	// Was `equal_str_nocase`, need to left side.
+	bool compare(const char* s1, const char* s2) const
+	{
+		return strcmp(s1, s2) < 0;
+	}
+	// Was hash_str_nocase, still kinda is!
+	// Copied for stl-port's std::hash<const char*>.
+	// Added tolower function on the string.
+	unsigned long hash(const char* str) const
+	{
+		unsigned long hash = 0;
+		for (; *str; ++str)
+			hash = 5 * hash + tolower(*str);
+
+		return hash;
+	}
+};
+
+
+#else
 
 struct equal_str
 {
@@ -50,15 +132,17 @@ struct hash_str_nocase
 {
 	// Copied for stl-port's std::hash<const char*>.
 	// Added tolower function on the string.
-	unsigned long operator()(const char* str) const 
+	unsigned long operator()(const char* str) const
 	{
-	  unsigned long hash = 0; 
-	  for ( ; *str; ++str)
-		  hash = 5*hash + tolower(*str);
-  
-	  return hash;
+		unsigned long hash = 0;
+		for (; *str; ++str)
+			hash = 5 * hash + tolower(*str);
+
+		return hash;
 	}
 };
+
+#endif
 
 
 class CButeMgr
@@ -169,8 +253,8 @@ public:
 	void SetDisplayFunc(void (*pF)(const char* szMsg)) { m_pDisplayFunc = pF; }
 	CString GetErrorString() { return m_sErrorString; }
 
-	bool Parse( istream& iStream, int decryptCode = 0);
-	bool Parse( istream& iCrypt, int nLen, const char* cryptKey);
+	bool Parse( STD istream& iStream, int decryptCode = 0);
+	bool Parse( STD istream& iCrypt, int nLen, const char* cryptKey);
 
 #if defined(_USE_REZFILE_)
 	bool Parse(CRezItm* pItem, int decryptCode = 0);
@@ -276,15 +360,25 @@ private:
 	void (*m_pDisplayFunc)(const char* szMsg);
 
 	// Used to define dictionary of strings.
+#if 1
 	// This must be case sensitive!
-	typedef std::hash_set< CString, std::hash< char const* >, equal_str > StringHolder;
+	typedef stdext::hash_set< CString, ButeMgr_Hasher_CS > StringHolder;
 
 	// Used to define map of strings to CSymTabItems.
-	typedef std::hash_map< char const*, CSymTabItem*, hash_str_nocase, equal_str_nocase > TableOfItems;
+	typedef stdext::hash_map< char const*, CSymTabItem*, ButeMgr_Hasher > TableOfItems;
 
 	// Used to define map of strings to TableOfItems.
-	typedef std::hash_map< char const*, TableOfItems*, hash_str_nocase, equal_str_nocase > TableOfTags;
+	typedef stdext::hash_map< char const*, TableOfItems*, ButeMgr_Hasher > TableOfTags;
+#else
+	// This must be case sensitive!
+	typedef std::unordered_set< CString, std::hash< char const* >, equal_str > StringHolder;
 
+	// Used to define map of strings to CSymTabItems.
+	typedef std::unordered_map< char const*, CSymTabItem*, hash_str_nocase, equal_str_nocase > TableOfItems;
+
+	// Used to define map of strings to TableOfItems.
+	typedef std::unordered_map< char const*, TableOfItems*, hash_str_nocase, equal_str_nocase > TableOfTags;
+#endif
 	// Holds all strings for keys and string values.
 	StringHolder m_stringHolder;
 
@@ -343,8 +437,8 @@ private:
 	};
 	static bool GetTagsTraverseFunc( char const* pszTagName, TableOfItems& theTableOfItems, void* pContext );
 
-	istream* m_pData;
-	iostream *m_pSaveData;
+	STD istream* m_pData;
+	STD iostream *m_pSaveData;
 
 	char * m_szLineBuffer; 
 	const char * m_szLineBufferPtr;
@@ -400,7 +494,7 @@ private:
 };
 
 
-inline bool CButeMgr::Parse( istream& iStream, int decryptCode)
+inline bool CButeMgr::Parse( STD istream& iStream, int decryptCode)
 {
 	Reset();
 	m_pData = &iStream;
@@ -418,15 +512,15 @@ inline bool CButeMgr::Parse( istream& iStream, int decryptCode)
 	return retVal;
 }
 
-inline bool CButeMgr::Parse( istream& iCrypt, int nLen, const char* cryptKey)
+inline bool CButeMgr::Parse( STD istream& iCrypt, int nLen, const char* cryptKey)
 {
 	m_bCrypt = true;
 	m_cryptMgr.SetKey(cryptKey);
 	char* buf2 = new char[nLen];
-	ostrstream* pOss = new ostrstream(buf2, nLen);
+	STD ostrstream* pOss = new STD ostrstream(buf2, nLen);
 	m_cryptMgr.Decrypt(iCrypt, *pOss);
 
-	istrstream* pIStream = new istrstream(buf2, pOss->pcount());
+	STD istrstream* pIStream = new STD istrstream(const_cast<const char *>(buf2), pOss->pcount());
 
 	delete pOss;
 
@@ -486,7 +580,7 @@ inline bool CButeMgr::Parse(void* pData, unsigned long size, int decryptCode,
 {
 	if (!pData)
 		return false;
-	istrstream* pIStream = new istrstream((char*)pData, size);
+	STD istrstream* pIStream = new STD istrstream((char*)pData, size);
 
 	// Need to set the attribute filename if we want to Save the butemgr later...
 	m_sAttributeFilename = sAttributeFilename;
@@ -508,7 +602,7 @@ inline bool CButeMgr::Parse(void* pData, unsigned long size, const char* cryptKe
 		return false;
 	char* buf1 = (char*)pData;
 	int len = size;
-	istrstream* pIss = new istrstream(buf1, len);
+	STD istrstream* pIss = new STD istrstream(buf1, len);
 
 	Reset();
 
@@ -527,7 +621,12 @@ inline bool CButeMgr::Parse(void* pData, unsigned long size, const char* cryptKe
 
 inline bool CButeMgr::Parse(CString sAttributeFilename, int decryptCode)
 {
+#if _MSC_VER >= 1300
+	STD ifstream* pIStream = new std::ifstream(sAttributeFilename, std::ios_base::in);
+#else
 	ifstream* pIStream = new ifstream(sAttributeFilename, ios::in | ios::nocreate);
+#endif
+
 	if( !pIStream )
 		return false;
 	if (pIStream->fail())
@@ -550,7 +649,11 @@ inline bool CButeMgr::Parse(CString sAttributeFilename, int decryptCode)
 
 inline bool CButeMgr::Parse(CString sAttributeFilename, const char* cryptKey)
 {
-	ifstream* pIs = new ifstream(sAttributeFilename, ios::nocreate | ios::binary);
+#if _MSC_VER >= 1300
+	std::ifstream* pIs = new STD ifstream(sAttributeFilename, std::ios::binary);
+#else
+	ifstream* pIs = new STD ifstream(sAttributeFilename, ios::nocreate | ios::binary);
+#endif
 	if (!pIs)
 		return false;
 	if (pIs->fail())
@@ -559,7 +662,7 @@ inline bool CButeMgr::Parse(CString sAttributeFilename, const char* cryptKey)
 		return false;
 	}
 
-	pIs->seekg(0, ios::end);
+	pIs->seekg(0, STD ios::end);
 	long len = pIs->tellg();
 
 	pIs->seekg(0);

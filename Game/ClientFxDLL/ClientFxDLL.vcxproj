@@ -130,11 +130,11 @@ copy $(TargetPath) $(GAME_REZ_DIR) </Command>
     <ClCompile>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
-      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
       <Optimization>Disabled</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>..\..\libs\STLPORT-4.0\STLPORT;..\shared;..\..\Engine\sdk\inc;..\..\libs\mfcstub;..\..\libs\stdlith;..\..\libs\butemgr;..\..\libs\cryptmgr;..\..\libs\lith;..\libs\ltguimgr;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\libs\STLPORT-4.0\STLPORT_NO;..\shared;..\..\Engine\sdk\inc;..\..\libs\mfcstub;..\..\libs\stdlith;..\..\libs\butemgr;..\..\libs\cryptmgr;..\..\libs\lith;..\libs\ltguimgr;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WIN32;_WINDOWS;NOPS2;MEMTRACK_CLIENTFX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\built\debug\ClientFxDll\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>

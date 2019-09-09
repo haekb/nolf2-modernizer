@@ -31,7 +31,7 @@ void CCryptMgr::SetKey(const char* key)
 
 
 
-void CCryptMgr::Encrypt(istream& is, ostream& os)
+void CCryptMgr::Encrypt(STD istream& is, STD ostream& os)
 {
 	int n = 0;
 	char buf[8];
@@ -50,7 +50,7 @@ void CCryptMgr::Encrypt(istream& is, ostream& os)
 
 
 
-void CCryptMgr::Decrypt(istream& is, ostream& os)
+void CCryptMgr::Decrypt(STD istream& is, STD ostream& os)
 {
 	int n = 0;
 	char buf[8];

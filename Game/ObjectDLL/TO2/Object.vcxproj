@@ -133,13 +133,13 @@ copy $(TargetPath) $(GAME_REZ_DIR) </Command>
     <ClCompile>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
-      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
       <Optimization>Disabled</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <MinimalRebuild>true</MinimalRebuild>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\Shared\TO2;.\;..\objectshared;..\..\..\libs\STLPORT-4.0\STLPORT;..\..\shared;..\..\..\Engine\sdk\inc;..\..\..\libs\stdlith;..\..\..\libs\butemgr;..\..\..\libs\cryptmgr;..\..\..\libs\lith;..\..\..\libs\mfcstub;..\..\..\libs\regmgr;..\..\libs;..\..\libs\serverdir;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Shared\TO2;.\;..\objectshared;..\..\..\libs\STLPORT-4.0\STLPORT_NO;..\..\shared;..\..\..\Engine\sdk\inc;..\..\..\libs\stdlith;..\..\..\libs\butemgr;..\..\..\libs\cryptmgr;..\..\..\libs\lith;..\..\..\libs\mfcstub;..\..\..\libs\regmgr;..\..\libs;..\..\libs\serverdir;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WIN32;_WINDOWS;NOPS2;_SERVERBUILD;MEMTRACK_SERVER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\..\Built\Debug\ObjectDLL\TO2\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>

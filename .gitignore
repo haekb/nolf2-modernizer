@@ -20,3 +20,10 @@ Final_Release
 UpgradeLog*.htm
 ART
 *.pdb
+*.obj
+*.tlog
+*tlog/*
+unsuccessfulbuild
+*.sbr
+*.idb
+*.bsc

@@ -111,7 +111,11 @@ public:
     };
 
 	// Used to define map of strings to CSymTabItems.
-	typedef std::hash_map< char const*, CReservedWord, hash_str_nocase, equal_str_nocase > ReservedWordMap;
+#if 1
+	typedef stdext::hash_map< char const*, CReservedWord, ButeMgr_Hasher > ReservedWordMap;
+#else
+	typedef std::unordered_map< char const*, CReservedWord, hash_str_nocase, equal_str_nocase > ReservedWordMap;
+#endif
 
     CReservedWords()
     {
@@ -954,7 +958,7 @@ bool CButeMgr::Tag()
 
 bool CButeMgr::AuxTabItemsSave( char const* pszAttName, CSymTabItem& theItem, void* pContext )
 {
-	ofstream* pSaveData = (ofstream*)pContext;
+	STD ofstream* pSaveData = (STD ofstream*)pContext;
 
 	*pSaveData << "\r\n" << pszAttName << " = ";
 
@@ -1009,7 +1013,7 @@ bool CButeMgr::AuxTabItemsSave( char const* pszAttName, CSymTabItem& theItem, vo
 
 bool CButeMgr::NewTabsSave( const char* pszTagName, TableOfItems& theTabOfItems, void* pContext )
 {
-	ofstream* pSaveData = (ofstream*)pContext;
+	STD ofstream* pSaveData = (STD ofstream*)pContext;
 
 	*pSaveData << "\r\n\r\n" << "[" << pszTagName << "]";
 
@@ -1077,12 +1081,16 @@ bool CButeMgr::Save(const char* szNewFileName)
 
 	char buf[4096];
 
-	ifstream is(m_sAttributeFilename, ios::nocreate | ios::binary);	
+#if _MSC_VER >= 1300
+	STD ifstream is(m_sAttributeFilename, STD ios::binary);
+#else
+	ifstream is(m_sAttributeFilename, ios::nocreate | ios::binary);
+#endif
 
 	long nFileLength=0;
 	if (is.is_open())
 	{
-		is.seekg(0, ios::end);
+		is.seekg(0, STD ios::end);
 		nFileLength = is.tellg();
 	}
 
@@ -1092,12 +1100,12 @@ bool CButeMgr::Save(const char* szNewFileName)
 	is.clear();
 	is.seekg(0);
 
-	strstream ss(new char[nFileLength], nFileLength, ios::in | ios::out);
+	STD strstream ss(new char[nFileLength], nFileLength, STD ios::in | STD ios::out);
 
 	if (m_bCrypt)
 	{
 		m_cryptMgr.Decrypt(is, ss);
-		m_pSaveData = new iostream(new strstreambuf(nFileLength));
+		m_pSaveData = new STD iostream(new STD strstreambuf(nFileLength));
 	}
 	else
 	{
@@ -1113,9 +1121,9 @@ bool CButeMgr::Save(const char* szNewFileName)
 		is.close();
 
 		if (szNewFileName)
-			m_pSaveData = new fstream(szNewFileName, ios::binary | ios::in | ios::out | ios::trunc);
+			m_pSaveData = new STD fstream(szNewFileName, STD ios::binary | STD ios::in | STD ios::out | STD ios::trunc);
 		else
-			m_pSaveData = new fstream(m_sAttributeFilename, ios::binary | ios::in | ios::out | ios::trunc);
+			m_pSaveData = new STD fstream(m_sAttributeFilename, STD ios::binary | STD ios::in | STD ios::out | STD ios::trunc);
 
 	}
 
@@ -1131,7 +1139,7 @@ bool CButeMgr::Save(const char* szNewFileName)
 		return false;
 	}
 
-    m_pSaveData->flags(m_pSaveData->flags() | ios::showpoint | ios::fixed);
+    m_pSaveData->flags(m_pSaveData->flags() | STD ios::showpoint | STD ios::fixed);
 
 	ss.clear();
 	m_pData = &ss;
@@ -1145,9 +1153,9 @@ bool CButeMgr::Save(const char* szNewFileName)
 	if (m_bCrypt)
 	{
 		if (szNewFileName)
-			m_cryptMgr.Encrypt(*m_pSaveData, ofstream(szNewFileName, ios::binary));
+			m_cryptMgr.Encrypt(*m_pSaveData, STD ofstream(szNewFileName, STD ios::binary));
 		else
-			m_cryptMgr.Encrypt(*m_pSaveData, ofstream(m_sAttributeFilename, ios::binary));
+			m_cryptMgr.Encrypt(*m_pSaveData, STD ofstream(m_sAttributeFilename, STD ios::binary));
 	}
 
 	delete ss.str();
