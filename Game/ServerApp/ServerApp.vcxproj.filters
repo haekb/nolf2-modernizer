@@ -1,0 +1,186 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{308dfb9c-6a3e-4ecd-a1dc-e80c311f8135}</UniqueIdentifier>
+      <Extensions>cpp;c</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{fd060feb-0ff5-46da-93ba-902afbfe0f4a}</UniqueIdentifier>
+      <Extensions>hpp;h</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{913a3920-01af-4da0-acbd-914fd1d14245}</UniqueIdentifier>
+      <Extensions>rc;rc2;ico</Extensions>
+    </Filter>
+    <Filter Include="Localized Files">
+      <UniqueIdentifier>{5b82fa7b-334a-4ca3-a818-7b8a79e477c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Localized Files\DE">
+      <UniqueIdentifier>{0a6b555d-27c1-4500-b599-3df190c21347}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Localized Files\EN">
+      <UniqueIdentifier>{0cd03abe-f200-4590-9f6e-9ff44261c53b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Localized Files\ES">
+      <UniqueIdentifier>{900f0245-172d-470c-95f1-ebba2383f8fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Localized Files\FR">
+      <UniqueIdentifier>{2fd6f05b-00ce-4677-89df-becb1ddfa38d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Localized Files\IT">
+      <UniqueIdentifier>{b533c4b1-0505-45da-935f-c6289c2f0606}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Shared\CommonUtilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Shared\DebugNew.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Shared\GameAlloc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Engine\sdk\inc\ltmodule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Shared\NetDefs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Shared\ParsedMsg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Shared\ProfileUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Shared\ScmdConsole.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ScmdConsoleDriver_ServerApp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SelectConfigDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerApp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Splash.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StdAfx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Shared\TO2\TO2VersionMgr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Shared\VersionMgr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Shared\CommonUtilities.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Shared\DebugNew.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Shared\DebugNew_impl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Engine\sdk\inc\ltmodule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Shared\MsgIDs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Shared\ParsedMsg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Shared\ProfileUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Shared\ResShared.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Shared\ScmdConsole.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ScmdConsoleDriver_ServerApp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectConfigDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerApp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Splash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StdAfx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Shared\TO2\TO2VersionMgr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Shared\VersionMgr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\selected.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ServerApp.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Lang\DE\splash.bmp">
+      <Filter>Localized Files\DE</Filter>
+    </Image>
+    <Image Include="res\Lang\EN\splash.bmp">
+      <Filter>Localized Files\EN</Filter>
+    </Image>
+    <Image Include="res\Lang\ES\splash.bmp">
+      <Filter>Localized Files\ES</Filter>
+    </Image>
+    <Image Include="res\Lang\FR\splash.bmp">
+      <Filter>Localized Files\FR</Filter>
+    </Image>
+    <Image Include="res\Lang\IT\splash.bmp">
+      <Filter>Localized Files\IT</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="res\Lang\DE\ServerApp.rc">
+      <Filter>Localized Files\DE</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="res\Lang\EN\ServerApp.rc">
+      <Filter>Localized Files\EN</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="res\Lang\ES\ServerApp.rc">
+      <Filter>Localized Files\ES</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="res\Lang\FR\ServerApp.rc">
+      <Filter>Localized Files\FR</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="res\Lang\IT\ServerApp.rc">
+      <Filter>Localized Files\IT</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="res\ServerApp.rc2">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>

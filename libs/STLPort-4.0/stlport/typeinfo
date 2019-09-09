@@ -1,0 +1,70 @@
+/*
+ * Copyright (c) 1999 
+ * Boris Fomitchev
+ *
+ * This material is provided "as is", with absolutely no warranty expressed
+ * or implied. Any use is at your own risk.
+ *
+ * Permission to use or copy this software for any purpose is hereby granted 
+ * without fee, provided the above notices are retained on all copies.
+ * Permission to modify the code and to distribute modified code is granted,
+ * provided the above notices are retained, and a notice that the code was
+ * modified is included with the above copyright notice.
+ *
+ */
+
+#ifndef __STLPORT_TYPEINFO
+# define __STLPORT_TYPEINFO
+
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID 0x473
+#  include <stl/_prolog.h>
+# endif
+
+# ifndef __STL_NO_TYPEINFO
+
+# if defined (__GNUC__) && (__GNUC_MINOR__ > 7)
+#  include <../include/typeinfo>
+# elif defined (__STL_NO_NEW_NEW_HEADER)
+#  include __STL_NATIVE_HEADER(typeinfo.h)
+# elif defined (__xlC__)
+#  include <typeinfo.h>
+# else
+#  include __STL_NATIVE_HEADER(typeinfo)
+# endif
+
+# if defined  (__STL_USE_NAMESPACES) \
+   && ( defined (__STL_VENDOR_GLOBAL_EXCEPT_STD) || defined (__STL_USE_OWN_NAMESPACE) || defined (__STL_DEBUG))
+__STL_BEGIN_NAMESPACE
+
+// VC++ 6 has only this guy in ::
+# if !(defined(__STL_MSVC)&& (__STL_MSVC <= 1200))
+using __STL_VENDOR_EXCEPT_STD::type_info;
+# endif
+
+#  if !(defined(__MRC__) || defined(__SC__))
+using __STL_VENDOR_EXCEPT_STD::bad_typeid;
+#  endif
+
+using __STL_VENDOR_EXCEPT_STD::bad_cast;
+__STL_END_NAMESPACE
+#endif /* __STL_OWN_NAMESPACE */
+
+#else
+
+# include <exception>
+__STL_BEGIN_NAMESPACE
+struct bad_cast : exception {};
+__STL_END_NAMESPACE
+#endif  /* NO_TYPEINFO */
+
+# if (__STL_OUTERMOST_HEADER_ID == 0x473)
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
+# endif
+
+#endif /* __STLPORT_TYPEINFO */
+
+// Local Variables:
+// mode:C++
+// End:

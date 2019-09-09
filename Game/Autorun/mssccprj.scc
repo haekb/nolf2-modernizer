@@ -1,0 +1,5 @@
+SCC = This is a Source Code Control file
+
+[AutoRun.dsp]
+SCC_Aux_Path = "\\proj\AVP2\ss"
+SCC_Project_Name = "$/AVP2_Source/Autorun", OSUAAAAA

@@ -1,0 +1,125 @@
+c++ -Wall -g -O -I../../stlport -I.  -DEH_VECTOR_OPERATOR_NEW obj/TestClass.o obj/main.o obj/nc_alloc.o obj/random_number.o obj/test_algo.o obj/test_algobase.o obj/test_list.o obj/test_slist.o obj/test_bit_vector.o obj/test_vector.o obj/test_deque.o obj/test_set.o obj/test_map.o obj/test_hash_map.o obj/test_hash_set.o obj/test_rope.o obj/test_string.o obj/test_bitset.o obj/test_valarray.o  -L../../lib -lstlport_cygwin -lm  -o ./eh_test
+obj/TestClass.o: In function `_static_initialization_and_destruction_0':
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::_Ios_base_Init::_Ios_base_Init(void)'
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::_Ios_base_Init::~_Ios_base_Init(void)'
+obj/TestClass.o: In function `_ls(_STL::basic_ostream<char, _STL::char_traits<char> > &, TestClass const &)':
+//d/boris/stl/dev/test/eh/TestClass.cpp:27: undefined reference to `_STL::__stl_throw_length_error(char const *)'
+//d/boris/stl/dev/test/eh/TestClass.cpp:27: undefined reference to `_STL::__stl_throw_length_error(char const *)'
+obj/TestClass.o: In function `_static_initialization_and_destruction_0':
+//d/boris/stl/dev/test/eh/../../stlport/stl/_ostream.h:95: undefined reference to `_STL::ios_base::_M_throw_failure(void)'
+obj/TestClass.o: In function `_static_initialization_and_destruction_0':
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::ios_base::_M_throw_failure(void)'
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::__insert_grouping(char *, char *, _STL::basic_string<char, _STL::char_traits<char>, _STL::allocator<char> > const &, char, int)'
+obj/TestClass.o: In function `_static_initialization_and_destruction_0':
+//d/boris/stl/dev/test/eh/../../stlport/stl/_ostream.h:95: undefined reference to `_STL::__write_integer(char *, unsigned int, long)'
+obj/TestClass.o: In function `_static_initialization_and_destruction_0':
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::locale::locale(_STL::locale const &)'
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::locale::~locale(void)'
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::numpunct<char>::id'
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::locale::_M_get_facet(_STL::_Locale_id const &) const'
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::locale::~locale(void)'
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::locale::locale(_STL::locale const &)'
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::locale::~locale(void)'
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::locale::_M_get_facet(_STL::_Locale_id const &) const'
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::locale::~locale(void)'
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::ios_base::_M_throw_failure(void)'
+obj/main.o: In function `usage(char const *)':
+//d/boris/stl/dev/test/eh/../../stlport/stl/_ostream.h:259: undefined reference to `_STL::cerr'
+//d/boris/stl/dev/test/eh/../../stlport/stl/_ostream.h:260: undefined reference to `_STL::cerr'
+obj/main.o: In function `main':
+//d/boris/stl/dev/test/eh/../../stlport/stl/_ostream.h:259: undefined reference to `_STL::cerr'
+//d/boris/stl/dev/test/eh/../../stlport/stl/_ostream.h:259: undefined reference to `_STL::cerr'
+obj/main.o: In function `main':
+//d/boris/stl/dev/test/eh/../../stlport/stl/_ios.h:68: undefined reference to `_STL::cerr'
+obj/main.o://d/boris/stl/dev/test/eh/../../stlport/stl/_ios.h:90: more undefined references to `_STL::cerr' follow
+obj/main.o: In function `main':
+//d/boris/stl/dev/test/eh/../../stlport/stl/_ios_base.h:227: undefined reference to `_STL::ios_base::_M_throw_failure(void)'
+obj/main.o: In function `main':
+//d/boris/stl/dev/test/eh/../../stlport/stl/_ostream.h:259: undefined reference to `_STL::cerr'
+//d/boris/stl/dev/test/eh/../../stlport/stl/_ostream.h:97: undefined reference to `_STL::cerr'
+//d/boris/stl/dev/test/eh/../../stlport/stl/_ostream.h:259: undefined reference to `_STL::cerr'
+//d/boris/stl/dev/test/eh/../../stlport/stl/_ostream.h:97: undefined reference to `_STL::cerr'
+obj/main.o: In function `main':
+//d/boris/stl/dev/test/eh/main.cpp:260: undefined reference to `_STL::cerr'
+obj/main.o://d/boris/stl/dev/test/eh/../../stlport/stl/_ostream.h:259: more undefined references to `_STL::cerr' follow
+obj/main.o: In function `_static_initialization_and_destruction_0':
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::_Ios_base_Init::_Ios_base_Init(void)'
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::_Ios_base_Init::~_Ios_base_Init(void)'
+obj/main.o: In function `$_Q24_STLt16_STL_alloc_proxy3ZPcZcZQ24_STLt9allocator1Zc':
+/sw/cygnus/CYGWIN~1/H-I586~1/bin/../lib/gcc-lib/i586-cygwin32/2.95.2/include/../include/typeinfo(._STL::basic_ostream<char, _STL::char_traits<char> >::text$_M_put_nowiden(char const *)+0x28c): undefined reference to `_STL::ios_base::_M_throw_failure(void)'
+/sw/cygnus/CYGWIN~1/H-I586~1/bin/../lib/gcc-lib/i586-cygwin32/2.95.2/include/../include/typeinfo(._STL::basic_ostream<char, _STL::char_traits<char> >::text$put(char)+0x130): undefined reference to `_STL::ios_base::_M_throw_failure(void)'
+/sw/cygnus/CYGWIN~1/H-I586~1/bin/../lib/gcc-lib/i586-cygwin32/2.95.2/include/../include/typeinfo(._STL::ostreambuf_iterator<char, _STL::char_traits<char> > _STL::text$_M_do_put_integer<char, _STL::ostreambuf_iterator<char, _STL::char_traits<char> >, unsigned long>(_STL::ostreambuf_iterator<char, _STL::char_traits<char> >, _STL::ios_base &, char, unsigned long)+0x4c): undefined reference to `_STL::__write_integer(char *, unsigned int, unsigned long)'
+/sw/cygnus/CYGWIN~1/H-I586~1/bin/../lib/gcc-lib/i586-cygwin32/2.95.2/include/../include/typeinfo(._STL::ostreambuf_iterator<char, _STL::char_traits<char> > _STL::text$_M_do_put_integer<char, _STL::ostreambuf_iterator<char, _STL::char_traits<char> >, unsigned long>(_STL::ostreambuf_iterator<char, _STL::char_traits<char> >, _STL::ios_base &, char, unsigned long)+0x68): undefined reference to `_STL::locale::locale(_STL::locale const &)'
+/sw/cygnus/CYGWIN~1/H-I586~1/bin/../lib/gcc-lib/i586-cygwin32/2.95.2/include/../include/typeinfo(._STL::ostreambuf_iterator<char, _STL::char_traits<char> > _STL::text$_M_do_put_integer<char, _STL::ostreambuf_iterator<char, _STL::char_traits<char> >, unsigned long>(_STL::ostreambuf_iterator<char, _STL::char_traits<char> >, _STL::ios_base &, char, unsigned long)+0x84): undefined reference to `_STL::locale::~locale(void)'
+/sw/cygnus/CYGWIN~1/H-I586~1/bin/../lib/gcc-lib/i586-cygwin32/2.95.2/include/../include/typeinfo(._STL::ostreambuf_iterator<char, _STL::char_traits<char> > _STL::text$_M_do_put_integer<char, _STL::ostreambuf_iterator<char, _STL::char_traits<char> >, unsigned long>(_STL::ostreambuf_iterator<char, _STL::char_traits<char> >, _STL::ios_base &, char, unsigned long)+0x97): undefined reference to `_STL::numpunct<char>::id'
+/sw/cygnus/CYGWIN~1/H-I586~1/bin/../lib/gcc-lib/i586-cygwin32/2.95.2/include/../include/typeinfo(._STL::ostreambuf_iterator<char, _STL::char_traits<char> > _STL::text$_M_do_put_integer<char, _STL::ostreambuf_iterator<char, _STL::char_traits<char> >, unsigned long>(_STL::ostreambuf_iterator<char, _STL::char_traits<char> >, _STL::ios_base &, char, unsigned long)+0x9d): undefined reference to `_STL::locale::_M_get_facet(_STL::_Locale_id const &) const'
+obj/main.o: In function `usage(char const *)':
+//d/boris/stl/dev/test/eh/../../stlport/stl/_ostream.h:80: undefined reference to `_STL::locale::~locale(void)'
+obj/main.o: In function `$_Q24_STLt16_STL_alloc_proxy3ZPcZcZQ24_STLt9allocator1Zc':
+/sw/cygnus/CYGWIN~1/H-I586~1/bin/../lib/gcc-lib/i586-cygwin32/2.95.2/include/../include/typeinfo(._STL::basic_ostream<char, _STL::char_traits<char> > & _STL::text$_M_put_num<char, _STL::char_traits<char>, unsigned long>(_STL::basic_ostream<char, _STL::char_traits<char> > *, unsigned long)+0xc7): undefined reference to `_STL::locale::locale(_STL::locale const &)'
+/sw/cygnus/CYGWIN~1/H-I586~1/bin/../lib/gcc-lib/i586-cygwin32/2.95.2/include/../include/typeinfo(._STL::basic_ostream<char, _STL::char_traits<char> > & _STL::text$_M_put_num<char, _STL::char_traits<char>, unsigned long>(_STL::basic_ostream<char, _STL::char_traits<char> > *, unsigned long)+0xe0): undefined reference to `_STL::locale::~locale(void)'
+/sw/cygnus/CYGWIN~1/H-I586~1/bin/../lib/gcc-lib/i586-cygwin32/2.95.2/include/../include/typeinfo(._STL::basic_ostream<char, _STL::char_traits<char> > & _STL::text$_M_put_num<char, _STL::char_traits<char>, unsigned long>(_STL::basic_ostream<char, _STL::char_traits<char> > *, unsigned long)+0x109): undefined reference to `_STL::locale::_M_get_facet(_STL::_Locale_id const &) const'
+obj/main.o: In function `usage(char const *)':
+//d/boris/stl/dev/test/eh/../../stlport/stl/_ostream.h:259: undefined reference to `_STL::locale::~locale(void)'
+//d/boris/stl/dev/test/eh/../../stlport/stl/_ostream.h:259: undefined reference to `_STL::ios_base::_M_throw_failure(void)'
+obj/main.o: In function `$_Q24_STLt16_STL_alloc_proxy3ZPcZcZQ24_STLt9allocator1Zc':
+/sw/cygnus/CYGWIN~1/H-I586~1/bin/../lib/gcc-lib/i586-cygwin32/2.95.2/include/../include/typeinfo(._STL::basic_ostream<char, _STL::char_traits<char> > & _STL::text$endl<char, _STL::char_traits<char> >(_STL::basic_ostream<char, _STL::char_traits<char> > &)+0x5d): undefined reference to `_STL::ios_base::_M_throw_failure(void)'
+obj/nc_alloc.o: In function `TestController::ReportLeaked(void)':
+//d/boris/stl/dev/test/eh/../../stlport/stl/_ostream.h:259: undefined reference to `_STL::cerr'
+//d/boris/stl/dev/test/eh/../../stlport/stl/_ostream.h:259: undefined reference to `_STL::cerr'
+//d/boris/stl/dev/test/eh/../../stlport/stl/_ostream.h:99: undefined reference to `_STL::cerr'
+//d/boris/stl/dev/test/eh/../../stlport/stl/_ostream.h:259: undefined reference to `_STL::cerr'
+//d/boris/stl/dev/test/eh/../../stlport/stl/_ostream.h:99: undefined reference to `_STL::cerr'
+obj/nc_alloc.o://d/boris/stl/dev/test/eh/../../stlport/stl/_ostream.h:259: more undefined references to `_STL::cerr' follow
+obj/nc_alloc.o: In function `_static_initialization_and_destruction_0':
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::_Ios_base_Init::_Ios_base_Init(void)'
+obj/nc_alloc.o: In function `_static_initialization_and_destruction_0':
+//d/boris/stl/dev/test/eh/nc_alloc.cpp:188: undefined reference to `_STL::_Ios_base_Init::~_Ios_base_Init(void)'
+obj/test_algo.o: In function `test_algo(void)':
+//d/boris/stl/dev/test/eh/../../stlport/stl/_ostream.h:259: undefined reference to `_STL::cerr'
+//d/boris/stl/dev/test/eh/../../stlport/stl/_ostream.h:80: undefined reference to `_STL::cerr'
+obj/test_algo.o: In function `_static_initialization_and_destruction_0':
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::_Ios_base_Init::_Ios_base_Init(void)'
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::_Ios_base_Init::~_Ios_base_Init(void)'
+obj/test_algobase.o: In function `_static_initialization_and_destruction_0':
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::_Ios_base_Init::_Ios_base_Init(void)'
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::_Ios_base_Init::~_Ios_base_Init(void)'
+obj/test_list.o: In function `_static_initialization_and_destruction_0':
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::_Ios_base_Init::_Ios_base_Init(void)'
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::_Ios_base_Init::~_Ios_base_Init(void)'
+obj/test_slist.o: In function `_static_initialization_and_destruction_0':
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::_Ios_base_Init::_Ios_base_Init(void)'
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::_Ios_base_Init::~_Ios_base_Init(void)'
+obj/test_bit_vector.o: In function `_static_initialization_and_destruction_0':
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::_Ios_base_Init::_Ios_base_Init(void)'
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::_Ios_base_Init::~_Ios_base_Init(void)'
+obj/test_vector.o: In function `_static_initialization_and_destruction_0':
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::_Ios_base_Init::_Ios_base_Init(void)'
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::_Ios_base_Init::~_Ios_base_Init(void)'
+obj/test_deque.o: In function `_static_initialization_and_destruction_0':
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::_Ios_base_Init::_Ios_base_Init(void)'
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::_Ios_base_Init::~_Ios_base_Init(void)'
+obj/test_set.o: In function `_static_initialization_and_destruction_0':
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::_Ios_base_Init::_Ios_base_Init(void)'
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::_Ios_base_Init::~_Ios_base_Init(void)'
+obj/test_map.o: In function `_static_initialization_and_destruction_0':
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::_Ios_base_Init::_Ios_base_Init(void)'
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::_Ios_base_Init::~_Ios_base_Init(void)'
+obj/test_hash_map.o: In function `_static_initialization_and_destruction_0':
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::_Ios_base_Init::_Ios_base_Init(void)'
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::_Ios_base_Init::~_Ios_base_Init(void)'
+obj/test_hash_set.o: In function `_static_initialization_and_destruction_0':
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::_Ios_base_Init::_Ios_base_Init(void)'
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::_Ios_base_Init::~_Ios_base_Init(void)'
+obj/test_rope.o: In function `_static_initialization_and_destruction_0':
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::_Ios_base_Init::_Ios_base_Init(void)'
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::_Ios_base_Init::~_Ios_base_Init(void)'
+obj/test_rope.o: In function `test_rope(void)':
+//d/boris/stl/dev/test/eh/../../stlport/stl/_alloc.h:633: undefined reference to `_STL::__stl_throw_range_error(char const *)'
+obj/test_string.o: In function `_static_initialization_and_destruction_0':
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::_Ios_base_Init::_Ios_base_Init(void)'
+//d/boris/stl/dev/test/eh/../../stlport/iostream:61: undefined reference to `_STL::_Ios_base_Init::~_Ios_base_Init(void)'
+obj/test_string.o: In function `void ConstCheck<_STL::basic_string<char, _STL::char_traits<char>, eh_allocator<char> >, test_copy_construct<_STL::basic_string<char, _STL::char_traits<char>, eh_allocator<char> > > >(_STL::basic_string<char, _STL::char_traits<char>, eh_allocator<char> > const &, test_copy_construct<_STL::basic_string<char, _STL::char_traits<char>, eh_allocator<char> > > const &, long)':
+//d/boris/stl/dev/test/eh/LeakCheck.h(._STL::_String_base<char, eh_allocator<char> >::text$_M_throw_length_error(void) const+0xf): undefined reference to `_STL::__stl_throw_length_error(char const *)'
+collect2: ld returned 1 exit status
+make: *** [eh_test] Error 1

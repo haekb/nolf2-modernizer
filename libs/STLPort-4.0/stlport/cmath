@@ -1,0 +1,148 @@
+/*
+ * Copyright (c) 1999 
+ * Boris Fomitchev
+ *
+ * This material is provided "as is", with absolutely no warranty expressed
+ * or implied. Any use is at your own risk.
+ *
+ * Permission to use or copy this software for any purpose is hereby granted 
+ * without fee, provided the above notices are retained on all copies.
+ * Permission to modify the code and to distribute modified code is granted,
+ * provided the above notices are retained, and a notice that the code was
+ * modified is included with the above copyright notice.
+ *
+ */
+
+#ifndef __STLPORT_CMATH
+# define __STLPORT_CMATH
+
+# ifndef __STL_OUTERMOST_HEADER_ID
+#  define __STL_OUTERMOST_HEADER_ID  0x109
+#  include <stl/_prolog.h>
+# endif
+
+# if defined (__STL_USE_NEW_C_HEADERS)
+#  if defined (__STL_HAS_NO_NAMESPACES) && ! defined (exception)
+#   define exception __math_exception
+#  endif
+#  include __STL_NATIVE_CPP_C_HEADER(cmath)
+#  if defined (__STL_HAS_NO_NAMESPACES)
+#   undef exception
+#  endif
+# else
+#  include <math.h>
+# endif
+
+#  if defined (__SUNPRO_CC) && (__SUNPRO_CC > 0x500)
+namespace std {
+  extern "C" double hypot(double x, double y);
+}
+#  endif
+
+#  ifdef __STL_IMPORT_VENDOR_CSTD
+__STL_BEGIN_NAMESPACE
+# if ! defined (__STL_NO_CSTD_FUNCTION_IMPORTS)
+using __STL_VENDOR_CSTD::acos;
+using __STL_VENDOR_CSTD::asin;
+using __STL_VENDOR_CSTD::atan2;
+using __STL_VENDOR_CSTD::atan;
+using __STL_VENDOR_CSTD::ceil;
+using __STL_VENDOR_CSTD::cos;
+using __STL_VENDOR_CSTD::cosh;
+using __STL_VENDOR_CSTD::exp;
+using __STL_VENDOR_CSTD::fabs;
+using __STL_VENDOR_CSTD::floor;
+using __STL_VENDOR_CSTD::fmod;
+using __STL_VENDOR_CSTD::frexp;
+using __STL_VENDOR_CSTD::ldexp;
+using __STL_VENDOR_CSTD::log10;
+using __STL_VENDOR_CSTD::log;
+using __STL_VENDOR_CSTD::modf;
+using __STL_VENDOR_CSTD::pow;
+using __STL_VENDOR_CSTD::sin;
+using __STL_VENDOR_CSTD::sinh;
+using __STL_VENDOR_CSTD::sqrt;
+using __STL_VENDOR_CSTD::tan;
+using __STL_VENDOR_CSTD::tanh;
+# endif /* BUG */
+__STL_END_NAMESPACE
+#  endif /* __STL_IMPORT_VENDOR_CSTD */
+
+__STL_BEGIN_NAMESPACE
+
+# ifdef __STL_SAME_FUNCTION_NAME_RESOLUTION_BUG
+
+// this proxy is needed for some compilers to resolve problems
+// calling sqrt() from within sqrt(), etc.
+template <class _Tp>
+struct _STL_math_proxy {
+  static inline _Tp _do_abs(const _Tp& __x)     { return __STL_VENDOR_CSTD::fabs(__x); } 
+  static inline _Tp _do_acos(const _Tp& __x)    { return __STL_VENDOR_CSTD::acos(__x); } 
+  static inline _Tp _do_asin(const _Tp& __x)    { return __STL_VENDOR_CSTD::asin(__x); } 
+  static inline _Tp _do_atan(const _Tp& __x)    { return __STL_VENDOR_CSTD::atan(__x); } 
+  static inline _Tp _do_atan2(const _Tp& __x, const _Tp& __y)  { return __STL_VENDOR_CSTD::atan2(__x, __y); } 
+  static inline _Tp _do_cos(const _Tp& __x)     { return __STL_VENDOR_CSTD::cos(__x); } 
+  static inline _Tp _do_cosh(const _Tp& __x)    { return __STL_VENDOR_CSTD::cosh(__x); } 
+  static inline _Tp _do_log(const _Tp& __x)     { return __STL_VENDOR_CSTD::log(__x); } 
+  static inline _Tp _do_log10(const _Tp& __x)   { return __STL_VENDOR_CSTD::log10(__x); } 
+  static inline _Tp _do_pow(const _Tp& __x, const _Tp& __y)    { return __STL_VENDOR_CSTD::pow(__x, __y); } 
+  static inline _Tp _do_sin(const _Tp& __x)     { return __STL_VENDOR_CSTD::sin(__x); } 
+  static inline _Tp _do_sinh(const _Tp& __x)    { return __STL_VENDOR_CSTD::sinh(__x); } 
+
+  static inline _Tp _do_sqrt(const _Tp& __x)    { return __STL_VENDOR_CSTD::sqrt(__x); } 
+  static inline _Tp _do_tan(const _Tp& __x)     { return __STL_VENDOR_CSTD::tan(__x); } 
+  static inline _Tp _do_tanh(const _Tp& __x)    { return __STL_VENDOR_CSTD::tanh(__x); } 
+  static inline _Tp _do_exp(const _Tp& __x)     { return __STL_VENDOR_CSTD::exp(__x); } 
+  static inline _Tp _do_hypot(const _Tp& __x, const _Tp& __y)   { return __STL_VENDOR_CSTD::hypot(__x, __y); } 
+};
+
+#  define __STL_DO_ABS(_Tp)   _STL_math_proxy<_Tp>::_do_abs
+#  define __STL_DO_ACOS(_Tp)  _STL_math_proxy<_Tp>::_do_acos
+#  define __STL_DO_ASIN(_Tp)  _STL_math_proxy<_Tp>::_do_asin
+#  define __STL_DO_ATAN(_Tp)  _STL_math_proxy<_Tp>::_do_atan
+#  define __STL_DO_ATAN2(_Tp) _STL_math_proxy<_Tp>::_do_atan2
+#  define __STL_DO_COS(_Tp)   _STL_math_proxy<_Tp>::_do_cos
+#  define __STL_DO_COSH(_Tp)  _STL_math_proxy<_Tp>::_do_cosh
+#  define __STL_DO_LOG(_Tp)   _STL_math_proxy<_Tp>::_do_log
+#  define __STL_DO_LOG10(_Tp) _STL_math_proxy<_Tp>::_do_log10
+#  define __STL_DO_POW(_Tp)   _STL_math_proxy<_Tp>::_do_pow
+#  define __STL_DO_SIN(_Tp)   _STL_math_proxy<_Tp>::_do_sin
+#  define __STL_DO_SINH(_Tp)  _STL_math_proxy<_Tp>::_do_sinh
+#  define __STL_DO_SQRT(_Tp)  _STL_math_proxy<_Tp>::_do_sqrt
+#  define __STL_DO_TAN(_Tp)   _STL_math_proxy<_Tp>::_do_tan
+#  define __STL_DO_TANH(_Tp)  _STL_math_proxy<_Tp>::_do_tanh
+#  define __STL_DO_EXP(_Tp)   _STL_math_proxy<_Tp>::_do_exp
+#  define __STL_DO_HYPOT(_Tp) _STL_math_proxy<_Tp>::_do_hypot
+# else
+
+#  define __STL_DO_ABS(_Tp)   __STL_VENDOR_CSTD::fabs
+#  define __STL_DO_ACOS(_Tp)  __STL_VENDOR_CSTD::acos
+#  define __STL_DO_ASIN(_Tp)  __STL_VENDOR_CSTD::asin
+#  define __STL_DO_ATAN(_Tp)  __STL_VENDOR_CSTD::atan
+#  define __STL_DO_ATAN2(_Tp) __STL_VENDOR_CSTD::atan2
+#  define __STL_DO_COS(_Tp)   __STL_VENDOR_CSTD::cos
+#  define __STL_DO_COSH(_Tp)  __STL_VENDOR_CSTD::cosh
+#  define __STL_DO_LOG(_Tp)   __STL_VENDOR_CSTD::log
+#  define __STL_DO_LOG10(_Tp) __STL_VENDOR_CSTD::log10
+#  define __STL_DO_POW(_Tp)   __STL_VENDOR_CSTD::pow
+#  define __STL_DO_SIN(_Tp)   __STL_VENDOR_CSTD::sin
+#  define __STL_DO_SINH(_Tp)  __STL_VENDOR_CSTD::sinh
+#  define __STL_DO_SQRT(_Tp)  __STL_VENDOR_CSTD::sqrt
+#  define __STL_DO_TAN(_Tp)   __STL_VENDOR_CSTD::tan
+#  define __STL_DO_TANH(_Tp)  __STL_VENDOR_CSTD::tanh
+#  define __STL_DO_EXP(_Tp)   __STL_VENDOR_CSTD::exp
+#  define __STL_DO_HYPOT(_Tp) __STL_VENDOR_CSTD::hypot
+# endif
+
+__STL_END_NAMESPACE
+
+# if (__STL_OUTERMOST_HEADER_ID ==  0x109 )
+#  include <stl/_epilog.h>
+#  undef __STL_OUTERMOST_HEADER_ID
+# endif
+
+#endif /* __STLPORT_CMATH */
+
+// Local Variables:
+// mode:C++
+// End:

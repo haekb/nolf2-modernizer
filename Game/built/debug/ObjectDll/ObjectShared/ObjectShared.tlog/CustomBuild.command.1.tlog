@@ -1,0 +1,10 @@
+^D:\GAMEDEV\NO-ONE-LIVES-FOREVER-2-SOURCE\GAME\OBJECTDLL\OBJECTSHARED\ANIMATIONLEX.L
+..\..\flex -Pyyanimation -oAnimationLex.o AnimationLex.l
+^D:\GAMEDEV\NO-ONE-LIVES-FOREVER-2-SOURCE\GAME\OBJECTDLL\OBJECTSHARED\ANIMATIONPARSE.Y
+..\..\bison --defines -v --verbose -pyyanimation -oAnimationParse.o AnimationParse.y  
+if exist AnimationLexSymbols.h del AnimationLexSymbols.h  
+ren AnimationParse.o.h AnimationLexSymbols.h  
+ren AnimationParse.o AnimationParse.o  
+del AnimationParse.o.output
+^D:\GAMEDEV\NO-ONE-LIVES-FOREVER-2-SOURCE\GAME\OBJECTDLL\OBJECTSHARED\CLASSHLP.BUT
+copy D:\GameDev\no-one-lives-forever-2-source\Game\ObjectDLL\ObjectShared\ClassHlp.but D:\Games\No One Lives Forever 2\Tools
