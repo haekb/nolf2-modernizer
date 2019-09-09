@@ -518,7 +518,7 @@ Get current offset into sound buffer of sound.
 Used for: Audio.  
 */
     LTRESULT (*GetSoundOffset)(HLTSOUND hSound, 
-        uint32 * dwOffset, uint32 * dwSize = NULL);
+        uint32 * dwOffset, uint32 * dwSize /*= NULL*/);
 
 /*!
 \param  pSoundHandle    Handle to client only sound.
@@ -831,7 +831,7 @@ Clear the Z-Buffer and Backbuffer. In most cases you will want to clear the scre
 
 Used for: Rendering.
 */
-    LTRESULT (*ClearScreen)(LTRect *pClearRect, uint32 flags, LTRGB* pClearColor = 0);
+    LTRESULT (*ClearScreen)(LTRect *pClearRect, uint32 flags, LTRGB* pClearColor /*= 0*/);
 
 /*!
 \param  hCamera     The camera to render.
@@ -941,7 +941,7 @@ through any cameras.
 
 Used for: Rendering.
 */
-    LTRESULT (*End3D)(uint32 flags = END3D_CANDRAWCONSOLE);
+    LTRESULT (*End3D)(uint32 flags /*= END3D_CANDRAWCONSOLE*/);
 
 /*!
 \param  hColor      (return) The current color.

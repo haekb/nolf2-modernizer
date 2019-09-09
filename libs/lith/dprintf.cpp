@@ -82,17 +82,17 @@ typedef int BOOLEAN;
 #endif
 
 enum dprintfOutputType {
-  Unknown,
-  Nothing,
-  Monochrome,
-  Com1,
-  Com2,
-  File,
-  FileAppend,
-  STDOUT,
-  LPT1,
-  LPT2,
-  PRN
+  otUnknown,
+  otNothing,
+  otMonochrome,
+  otCom1,
+  otCom2,
+  otFile,
+  otFileAppend,
+  otSTDOUT,
+  otLPT1,
+  otLPT2,
+  otPRN
 };
 
 #ifdef _CONSOLE
@@ -106,7 +106,7 @@ unsigned short *dprintfmonoscreen;   // pointer to B000
 #endif
 unsigned int dbprintfcurrentLine = 0;  // current line
 unsigned int dprintfcurrentChar = 0;   // current char
-dprintfOutputType dprintfOutType = Unknown;
+dprintfOutputType dprintfOutType = otUnknown;
 FILE* dprintffile = NULL;
 
 class dprintfinittype {
@@ -582,7 +582,7 @@ void dprintfdoprint (char *Str) {
 void dprintf(char *format, ...)
 {
 #ifndef NODPRINTF
-	 if ((dprintfOutType == Nothing) || (dprintfOutType == Unknown)) return;
+	 if ((dprintfOutType == otNothing) || (dprintfOutType == otUnknown)) return;
 	 if (dprintfExReg.In(0)) return;
 
     va_list argptr;
@@ -599,7 +599,7 @@ void dprintf(char *format, ...)
 void dprintf(int X, int Y, char *format, ...)
 {
 #ifndef NODPRINTF
-	 if ((dprintfOutType == Nothing) || (dprintfOutType == Unknown)) return;
+	 if ((dprintfOutType == otNothing) || (dprintfOutType == otUnknown)) return;
 	 if (dprintfExReg.In(0)) return;
 
     dgotoxy (X,Y);
@@ -618,7 +618,7 @@ void dprintf(int X, int Y, char *format, ...)
 void dprintf(unsigned int Level, char *format, ...)
 {
 #ifndef NODPRINTF
-	 if ((dprintfOutType == Nothing) || (dprintfOutType == Unknown)) return;
+	 if ((dprintfOutType == otNothing) || (dprintfOutType == otUnknown)) return;
 	 if (dprintfExReg.In(Level)) return;
 
     va_list argptr;
@@ -635,7 +635,7 @@ void dprintf(unsigned int Level, char *format, ...)
 void dprintf(unsigned int Level, int X, int Y, char* format, ...)
 {
 #ifndef NODPRINTF
-	 if ((dprintfOutType == Nothing) || (dprintfOutType == Unknown)) return;
+	 if ((dprintfOutType == otNothing) || (dprintfOutType == otUnknown)) return;
 	 if (dprintfExReg.In(Level)) return;
 
     dgotoxy (X,Y);
@@ -670,7 +670,7 @@ void dgotoxy (unsigned int Level, int X, int Y) {
 #ifndef NODPRINTF
   if (dprintfExReg.In(Level)) return;
   switch (dprintfOutType) {
-    case Monochrome :
+    case otMonochrome :
       dbprintfcurrentLine = Y;
       dprintfcurrentChar = X;
       break;
@@ -700,7 +700,7 @@ void dclrscr (unsigned int Level) {
 #ifndef NODPRINTF
   if (dprintfExReg.In(Level)) return;
   switch (dprintfOutType) {
-    case Monochrome :
+    case otMonochrome :
       dbprintfcurrentLine = 0;
       dprintfcurrentChar = 0;
       dprintfmonoclrscr();
@@ -726,7 +726,7 @@ dprintfinittype::dprintfinittype () {
 #endif
 #ifdef _WINDOWS
 #ifdef _DEBUG
-  dprintfOutType = Monochrome;
+  dprintfOutType = otMonochrome;
 #else
   dprintfOutType = Nothing;
 #endif
@@ -741,21 +741,21 @@ dprintfinittype::dprintfinittype () {
     char Buf[BUFSIZE];
     strcpy (Buf,Str); // this could be a problem if environment string is greater than BUFSIZE
     strupr (Buf); // convert buf to upper case
-    if (strstr(Buf,"MONO") != NULL) dprintfOutType = Monochrome;
-    if (strstr(Buf,"FILE") != NULL) dprintfOutType = File;
-    if (strstr(Buf,"FILEAPPEND") != NULL) dprintfOutType = FileAppend;
-    if (strstr(Buf,"COM1") != NULL) dprintfOutType = Com1;
-    if (strstr(Buf,"COM2") != NULL) dprintfOutType = Com2;
-    if (strstr(Buf,"STDOUT") != NULL) dprintfOutType = STDOUT;
-    if (strstr(Buf,"LPT1") != NULL) dprintfOutType = LPT1;
-    if (strstr(Buf,"LPT2") != NULL) dprintfOutType = LPT1;
-    if (strstr(Buf,"PRN") != NULL) dprintfOutType = PRN;
+    if (strstr(Buf,"MONO") != NULL) dprintfOutType = otMonochrome;
+    if (strstr(Buf,"FILE") != NULL) dprintfOutType = otFile;
+    if (strstr(Buf,"FILEAPPEND") != NULL) dprintfOutType = otFileAppend;
+    if (strstr(Buf,"COM1") != NULL) dprintfOutType = otCom1;
+    if (strstr(Buf,"COM2") != NULL) dprintfOutType = otCom2;
+    if (strstr(Buf,"STDOUT") != NULL) dprintfOutType = otSTDOUT;
+    if (strstr(Buf,"LPT1") != NULL) dprintfOutType = otLPT1;
+    if (strstr(Buf,"LPT2") != NULL) dprintfOutType = otLPT1;
+    if (strstr(Buf,"PRN") != NULL) dprintfOutType = otPRN;
 
     dprintfExReg.Scan (Buf);
   }
 
 #ifdef _WINDOWS  
-    dprintfOutType = Monochrome;
+    dprintfOutType = otMonochrome;
 #endif    
 
 #ifdef _CONSOLE
@@ -765,54 +765,54 @@ dprintfinittype::dprintfinittype () {
 
   // open file if necessary
   switch (dprintfOutType) {
-    case File :
+    case otFile :
       dprintffile = fopen ("DPRINTF.OUT","w");
-      if (dprintffile == NULL) dprintfOutType = Nothing;
+      if (dprintffile == NULL) dprintfOutType = otNothing;
       break;
-    case FileAppend :
+    case otFileAppend :
       dprintffile = fopen ("DPRINTF.OUT","w");
       fclose (dprintffile);
       break;
 #ifndef __WATCOM__
 #ifndef _WINDOWS
 #ifndef _CONSOLE
-    case Com1 :
+    case otCom1 :
       dprintfPortHandle = dpSerComOpen (SerComUARTType8250,SerComCompTypeAT,0x3f8,4,9600,8,0,1,128,128);
       break;
-    case Com2 :
+    case otCom2 :
       dprintfPortHandle = dpSerComOpen (SerComUARTType8250,SerComCompTypeAT,0x2f8,3,9600,8,0,1,128,128);
       break;
 #endif
 #endif
 #endif
-    case LPT1 :
+    case otLPT1 :
       dprintffile = fopen ("LPT1","w");
-      if (dprintffile == NULL) dprintfOutType = Nothing;
+      if (dprintffile == NULL) dprintfOutType = otNothing;
       break;
-    case LPT2 :
+    case otLPT2 :
       dprintffile = fopen ("LPT2","w");
-      if (dprintffile == NULL) dprintfOutType = Nothing;
+      if (dprintffile == NULL) dprintfOutType = otNothing;
       break;
-    case PRN :
+    case otPRN :
       dprintffile = fopen ("PRN","w");
-      if (dprintffile == NULL) dprintfOutType = Nothing;
+      if (dprintffile == NULL) dprintfOutType = otNothing;
       break;
   }
 }
 
 dprintfinittype::~dprintfinittype () {
   switch (dprintfOutType) {
-    case File :
-    case LPT1 :
-    case LPT2 :
-    case PRN :
+    case otFile :
+    case otLPT1 :
+    case otLPT2 :
+    case otPRN :
       fclose (dprintffile);
       break;
 #ifndef __WATCOM__
 #ifndef _WINDOWS
 #ifndef _CONSOLE
-    case Com1 :
-    case Com2 :
+    case otCom1 :
+    case otCom2 :
       if (dprintfPortHandle != NULL) {
         unsigned long int Loop;
         for (Loop = 0;Loop < 1000000;Loop++) { // wait for characters to get finished outputting
