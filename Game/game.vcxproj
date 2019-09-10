@@ -67,7 +67,7 @@
     <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Makefile</ConfigurationType>
+    <ConfigurationType>Utility</ConfigurationType>
     <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
@@ -165,42 +165,11 @@
     <NMakeReBuildCommandLine>NMAKE /f Game.mak /a</NMakeReBuildCommandLine>
     <NMakeOutput>Game.exe</NMakeOutput>
   </PropertyGroup>
-  <ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <PostBuildEvent>
+      <Command>call "D:\GameDev\no-one-lives-forever-2-source\Game\_after_build_debug.bat"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <None Include="Game.bsc" />
-    <CustomBuild Include="Game.mak" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="ClientFxDLL\ClientFxDLL.vcxproj">
-      <Project>{f75bc4cf-9c59-4f34-8980-4de88952b94c}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="ClientRes\TO2\ClientRes.vcxproj">
-      <Project>{d75ed753-d262-408f-af29-842819d07602}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="ClientShellDLL\TO2\ClientShellDLL.vcxproj">
-      <Project>{8a64edfe-4e6e-4a76-bc74-a2ca899fe39a}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="Launcher\TO2\Launcher.vcxproj">
-      <Project>{93a60293-f6b3-4bd4-93c8-d0d41052bd88}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="ObjectDLL\TO2\Object.vcxproj">
-      <Project>{e31daf1b-5aaf-494c-baa0-fa39adf5e42c}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="ServerApp\ServerApp.vcxproj">
-      <Project>{37ac5cf8-0f2a-466c-a07f-f103faad92f9}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="ServerRes\TO2\ServerRes.vcxproj">
-      <Project>{73f78987-a221-4d10-9e30-3aaa48d5456f}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

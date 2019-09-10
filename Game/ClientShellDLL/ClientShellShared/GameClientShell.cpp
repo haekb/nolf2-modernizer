@@ -863,6 +863,9 @@ uint32 CGameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
 {
 	InitClientShell();
 
+	// For debugging Bison/Flex
+	freopen("stderr.log", "w", stderr);
+
 	//CWinUtil::DebugBreak();
 
 	*pAppGuid = GAMEGUID;

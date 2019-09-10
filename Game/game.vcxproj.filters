@@ -14,10 +14,4 @@
       <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
     </Filter>
   </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="Game.mak" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Game.bsc" />
-  </ItemGroup>
 </Project>

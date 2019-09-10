@@ -128,6 +128,8 @@ LTBOOL CGlobalClientMgr::Init()
 	if( !bOk )
 		g_pLTClient->ShutdownWithMessage(errorBuf);
 
+
+
     return bOk;
 }
 

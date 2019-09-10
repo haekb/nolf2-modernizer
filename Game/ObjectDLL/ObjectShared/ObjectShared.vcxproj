@@ -119,7 +119,7 @@
       <WarningLevel>Level3</WarningLevel>
       <MinimalRebuild>true</MinimalRebuild>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
       <AdditionalIncludeDirectories>.\;..\..\..\libs\STLPORT-4.0\STLPORT_NO;..\..\shared;..\..\..\Engine\sdk\inc;..\..\..\libs\stdlith;..\..\..\libs\butemgr;..\..\..\libs\cryptmgr;..\..\..\libs\lith;..\..\..\libs\mfcstub;..\..\..\libs\regmgr;..\..\libs;..\..\libs\serverdir;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;_LIB;WIN32;_WINDOWS;NOPS2;_SERVERBUILD;_NO_AI_ASSERT;MEMTRACK_SERVER;_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\..\Built\Debug\ObjectDll\ObjectShared\</AssemblerListingLocation>
@@ -568,7 +568,7 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\flex -Pyyanimation -oAnimationLex.o AnimationLex.l</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AnimationLex.o;%(Outputs)</Outputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AnimationParse.y;AnimationLexSymbols.h;%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\flex -Pyyanimation -oAnimationLex.o AnimationLex.l</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\flex -T -d -Pyyanimation -oAnimationLex.o AnimationLex.l</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AnimationLex.o;%(Outputs)</Outputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AnimationParse.y;AnimationLexSymbols.h;%(AdditionalInputs)</AdditionalInputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">..\..\flex -Pyyanimation -oAnimationLex.o AnimationLex.l</Command>

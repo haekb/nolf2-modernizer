@@ -19,8 +19,8 @@ static LTBOOL s_btError = LTFALSE;
 
 void yyanimationerror(const char* szError)
 {
-//	char szShit[1024];
-//	sprintf(szShit, "Parse error at line %d: %s\n", g_Lex.GetLine(), szError);
+	char szShit[1024];
+	sprintf(szShit, "Parse error at line %d: %s\n", g_Lex.GetLine(), szError);
 	s_btError = LTTRUE;
 }
 

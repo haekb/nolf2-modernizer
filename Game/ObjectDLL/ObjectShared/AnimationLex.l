@@ -1,6 +1,7 @@
 
 %{
-
+#define YYDEBUG 1
+#include <stdio.h>
 #include "StdAfx.h"
 #include "AnimationLex.h"
 #include "AnimationLexSymbols.h"
