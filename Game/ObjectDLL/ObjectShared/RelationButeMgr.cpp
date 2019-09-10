@@ -28,7 +28,7 @@
 #include "ObjectRelationMgr.h"
 #include "CollectiveRelationMgr.h"
 #include "AIAssert.h"
-
+#include <algorithm>
 // Forward declarations
 
 // Globals
@@ -868,7 +868,7 @@ int CRelationUser::Save(ILTMessage_Write *pMsg)
 	// Save each of the Active Relationships
 	std::for_each( m_Momentos.begin(),
 		m_Momentos.end(),
-		std::bind2nd( std::mem_fun1(&RelationMomento::Save), pMsg ));
+		std::bind2nd( std::mem_fun(&RelationMomento::Save), pMsg )); // JAKE DEBUG: mem_fun1 -> mem_fun
 
 	SAVE_TIME( m_flTimeRelationsLast );
 
@@ -1120,7 +1120,7 @@ void CRelationUser::Sync(const CObjectRelationMgr* pObjectRelationMgr)
 	using std::for_each;
 	using std::bind2nd;
 	for_each(m_Momentos.begin(), m_Momentos.end(),
-		bind2nd( SyncObjectRelationMgr(), pObjectRelationMgr));
+		bind2nd( SyncObjectRelationMgr(), (CObjectRelationMgr*)pObjectRelationMgr));
 
 	m_Momentos.remove_if( MomentoIsNull() );
 }
@@ -1168,7 +1168,7 @@ int CDataUser::Load(ILTMessage_Read *pMsg)
 	return 0;
 }
 
-ostream& operator << (ostream& os, const CRelationUser& User)
+std::ostream& operator << (std::ostream& os, const CRelationUser& User)
 {
 	for( _listMomentos::const_iterator it = User.m_Momentos.begin(); it != User.m_Momentos.end(); ++it )
 	{
@@ -1305,7 +1305,7 @@ void RelationMomento::DoRemoveRelationCallback(void)
 }
 
 
-ostream& operator << (ostream &os, const RelationMomento& Momento)
+std::ostream& operator << (std::ostream &os, const RelationMomento& Momento)
 {
 	os << " " << CRelationTools::GetInstance()->ConvertAlignmentEnumToString(Momento.m_RD.eAlignment);
 	os << " " << CRelationTools::GetInstance()->ConvertTraitEnumToString(Momento.m_RD.eTrait);

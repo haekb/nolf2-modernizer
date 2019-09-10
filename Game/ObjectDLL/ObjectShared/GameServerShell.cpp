@@ -63,6 +63,7 @@
 #include "ScmdServer.h"
 #include "BanIPMgr.h"
 #include <time.h>
+#include <algorithm>
 
 #define MAX_CLIENT_NAME_LENGTH		100
 #define CLIENT_PING_UPDATE_RATE		3.0f

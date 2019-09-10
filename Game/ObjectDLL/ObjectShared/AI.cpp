@@ -53,7 +53,7 @@
 #include "Searchable.h"
 #include "AIGoalSpecialDamage.h"
 #include "SharedFXStructs.h"
-
+#include <algorithm>
 extern CAIGoalButeMgr* g_pAIGoalButeMgr;
 extern CServerSoundMgr* g_pServerSoundMgr;
 extern CAIStimulusMgr* g_pAIStimulusMgr;
@@ -2747,7 +2747,7 @@ void CAI::HandleCommandParameters(const CParsedMsg &cMsg)
 		char szName[64];
 		char szValue[256];
 
-		char *pEqual = strchr(cMsg.GetArg(iToken), '=');
+		char *pEqual = (char*)strchr(cMsg.GetArg(iToken), '=');
 
 		if ( !pEqual )
 		{
@@ -3613,7 +3613,7 @@ void CAI::UpdateInfo()
 		else if( g_AIInfoTrack.GetFloat() == 4.0f )
 		{
 			// Show Relations.
-			ostrstream out;
+			std::ostrstream out;
 			out << *(m_pRelationMgr->GetRelationUser()) << '\n' << '\0';
 			info += out.str();
 		}
@@ -3667,7 +3667,7 @@ void CAI::UpdateInvalidNodeList( )
 	pos = remove_if(
 		m_InvalidNodeList.begin(),
 		m_InvalidNodeList.end(),
-		bind2nd( equal_to<INVALID_NODE*>(), NULL ));
+		bind2nd(equal_to<INVALID_NODE*>(), (INVALID_NODE*)NULL ));
     
 	m_InvalidNodeList.erase(pos, m_InvalidNodeList.end());
 }
@@ -5105,7 +5105,7 @@ void CAI::GetRightAndLeftHolsterStrings(char* szBufferRight, char* szBufferLeft,
 
 	// Optional semi-colon separates a RightHand attachment from a LeftHand.
 
-	char* pColon = strchr(szHolsterString, ';');
+	char* pColon = (char*)strchr(szHolsterString, ';');
 	if( !pColon )
 	{
 		strncpy( szBufferRight, szHolsterString + iStartHolster, nBufferSize );

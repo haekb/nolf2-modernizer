@@ -36,7 +36,7 @@ public:
 			m_pPtr->DecRef(); 
 	}
 	CLTReference &operator=(T *pPtr) {
-		if (*this == pPtr)
+		if (m_pPtr == pPtr)
 			return *this;
 		if (m_pPtr)
 			m_pPtr->DecRef();

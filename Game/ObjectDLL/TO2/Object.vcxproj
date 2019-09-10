@@ -149,6 +149,7 @@ copy $(TargetPath) $(GAME_REZ_DIR) </Command>
       <ObjectFileName>.\..\..\Built\Debug\ObjectDLL\TO2\</ObjectFileName>
       <ProgramDataBaseFileName>.\..\..\Built\Debug\ObjectDLL\TO2\</ProgramDataBaseFileName>
       <AdditionalOptions> /Zm1000 </AdditionalOptions>
+      <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
     </ClCompile>
     <Midl>
       <SuppressStartupBanner>true</SuppressStartupBanner>

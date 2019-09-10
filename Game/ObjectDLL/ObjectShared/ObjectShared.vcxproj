@@ -130,6 +130,7 @@
       <ObjectFileName>.\..\..\Built\Debug\ObjectDll\ObjectShared\</ObjectFileName>
       <ProgramDataBaseFileName>.\..\..\Built\Debug\ObjectDll\ObjectShared\</ProgramDataBaseFileName>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
     </ClCompile>
     <ResourceCompile>
       <Culture>0x0409</Culture>
@@ -143,6 +144,9 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\..\..\Built\Debug\ObjectDll\ObjectShared\ObjectShared.lib</OutputFile>
     </Lib>
+    <CustomBuild>
+      <LinkObjects>false</LinkObjects>
+    </CustomBuild>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">
     <ClCompile>
@@ -594,7 +598,8 @@ del AnimationParse.o.output</Command>
     <CustomBuild Include="ClassHlp.but">
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">copy %(FullPath) $(GAME_TOOLS_DIR)</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(GAME_TOOLS_DIR)\ClassHlp.but;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">copy %(FullPath) $(GAME_TOOLS_DIR)</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GAME_TOOLS_DIR)\ClassHlp.but;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">copy %(FullPath) $(GAME_TOOLS_DIR)</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">$(GAME_TOOLS_DIR)\ClassHlp.but;%(Outputs)</Outputs>

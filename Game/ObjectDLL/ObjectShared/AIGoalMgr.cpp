@@ -102,13 +102,11 @@ void CAIGoalMgr::Save(ILTMessage_Write *pMsg)
 
 	SAVE_DWORD(m_lstScriptGoals.size());
 
-	GOAL_SCRIPT_STRUCT* gss;
 	GOAL_SCRIPT_LIST::iterator gsit;
 	for(gsit = m_lstScriptGoals.begin(); gsit != m_lstScriptGoals.end(); ++gsit)
 	{
-		gss = gsit;
-		SAVE_DWORD(gss->eGoalType);
-		SAVE_HSTRING(gss->hstrNameValuePairs);
+		SAVE_DWORD(gsit->eGoalType);
+		SAVE_HSTRING(gsit->hstrNameValuePairs);
 	}
 	
 	SAVE_DWORD(m_nScriptStep);
@@ -199,13 +197,11 @@ void CAIGoalMgr::Load(ILTMessage_Read *pMsg)
 	LOAD_DWORD(cGoalScriptSteps);
 	m_lstScriptGoals.resize(cGoalScriptSteps);
 
-	GOAL_SCRIPT_STRUCT* gss;
 	GOAL_SCRIPT_LIST::iterator gsit;
 	for(gsit = m_lstScriptGoals.begin(); gsit != m_lstScriptGoals.end(); ++gsit)
 	{
-		gss = gsit;
-		LOAD_DWORD_CAST(gss->eGoalType, EnumAIGoalType);
-		LOAD_HSTRING(gss->hstrNameValuePairs);
+		LOAD_DWORD_CAST(gsit->eGoalType, EnumAIGoalType);
+		LOAD_HSTRING(gsit->hstrNameValuePairs);
 	}
 	
 	LOAD_DWORD(m_nScriptStep);

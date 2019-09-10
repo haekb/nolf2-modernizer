@@ -28,7 +28,7 @@
 #include "FastHeap.h"
 #include "WorldProperties.h"
 #include "AIUtils.h"
-
+#include <algorithm>
 // Forward declarations
 
 // Globals

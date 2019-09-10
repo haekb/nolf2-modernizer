@@ -26,7 +26,8 @@
 #include "AITypes.h"
 #include "AIAssert.h"
 #include "ObjectRelationMgr.h"
-
+#include <algorithm>
+//#include <functional>
 // Forward declarations
 
 // Globals
@@ -101,7 +102,7 @@ void CRelationMgr::Save(ILTMessage_Write *pMsg)
 	SAVE_INT( m_listCollectives.size() );
 	std::for_each( m_listCollectives.begin(),
 		m_listCollectives.end(),
-		std::bind2nd( std::mem_fun1(&CCollectiveRelationMgr::Save), pMsg ));
+		std::bind2nd( std::mem_fun(&CCollectiveRelationMgr::Save), pMsg )); // JAKE DEBUG: mem_fun1 -> mem_fun
 }
 void CRelationMgr::Load(ILTMessage_Read *pMsg)
 {

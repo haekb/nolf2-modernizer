@@ -27,12 +27,12 @@ protected:
 
 		ObjectTemplateMgr_Hasher() {}
 
-		size_t operator()(const char* key) const {
-			return hash(key);
+		size_t operator()(std::string key) const {
+			return hash(key.c_str());
 		}
 
-		bool operator()(const char* left, const char* right) const {
-			return compare(left, right);
+		bool operator()(std::string left, std::string right) const {
+			return compare(left.c_str(), right.c_str());
 		}
 	private:
 		// Was `equal_str_nocase`, need to left side.

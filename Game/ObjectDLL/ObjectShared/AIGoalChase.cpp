@@ -65,14 +65,12 @@ void CAIGoalChase::Save(ILTMessage_Write *pMsg)
 	SAVE_COBJECT( m_pJunctionActionVolume );
 	SAVE_COBJECT( m_pLastVolume );
 
-	JunctionRecord* pRec;
 	SAVE_DWORD( m_stkJunctions.size() );
 	JunctionStack::iterator it;
 	for( it = m_stkJunctions.begin(); it != m_stkJunctions.end(); ++it )
 	{
-		pRec = it;
-		SAVE_COBJECT(pRec->pVolume);
-		SAVE_BYTE(pRec->mskActionVolumes)
+		SAVE_COBJECT(it->pVolume);
+		SAVE_BYTE(it->mskActionVolumes)
 	}
 
 	SAVE_BOOL(m_bGiveUpChase);
@@ -95,13 +93,11 @@ void CAIGoalChase::Load(ILTMessage_Read *pMsg)
 	LOAD_DWORD( cJunctionRecords );
 	m_stkJunctions.resize( cJunctionRecords );
 
-	JunctionRecord* pRec;
 	JunctionStack::iterator it;
 	for( it = m_stkJunctions.begin(); it != m_stkJunctions.end(); ++it )
 	{
-		pRec = it;
-		LOAD_COBJECT( pRec->pVolume, AIVolume );
-		LOAD_BYTE(pRec->mskActionVolumes)
+		LOAD_COBJECT(it->pVolume, AIVolume );
+		LOAD_BYTE(it->mskActionVolumes)
 	}
 
 	LOAD_BOOL(m_bGiveUpChase);

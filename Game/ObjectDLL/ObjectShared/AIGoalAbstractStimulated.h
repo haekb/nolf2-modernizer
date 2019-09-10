@@ -26,9 +26,10 @@ enum  EnumAISenseType;
 
 class CAIGoalAbstractStimulated : public CAIGoalAbstract, public ILTObjRefReceiver, public IRelationChangeObserver
 {
-	typedef CAIGoalAbstract super;
+	
 
 	public:
+		typedef CAIGoalAbstract super;
 
 		DECLARE_AI_FACTORY_CLASS_ABSTRACT_SPECIFIC(Goal);
 

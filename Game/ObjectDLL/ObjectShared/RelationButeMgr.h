@@ -289,7 +289,7 @@ class RelationMomento
 {
 	friend DeleteMomentoWithCallback;
 	friend Momento_RelationData_Equality;
-	friend ostream& operator << (ostream &os, const RelationMomento& Momento);
+	friend std::ostream& operator << (std::ostream &os, const RelationMomento& Momento);
 
 public:
 	// Ctors/Dtors/Save/Loadetc
@@ -331,7 +331,7 @@ private:
 	RelationDescription	m_RD;			// Description of the actual Relation
 };
 
-ostream& operator << (ostream &os, const RelationMomento& Momento);
+std::ostream& operator << (std::ostream &os, const RelationMomento& Momento);
 
 //----------------------------------------------------------------------------
 //              
@@ -344,7 +344,7 @@ ostream& operator << (ostream &os, const RelationMomento& Momento);
 class CRelationUser
 {
 public:
-	friend ostream& operator << (ostream& os, const CRelationUser& User);
+	friend std::ostream& operator << (std::ostream& os, const CRelationUser& User);
 
 	friend struct SyncObjectRelationMgr;
 	friend RelationMomento;
@@ -405,7 +405,7 @@ private:
 	IMomentoUser*		m_pMomentoCallbackReceiver;
 };
 
-ostream& operator << (ostream& os, const CRelationUser& User);
+std::ostream& operator << (std::ostream& os, const CRelationUser& User);
 
 
 //----------------------------------------------------------------------------

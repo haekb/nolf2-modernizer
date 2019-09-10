@@ -31,7 +31,7 @@
 #include "CharacterMgr.h"
 #include "RelationChangeObserver.h"
 #include <list>
-
+#include <algorithm>
 // Forward declarations
 
 // Globals

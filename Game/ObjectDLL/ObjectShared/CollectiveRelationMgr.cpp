@@ -23,7 +23,7 @@
 #include "RelationMgr.h"
 #include "AIAssert.h"
 #include "ServerUtilities.h"
-
+#include <algorithm>
 // Forward declarations
 
 // Globals

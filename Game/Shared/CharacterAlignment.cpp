@@ -302,7 +302,7 @@ int RelationTraits::CIDValue::LookupID( const std::string& Value)
 	if ( it == sm_mapValueToID.end() )
 	{
 		sm_nID++;
-		sm_mapValueToID.insert( std::make_pair< std::string,int>( Value, sm_nID ) );
+		sm_mapValueToID.insert({ Value, sm_nID });
 		return sm_nID;
 	}
 	else

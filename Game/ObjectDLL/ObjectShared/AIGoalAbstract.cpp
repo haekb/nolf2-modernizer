@@ -21,7 +21,7 @@
 #include "AnimationMgr.h"
 #include "AIUtils.h"
 #include "AIMovement.h"
-
+#include <algorithm>
 
 // Globals/statics.
 static LTFLOAT s_fGoalUpdateBasis = 0.0f;
@@ -654,7 +654,7 @@ void CAIGoalAbstract::AddInvalidNode( HOBJECT hNode )
 	it = find_if(
 		pList->begin(),
 		pList->end(),
-		bind2nd( equal_to<INVALID_NODE*>(), NULL ));
+		bind2nd( equal_to<INVALID_NODE*>(), (INVALID_NODE*)NULL ));
 
 	if ( it !=  pList->end() )
 	{

@@ -2086,11 +2086,11 @@ BEGIN_CLASS(AIVolumeJunction)
 
 		ADD_STRINGPROP_FLAG(VolumeNorthAction1,				"",			PF_GROUP(2)|PF_STATICLIST) \
 		ADD_REALPROP_FLAG(VolumeNorthAction1Chance,			1.0f,		PF_GROUP(2)) \
-		ADD_STRINGPROP_FLAG(VolumeNorthAction2,				"",	,		PF_GROUP(2)|PF_STATICLIST) \
+		ADD_STRINGPROP_FLAG(VolumeNorthAction2,				"",		PF_GROUP(2)|PF_STATICLIST) \
 		ADD_REALPROP_FLAG(VolumeNorthAction2Chance,			0.0f,		PF_GROUP(2)) \
-		ADD_STRINGPROP_FLAG(VolumeNorthAction3,				"",	,		PF_GROUP(2)|PF_STATICLIST) \
+		ADD_STRINGPROP_FLAG(VolumeNorthAction3,				"",			PF_GROUP(2)|PF_STATICLIST) \
 		ADD_REALPROP_FLAG(VolumeNorthAction3Chance,			0.0f,		PF_GROUP(2)) \
-		ADD_STRINGPROP_FLAG(VolumeNorthAction4,				"",	,		PF_GROUP(2)|PF_STATICLIST) \
+		ADD_STRINGPROP_FLAG(VolumeNorthAction4,				"",			PF_GROUP(2)|PF_STATICLIST) \
 		ADD_REALPROP_FLAG(VolumeNorthAction4Chance,			0.0f,		PF_GROUP(2)) \
 	
 	ADD_STRINGPROP_FLAG(VolumeEast,							"",			PF_OBJECTLINK) \
@@ -2099,11 +2099,11 @@ BEGIN_CLASS(AIVolumeJunction)
 
 		ADD_STRINGPROP_FLAG(VolumeEastAction1,				"",			PF_GROUP(3)|PF_STATICLIST) \
 		ADD_REALPROP_FLAG(VolumeEastAction1Chance,			1.0f,		PF_GROUP(3)) \
-		ADD_STRINGPROP_FLAG(VolumeEastAction2,				"",	,		PF_GROUP(3)|PF_STATICLIST) \
+		ADD_STRINGPROP_FLAG(VolumeEastAction2,				"",			PF_GROUP(3)|PF_STATICLIST) \
 		ADD_REALPROP_FLAG(VolumeEastAction2Chance,			0.0f,		PF_GROUP(3)) \
-		ADD_STRINGPROP_FLAG(VolumeEastAction3,				"",	,		PF_GROUP(3)|PF_STATICLIST) \
+		ADD_STRINGPROP_FLAG(VolumeEastAction3,				"",			PF_GROUP(3)|PF_STATICLIST) \
 		ADD_REALPROP_FLAG(VolumeEastAction3Chance,			0.0f,		PF_GROUP(3)) \
-		ADD_STRINGPROP_FLAG(VolumeEastAction4,				"",	,		PF_GROUP(3)|PF_STATICLIST) \
+		ADD_STRINGPROP_FLAG(VolumeEastAction4,				"",			PF_GROUP(3)|PF_STATICLIST) \
 		ADD_REALPROP_FLAG(VolumeEastAction4Chance,			0.0f,		PF_GROUP(3)) \
 
 	ADD_STRINGPROP_FLAG(VolumeSouth,						"",			PF_OBJECTLINK) \
@@ -2112,11 +2112,11 @@ BEGIN_CLASS(AIVolumeJunction)
 
 		ADD_STRINGPROP_FLAG(VolumeSouthAction1,				"",			PF_GROUP(4)|PF_STATICLIST) \
 		ADD_REALPROP_FLAG(VolumeSouthAction1Chance,			1.0f,		PF_GROUP(4)) \
-		ADD_STRINGPROP_FLAG(VolumeSouthAction2,				"",	,		PF_GROUP(4)|PF_STATICLIST) \
+		ADD_STRINGPROP_FLAG(VolumeSouthAction2,				"",			PF_GROUP(4)|PF_STATICLIST) \
 		ADD_REALPROP_FLAG(VolumeSouthAction2Chance,			0.0f,		PF_GROUP(4)) \
-		ADD_STRINGPROP_FLAG(VolumeSouthAction3,				"",	,		PF_GROUP(4)|PF_STATICLIST) \
+		ADD_STRINGPROP_FLAG(VolumeSouthAction3,				"",			PF_GROUP(4)|PF_STATICLIST) \
 		ADD_REALPROP_FLAG(VolumeSouthAction3Chance,			0.0f,		PF_GROUP(4)) \
-		ADD_STRINGPROP_FLAG(VolumeSouthAction4,				"",	,		PF_GROUP(4)|PF_STATICLIST) \
+		ADD_STRINGPROP_FLAG(VolumeSouthAction4,				"",			PF_GROUP(4)|PF_STATICLIST) \
 		ADD_REALPROP_FLAG(VolumeSouthAction4Chance,			0.0f,		PF_GROUP(4)) \
 
 	ADD_STRINGPROP_FLAG(VolumeWest,							"",			PF_OBJECTLINK) \
@@ -2125,11 +2125,11 @@ BEGIN_CLASS(AIVolumeJunction)
 
 		ADD_STRINGPROP_FLAG(VolumeWestAction1,				"",			PF_GROUP(5)|PF_STATICLIST) \
 		ADD_REALPROP_FLAG(VolumeWestAction1Chance,			1.0f,		PF_GROUP(5)) \
-		ADD_STRINGPROP_FLAG(VolumeWestAction2,				"",	,		PF_GROUP(5)|PF_STATICLIST) \
+		ADD_STRINGPROP_FLAG(VolumeWestAction2,				"",			PF_GROUP(5)|PF_STATICLIST) \
 		ADD_REALPROP_FLAG(VolumeWestAction2Chance,			0.0f,		PF_GROUP(5)) \
-		ADD_STRINGPROP_FLAG(VolumeWestAction3,				"",	,		PF_GROUP(5)|PF_STATICLIST) \
+		ADD_STRINGPROP_FLAG(VolumeWestAction3,				"",			PF_GROUP(5)|PF_STATICLIST) \
 		ADD_REALPROP_FLAG(VolumeWestAction3Chance,			0.0f,		PF_GROUP(5)) \
-		ADD_STRINGPROP_FLAG(VolumeWestAction4,				"",	,		PF_GROUP(5)|PF_STATICLIST) \
+		ADD_STRINGPROP_FLAG(VolumeWestAction4,				"",			PF_GROUP(5)|PF_STATICLIST) \
 		ADD_REALPROP_FLAG(VolumeWestAction4Chance,			0.0f,		PF_GROUP(5)) \
 
 END_CLASS_DEFAULT_FLAGS_PLUGIN(AIVolumeJunction, AIVolume, NULL, NULL, CF_CLASSONLY, AIVolumeJunctionPlugin)
