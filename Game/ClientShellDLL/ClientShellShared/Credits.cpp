@@ -818,7 +818,7 @@ void CCredits::Update()
 
 	if (m_bClearScreen)
 	{
-		g_pLTClient->ClearScreen(NULL, CLEARSCREEN_SCREEN);
+		g_pLTClient->ClearScreen(NULL, CLEARSCREEN_SCREEN, 0);
 	}
 
 

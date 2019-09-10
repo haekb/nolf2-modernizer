@@ -606,7 +606,7 @@ inline void CInterfaceMgr::ClearAllScreenBuffers()
 {
 	for (int i=0; i < 4; i++)
 	{
-        g_pLTClient->ClearScreen(LTNULL, CLEARSCREEN_SCREEN | CLEARSCREEN_RENDER);
+        g_pLTClient->ClearScreen(LTNULL, CLEARSCREEN_SCREEN | CLEARSCREEN_RENDER, 0);
         g_pLTClient->FlipScreen(0);
 	}
 }

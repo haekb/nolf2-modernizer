@@ -22,6 +22,7 @@
 #include "AutoMessage.h"
 #include "NetDefs.h"
 #include <vector>
+#include <algorithm>    // std::sort
 
 // ----------------------------------------------------------------------- //
 //

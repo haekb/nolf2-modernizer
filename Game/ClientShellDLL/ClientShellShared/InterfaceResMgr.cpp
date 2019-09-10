@@ -284,7 +284,7 @@ void CInterfaceResMgr::DrawMessage(const char *pString, uint8 nFontSize)
 	m_MsgDlg.Render();
 
 	g_pLTClient->EndOptimized2D();
-	g_pLTClient->End3D();
+	g_pLTClient->End3D(END3D_CANDRAWCONSOLE);
 	g_pLTClient->FlipScreen(0);
 
 	m_MsgDlg.Show(LTFALSE);

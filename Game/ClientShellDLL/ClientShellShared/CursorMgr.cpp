@@ -261,7 +261,7 @@ void CCursorMgr::Update()
 												   CursorPos.x, CursorPos.y, kTrans);
 
 		g_pLTClient->EndOptimized2D();
-		g_pLTClient->End3D();
+		g_pLTClient->End3D(END3D_CANDRAWCONSOLE);
 		return;
 	}
 

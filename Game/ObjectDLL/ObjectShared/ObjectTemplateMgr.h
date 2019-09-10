@@ -3,7 +3,6 @@
 
 #ifndef __OBJECTTEMPLATEMGR_H__
 #define __OBJECTTEMPLATEMGR_H__
-
 #include <hash_map>
 
 class CObjectTemplateMgr
@@ -22,28 +21,40 @@ public:
 protected:
 	// The template dictionary  (Note the startling similarity to GenericPropList..)
 
-	// Template name comparison functor
-	struct SCompare_TemplateName 
-	{
-		bool operator ()(const std::string &cLHS, const std::string &cRHS) const {
-			return stricmp(cLHS.c_str(), cRHS.c_str()) == 0;
-		}
-	};
+	class ObjectTemplateMgr_Hasher {
+	public:
+		enum { bucket_size = 10 };
 
-	// Template name hash functor
-	struct SHash_TemplateName
-	{
-		size_t operator()(const std::string &sName) const { 
-			uint32 nHash = 0;
-			const char *pName = sName.begin();
-			for (; *pName; ++pName)
-				nHash = 13 * nHash + (toupper(*pName) - '@');
-			return nHash;
+		ObjectTemplateMgr_Hasher() {}
+
+		size_t operator()(const char* key) const {
+			return hash(key);
+		}
+
+		bool operator()(const char* left, const char* right) const {
+			return compare(left, right);
+		}
+	private:
+		// Was `equal_str_nocase`, need to left side.
+		bool compare(const char* s1, const char* s2) const
+		{
+			return stricmp(s1, s2) < 0;
+		}
+		// Was hash_str_nocase, still kinda is!
+		// Copied for stl-port's std::hash<const char*>.
+		// Added tolower function on the string.
+		unsigned long hash(const char* str) const
+		{
+			unsigned long hash = 0;
+			for (; *str; ++str)
+				hash = 5 * hash + tolower(*str);
+
+			return hash;
 		}
 	};
 
 	// The actual template dictionary type
-	typedef std::hash_map<std::string, ObjectCreateStruct, SHash_TemplateName, SCompare_TemplateName> TTemplateMap;
+	typedef stdext::hash_map<std::string, ObjectCreateStruct, ObjectTemplateMgr_Hasher> TTemplateMap;
 	TTemplateMap m_cTemplates;
 };
 

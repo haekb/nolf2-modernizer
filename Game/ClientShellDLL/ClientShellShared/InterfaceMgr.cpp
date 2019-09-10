@@ -782,16 +782,16 @@ LTBOOL CInterfaceMgr::PreUpdate()
 
 	if (m_bClearScreenAlways)
 	{
-        g_pLTClient->ClearScreen(LTNULL, CLEARSCREEN_SCREEN | CLEARSCREEN_RENDER);
+        g_pLTClient->ClearScreen(LTNULL, CLEARSCREEN_SCREEN | CLEARSCREEN_RENDER, 0);
 	}
 	else if (m_nClearScreenCount)
 	{
-        g_pLTClient->ClearScreen(LTNULL, CLEARSCREEN_SCREEN | CLEARSCREEN_RENDER);
+        g_pLTClient->ClearScreen(LTNULL, CLEARSCREEN_SCREEN | CLEARSCREEN_RENDER, 0);
 		m_nClearScreenCount--;
 	}
 	else
 	{
-        g_pLTClient->ClearScreen(LTNULL, CLEARSCREEN_RENDER);
+        g_pLTClient->ClearScreen(LTNULL, CLEARSCREEN_RENDER, 0);
 	}
 
     return LTTRUE;
@@ -926,7 +926,7 @@ LTBOOL CInterfaceMgr::Update()
 			g_pLTClient->StartOptimized2D();
 			m_MessageBox.Draw();
 			g_pLTClient->EndOptimized2D();
-			g_pLTClient->End3D();
+			g_pLTClient->End3D(END3D_CANDRAWCONSOLE);
 		}
 		m_CursorMgr.Update();
 	}
@@ -989,7 +989,7 @@ void CInterfaceMgr::UpdateScreenState()
 		m_InterfaceResMgr.DrawScreen();
 		UpdateScreenFade();
 		g_pLTClient->EndOptimized2D();
-		g_pLTClient->End3D();
+		g_pLTClient->End3D(END3D_CANDRAWCONSOLE);
 	}
 }
 
@@ -1224,7 +1224,7 @@ void CInterfaceMgr::UpdatePausedState()
 	}
 
     g_pLTClient->EndOptimized2D();
-    g_pLTClient->End3D();
+    g_pLTClient->End3D(END3D_CANDRAWCONSOLE);
 }
 
 // ----------------------------------------------------------------------- //
@@ -1273,7 +1273,7 @@ void CInterfaceMgr::UpdateSplashScreenState()
 	UpdateScreenFade();
 
     g_pLTClient->EndOptimized2D();
-    g_pLTClient->End3D();
+    g_pLTClient->End3D(END3D_CANDRAWCONSOLE);
 
     static LTBOOL bDidFadeOut = LTFALSE;
 
@@ -1425,7 +1425,7 @@ void CInterfaceMgr::UpdateDemoScreenState()
 	}
 
     g_pLTClient->EndOptimized2D();
-    g_pLTClient->End3D();
+    g_pLTClient->End3D(END3D_CANDRAWCONSOLE);
 }
 
 // ----------------------------------------------------------------------- //
@@ -3196,7 +3196,7 @@ LTBOOL CInterfaceMgr::Draw()
         g_pLTClient->StartOptimized2D();
         m_MessageBox.Draw();
         g_pLTClient->EndOptimized2D();
-        g_pLTClient->End3D();
+        g_pLTClient->End3D(END3D_CANDRAWCONSOLE);
 	}
 
 	m_CursorMgr.Update();
@@ -3695,7 +3695,7 @@ LTBOOL CInterfaceMgr::PreSplashScreenState(GameState eCurState)
     g_hSplash = g_pLTClient->CreateSurfaceFromBitmap(IM_SPLASH_SCREEN);
     if (!g_hSplash) return LTFALSE;
 
-    g_pLTClient->ClearScreen(LTNULL, CLEARSCREEN_SCREEN | CLEARSCREEN_RENDER);
+    g_pLTClient->ClearScreen(LTNULL, CLEARSCREEN_SCREEN | CLEARSCREEN_RENDER, 0);
 
 	// Fade into the splash screen...
 
@@ -3747,7 +3747,7 @@ LTBOOL CInterfaceMgr::PreMovieState(GameState eCurState)
 {
     if (eCurState == GS_MOVIE) return LTFALSE;
 
-	g_pLTClient->ClearScreen(LTNULL, CLEARSCREEN_SCREEN);
+	g_pLTClient->ClearScreen(LTNULL, CLEARSCREEN_SCREEN, 0);
 	m_bUseInterfaceCamera = LTTRUE;
 
 	m_nCurMovie = gMovieOrder[0];
@@ -4876,7 +4876,7 @@ void CInterfaceMgr::UpdateScreenFade(bool bUpdateAlpha /*=true*/)
 			// (and not set m_bScreenFade so we'll be called to
 			// clear the screen every frame until we fade back in)...
 
-	        g_pLTClient->ClearScreen(LTNULL, CLEARSCREEN_SCREEN);
+	        g_pLTClient->ClearScreen(LTNULL, CLEARSCREEN_SCREEN, 0);
 		}
 	}
 }
@@ -5719,7 +5719,7 @@ char* CInterfaceMgr::GetCurrentMovie()
 
 void CInterfaceMgr::NextDemoScreen()
 {
-    g_pLTClient->ClearScreen(LTNULL, CLEARSCREEN_SCREEN | CLEARSCREEN_RENDER);
+    g_pLTClient->ClearScreen(LTNULL, CLEARSCREEN_SCREEN | CLEARSCREEN_RENDER, 0);
 
 	if (g_hDemo)
 	{

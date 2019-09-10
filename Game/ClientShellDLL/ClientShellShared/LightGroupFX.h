@@ -6,7 +6,7 @@
 
 #pragma warning (disable : 4786)
 #include <map>
-#include <slist>
+#include <list>
 
 class CLightGroupFXMgr 
 {
@@ -37,7 +37,8 @@ private:
 		LTVector m_vAdj;
 	};
 
-	typedef std::slist<SWaitingAdj> TWaitingAdjList;
+
+	typedef std::list<SWaitingAdj> TWaitingAdjList;
 	TWaitingAdjList m_aWaitingAdjList;
 };
 

@@ -5,7 +5,7 @@
 #define __TEXTUREFXMGR_H__
 
 #include <map>
-#include <slist>
+#include <list>
 
 class CTextureFXMgr 
 {
@@ -40,7 +40,7 @@ private:
 		float  m_fVal;
 	};
 
-	typedef std::slist<SWaitingVar> TWaitingVarList;
+	typedef std::list<SWaitingVar> TWaitingVarList;
 	TWaitingVarList m_aWaitingVarList;
 };
 

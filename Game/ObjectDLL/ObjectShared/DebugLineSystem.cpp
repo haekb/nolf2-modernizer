@@ -120,7 +120,7 @@ namespace LineSystem
 			  pLineSystem(0) {}
 	};
 
-	typedef std::hash_map<std::string,SystemEntry> SystemMap;
+	typedef stdext::hash_map<std::string,SystemEntry> SystemMap;
 
 	SystemMap g_systems;
 

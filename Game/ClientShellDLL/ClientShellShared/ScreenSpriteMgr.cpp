@@ -522,7 +522,7 @@ void CScreenSpriteMgr::Update()
 		}
 
 		g_pLTClient->EndOptimized2D();
-		g_pLTClient->End3D();
+		g_pLTClient->End3D(END3D_CANDRAWCONSOLE);
 	}
 }
 

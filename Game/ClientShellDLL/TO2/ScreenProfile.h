@@ -18,7 +18,7 @@
 #include <vector>
 #include <string>
 
-const int MAX_PROFILE_LEN = 16;
+const int LT_MAX_PROFILE_LEN = 16;
 
 class CScreenProfile : public CBaseScreen
 {
@@ -41,8 +41,8 @@ private:
 	void	CreateProfileList();
 	void	UpdateProfileName();
 
-	char	m_szProfile[MAX_PROFILE_LEN];
-	char	m_szOldProfile[MAX_PROFILE_LEN];
+	char	m_szProfile[LT_MAX_PROFILE_LEN];
+	char	m_szOldProfile[LT_MAX_PROFILE_LEN];
 
 	CLTGUITextCtrl	*m_pCurrent;
 	CLTGUITextCtrl	*m_pLoad;

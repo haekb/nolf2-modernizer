@@ -718,7 +718,7 @@ LTBOOL CLoadingScreen::Update()
 		LTBOOL bRet = m_pRenderScreen->Render( hScreen );
 
 		g_pLTClient->EndOptimized2D();
-		g_pLTClient->End3D();
+		g_pLTClient->End3D(END3D_CANDRAWCONSOLE);
 		g_pLTClient->FlipScreen(0);
 
 		LeaveCriticalSection(&m_MissionUpdate);
@@ -726,7 +726,7 @@ LTBOOL CLoadingScreen::Update()
 		return bRet;
 	}
 
-	g_pLTClient->ClearScreen(LTNULL, CLEARSCREEN_SCREEN | CLEARSCREEN_RENDER);
+	g_pLTClient->ClearScreen(LTNULL, CLEARSCREEN_SCREEN | CLEARSCREEN_RENDER, 0);
 	// Mmm..  Triple dimensional...
 	g_pLTClient->Start3D();
 
@@ -770,7 +770,7 @@ LTBOOL CLoadingScreen::Update()
 
     g_pLTClient->EndOptimized2D();
 
-	g_pLTClient->End3D();
+	g_pLTClient->End3D(END3D_CANDRAWCONSOLE);
 
 
     g_pLTClient->FlipScreen(0);

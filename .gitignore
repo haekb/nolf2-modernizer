@@ -27,3 +27,5 @@ unsuccessfulbuild
 *.sbr
 *.idb
 *.bsc
+*.pch
+*.ilk

@@ -409,7 +409,7 @@ public:
 		//make sure we have room
 		if(GetNumProps() >= GetMaxProps())
 		{
-			static const knExtraReserveBuffer = 3;
+			static const int knExtraReserveBuffer = 3;
 
 			if(!ReserveProps(GetNumProps() + 1 + knExtraReserveBuffer, true))
 				return false;

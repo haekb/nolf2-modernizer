@@ -18,7 +18,7 @@
 #include "MissionMgr.h"
 #include "ResShared.h"
 #include "iserverdir.h"
-
+#include <algorithm>
 #include "GameClientShell.h"
 
 void JoinCallBack(LTBOOL bReturn, void *pData);

@@ -1683,9 +1683,9 @@ void CGameClientShell::UpdatePlaying()
 						( nEndTicks + ~g_nStartTicks );
 
 					// Make sure all the counters match up.
-					if((( uint32 )abs( nDeltaTimeB - nDeltaClientTime ) > g_nTolerance ) || 
-						(( uint32 )abs( nDeltaTicks - nDeltaClientTime ) > g_nTolerance ) ||
-						(( uint32 )abs( nDeltaTimeB - nDeltaTicks ) > g_nTolerance ))
+					if((( uint32 )abs( (long)nDeltaTimeB - (long)nDeltaClientTime ) > g_nTolerance ) ||
+						(( uint32 )abs( (long)nDeltaTicks - (long)nDeltaClientTime ) > g_nTolerance ) ||
+						(( uint32 )abs( (long)nDeltaTimeB - (long)nDeltaTicks ) > g_nTolerance ))
 					{
 						g_pLTClient->CPrint( "Speedhack kick" );
 						g_pLTClient->CPrint( "nDeltaTimeB %d", nDeltaTimeB );
@@ -4141,7 +4141,7 @@ void CGameClientShell::RenderCamera(bool bDrawInterface)
 	RenderDebugStrings();
 
     g_pLTClient->EndOptimized2D();
-    g_pLTClient->End3D();
+    g_pLTClient->End3D(END3D_CANDRAWCONSOLE);
 
 }
 
