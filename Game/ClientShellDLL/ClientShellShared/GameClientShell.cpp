@@ -1308,8 +1308,6 @@ void CGameClientShell::OnEngineTerm()
 	//Make sure that the FX Mgr isn't still holding on to our camera
 	m_ClientFXMgr.SetCamera(NULL);
 
-	m_ClientFXMgr.Term();
-
 	GetPlayerMgr()->Term();
 
 	m_Music.Term();

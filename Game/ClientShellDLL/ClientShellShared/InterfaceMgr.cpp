@@ -430,6 +430,7 @@ CInterfaceMgr::~CInterfaceMgr()
         g_pLTClient->DeleteSurface(m_hLetterBoxSurface);
 	}
 
+
     g_pInterfaceMgr = LTNULL;
 }
 
@@ -635,8 +636,6 @@ void CInterfaceMgr::Term()
 
 	//make sure that the interface manager isn't still holding onto a reference
 	m_InterfaceFXMgr.SetCamera(NULL);
-
-	m_InterfaceFXMgr.Term();
 
 	// ABM TODO term the subroutinemgr and ratingsmgr
 

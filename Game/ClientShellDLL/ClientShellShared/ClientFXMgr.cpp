@@ -354,12 +354,6 @@ bool CClientFXMgr::Init(ILTClient *pClientDE, LTBOOL bGlobal)
 
 void CClientFXMgr::Term()
 {
-	// Can't delete what doesn't exist! 
-	if (!g_pClientFXMgr)
-	{
-		return;
-	}
-
 	// Delete all the FX group instances
 
 	CLinkListNode<CLIENTFX_INSTANCE *> *pInstNode = m_collActiveGroupFX.GetHead();
@@ -374,6 +368,7 @@ void CClientFXMgr::Term()
 	}
 
 	m_collActiveGroupFX.RemoveAll();
+
 }
 
 //------------------------------------------------------------------
