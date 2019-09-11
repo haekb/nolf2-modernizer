@@ -16,6 +16,7 @@
 #include "InterfaceMgr.h"
 #include "CursorMgr.h"
 #include "ClientResShared.h"
+#include <SDL.h>
 
 VarTrack	g_vtCursorHack;
 
@@ -94,6 +95,8 @@ LTBOOL CCursorMgr::Init()
 
 	m_CursorCenter.x = 16;
 	m_CursorCenter.y = 16;
+
+
 
 	return LTTRUE;
 }
@@ -193,14 +196,29 @@ void CCursorMgr::UseCursor(LTBOOL bUseCursor, LTBOOL bLockCursorToCenter)
 		KillSprite();
 	}
 
+	// Jake: HACK
+	bool m_bOldMouseLook = false;
+
+
+
 	// Lock or don't lock the cursor to the center of the screen
 	if(bLockCursorToCenter)
 	{
-		g_pLTClient->RunConsoleString("CursorCenter 1");
+		if (m_bOldMouseLook) {
+			g_pLTClient->RunConsoleString("CursorCenter 1");
+		}
+		else {
+			SDL_SetRelativeMouseMode(SDL_TRUE);
+		}
 	}
 	else
-	{
-		g_pLTClient->RunConsoleString("CursorCenter 0");
+	{	
+		if (m_bOldMouseLook) {
+			g_pLTClient->RunConsoleString("CursorCenter 0");
+		}
+		else {
+			SDL_SetRelativeMouseMode(SDL_FALSE);
+		}
 	}
 }
 

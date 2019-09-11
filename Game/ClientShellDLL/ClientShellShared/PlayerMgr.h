@@ -480,6 +480,13 @@ protected:
 	float		m_fMultiAttachDeathCamTimer;
 
 	bool		m_bLerpAttachedCamera;
+
+	LTBOOL		m_bOldMouseLook; // If the user wants to use the old mouselook.
+	int 		m_iPreviousMouseX;
+	int 		m_iPreviousMouseY;
+	int			m_iCurrentMouseX;
+	int			m_iCurrentMouseY;
+	LTBOOL		m_bGetBaseMouse;
 };
 
 extern CPlayerMgr* g_pPlayerMgr;

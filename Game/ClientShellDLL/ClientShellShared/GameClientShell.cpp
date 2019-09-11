@@ -55,7 +55,7 @@
 #include "ScmdConsole.h"
 #include "ScmdConsoleDriver_CShell.h"
 #include "mmsystem.h"
-
+#include <SDL.h>
 #ifdef STRICT
 	WNDPROC g_pfnMainWndProc = NULL;
 #else
@@ -99,6 +99,10 @@ VarTrack			g_vtApplyWorldOffset;
 VarTrack			g_vtPTestMinFPS;
 VarTrack			g_vtPTestMaxFPS;
 
+// SDL Logging
+std::fstream 		g_SDLLogFile;
+SDL_Window*			g_SDLWindow = NULL;
+
 extern CCheatMgr*	g_pCheatMgr;
 extern LTVector		g_vPlayerCameraOffset;
 extern VarTrack		g_vtFOVXNormal;
@@ -119,12 +123,15 @@ void UnhookWindow();
 BOOL OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT msg);
 LRESULT CALLBACK HookedWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
+void SDLLog(void* userdata, int category, SDL_LogPriority priority, const char* message)
+{
+	// Open up SDL Log File
+	g_SDLLogFile.open("Debug.log", std::ios::out | std::ios::app);
 
+	g_SDLLogFile << message << "\n";
 
-
-
-
-
+	g_SDLLogFile.close();
+}
 
 void InitClientShell()
 {
@@ -144,6 +151,9 @@ void InitClientShell()
 	g_pLTBase = static_cast<ILTCSBase*>(g_pLTClient);
 
 	g_pPhysicsLT->SetStairHeight(DEFAULT_STAIRSTEP_HEIGHT);
+
+	// Quickfix in case this gets stuck on.
+	g_pLTClient->RunConsoleString("CursorCenter 0");
 }
 
 void TermClientShell()
@@ -583,6 +593,23 @@ CGameClientShell::CGameClientShell()
  
 	m_bRunningPerfTest = false;
 	m_pPerformanceTest = LTNULL;
+
+	// Start up SDL! -- Maybe trim down what we're initing here...
+	
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0)
+	{
+		const char* error = SDL_GetError();
+		__debugbreak();
+	}
+	
+	// Setup the logging functions
+	// SDL_LogSetOutputFunction(&SDLLog, NULL);
+
+	// Clear file
+	//g_SDLLogFile.open("Debug.log", STD ios::out | STD ios::trunc);
+	//g_SDLLogFile.close();
+
+	SDL_Log("-- Hello World, We're all set here. Enjoy the show!");
 }
 
 
@@ -862,9 +889,6 @@ void CGameClientShell::CSPrint(char* msg, ...)
 uint32 CGameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
 {
 	InitClientShell();
-
-	// For debugging Bison/Flex
-	freopen("stderr.log", "w", stderr);
 
 	//CWinUtil::DebugBreak();
 
@@ -4534,6 +4558,11 @@ BOOL SetWindowSize(uint32 nWidth, uint32 nHeight)
 	RECT screenRect;
 	GetWindowRect(GetDesktopWindow(), &screenRect);
 
+	if (g_SDLWindow)
+	{
+		SDL_SetWindowSize(g_SDLWindow, nWidth, nHeight);
+		SDL_SetWindowPosition(g_SDLWindow, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+	}
 
 	if(bClip)
 	{
@@ -4552,6 +4581,8 @@ BOOL SetWindowSize(uint32 nWidth, uint32 nHeight)
 					nWidth, nHeight,SWP_FRAMECHANGED);
 		ShowWindow(g_hMainWnd, SW_NORMAL);
 	}
+
+
 
 	return TRUE;
 }
@@ -4593,6 +4624,15 @@ BOOL HookWindow()
 		return FALSE;
 	}
 
+	g_SDLWindow = SDL_CreateWindowFrom(g_hMainWnd);
+
+	if (g_SDLWindow) {
+		SDL_Log("Hooked window!");
+	}
+	else {
+		SDL_Log("Error hooking window: %s", SDL_GetError());
+	}
+
 	return TRUE;
 }
 
@@ -4611,6 +4651,12 @@ void UnhookWindow()
 		SetWindowLong(g_hMainWnd, GWL_WNDPROC, (LONG)g_pfnMainWndProc);
 		g_hMainWnd = 0;
 		g_pfnMainWndProc = NULL;
+	}
+
+	// Kill the window!
+	if (g_SDLWindow) {
+		SDL_DestroyWindow(g_SDLWindow);
+		g_SDLWindow = NULL;
 	}
 }
 

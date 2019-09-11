@@ -43,6 +43,7 @@
 #include "PlayerViewAttachmentMgr.h"
 #include "LTEulerAngles.h"
 #include "DoomsDayPieceFX.h"
+#include <SDL.h>
 
 CPlayerMgr* g_pPlayerMgr = NULL;
 
@@ -257,6 +258,15 @@ CPlayerMgr::CPlayerMgr()
 
 	m_fMultiplayerDeathCamMoveTimer = 0.0f;
 	m_fMultiAttachDeathCamTimer = 0.0f;
+
+	m_bOldMouseLook = LTFALSE;
+	m_iPreviousMouseX = 0;
+	m_iPreviousMouseY = 0;
+	m_iCurrentMouseX = 0;
+	m_iCurrentMouseY = 0;
+
+	// Get a reference for currentMouseX/Y!
+	m_bGetBaseMouse = LTTRUE;
 }
 
 CPlayerMgr::~CPlayerMgr()
@@ -3667,7 +3677,41 @@ void CPlayerMgr::CalculateCameraRotation()
 	// Get axis offsets...
 
 	float offsets[3];
-    g_pLTClient->GetAxisOffsets(offsets);
+
+	if (!m_bOldMouseLook)
+	{
+		int deltaX, deltaY;
+
+		SDL_PumpEvents();
+
+		// Firstly, we need a point of reference.
+		// This conditional is here, in case we need to reset the mouse.
+		if (m_bGetBaseMouse)
+		{
+			SDL_GetMouseState(&m_iCurrentMouseX, &m_iCurrentMouseY);
+			m_bGetBaseMouse = LTFALSE;
+		}
+
+		SDL_GetRelativeMouseState(&deltaX, &deltaY);
+
+		m_iCurrentMouseX += deltaX;
+		m_iCurrentMouseY += deltaY;
+
+		// TODO: Clean up, Code is from GameSettings.
+		float nMouseSensitivity = GetConsoleFloat("MouseSensitivity", 1.0f);
+		float nScale = 0.00125f + ((float)nMouseSensitivity * 0.001125f);
+
+		offsets[0] = (float)(m_iCurrentMouseX - m_iPreviousMouseX) * nScale;
+		offsets[1] = (float)(m_iCurrentMouseY - m_iPreviousMouseY) * nScale;
+
+		m_iPreviousMouseX = m_iCurrentMouseX;
+		m_iPreviousMouseY = m_iCurrentMouseY;
+	}
+	else
+	{
+		g_pLTClient->GetAxisOffsets(offsets);
+	}
+
 
 	if (m_bRestoreOrientation)
 	{
