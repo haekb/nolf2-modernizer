@@ -1081,6 +1081,11 @@ bool CButeMgr::Save(const char* szNewFileName)
 
 	char buf[4096];
 
+	// Jake: Fix ban list
+	if (!m_sAttributeFilename.GetBuffer()) {
+		m_sAttributeFilename = "";
+	}
+
 #if _MSC_VER >= 1300
 	STD ifstream is(m_sAttributeFilename, STD ios::binary);
 #else

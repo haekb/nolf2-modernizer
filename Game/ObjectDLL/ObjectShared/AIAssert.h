@@ -52,7 +52,7 @@ extern CVarTrack g_vtMuteAIAssertsVar;
 #endif
 
 
-#ifndef _FINAL
+#if  !defined(_FINAL) && !defined(_NO_AI_ASSERT)
 
 	void AIAssert(long nLine, char const* szFile, char const* szExp, HOBJECT hAI, char const* szDesc, ... );
 

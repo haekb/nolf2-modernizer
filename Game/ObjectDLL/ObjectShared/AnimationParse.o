@@ -701,7 +701,8 @@ yyparse(YYPARSE_PARAM)
 
 				/*  routines				*/
 
-
+/* Jake: Initalize with a null terminated string, because it keeps crashing! */
+  yyval.szString[0] = '\0';
 
   int yylen;
 

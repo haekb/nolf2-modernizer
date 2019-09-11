@@ -293,6 +293,10 @@ static inline float DistSqToAABB( const LTVector& pos, const LTVector& min, cons
 // update which subvolumes are visible and setup LOD
 bool CScatterFX::UpdateSubVolumes( void )
 {
+	if (activeSubVolumes.size() == 0) {
+		return true;
+	}
+
 	// make sure there are no active subvolumes if scatter isn't enabled
 	if( !m_bEnabled )
 	{
