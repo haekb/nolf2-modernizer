@@ -9,15 +9,6 @@
       <UniqueIdentifier>{b4fb0f3f-325a-4644-96ae-8f83d6d2a80c}</UniqueIdentifier>
       <Extensions>h;hpp</Extensions>
     </Filter>
-    <Filter Include="libs_debug">
-      <UniqueIdentifier>{6f74680e-eb8c-4ee9-b32e-fb43eb3ff9c3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="libs_release">
-      <UniqueIdentifier>{66a33459-f041-4098-92de-1f1989e2b85c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="libs_final">
-      <UniqueIdentifier>{3303212f-3212-42a4-99d4-f29360aba2ce}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GlobalsInit.cpp">
@@ -49,79 +40,5 @@
     <ClInclude Include="..\..\Shared\TO2\TO2VersionMgr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="..\..\built\Debug\ObjectDll\ObjectShared\ObjectShared.lib">
-      <Filter>libs_debug</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Debug\ButeMgr\ButeMgr.lib">
-      <Filter>libs_debug</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Debug\MFCStub\MFCStub.lib">
-      <Filter>libs_debug</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Debug\CryptMgr\cryptmgr.lib">
-      <Filter>libs_debug</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Debug\Lib_StdLith\Lib_StdLith.lib">
-      <Filter>libs_debug</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Debug\Lib_Lith\Lib_Lith.lib">
-      <Filter>libs_debug</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Debug\RegMgr\regmgr.lib">
-      <Filter>libs_debug</Filter>
-    </Library>
-    <Library Include="..\..\libs\ServerDir\debug\ServerDir.lib">
-      <Filter>libs_debug</Filter>
-    </Library>
-    <Library Include="..\..\built\Release\ObjectDll\ObjectShared\ObjectShared.lib">
-      <Filter>libs_release</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Release\ButeMgr\ButeMgr.lib">
-      <Filter>libs_release</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Release\MFCStub\MFCStub.lib">
-      <Filter>libs_release</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Release\CryptMgr\cryptmgr.lib">
-      <Filter>libs_release</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Release\Lib_StdLith\Lib_StdLith.lib">
-      <Filter>libs_release</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Release\Lib_Lith\Lib_Lith.lib">
-      <Filter>libs_release</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Release\RegMgr\regmgr.lib">
-      <Filter>libs_release</Filter>
-    </Library>
-    <Library Include="..\..\libs\ServerDir\release\ServerDir.lib">
-      <Filter>libs_release</Filter>
-    </Library>
-    <Library Include="..\..\built\Final\ObjectDll\ObjectShared\ObjectShared.lib">
-      <Filter>libs_final</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Final\ButeMgr\ButeMgr.lib">
-      <Filter>libs_final</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Final\MFCStub\MFCStub.lib">
-      <Filter>libs_final</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Final\CryptMgr\cryptmgr.lib">
-      <Filter>libs_final</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Final\Lib_StdLith\Lib_StdLith.lib">
-      <Filter>libs_final</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Final\Lib_Lith\Lib_Lith.lib">
-      <Filter>libs_final</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Final\RegMgr\regmgr.lib">
-      <Filter>libs_final</Filter>
-    </Library>
-    <Library Include="..\..\libs\ServerDir\final\ServerDir.lib">
-      <Filter>libs_final</Filter>
-    </Library>
   </ItemGroup>
 </Project>
