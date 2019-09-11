@@ -29,3 +29,23 @@ unsuccessfulbuild
 *.bsc
 *.pch
 *.ilk
+*.exp
+lex.yy.c
+# Some specific libs, we don't need 'em!
+CShell.lib
+ltguimgr.lib
+butemgr.lib
+cryptmgr.lib
+lib_lith.lib
+mfcstub.lib
+regmgr.lib
+object.lib
+clientfx.lib
+ClientShellShared.lib
+ObjectShared.lib
+# Dlls
+Cshell.dll
+Cres.dll
+Sres.dll
+ClientFX.fxd
+Object.lto
