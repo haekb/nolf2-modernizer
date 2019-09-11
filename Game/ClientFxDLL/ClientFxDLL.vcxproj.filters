@@ -9,15 +9,6 @@
       <UniqueIdentifier>{ac648210-5a20-4d3e-ab2d-848e32684fd7}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl</Extensions>
     </Filter>
-    <Filter Include="libs_debug">
-      <UniqueIdentifier>{0a85a291-90b1-456a-b0b2-54300e6693d4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="libs_release">
-      <UniqueIdentifier>{b64fd364-df21-4c8e-81a6-92e25a42f82d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="libs_final">
-      <UniqueIdentifier>{857136eb-1755-42fe-bcc4-1a8a204421d8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67200499-2113-4606-bea3-806d702f74a7}</UniqueIdentifier>
       <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
@@ -188,61 +179,5 @@
     <ClInclude Include="swaplist.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="..\..\libs\built\Debug\ButeMgr\ButeMgr.lib">
-      <Filter>libs_debug</Filter>
-    </Library>
-    <Library Include="..\..\libs\built\Debug\MFCStub\MFCStub.lib">
-      <Filter>libs_debug</Filter>
-    </Library>
-    <Library Include="..\..\libs\built\Debug\CryptMgr\cryptmgr.lib">
-      <Filter>libs_debug</Filter>
-    </Library>
-    <Library Include="..\..\libs\built\Debug\Lib_StdLith\Lib_StdLith.lib">
-      <Filter>libs_debug</Filter>
-    </Library>
-    <Library Include="..\..\libs\built\Debug\Lib_Lith\Lib_Lith.lib">
-      <Filter>libs_debug</Filter>
-    </Library>
-    <Library Include="..\built\Debug\libs\LTGuiMgr\ltguimgr.lib">
-      <Filter>libs_debug</Filter>
-    </Library>
-    <Library Include="..\..\libs\built\Release\ButeMgr\ButeMgr.lib">
-      <Filter>libs_release</Filter>
-    </Library>
-    <Library Include="..\..\libs\built\Release\MFCStub\MFCStub.lib">
-      <Filter>libs_release</Filter>
-    </Library>
-    <Library Include="..\..\libs\built\Release\CryptMgr\cryptmgr.lib">
-      <Filter>libs_release</Filter>
-    </Library>
-    <Library Include="..\..\libs\built\Release\Lib_StdLith\Lib_StdLith.lib">
-      <Filter>libs_release</Filter>
-    </Library>
-    <Library Include="..\..\libs\built\Release\Lib_Lith\Lib_Lith.lib">
-      <Filter>libs_release</Filter>
-    </Library>
-    <Library Include="..\built\Release\libs\LTGuiMgr\ltguimgr.lib">
-      <Filter>libs_release</Filter>
-    </Library>
-    <Library Include="..\..\libs\built\Final\ButeMgr\ButeMgr.lib">
-      <Filter>libs_final</Filter>
-    </Library>
-    <Library Include="..\..\libs\built\Final\MFCStub\MFCStub.lib">
-      <Filter>libs_final</Filter>
-    </Library>
-    <Library Include="..\..\libs\built\Final\CryptMgr\cryptmgr.lib">
-      <Filter>libs_final</Filter>
-    </Library>
-    <Library Include="..\..\libs\built\Final\Lib_StdLith\Lib_StdLith.lib">
-      <Filter>libs_final</Filter>
-    </Library>
-    <Library Include="..\..\libs\built\Final\Lib_Lith\Lib_Lith.lib">
-      <Filter>libs_final</Filter>
-    </Library>
-    <Library Include="..\built\Final\libs\LTGuiMgr\ltguimgr.lib">
-      <Filter>libs_final</Filter>
-    </Library>
   </ItemGroup>
 </Project>
