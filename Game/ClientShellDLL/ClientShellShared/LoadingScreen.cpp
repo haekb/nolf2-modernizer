@@ -684,8 +684,8 @@ int CLoadingScreen::RunThread()
 		// Draw the frame..
 		Update();
 		
-		// Make sure we're not running faster than 10fps so stuff can still happen in the background
-		Sleep(100);
+		// Give room for other threads if needed.
+		Sleep(0);
 	}
 	return 0;
 }
