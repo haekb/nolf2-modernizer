@@ -43,6 +43,8 @@ object.lib
 clientfx.lib
 ClientShellShared.lib
 ObjectShared.lib
+lib_stdlith.lib
+regmgr32.lib
 # Dlls
 Cshell.dll
 Cres.dll
