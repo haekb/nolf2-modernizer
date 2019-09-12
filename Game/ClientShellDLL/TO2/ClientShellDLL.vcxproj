@@ -199,6 +199,7 @@ copy $(TargetPath) $(GAME_REZ_DIR) </Command>
       <ProgramDataBaseFileName>.\..\..\Built\Debug\ClientShellDll\TO2\</ProgramDataBaseFileName>
       <AdditionalOptions> /Zm1000 </AdditionalOptions>
       <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
     </ClCompile>
     <Midl>
       <SuppressStartupBanner>true</SuppressStartupBanner>

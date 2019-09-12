@@ -144,6 +144,7 @@ copy $(TargetPath) $(GAME_REZ_DIR) </Command>
       <ObjectFileName>.\..\built\debug\ClientFxDll\</ObjectFileName>
       <ProgramDataBaseFileName>.\..\built\debug\ClientFxDll\</ProgramDataBaseFileName>
       <AdditionalOptions> /Zm1000 </AdditionalOptions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
     </ClCompile>
     <Midl>
       <SuppressStartupBanner>true</SuppressStartupBanner>
