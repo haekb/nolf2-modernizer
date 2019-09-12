@@ -51,8 +51,10 @@ __STL_END_NAMESPACE
 #  include <stdexcept>
 # endif
 
+#ifndef STRIPPED_OUT
 #ifndef __SGI_STL_STRING
 #  include <stl_string>
+#endif
 #endif
 
 __STL_BEGIN_NAMESPACE

@@ -48,11 +48,11 @@
 #  include <stl/_uninitialized.h>
 # endif
 
-//#ifndef STRIPPED_OUT
+#ifndef STRIPPED_OUT
 # ifndef __STL_RANGE_ERRORS_H
 #  include <stl/_range_errors.h>
 # endif
-//#endif
+#endif
 
 #  undef  vector
 #  define vector __WORKAROUND_DBG_RENAME(vector)

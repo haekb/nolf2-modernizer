@@ -483,8 +483,14 @@ void CSnowFXAirspace::Init( CSnowFX* parent, const LTVector& pos, const LTVector
 
 	// get the particle blockers for this airspace
 	m_Blockers.clear();
-	m_Parent->m_pClientDE->GetParticleBlockersInAABB( pos, dims, m_Blockers );
 
+#undef std
+#define std STLPORT
+	std::vector<uint32> indices;
+
+	m_Parent->m_pClientDE->GetParticleBlockersInAABB( pos, dims, indices);
+#undef std
+#define std std
 	UpdateDensity();
 }
 
@@ -594,7 +600,7 @@ bool CSnowFXAirspace::Activate( float detail )
 	}
 
 	// adjust minimum elevation array by blockers
-	for( std::vector<uint32>::iterator it = m_Blockers.begin(); it != m_Blockers.end(); it++ )
+	for( STLPORT::vector<uint32>::iterator it = m_Blockers.begin(); it != m_Blockers.end(); it++ )
 	{
 		float t;
 		LTPlane blockerPlane;

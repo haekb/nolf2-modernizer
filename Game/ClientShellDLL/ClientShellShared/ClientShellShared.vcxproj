@@ -134,7 +134,7 @@
       <ObjectFileName>.\..\..\Built\Debug\ClientShellDLL\ClientShellShared\</ObjectFileName>
       <ProgramDataBaseFileName>.\..\..\Built\Debug\ClientShellDLL\ClientShellShared\</ProgramDataBaseFileName>
       <AdditionalOptions> /Zm1000 </AdditionalOptions>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
     </ClCompile>
     <ResourceCompile>
