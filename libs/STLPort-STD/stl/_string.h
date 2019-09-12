@@ -27,8 +27,10 @@
 #  include <cctype>
 # endif
 
+#ifndef STRIPPED_OUT
 #ifndef __SGI_STL_STRING_FWD_H
 #  include <stl/_string_fwd.h>
+#endif
 #endif
 
 #ifndef __SGI_STL_INTERNAL_FUNCTION_H

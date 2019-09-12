@@ -27,7 +27,9 @@
 #ifndef __SGI_STL_INTERNAL_ALLOC_H
 #define __SGI_STL_INTERNAL_ALLOC_H
 
-#define __STL_NO_EXTENSIONS
+#undef __allocator
+
+//#define __STL_NO_EXTENSIONS
 
 // This implements some standard node allocators.  These are
 // NOT the same as the allocators in the C++ draft standard or in
@@ -119,8 +121,10 @@
 
 __STL_BEGIN_NAMESPACE
 
-//template <class _Tp, class _Alloc>
-//struct __allocator;
+#ifndef STRIPPED_OUT
+template <class _Tp, class _Alloc>
+struct __allocator;
+#endif
 
 // Malloc-based allocator.  Typically slower than default alloc below.
 // Typically thread-safe and more storage efficient.

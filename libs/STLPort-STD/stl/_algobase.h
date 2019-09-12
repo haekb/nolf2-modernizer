@@ -39,11 +39,11 @@
 #  include <cstddef>
 # endif
 
-#ifndef STRIPPED_OUT
+//#ifndef STRIPPED_OUT
 #ifndef __STLPORT_CSTRING
 # include <cstring>
 #endif
-#endif
+//#endif
 
 #ifndef __STLPORT_CLIMITS
 # include <climits>
