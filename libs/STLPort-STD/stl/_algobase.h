@@ -39,8 +39,10 @@
 #  include <cstddef>
 # endif
 
+#ifndef STRIPPED_OUT
 #ifndef __STLPORT_CSTRING
 # include <cstring>
+#endif
 #endif
 
 #ifndef __STLPORT_CLIMITS

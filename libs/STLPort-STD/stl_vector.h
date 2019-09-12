@@ -23,6 +23,9 @@
 #ifndef __SGI_STL_VECTOR
 #define __SGI_STL_VECTOR
 
+// Stripped down version to only work with NOLF2's iltclient.h
+#define STRIPPED_OUT
+
 # ifndef __STL_OUTERMOST_HEADER_ID
 #  define __STL_OUTERMOST_HEADER_ID 0x77
 #  include <stl/_prolog.h>

@@ -27,6 +27,8 @@
  *   You should not attempt to use it directly.
  */
 
+
+
 #ifndef __SGI_STL_INTERNAL_VECTOR_H
 #define __SGI_STL_INTERNAL_VECTOR_H
 
@@ -46,9 +48,11 @@
 #  include <stl/_uninitialized.h>
 # endif
 
+#ifndef STRIPPED_OUT
 # ifndef __STL_RANGE_ERRORS_H
 #  include <stl/_range_errors.h>
 # endif
+#endif
 
 #  undef  vector
 #  define vector __WORKAROUND_DBG_RENAME(vector)
@@ -319,11 +323,13 @@ public:
       _M_insert_overflow(_M_finish, _Tp());
   }
 
+//#ifndef STRIPPED_OUT
   void swap(vector<_Tp, _Alloc>& __x) {
     __STLPORT_STD::swap(_M_start, __x._M_start);
     __STLPORT_STD::swap(_M_finish, __x._M_finish);
     __STLPORT_STD::swap(_M_end_of_storage._M_data, __x._M_end_of_storage._M_data);
   }
+//#endif
 
   iterator insert(iterator __position, const _Tp& __x) {
     size_type __n = __position - begin();
@@ -566,7 +572,7 @@ __STL_END_NAMESPACE
 # if !defined (__STL_LINK_TIME_INSTANTIATION)
 #  include <stl/_vector.c>
 # endif
-
+#ifndef STRIPPED_OUT
 #ifndef __SGI_STL_INTERNAL_BVECTOR_H
 # include <stl/_bvector.h>
 #endif
@@ -578,7 +584,7 @@ __STL_END_NAMESPACE
 # if defined (__STL_USE_WRAPPER_FOR_ALLOC_PARAM)
 #  include <stl/wrappers/_vector.h>
 # endif
-
+#endif
 #endif /* __SGI_STL_VECTOR_H */
 
 // Local Variables:
