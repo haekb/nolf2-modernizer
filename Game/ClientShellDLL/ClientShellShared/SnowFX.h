@@ -14,7 +14,7 @@
 #define __SNOW_FX_H__
 
 #include "SpecialFX.h"
-
+#include <stl_vector.h>
 
 #define SNOWFX_AIRSPACEDIMS			512.0f		// maximum length of side of a snow airspace
 #define SNOWFX_LODPERCENT			0.8f		// percentage of max draw dist to begin to fade an airspace at (range is 0 to 1)
@@ -87,7 +87,7 @@ private:
 	LTVector m_Dims;						// dimensions of this airspace
 	LTVector m_MinBounds;					// min bounds for this airspace
 	LTVector m_MaxBounds;					// max bounds for this airspace
-	std::vector<uint32> m_Blockers;			// indices of particle blockers that affect this airspace
+	STLPORT::vector<uint32> m_Blockers;			// indices of particle blockers that affect this airspace
 
 	// the following members are only valid for active airspaces
 	CSnowFXParticle* m_Particles;			// array of particles

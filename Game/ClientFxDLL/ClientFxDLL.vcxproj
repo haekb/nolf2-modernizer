@@ -134,7 +134,7 @@ copy $(TargetPath) $(GAME_REZ_DIR) </Command>
       <Optimization>Disabled</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>..\..\libs\STLPORT-4.0\STLPORT_NO;..\shared;..\..\Engine\sdk\inc;..\..\libs\mfcstub;..\..\libs\stdlith;..\..\libs\butemgr;..\..\libs\cryptmgr;..\..\libs\lith;..\libs\ltguimgr;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\libs\STLPORT-4.0\STLPORT_NO;..\shared;..\..\Engine\sdk\inc;..\..\libs\mfcstub;..\..\libs\stdlith;..\..\libs\butemgr;..\..\libs\cryptmgr;..\..\libs\lith;..\libs\ltguimgr;..\..\libs\STLPORT-STD\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WIN32;_WINDOWS;NOPS2;MEMTRACK_CLIENTFX;_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\built\debug\ClientFxDll\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
