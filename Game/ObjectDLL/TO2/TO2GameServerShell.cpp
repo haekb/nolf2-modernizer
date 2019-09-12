@@ -132,7 +132,9 @@ LTRESULT CTO2GameServerShell::OnServerInitialized()
 	startupInfo.m_sGameSpySecretKey += "6";
 	startupInfo.m_sGameSpySecretKey += "x";
 	cMsg.Writeuint32(( uint32 )&startupInfo );
-	pServerDir->SetStartupInfo( *cMsg.Read( ));
+
+	// JAKE: Causes OOM error!
+	//pServerDir->SetStartupInfo( *cMsg.Read( ));
 
 	return nResult;
 }
