@@ -483,14 +483,8 @@ void CSnowFXAirspace::Init( CSnowFX* parent, const LTVector& pos, const LTVector
 
 	// get the particle blockers for this airspace
 	m_Blockers.clear();
+	m_Parent->m_pClientDE->GetParticleBlockersInAABB( pos, dims, m_Blockers);
 
-#undef std
-#define std STLPORT
-	std::vector<uint32> indices;
-
-	m_Parent->m_pClientDE->GetParticleBlockersInAABB( pos, dims, indices);
-#undef std
-#define std std
 	UpdateDensity();
 }
 
