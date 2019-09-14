@@ -25,7 +25,9 @@
 #include "CMoveMgr.h"
 #include "MsgIds.h"
 #include "VersionMgr.h"
+#include "SDL.h"
 
+extern SDL_Window* g_SDLWindow;
 extern CGameClientShell* g_pGameClientShell;
 
 #include <Direct.h>			// For _rmdir
@@ -1068,7 +1070,11 @@ void CUserProfile::ApplyDisplay()
 		{
 			//switch renderers
 			g_pInterfaceResMgr->DrawMessage(IDS_REINITIALIZING_RENDERER);
+			SDL_SetWindowSize(g_SDLWindow, pMode->m_Width, pMode->m_Height);
+			SDL_SetWindowPosition(g_SDLWindow, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+
 			g_pLTClient->SetRenderMode(pMode);
+			
 			g_pInterfaceMgr->ScreenDimsChanged();
 
 			//update the game camera to have the new dimensions
