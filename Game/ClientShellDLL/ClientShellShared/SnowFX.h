@@ -70,7 +70,7 @@ public:
 	bool Activate( float detail );
 
 	// this airspace should stop generating particles
-	bool Deactivate();
+	bool Deactivate(bool removeMe = true);
 
 	// update the density of this airspace
 	bool UpdateDensity();

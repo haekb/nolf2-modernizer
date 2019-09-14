@@ -308,10 +308,14 @@ bool CSnowFX::UpdateAirspaces( void )
 	if( !m_bEnabled )
 	{
 		std::set<CSnowFXAirspace*>::iterator it = activeAirspaces.begin();
-		for( ; it != activeAirspaces.end(); it++ )
+
+		while (it != activeAirspaces.end())
 		{
-			(*it)->Deactivate();
+			(*it)->Deactivate(false);
+			it++;
 		}
+
+		activeAirspaces.clear();
 
 		return true;
 	}
@@ -325,28 +329,34 @@ bool CSnowFX::UpdateAirspaces( void )
 	float cameraDistSq = DistSqToAABB( camPos, m_vMinBounds, m_vMaxBounds );
 
 	// check to see if all airspaces should be inactive
-	if( cameraDistSq > m_fMaxDrawDistSq )
+	if( activeAirspaces.size() > 0 &&  cameraDistSq > m_fMaxDrawDistSq )
 	{
 		// camera is farther away than the max draw distance for this volume, so kill all the airspaces
 		std::set<CSnowFXAirspace*>::iterator it = activeAirspaces.begin();
-		for( ; it != activeAirspaces.end(); it++ )
+
+		while (it != activeAirspaces.end())
 		{
-			(*it)->Deactivate();
+			(*it)->Deactivate(false);
+			it++;
 		}
+
+		activeAirspaces.clear();
 
 		// don't test any of the airspaces directly
 		return true;
 	}
 
 	// activate airspaces with positive LOD
-	for( uint32 i = 0; i < m_nNumAirspaces; i++ )
+	for (uint32 i = 0; i < m_nNumAirspaces; i++)
 	{
-		float curLOD = m_pAirspaces[i].CalculateLOD( camPos );
+		float curLOD = m_pAirspaces[i].CalculateLOD(camPos);
 
-		if( curLOD > 0.0f )
-			m_pAirspaces[i].Activate( curLOD );
-		else if( m_pAirspaces[i].IsActive() )
+		if (curLOD > 0.0f) {
+			m_pAirspaces[i].Activate(curLOD);
+		}
+		else if (m_pAirspaces[i].IsActive()) {
 			m_pAirspaces[i].Deactivate();
+		}
 	}
 
 	return true;
@@ -681,7 +691,7 @@ bool CSnowFXAirspace::Activate( float detail )
 }
 
 
-bool CSnowFXAirspace::Deactivate( void )
+bool CSnowFXAirspace::Deactivate( bool removeMe )
 {
 	if( !m_Active )
 		return true;
@@ -698,7 +708,10 @@ bool CSnowFXAirspace::Deactivate( void )
 
 	m_Active = false;
 
-	m_Parent->activeAirspaces.erase( this );
+	// In some cases we don't want to remove ourselves from the list here. But in most cases, we do!
+	if (removeMe) {
+		m_Parent->activeAirspaces.erase( this );
+	}
 
 	return true;
 }
