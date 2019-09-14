@@ -45,6 +45,8 @@
 #include "DoomsDayPieceFX.h"
 #include <SDL.h>
 
+extern SDL_Window* g_SDLWindow;
+
 CPlayerMgr* g_pPlayerMgr = NULL;
 
 #define MAX_SHAKE_AMOUNT		10.0f
@@ -3678,11 +3680,12 @@ void CPlayerMgr::CalculateCameraRotation()
 
 	float offsets[3];
 
+
 	if (!m_bOldMouseLook)
 	{
 		int deltaX, deltaY;
 
-		SDL_PumpEvents();
+		//SDL_PumpEvents();
 
 		// Firstly, we need a point of reference.
 		// This conditional is here, in case we need to reset the mouse.
@@ -3691,6 +3694,7 @@ void CPlayerMgr::CalculateCameraRotation()
 			SDL_GetMouseState(&m_iCurrentMouseX, &m_iCurrentMouseY);
 			m_bGetBaseMouse = LTFALSE;
 		}
+
 
 		SDL_GetRelativeMouseState(&deltaX, &deltaY);
 

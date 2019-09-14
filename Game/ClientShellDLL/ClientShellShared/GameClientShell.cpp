@@ -593,23 +593,6 @@ CGameClientShell::CGameClientShell()
  
 	m_bRunningPerfTest = false;
 	m_pPerformanceTest = LTNULL;
-
-	// Start up SDL! -- Maybe trim down what we're initing here...
-	
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0)
-	{
-		const char* error = SDL_GetError();
-		__debugbreak();
-	}
-	
-	// Setup the logging functions
-	// SDL_LogSetOutputFunction(&SDLLog, NULL);
-
-	// Clear file
-	//g_SDLLogFile.open("Debug.log", STD ios::out | STD ios::trunc);
-	//g_SDLLogFile.close();
-
-	SDL_Log("-- Hello World, We're all set here. Enjoy the show!");
 }
 
 
@@ -893,6 +876,23 @@ uint32 CGameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
 	//CWinUtil::DebugBreak();
 
 	*pAppGuid = GAMEGUID;
+
+	// Start up SDL! -- Maybe trim down what we're initing here...
+
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0)
+	{
+		const char* error = SDL_GetError();
+		__debugbreak();
+	}
+
+	// Setup the logging functions
+	SDL_LogSetOutputFunction(&SDLLog, NULL);
+
+	// Clear file
+	//g_SDLLogFile.open("Debug.log", STD ios::out | STD ios::trunc);
+	//g_SDLLogFile.close();
+
+	SDL_Log("-- Hello World, We're all set here. Enjoy the show!");
 
 
     char strTimeDiff[64];
@@ -4625,9 +4625,14 @@ BOOL HookWindow()
 	}
 
 	g_SDLWindow = SDL_CreateWindowFrom(g_hMainWnd);
-
+	
+	
 	if (g_SDLWindow) {
 		SDL_Log("Hooked window!");
+
+		// NOLF2 seems to dislike us using raw input, so just use mouse warping.
+		SDL_SetHint(SDL_HINT_MOUSE_RELATIVE_MODE_WARP, "1");
+
 	}
 	else {
 		SDL_Log("Error hooking window: %s", SDL_GetError());

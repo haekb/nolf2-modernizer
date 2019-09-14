@@ -355,7 +355,7 @@ bool CClientFXMgr::Init(ILTClient *pClientDE, LTBOOL bGlobal)
 void CClientFXMgr::Term()
 {
 	// Delete all the FX group instances
-
+	// FIXME: I crash when exiting from main menu :(
 	CLinkListNode<CLIENTFX_INSTANCE *> *pInstNode = m_collActiveGroupFX.GetHead();
 
 	while (pInstNode)

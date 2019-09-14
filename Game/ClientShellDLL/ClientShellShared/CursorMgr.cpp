@@ -208,7 +208,7 @@ void CCursorMgr::UseCursor(LTBOOL bUseCursor, LTBOOL bLockCursorToCenter)
 			g_pLTClient->RunConsoleString("CursorCenter 1");
 		}
 		else {
-			SDL_SetRelativeMouseMode(SDL_TRUE);
+			ASSERT(SDL_SetRelativeMouseMode(SDL_TRUE) == 0);
 		}
 	}
 	else
