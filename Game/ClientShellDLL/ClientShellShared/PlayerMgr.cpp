@@ -3727,7 +3727,7 @@ void CPlayerMgr::CalculateCameraRotation()
 
     float fYawDelta    = offsets[0] / fVal;
     float fPitchDelta  = offsets[1] / fVal;
-
+	/*
 	if (g_vtAdaptiveMouse.GetFloat() && fYawDelta != 0.0f)
 	{
 		float fMaxOff = g_vtAdaptiveMouseMaxOffset.GetFloat();
@@ -3736,6 +3736,7 @@ void CPlayerMgr::CalculateCameraRotation()
 
 		g_pLTClient->CPrint("Initial fYawDelta = %.6f", fYawDelta);
 
+		
 		if (fAbsYawDelta <= fMaxOff)
 		{
 			fVal = fAbsYawDelta / fMaxOff;
@@ -3744,8 +3745,9 @@ void CPlayerMgr::CalculateCameraRotation()
 
 			g_pLTClient->CPrint("Adjusted fYawDelta = %.6f", fYawDelta);
 		}
+		
 	}
-
+	*/
 	m_fYaw += fYawDelta;
 
 	// [kml] 12/26/00 Check varying degrees of strafe and look.

@@ -93,7 +93,7 @@
  * to _STL::. If you don't want this feature, or if it does not quite work for your
  * compiler, please define the following switch :
  */
-// # define __STL_DONT_REDEFINE_STD 1
+//#define __STL_DONT_REDEFINE_STD 1
 
 /* 
  * Edit relative path below (or put full path) to get native 
@@ -216,7 +216,7 @@
  * Otherwise this option is not recommended as it increases the size of your object files
  * and slows down compilation.
  */
-// # define __STL_WHOLE_NATIVE_STD
+//#define __STL_WHOLE_NATIVE_STD
 
 //==========================================================
 

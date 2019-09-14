@@ -134,7 +134,7 @@ copy $(TargetPath) $(GAME_REZ_DIR) </Command>
       <Optimization>Disabled</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>..\..\libs\STLPORT-4.0\STLPORT_NO;..\shared;..\..\Engine\sdk\inc;..\..\libs\mfcstub;..\..\libs\stdlith;..\..\libs\butemgr;..\..\libs\cryptmgr;..\..\libs\lith;..\libs\ltguimgr;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\libs\STLPORT-4.0\STLPORT_NO;..\shared;..\..\Engine\sdk\inc;..\..\libs\mfcstub;..\..\libs\stdlith;..\..\libs\butemgr;..\..\libs\cryptmgr;..\..\libs\lith;..\libs\ltguimgr;..\..\libs\STLPORT-STD\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WIN32;_WINDOWS;NOPS2;MEMTRACK_CLIENTFX;_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\built\debug\ClientFxDll\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -144,6 +144,7 @@ copy $(TargetPath) $(GAME_REZ_DIR) </Command>
       <ObjectFileName>.\..\built\debug\ClientFxDll\</ObjectFileName>
       <ProgramDataBaseFileName>.\..\built\debug\ClientFxDll\</ProgramDataBaseFileName>
       <AdditionalOptions> /Zm1000 </AdditionalOptions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
     </ClCompile>
     <Midl>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -168,7 +169,8 @@ copy $(TargetPath) $(GAME_REZ_DIR) </Command>
       <SubSystem>Windows</SubSystem>
       <OutputFile>..\built\debug\ClientFxDll\ClientFx.fxd</OutputFile>
       <ImportLibrary>.\..\built\debug\ClientFxDll\ClientFx.lib</ImportLibrary>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;ButeMgr.lib;cryptmgr.lib;Lib_Lith.lib;Lib_StdLith.lib;ltguimgr.lib;MFCStub.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\libs\built\Debug\ButeMgr;$(SolutionDir)..\libs\built\Debug\cryptmgr;$(SolutionDir)..\libs\built\Debug\Lib_Lith;$(SolutionDir)..\libs\built\Debug\Lib_StdLith;$(SolutionDir)..\libs\built\Debug\MFCStub;$(SolutionDir)\built\debug\libs\ltguimgr</AdditionalLibraryDirectories>
     </Link>
     <CustomBuildStep>
       <Command>
@@ -403,80 +405,6 @@ copy $(TargetPath) $(GAME_REZ_DIR) </Command>
     <ClInclude Include="spritesystemfx.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="swaplist.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="..\..\libs\built\Debug\ButeMgr\ButeMgr.lib">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </Library>
-    <Library Include="..\..\libs\built\Debug\CryptMgr\cryptmgr.lib">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </Library>
-    <Library Include="..\..\libs\built\Debug\Lib_Lith\Lib_Lith.lib">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </Library>
-    <Library Include="..\..\libs\built\Debug\Lib_StdLith\Lib_StdLith.lib">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </Library>
-    <Library Include="..\..\libs\built\Debug\MFCStub\MFCStub.lib">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </Library>
-    <Library Include="..\..\libs\built\Final\ButeMgr\ButeMgr.lib">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </Library>
-    <Library Include="..\..\libs\built\Final\CryptMgr\cryptmgr.lib">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </Library>
-    <Library Include="..\..\libs\built\Final\Lib_Lith\Lib_Lith.lib">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </Library>
-    <Library Include="..\..\libs\built\Final\Lib_StdLith\Lib_StdLith.lib">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </Library>
-    <Library Include="..\..\libs\built\Final\MFCStub\MFCStub.lib">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </Library>
-    <Library Include="..\..\libs\built\Release\ButeMgr\ButeMgr.lib">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </Library>
-    <Library Include="..\..\libs\built\Release\CryptMgr\cryptmgr.lib">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </Library>
-    <Library Include="..\..\libs\built\Release\Lib_Lith\Lib_Lith.lib">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </Library>
-    <Library Include="..\..\libs\built\Release\Lib_StdLith\Lib_StdLith.lib">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </Library>
-    <Library Include="..\..\libs\built\Release\MFCStub\MFCStub.lib">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </Library>
-    <Library Include="..\built\Debug\libs\LTGuiMgr\ltguimgr.lib">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </Library>
-    <Library Include="..\built\Final\libs\LTGuiMgr\ltguimgr.lib">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </Library>
-    <Library Include="..\built\Release\libs\LTGuiMgr\ltguimgr.lib">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </Library>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\libs\ButeMgr\ButeMgr.vcxproj">

@@ -1,0 +1,1 @@
+This is a slice from STLPort needed to communicate with the Lithtech.exe and all of the engine modules. 

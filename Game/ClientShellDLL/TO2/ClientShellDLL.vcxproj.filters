@@ -9,21 +9,6 @@
       <UniqueIdentifier>{024b8c6f-502d-48ba-aea1-92216c57126f}</UniqueIdentifier>
       <Extensions>*.h</Extensions>
     </Filter>
-    <Filter Include="libs_debug">
-      <UniqueIdentifier>{3323895d-d571-41fe-8ee0-ef71faedbe0d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="libs_release">
-      <UniqueIdentifier>{45bfbf8c-92aa-412d-9921-a0b5fa94a532}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="libs_final">
-      <UniqueIdentifier>{d1cc1ea7-e07d-4ac0-b8e5-3d7980bb1d3a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="libs_finaldemo">
-      <UniqueIdentifier>{97511d94-8199-4fc0-9b53-d4c4beda9d5a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="libs_debugfinaldemo">
-      <UniqueIdentifier>{378cbdfe-d75c-4aa7-9be2-68e91eeb6ee8}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GlobalsInit.cpp">
@@ -418,94 +403,5 @@
     <ClInclude Include="..\..\Shared\TO2\TO2VersionMgr.h">
       <Filter>Headers</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="..\..\built\Debug\ClientShellDLL\ClientShellShared\ClientShellShared.lib">
-      <Filter>libs_debug</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Debug\ButeMgr\ButeMgr.lib">
-      <Filter>libs_debug</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Debug\MFCStub\MFCStub.lib">
-      <Filter>libs_debug</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Debug\CryptMgr\cryptmgr.lib">
-      <Filter>libs_debug</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Debug\Lib_StdLith\Lib_StdLith.lib">
-      <Filter>libs_debug</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Debug\Lib_Lith\Lib_Lith.lib">
-      <Filter>libs_debug</Filter>
-    </Library>
-    <Library Include="..\..\Built\Debug\libs\LTGuiMgr\ltguimgr.lib">
-      <Filter>libs_debug</Filter>
-    </Library>
-    <Library Include="..\..\libs\ServerDir\debug\ServerDir.lib">
-      <Filter>libs_debug</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Debug\RegMgr\regmgr.lib">
-      <Filter>libs_debug</Filter>
-    </Library>
-    <Library Include="..\..\built\Release\ClientShellDll\ClientShellShared\ClientShellShared.lib">
-      <Filter>libs_release</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Release\ButeMgr\ButeMgr.lib">
-      <Filter>libs_release</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Release\MFCStub\MFCStub.lib">
-      <Filter>libs_release</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Release\CryptMgr\cryptmgr.lib">
-      <Filter>libs_release</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Release\Lib_StdLith\Lib_StdLith.lib">
-      <Filter>libs_release</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Release\Lib_Lith\Lib_Lith.lib">
-      <Filter>libs_release</Filter>
-    </Library>
-    <Library Include="..\..\Built\Release\libs\LTGuiMgr\ltguimgr.lib">
-      <Filter>libs_release</Filter>
-    </Library>
-    <Library Include="..\..\libs\ServerDir\release\ServerDir.lib">
-      <Filter>libs_release</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Release\RegMgr\regmgr.lib">
-      <Filter>libs_release</Filter>
-    </Library>
-    <Library Include="..\..\built\Final\ClientShellDll\ClientShellShared\ClientShellShared.lib">
-      <Filter>libs_final</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Final\MFCStub\MFCStub.lib">
-      <Filter>libs_final</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Final\CryptMgr\cryptmgr.lib">
-      <Filter>libs_final</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Final\Lib_StdLith\Lib_StdLith.lib">
-      <Filter>libs_final</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Final\Lib_Lith\Lib_Lith.lib">
-      <Filter>libs_final</Filter>
-    </Library>
-    <Library Include="..\..\Built\Final\libs\LTGuiMgr\ltguimgr.lib">
-      <Filter>libs_final</Filter>
-    </Library>
-    <Library Include="..\..\libs\ServerDir\final\ServerDir.lib">
-      <Filter>libs_final</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Final\RegMgr\regmgr.lib">
-      <Filter>libs_final</Filter>
-    </Library>
-    <Library Include="..\..\..\libs\built\Final\ButeMgr\ButeMgr.lib">
-      <Filter>libs_final</Filter>
-    </Library>
-    <Library Include="..\..\built\FinalDemo\ClientShellDLL\ClientShellShared\ClientShellShared.lib">
-      <Filter>libs_finaldemo</Filter>
-    </Library>
-    <Library Include="..\..\built\DebugFinalDemo\ClientShellDLL\ClientShellShared\ClientShellShared.lib">
-      <Filter>libs_debugfinaldemo</Filter>
-    </Library>
   </ItemGroup>
 </Project>

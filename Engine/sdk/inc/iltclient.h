@@ -17,6 +17,7 @@
 #include "iltesd.h"
 #endif // LITHTECH_ESD
 
+#include <stl_vector.h>
 #include <vector>
 
 //@{
@@ -2918,7 +2919,11 @@ the AABB specified by pos and dims.
 
 Used for: Special FX.
 */
+#undef std
+#define std STLPORT
 	bool (*GetParticleBlockersInAABB)( const LTVector& pos, const LTVector& dims, std::vector<uint32>& indices );
+#undef std
+#define std std
 
 /*!
 \param  index           Index of blocker to retrieve.
