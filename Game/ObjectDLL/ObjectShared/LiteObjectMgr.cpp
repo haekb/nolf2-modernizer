@@ -442,9 +442,18 @@ void CLiteObjectMgr::CleanList(TObjectList &aList)
 		{
 			*iCurObj = aList.back();
 			aList.pop_back();
+
+			// Somehow nulls back at the end
+			if (aList.back() == 0) {
+				aList.pop_back();
+				*iCurObj = aList.back();
+			}
+
 		}
 		else
+		{
 			++iCurObj;
+		}
 	}
 }
 
