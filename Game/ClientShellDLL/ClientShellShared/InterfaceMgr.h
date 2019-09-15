@@ -293,6 +293,8 @@ class CInterfaceMgr
 
 		void		ScreenDimsChanged();
 
+		void		FieldOfViewChanged(int nFOV);
+
         LTIntPt     GetCursorPos() {return m_CursorPos;}
 		void		UseCursor(LTBOOL bUseCursor, LTBOOL bLockCursorToCenter = LTFALSE) {m_CursorMgr.UseCursor(bUseCursor,bLockCursorToCenter);}
 		void		UpdateCursorState(); // hides or shows cursor based on current game state

@@ -141,7 +141,8 @@ void SaveDisplaySettings()
 									"VSyncOnFlip",
 									"GammaR",
 									"GammaG",
-									"GammaB"	
+									"GammaB",
+									"FOV"
 								};
 
 	uint32 nNumVals = sizeof(pszValsToSave) / sizeof(pszValsToSave[0]);
@@ -1038,6 +1039,8 @@ void CUserProfile::ApplyDisplay()
 	WriteConsoleInt("HardwareCursor",m_bHardwareCursor);
 	WriteConsoleInt("VSyncOnFlip",m_bVSync);
 
+	WriteConsoleInt("FOV", m_nFOV);
+
 	WriteConsoleFloat("GammaR",m_fGamma);
 	WriteConsoleFloat("GammaG",m_fGamma);
 	WriteConsoleFloat("GammaB",m_fGamma);
@@ -1088,7 +1091,9 @@ void CUserProfile::ApplyDisplay()
 		g_pLTClient->RelinquishRenderModes(pRenderModes);
 	}
 
-	
+	// Make sure this is after any screen res change!
+	g_pInterfaceMgr->FieldOfViewChanged(m_nFOV);
+
 	//make sure to save out these changed settings so that they will be applied next
 	//time we run
 	SaveDisplaySettings();
@@ -1513,6 +1518,10 @@ void CUserProfile::SetDisplay()
 
 	//get the average
 	m_fGamma = (GetConsoleFloat("GammaR",1.0f) + GetConsoleFloat("GammaG",1.0f) + GetConsoleFloat("GammaB",1.0f)) / 3.0f;
+
+	m_nFOV = GetConsoleInt("FOV", 75);
+
+	SDL_Log("Got FOV %d", m_nFOV);
 
 	// The current render mode
 	RMode currentMode;

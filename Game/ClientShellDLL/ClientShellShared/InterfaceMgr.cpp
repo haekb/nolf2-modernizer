@@ -32,6 +32,7 @@
 #include "ScreenPostload.h"
 #include "timer.h"
 #include "WaveFn.h"
+#include "SDL.h"
 
 CInterfaceMgr*  g_pInterfaceMgr = LTNULL;
 
@@ -466,8 +467,8 @@ LTBOOL CInterfaceMgr::Init()
     g_vtLetterBoxFadeOutTime.Init(g_pLTClient, "LetterBoxFadeOutTime", NULL, 1.0f);
     g_vtDisableMovies.Init(g_pLTClient, "NoMovies", NULL, 0.0f);
 
-    g_vtInterfaceFOVX.Init(g_pLTClient, "FovXInterface", NULL, 90.0f);
-    g_vtInterfaceFOVY.Init(g_pLTClient, "FovYInterface", NULL, 75.0f);
+	g_vtInterfaceFOVX.Init(g_pLTClient, "FovXInterface", NULL, 90.0f);//107.0f);//90.0f);
+	g_vtInterfaceFOVY.Init(g_pLTClient, "FovYInterface", NULL, 75.0f);
 
 	g_vtPauseTintAlpha.Init(g_pLTClient, "PauseTintAlpha", NULL, 0.65f);
 
@@ -4317,7 +4318,6 @@ void CInterfaceMgr::ScreenDimsChanged()
     g_pLTClient->GetSurfaceDims(g_pLTClient->GetScreenSurface(), &dwWidth, &dwHeight);
 
 	// This may need to be changed to support in-game cinematics...
-
 	ResetMenuRestoreCamera(0, 0, dwWidth, dwHeight);
     g_pLTClient->SetCameraRect (m_hInterfaceCamera, LTTRUE, 0, 0, dwWidth, dwHeight);
 
@@ -4325,6 +4325,12 @@ void CInterfaceMgr::ScreenDimsChanged()
 
 }
 
+void CInterfaceMgr::FieldOfViewChanged(int nFov)
+{
+	// Recalculate FOV
+	g_vtFOVXNormal.SetFloat((LTFLOAT)nFov);
+	g_vtFOVYNormal.SetFloat(g_pInterfaceResMgr->GetVerticalFOV((LTFLOAT)nFov));
+}
 
 
 //mouse handling
