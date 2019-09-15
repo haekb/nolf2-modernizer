@@ -1200,6 +1200,7 @@ void CAIStimulusMgr::Update()
 void CAIStimulusMgr::UpdateSensingList()
 {
 	AISTIMULUS_MAP::iterator itRecordPair;
+	LTBOOL bLoopedThroughAllStimuli = LTFALSE;
 	
 	CAIStimulusRecord* pRecord = LTNULL;
 	IAISensing* pSensing;
@@ -1295,6 +1296,7 @@ void CAIStimulusMgr::UpdateSensingList()
 		if( bNewSenseUpdate && SenseNearestPlayer( pSensing ) )
 		{
 			pSensing->SetDoneProcessingStimuli( LTTRUE );
+
 		}
 
 		// Iterate over existing stimulus records.
@@ -1344,12 +1346,17 @@ void CAIStimulusMgr::UpdateSensingList()
 					}
 				}
 			}
+
+			if (itRecordPair == m_stmStimuliMap.end())
+			{
+				bLoopedThroughAllStimuli = LTTRUE;
+			}
 		}
 		
 		// Call HandleSenses to increment/decrement sense values after a
 		// a stimulus has been found, or the list has been exhausted.
 
-		if( ( itRecordPair == m_stmStimuliMap.end() ) ||
+		if( ( bLoopedThroughAllStimuli ) ||
 			( pSensing->GetDoneProcessingStimuli() ) )
 		{
 			// Handle senses in the AI's sense recorder.  This will check the cycle stamp to
