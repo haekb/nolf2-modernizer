@@ -2249,7 +2249,7 @@ LTBOOL AIVolumeJunction::GetAction(CAI* pAI, uint8* pmskActionVolumes, AIVolume*
 	int iCorrectVolume = -1;
 
 	static VolumeActionList	lstVolumeActions;
-	lstVolumeActions.reserve(kMaxVolumes);
+	lstVolumeActions.resize(kMaxVolumes);
 
 	LTFLOAT fCurTime = g_pLTServer->GetTime();
 
