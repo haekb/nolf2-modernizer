@@ -8,6 +8,13 @@
 #include "ltmem.h"
 #endif
 
+// Enable floating point exceptions
+#include <float.h>
+
+// Using this define will clear any fp exceptions, and then look for the next one. Lithtech.exe seems ripe with 'em, so use this carefully.
+#define _START_STRICT_FP _clearfp(); _controlfp(_EM_INEXACT | _EM_UNDERFLOW | _EM_OVERFLOW, _MCW_EM);
+#define _END_STRICT_FP _clearfp(); _controlfp(_EM_INEXACT | _EM_UNDERFLOW | _EM_OVERFLOW | _EM_INVALID | _EM_ZERODIVIDE, _MCW_EM);
+
 #ifdef LTMEMTRACK
 
 	// Use this macro in the place of "new"  
