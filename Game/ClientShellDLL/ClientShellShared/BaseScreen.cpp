@@ -2079,7 +2079,8 @@ void CBaseScreen::ScreenDimsChanged()
 	unsigned int i;
 	for ( i = 0; i < m_controlArray.size(); i++ )
 	{
-		m_controlArray[i]->SetScale(g_pInterfaceResMgr->GetXRatio());
+		m_controlArray[i]->SetScale(g_pInterfaceResMgr->GetYRatio());
+
 	}
 
 	if (m_pTitleString)
