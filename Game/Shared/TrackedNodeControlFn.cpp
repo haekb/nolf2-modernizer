@@ -356,16 +356,8 @@ static LTVector FindConstrainedVector(const LTVector& vTarget, float fWidth, flo
 	
 	float ellipseOverHeight;
 
-	// If Ellipse and Height are veeeerrrry close to each other
-	// the Sqrt call will crash, so let's just zero it if it's basically the same.
-	if (fabs(fEllipseY - fHeight) < FLT_EPSILON) {
-		ellipseOverHeight = 0.0f;
-	}
-	else {
-		ellipseOverHeight = fEllipseY / fHeight;
-	}
-
-	float fEllipseX = fXSignScale * (float)sqrt((1.0f - Sqr(ellipseOverHeight)) * Sqr(fWidth));
+	// Floor prevents floating point exceptions
+	float fEllipseX = fXSignScale * (float)sqrt((1.0f - floor(Sqr(fEllipseY / fHeight))) * Sqr(fWidth));
 
 	//we now have the X and Y components of the ellipse, we can now build up our constrained
 	//vector with those
