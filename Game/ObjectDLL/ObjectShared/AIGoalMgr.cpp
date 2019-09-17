@@ -700,7 +700,7 @@ void CAIGoalMgr::RunQueuedPrefixGoalCommands()
 //
 //	PURPOSE:	Remove a goal
 //
-//  RETURN:		Returns a pointer of the next iterator or LTNULL
+//  RETURN:		Returns the next iterator (or END)
 //
 // ----------------------------------------------------------------------- //
 AIGOAL_LIST::iterator CAIGoalMgr::RemoveGoal(EnumAIGoalType eGoalType)
