@@ -3608,6 +3608,12 @@ void CAIHumanStateCheckBody::Update()
 		pChecker = g_pAICentralKnowledgeMgr->GetKnowledgeTarget( kCK_CheckingBody, pAI );
 	}
 
+	// Bail if pBody or pAI are not valid
+	if ( pBody == LTNULL && pAI == LTNULL )
+	{
+		goto Done;
+	}
+
 	// Bail if someone else is checking the body.
 
 	if( pChecker && ( pChecker != GetAI() ) )
