@@ -179,7 +179,7 @@ LTBOOL CBaseScreen::Init(int nScreenID)
 
 		s_BackArrow.Create(CMD_BACK,LTNULL,hBack,hBackH);
 		s_BackArrow.SetBasePos(arrowBackPos);
-		s_BackArrow.SetScale(g_pInterfaceResMgr->GetXRatio());
+		s_BackArrow.SetScale(g_pInterfaceResMgr->GetYRatio());
 
 		g_pLTClient->RegisterConsoleProgram("EditFX", EditFXFn);
 		
@@ -1138,7 +1138,7 @@ CLTGUITextCtrl* CBaseScreen::CreateTextItem(char *pString, uint32 commandID, int
 
 	m_nextPos.y += (pCtrl->GetBaseHeight() + m_nItemSpacing);
 
-	pCtrl->SetScale(g_pInterfaceResMgr->GetXRatio());
+	pCtrl->SetScale(g_pInterfaceResMgr->GetYRatio());
 	
 
 	if (bFixed)
@@ -1163,7 +1163,7 @@ CLTGUIListCtrl* CBaseScreen::CreateList(LTIntPt pos, uint16 nHeight, LTBOOL bUse
     if (pList->Create(nHeight))
 	{
 		pList->SetBasePos(pos);
-		pList->SetScale(g_pInterfaceResMgr->GetXRatio());
+		pList->SetScale(g_pInterfaceResMgr->GetYRatio());
 		if (bUseArrows)
 		{
 			HTEXTURE hUp = g_pInterfaceResMgr->GetTexture("interface\\menu\\sprtex\\arrowup.dtx");
@@ -1219,7 +1219,7 @@ CLTGUICycleCtrl* CBaseScreen::CreateCycle(char *pString, int helpID, int nHeader
 
 	m_nextPos.y += (pCtrl->GetBaseHeight() + m_nItemSpacing);
 
-	pCtrl->SetScale(g_pInterfaceResMgr->GetXRatio());
+	pCtrl->SetScale(g_pInterfaceResMgr->GetYRatio());
 	
 
 	if (bFixed)
@@ -1280,7 +1280,7 @@ CLTGUIToggle* CBaseScreen::CreateToggle(char *pString, int helpID, int nHeaderWi
 
 	m_nextPos.y += (pCtrl->GetBaseHeight() + m_nItemSpacing);
 
-	pCtrl->SetScale(g_pInterfaceResMgr->GetXRatio());
+	pCtrl->SetScale(g_pInterfaceResMgr->GetYRatio());
 
 	pCtrl->SetOnString(LoadTempString(IDS_ON));
 	pCtrl->SetOffString(LoadTempString(IDS_OFF));
@@ -1353,7 +1353,7 @@ CLTGUISlider* CBaseScreen::CreateSlider(char *pString, int helpID, int nHeaderWi
 
 	m_nextPos.y += (pCtrl->GetBaseHeight() + m_nItemSpacing);
 
-	pCtrl->SetScale(g_pInterfaceResMgr->GetXRatio());
+	pCtrl->SetScale(g_pInterfaceResMgr->GetYRatio());
 	
 
 	if (bFixed)
@@ -1402,7 +1402,7 @@ CLTGUIColumnCtrl* CBaseScreen::CreateColumnCtrl(uint32 commandID, int helpID, LT
 
 	m_nextPos.y += (nFontSize + m_nItemSpacing);
 
-	pCtrl->SetScale(g_pInterfaceResMgr->GetXRatio());
+	pCtrl->SetScale(g_pInterfaceResMgr->GetYRatio());
 	
 
 	if (bFixed)

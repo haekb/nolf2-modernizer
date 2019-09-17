@@ -523,13 +523,13 @@ void CMenuMgr::ScreenDimsChanged()
 {
 	if (m_pCurrentMenu)
 	{
-		m_pCurrentMenu->SetScale(g_pInterfaceResMgr->GetXRatio());
+		m_pCurrentMenu->SetScale(g_pInterfaceResMgr->GetYRatio());
 	}
 	if (m_pSubMenu)
 	{
-		m_pSubMenu->SetScale(g_pInterfaceResMgr->GetXRatio());
+		m_pSubMenu->SetScale(g_pInterfaceResMgr->GetYRatio());
 	}
-	m_MenuBar.SetScale(g_pInterfaceResMgr->GetXRatio());
+	m_MenuBar.SetScale(g_pInterfaceResMgr->GetYRatio());
 }
 
 void CMenuMgr::SwitchToMenu(CBaseMenu *pNewMenu)
@@ -558,7 +558,7 @@ void CMenuMgr::SwitchToMenu(CBaseMenu *pNewMenu)
 		pNewMenu->SetBasePos(tmp);
         pNewMenu->OnFocus(LTTRUE);
 
-		m_MenuBar.SetScale(g_pInterfaceResMgr->GetXRatio());
+		m_MenuBar.SetScale(g_pInterfaceResMgr->GetYRatio());
 		for (uint8 i =0; i < m_MenuArray.size(); i++)
 		{
 			CLTGUICtrl* pCtrl = m_MenuBar.GetControl(i);
@@ -837,7 +837,7 @@ void CMenuMgr::ShowSubMenu(CSubMenu* pSubMenu)
 	}
 	m_pSubMenu = pSubMenu;
 	if (m_pSubMenu)
-		m_pSubMenu->SetScale(g_pInterfaceResMgr->GetXRatio());
+		m_pSubMenu->SetScale(g_pInterfaceResMgr->GetYRatio());
 
 
 }
@@ -852,7 +852,7 @@ void CMenuMgr::HideSubMenu(bool bSlideOut)
 	}
 	if (m_pSubMenu)
 	{
-		m_pSubMenu->SetScale(g_pInterfaceResMgr->GetXRatio());
+		m_pSubMenu->SetScale(g_pInterfaceResMgr->GetYRatio());
 
 		if (m_SubSlide.IsStarted()) return;
 
