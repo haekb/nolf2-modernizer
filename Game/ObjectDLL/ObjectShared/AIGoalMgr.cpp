@@ -700,9 +700,10 @@ void CAIGoalMgr::RunQueuedPrefixGoalCommands()
 //
 //	PURPOSE:	Remove a goal
 //
+//  RETURN:		Returns a pointer of the next iterator or LTNULL
+//
 // ----------------------------------------------------------------------- //
-
-void CAIGoalMgr::RemoveGoal(EnumAIGoalType eGoalType)
+AIGOAL_LIST::iterator CAIGoalMgr::RemoveGoal(EnumAIGoalType eGoalType)
 {
 	ASSERT(eGoalType != kGoal_InvalidType);
 
@@ -755,11 +756,12 @@ void CAIGoalMgr::RemoveGoal(EnumAIGoalType eGoalType)
 
 			// Delete the goal.
 			AI_FACTORY_DELETE(pGoal);
-			m_lstGoals.erase(it);
-
-			return;
+			return m_lstGoals.erase(it);
+			
 		}
 	}
+
+	return m_lstGoals.end();
 }
 
 // ----------------------------------------------------------------------- //
@@ -984,7 +986,6 @@ void CAIGoalMgr::UpdateGoals()
 		}
 
 		// Delete any goals flagged for deletion.
-
 		CAIGoalAbstract* pGoal;
 		AIGOAL_LIST::iterator it = m_lstGoals.begin();
 		while( it != m_lstGoals.end() )
@@ -992,7 +993,7 @@ void CAIGoalMgr::UpdateGoals()
 			pGoal = (*it);
 			if( pGoal->GetDeleteGoalNextUpdate() )
 			{
-				RemoveGoal( pGoal->GetGoalType() );
+				it = RemoveGoal( pGoal->GetGoalType() );
 			}
 			else {
 				++it;

@@ -125,7 +125,7 @@ class CAIGoalMgr : public CAIClassAbstract
 
 		void	AddQueuedGoals();
 		void	RunQueuedPrefixGoalCommands();
-		void	RemoveGoal(EnumAIGoalType eGoalType);
+		AIGOAL_LIST::iterator	RemoveGoal(EnumAIGoalType eGoalType);
 		void	SetGoalSet(uint32 iGoalSet, LTBOOL bClearGoals);
 
 		void	ChooseCurGoal();
