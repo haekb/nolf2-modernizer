@@ -72,7 +72,7 @@ public:
 	void				ConvertScreenPos(int &x, int &y);
     LTFLOAT             GetXRatio()                         {return m_fXRatio;}
     LTFLOAT             GetYRatio()                         {return m_fYRatio;}
-	LTFLOAT				Get4x3Ratio()						{ return (LTFLOAT)(640 / 480); }
+	LTFLOAT				Get4x3Ratio()						{ return 640.0f / 480.0f; }
 	int					Get4x3Offset();
 
     uint32              GetScreenWidth();
@@ -172,7 +172,11 @@ protected:
 
 inline int CInterfaceResMgr::Get4x3Offset()
 {
-	return (GetScreenWidth() - (GetScreenHeight() * Get4x3Ratio())) / 2;
+	uint32 width = GetScreenWidth();
+	uint32 height = GetScreenHeight();
+	LTFLOAT ratio = Get4x3Ratio();
+
+	return 0.5 * ( width - ( height * ratio ) );
 }
 
 inline uint32 CInterfaceResMgr::GetScreenWidth()
