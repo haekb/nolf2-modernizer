@@ -3953,6 +3953,7 @@ void CGameClientShell::FirstUpdate()
 		GetInterfaceMgr( )->StartScreenFadeIn(g_varStartLevelScreenFadeTime.GetFloat());
 	}
 
+	// jake: maybe here
 
 	// Set prediction if we are playing multiplayer...We turn this
 	// off for single player because projectiles look MUCH better...

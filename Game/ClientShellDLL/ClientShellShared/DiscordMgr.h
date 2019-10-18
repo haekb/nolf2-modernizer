@@ -23,7 +23,7 @@ public:
 	void Init();
 	void Update();
 
-	bool CreateLobby(ServerGameOptions* pGameOptions);
+	bool CreateLobby(StartGameRequest* pGameRequest);
 	bool JoinLobby();
 
 

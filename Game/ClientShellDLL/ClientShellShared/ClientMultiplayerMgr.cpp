@@ -394,9 +394,6 @@ bool ClientMultiplayerMgr::SetupServerHost( int nPort, bool bLANOnly )
 	m_ServerGameOptions.m_sModName = GetModName();
 	
 
-#ifdef _DISCORDBUILD
-	g_pDiscordMgr->CreateLobby(&m_ServerGameOptions);
-#endif
 
 	// Make sure that the multiplayer mgr doesn't have a server directory in use
 	// This must be done because there can only be one IServerDirectory object
@@ -959,6 +956,14 @@ bool ClientMultiplayerMgr::StartServerAsHost( )
 
 	// Start the server.
 	m_nLastConnectionResult = g_pLTClient->StartGame( const_cast< StartGameRequest * >( &m_StartGameRequest ));
+
+	// Ok we can start a lobby now
+	if (m_nLastConnectionResult == LT_OK) {
+#ifdef _DISCORDBUILD
+		//g_pDiscordMgr->CreateLobby(&m_StartGameRequest);
+#endif
+	}
+
 	return ( m_nLastConnectionResult == LT_OK );
 }
 

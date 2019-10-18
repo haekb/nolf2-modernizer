@@ -312,6 +312,7 @@ void    CScreenHost::OnFocus(LTBOOL bFocus)
 	if (bFocus)
 	{
 		// Turn off stuff the LAN screens doen't care about..
+		
 		if (g_bLAN)
 		{
 			m_pBandwidthCycle->Show(LTFALSE);
@@ -368,7 +369,7 @@ void    CScreenHost::OnFocus(LTBOOL bFocus)
 		m_pLoadCtrl->Show(g_pGameClientShell->GetGameType() == eGameTypeCooperative);
 
 		// Setup the host info.
-		g_pClientMultiplayerMgr->SetupServerHost( pProfile->m_ServerGameOptions.m_nPort, g_bLAN );
+		g_pClientMultiplayerMgr->SetupServerHost(pProfile->m_ServerGameOptions.m_nPort, g_bLAN );
 	}
 	else
 	{
