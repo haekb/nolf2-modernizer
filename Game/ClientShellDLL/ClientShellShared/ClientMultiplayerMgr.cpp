@@ -960,7 +960,7 @@ bool ClientMultiplayerMgr::StartServerAsHost( )
 	// Ok we can start a lobby now
 	if (m_nLastConnectionResult == LT_OK) {
 #ifdef _DISCORDBUILD
-		//g_pDiscordMgr->CreateLobby(&m_StartGameRequest);
+		g_pDiscordMgr->CreateLobby(&m_StartGameRequest);
 #endif
 	}
 

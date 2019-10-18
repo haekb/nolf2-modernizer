@@ -3,10 +3,12 @@
 #include <iostream>
 #include <SDL.h>
 #include "MissionMgr.h"
+#include "ClientMultiplayerMgr.h"
 
 DiscordMgr* g_pDiscordMgr;
 extern CMissionMgr* g_pMissionMgr;
 extern ILTClient* g_pLTClient;
+extern ClientMultiplayerMgr g_pMultiplayerMgr;
 
 void LogProblemsFunction(discord::LogLevel level, std::string message)
 {
@@ -66,8 +68,19 @@ void DiscordMgr::Init()
 				[](discord::Result result, discord::Lobby const& lobby)
 			{
 
-				SDL_Log("Result %d", result);
+				char ipAddress[4096];
+				char* port;
 
+				memset(ipAddress, '\0', sizeof(ipAddress));
+
+				auto mdResult = g_pDiscordMgr->m_sState.core->LobbyManager().GetLobbyMetadataValue(lobby.GetId(), "ip", ipAddress);
+
+				SDL_Log("Result %d", result);
+				SDL_Log("Meta Data Result %d", mdResult);
+				SDL_Log("IP: %s", ipAddress);
+
+				bool bOk = g_pClientMultiplayerMgr->SetupClient(ipAddress, "Jake DM", 0);
+				bOk = bOk && g_pMissionMgr->StartGameAsClient();
 
 
 			});
@@ -88,9 +101,11 @@ void DiscordMgr::Update()
 
 bool DiscordMgr::CreateLobby(StartGameRequest* pGameRequest)
 {
-	ServerGameOptions* pGameOptions = (ServerGameOptions*)pGameRequest->m_pGameInfo;
-
-	discord::LobbyTransaction lobby{};
+	// Handle the double pointer nonsense.
+	void* data = *((void**)pGameRequest->m_pGameInfo);
+	ServerGameOptions* pGameOptions = (ServerGameOptions*)data;
+	  
+	discord::LobbyTransaction lobby{}; 
 
 	// Get our ip address and port...
 	char sBuf[32];
@@ -106,8 +121,8 @@ bool DiscordMgr::CreateLobby(StartGameRequest* pGameRequest)
 	lobby.SetCapacity(pGameOptions->GetMaxPlayers());
 	lobby.SetType(discord::LobbyType::Public);
 
-	lobby.SetMetadata("ip", pGameRequest->m_TCPAddress);
-	lobby.SetMetadata("port", std::to_string(pGameOptions->m_nPort).c_str());
+	lobby.SetMetadata("ip", sBuf);
+	lobby.SetMetadata("port", std::to_string(wPort).c_str());
 
 	std::string sessionName = pGameOptions->GetSessionName();
 	auto timelimit = pGameOptions->GetDeathmatch().m_nTimeLimit;
@@ -147,6 +162,8 @@ bool DiscordMgr::CreateLobby(StartGameRequest* pGameRequest)
 						discord::LobbyId lobbyId{};
 						g_pDiscordMgr->m_sState.core->LobbyManager().GetLobbyId(i, &lobbyId);
 						std::cout << "  " << lobbyId << "\n";
+
+
 					}
 				}
 				else {
@@ -194,12 +211,20 @@ bool DiscordMgr::CreateLobby(StartGameRequest* pGameRequest)
 			
 			discord::PartySize party;
 
-			activity.GetParty().SetId("ahhhh");
+			char secret[128];
+			memset(secret, '\0', sizeof(secret));
+
+
+			SDL_Log("Found lobby secret -> %s", secret);
+
+			activity.GetParty().SetId(std::to_string(lobby.GetId()).c_str());
+			auto activitySecret = g_pDiscordMgr->m_sState.core->LobbyManager().GetLobbyActivitySecret(lobby.GetId(), secret);
+
 
 			activity.GetParty().GetSize().SetCurrentSize(1);
 			activity.GetParty().GetSize().SetMaxSize(size);
-
-			activity.GetSecrets().SetJoin("er2kl4l52eledsjpasdfp4346"); // needed for ask to join to show up
+			
+			activity.GetSecrets().SetJoin(secret); // needed for ask to join to show up
 			//activity.GetSecrets().SetMatch("match");
 			// Map
 			activity.GetAssets().SetLargeImage("dm_05");

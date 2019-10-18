@@ -128,6 +128,9 @@ bool CScreenPreload::UpdateInterfaceSFX()
 
 bool CScreenPreload::UpdateCDKeyValidation( )
 {
+	// Don't validate cd key!
+	return true;
+
 	switch( m_eValidatingCDKeyState )
 	{
 		case kValidatingCDKeyState_None:
