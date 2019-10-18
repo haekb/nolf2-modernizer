@@ -23,6 +23,9 @@
 #include "ProfileMgr.h"
 #include "WeaponMgr.h"
 #include "CRC32.h"
+#include "DiscordMgr.h"
+
+extern DiscordMgr* g_pDiscordMgr;
 
 ClientMultiplayerMgr* g_pClientMultiplayerMgr = NULL;
 
@@ -390,6 +393,10 @@ bool ClientMultiplayerMgr::SetupServerHost( int nPort, bool bLANOnly )
 	
 	m_ServerGameOptions.m_sModName = GetModName();
 	
+
+#ifdef _DISCORDBUILD
+	g_pDiscordMgr->CreateLobby(&m_ServerGameOptions);
+#endif
 
 	// Make sure that the multiplayer mgr doesn't have a server directory in use
 	// This must be done because there can only be one IServerDirectory object

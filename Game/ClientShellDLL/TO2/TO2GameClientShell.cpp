@@ -18,8 +18,15 @@
 #include "clientmultiplayermgr.h"
 #include "iserverdir.h"
 
+#ifdef _DISCORDBUILD
+#include "DiscordMgr.h"
+#endif
+
+extern DiscordMgr* g_pDiscordMgr;
+
 // Sample rate
 int g_nSampleRate = 22050;
+
 
 // ----------------------------------------------------------------------- //
 //
@@ -55,12 +62,22 @@ CTO2GameClientShell::~CTO2GameClientShell()
 
 uint32 CTO2GameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
 {
+
+
 	uint32 nResult = CGameClientShell::OnEngineInitialized(pMode, pAppGuid);
+
+	g_pDiscordMgr = new DiscordMgr();
+	g_pDiscordMgr->Init();
+
+
 	m_VersionMgr.Update();
 
 	//with the update of the version manager, it might have changed the gore setting,
 	//so make sure that the FX managers know about the change
 	UpdateGoreSettings();
+
+	// TEMP DISCORD
+
 
 	return nResult;
 }
@@ -108,6 +125,15 @@ void CTO2GameClientShell::OnMessage(ILTMessage_Read *pMsg)
 	g_pClientMultiplayerMgr->SetCurMessageSource(aAddrBuffer, nPort);
 	
 	CGameClientShell::OnMessage(pMsg);
+}
+
+void CTO2GameClientShell::Update()
+{
+	CGameClientShell::Update();
+
+#ifdef _DISCORDBUILD
+	g_pDiscordMgr->Update();
+#endif
 }
 
 

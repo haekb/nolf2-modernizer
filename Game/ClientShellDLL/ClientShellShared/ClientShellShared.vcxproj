@@ -124,18 +124,19 @@
       <MinimalRebuild>true</MinimalRebuild>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>.\;..\..\..\libs\STLPort-4.0\stlport_no;..\..\clientres\shared;..\..\shared;..\..\..\Engine\sdk\inc;..\..\..\libs\stdlith;..\..\..\libs\butemgr;..\..\..\libs\cryptmgr;..\..\..\libs\lith;..\..\..\libs\mfcstub;..\..\libs\ltguimgr;..\..\..\libs\regmgr;..\;..\..\libs\serverdir;..\..\..\libs\STLPort-STD;$(SolutionDir)\..\libs\SDL2-2.0.10\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CLIENTBUILD;NOPS2;MEMTRACK_CLIENT;_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;__STL_DONT_REDEFINE_STD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\;..\..\..\libs\STLPort-4.0\stlport_no;..\..\clientres\shared;..\..\shared;..\..\..\Engine\sdk\inc;..\..\..\libs\stdlith;..\..\..\libs\butemgr;..\..\..\libs\cryptmgr;..\..\..\libs\lith;..\..\..\libs\mfcstub;..\..\libs\ltguimgr;..\..\..\libs\regmgr;..\;..\..\libs\serverdir;..\..\..\libs\STLPort-STD;$(SolutionDir)\..\libs\SDL2-2.0.10\include;$(SolutionDir)\..\config\;$(SolutionDir)\..\libs\discord_game_sdk\cpp\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CLIENTBUILD;NOPS2;MEMTRACK_CLIENT;_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;__STL_DONT_REDEFINE_STD;_DISCORDBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\..\Built\Debug\ClientShellDLL\ClientShellShared\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
       <PrecompiledHeaderOutputFile>.\..\..\Built\Debug\ClientShellDLL\ClientShellShared\ClientShellShared.pch</PrecompiledHeaderOutputFile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <ObjectFileName>.\..\..\Built\Debug\ClientShellDLL\ClientShellShared\</ObjectFileName>
       <ProgramDataBaseFileName>.\..\..\Built\Debug\ClientShellDLL\ClientShellShared\</ProgramDataBaseFileName>
       <AdditionalOptions> /Zm1000 </AdditionalOptions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <ResourceCompile>
       <Culture>0x0409</Culture>
@@ -239,6 +240,20 @@
       </PrecompiledHeader>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Final|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
     </ClCompile>
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\achievement_manager.cpp" />
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\activity_manager.cpp" />
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\application_manager.cpp" />
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\core.cpp" />
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\image_manager.cpp" />
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\lobby_manager.cpp" />
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\network_manager.cpp" />
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\overlay_manager.cpp" />
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\relationship_manager.cpp" />
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\storage_manager.cpp" />
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\store_manager.cpp" />
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\types.cpp" />
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\user_manager.cpp" />
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\voice_manager.cpp" />
     <ClCompile Include="..\..\Shared\ActivateTypeMgr.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
@@ -664,6 +679,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Final|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
     </ClCompile>
+    <ClCompile Include="DiscordMgr.cpp" />
     <ClCompile Include="DoomsdayPieceFX.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
@@ -1310,6 +1326,23 @@
     <ClInclude Include="..\..\..\Engine\sdk\inc\iltbaseclass.h" />
     <ClInclude Include="..\..\..\Engine\sdk\inc\LTEulerAngles.h" />
     <ClInclude Include="..\..\..\Engine\sdk\inc\ltmodule.h" />
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\achievement_manager.h" />
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\activity_manager.h" />
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\application_manager.h" />
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\core.h" />
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\discord.h" />
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\event.h" />
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\ffi.h" />
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\image_manager.h" />
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\lobby_manager.h" />
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\network_manager.h" />
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\overlay_manager.h" />
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\relationship_manager.h" />
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\storage_manager.h" />
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\store_manager.h" />
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\types.h" />
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\user_manager.h" />
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\voice_manager.h" />
     <ClInclude Include="..\..\Shared\ActivateTypeMgr.h" />
     <ClInclude Include="..\..\Shared\ActivationData.h" />
     <ClInclude Include="..\..\Shared\ClientServerShared.h" />
@@ -1371,6 +1404,7 @@
     <ClInclude Include="DeathFX.h" />
     <ClInclude Include="DebrisFX.h" />
     <ClInclude Include="DebugLineFX.h" />
+    <ClInclude Include="DiscordMgr.h" />
     <ClInclude Include="DoomsdayPieceFX.h" />
     <ClInclude Include="DynamicLightFX.h" />
     <ClInclude Include="ExplosionFX.h" />

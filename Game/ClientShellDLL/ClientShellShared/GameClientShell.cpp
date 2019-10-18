@@ -56,6 +56,12 @@
 #include "ScmdConsoleDriver_CShell.h"
 #include "mmsystem.h"
 #include <SDL.h>
+
+// TEMP DISCORD
+#include <discord.h>
+#include <discord-secret.h>
+
+
 #ifdef STRICT
 	WNDPROC g_pfnMainWndProc = NULL;
 #else
@@ -1298,6 +1304,9 @@ uint32 CGameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
 	{
 		return LT_ERROR;
 	}
+
+
+	
 
 	return LT_OK;
 }
