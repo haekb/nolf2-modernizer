@@ -205,7 +205,7 @@
       </Outputs>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>call "D:\GameDev\no-one-lives-forever-2-source\Game\_after_build_debug.bat"</Command>
+      <Command>call "D:\GameDev\nolf2-modernizer\Game\_after_build_debug.bat"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Final FR|Win32'">
