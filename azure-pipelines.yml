@@ -1,0 +1,60 @@
+# .NET Desktop
+# Build and run tests for .NET Desktop or Windows classic desktop solutions.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/windows/dot-net
+
+trigger:
+- master
+
+pool:
+  vmImage: "windows-2019"
+
+variables:
+  solution: 'Game/TO2-Game.sln'
+  buildPlatform: 'x86'
+  buildConfiguration: 'Release'
+
+steps:
+- task: VSBuild@1
+  inputs:
+    solution: 'Game\\TO2-Game.sln'
+    vsVersion: '16.0'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '.\\'
+    flattenFolders: true
+    Contents: |
+      Game\\built\\Release\\ClientFxDLL\\ClientFx.fxd
+      Game\\built\\Release\\ClientRes\\TO2\\CRes.dll
+      Game\\built\\Release\\ClientShellDLL\\TO2\\CShell.dll
+      Game\\built\\Release\\ObjectDll\\TO2\\Object.lto
+      Game\\built\\Release\\ServerRes\\TO2\\SRes.dll
+    TargetFolder: '$(Pipeline.Workspace)\\Artifacts\\Modernizer'
+    
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: 'ASSETS'
+    Contents: '**'
+    TargetFolder: '$(Pipeline.Workspace)\\Artifacts\\Modernizer'
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: 'LIBS\\SDL2-2.0.10\\lib\\x86\\'
+    Contents: 'SDL2.dll'
+    TargetFolder: '$(Pipeline.Workspace)\\Artifacts'
+
+- task: CmdLine@2
+  inputs:
+    script: 'mkdir $(Pipeline.Workspace)\\Artifacts\\Custom'
+
+#- task: CmdLine@2
+#  inputs:
+#    script: 'TOOLS\\lithrez.exe c $(Pipeline.Workspace)\\Artifacts\\Custom\\Modernizer.rez $(Pipeline.Workspace)\\Artifacts\\Modernizer'
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: '$(Pipeline.Workspace)\\Artifacts'
+    artifact: '$(buildConfiguration) Files'
