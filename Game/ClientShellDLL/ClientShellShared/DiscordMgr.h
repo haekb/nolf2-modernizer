@@ -53,6 +53,19 @@ public:
 
 	DiscordActivityData m_sCachedActivityData;
 
+	inline void ClearDiscordActivity(DiscordActivityData &activityData) {
+		activityData = {
+			"",
+			"",
+			"",
+			"",
+			0,
+			1,
+			"",
+			false
+		};
+	}
+
 protected:
 
 private:
