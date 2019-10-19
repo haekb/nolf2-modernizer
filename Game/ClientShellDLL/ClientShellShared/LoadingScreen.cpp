@@ -685,7 +685,7 @@ int CLoadingScreen::RunThread()
 		Update();
 		
 		// Give room for other threads if needed.
-		Sleep(0);
+		Sleep(10);
 	}
 	return 0;
 }

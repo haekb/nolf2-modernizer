@@ -24,6 +24,8 @@
 #include "WeaponMgr.h"
 #include "CRC32.h"
 #include "DiscordMgr.h"
+#include <chrono>
+#include <ctime>
 
 extern DiscordMgr* g_pDiscordMgr;
 
@@ -807,6 +809,18 @@ void ClientMultiplayerMgr::Update( )
 		m_bForceDisconnect = false;
 		return;
 	}
+
+#ifdef _DISCORDBUILD
+	static long long lastTime = 0;
+	auto seconds = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+
+	// Only update every 5 seconds
+	if (seconds - lastTime > 10) {
+		g_pDiscordMgr->UpdateActivity();
+		lastTime = seconds;
+	}
+#endif
+
 }
 
 // --------------------------------------------------------------------------- //

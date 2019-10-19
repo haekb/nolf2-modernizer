@@ -24,15 +24,25 @@ public:
 	void Update();
 
 	bool CreateLobby(StartGameRequest* pGameRequest);
-	bool JoinLobby();
+	bool JoinLobby(discord::Lobby const& lobby);
+	bool LeaveLobby();
+
+	void UpdateActivity();
+
+	std::string GetLevelArt(std::string levelName);
 
 
 	// discord
 	discord::Core* m_pCore;
 	DiscordState m_sState;
+	discord::Lobby* m_pCurrentLobby;
+	// FIXME: maybe find a better way to handle lobbies.
+	discord::Lobby m_InternalCurrentLobby;
 
 protected:
 
 private:
+
+
 
 };

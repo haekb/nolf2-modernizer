@@ -550,6 +550,22 @@ bool CMissionMgr::FinishStartGameAsClient( )
 	return true;
 }
 
+std::string CMissionMgr::GetMissionName()
+{
+	std::string missionName;
+
+	int nCurMission = g_pMissionMgr->GetCurrentMission();
+	MISSION* pMission = g_pMissionButeMgr->GetMission(nCurMission);
+
+	missionName = pMission->sName;
+
+	// If we have localized name, use that instead!
+	if (pMission->nNameId > 0) {
+		missionName = LoadTempString(pMission->nNameId);
+	}
+
+	return missionName;
+}
 
 
 // ----------------------------------------------------------------------- //

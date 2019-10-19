@@ -2,13 +2,16 @@
 #include "DiscordMgr.h"
 #include <iostream>
 #include <SDL.h>
+#include "GameClientShell.h"
 #include "MissionMgr.h"
 #include "ClientMultiplayerMgr.h"
+#include "helpers.h"
 
 DiscordMgr* g_pDiscordMgr;
+extern CGameClientShell* g_pGameClientShell;
 extern CMissionMgr* g_pMissionMgr;
 extern ILTClient* g_pLTClient;
-extern ClientMultiplayerMgr g_pMultiplayerMgr;
+extern ClientMultiplayerMgr* g_pClientMultiplayerMgr;
 
 void LogProblemsFunction(discord::LogLevel level, std::string message)
 {
@@ -22,6 +25,8 @@ void LogProblemsFunction(discord::LogLevel level, std::string message)
 DiscordMgr::DiscordMgr()
 {
 	//g_pDiscordMgr = this;
+	m_pCurrentLobby = NULL;
+	m_pCore = NULL;
 }
 
 DiscordMgr::~DiscordMgr()
@@ -43,19 +48,15 @@ void DiscordMgr::Init()
 	*/
 	
 	auto result = discord::Core::Create(DISCORD_CLIENT_ID, DiscordCreateFlags_Default, &m_pCore);
-	discord::Activity activity{};
-	activity.SetState("In Menu");
-	activity.SetDetails("Doing non-essential stuff");
-	activity.GetAssets().SetLargeImage("default");
-	//activity.GetAssets().SetSmallImage("default");
 
-	m_pCore->ActivityManager().UpdateActivity(activity, [](discord::Result result) {
 
-	});
+
 
 	m_pCore->SetLogHook(discord::LogLevel::Debug, LogProblemsFunction);
 
 	m_sState.core.reset(m_pCore);
+
+	UpdateActivity();
 
 	// Setup a OnJoin callback
 	{
@@ -67,22 +68,9 @@ void DiscordMgr::Init()
 			g_pDiscordMgr->m_sState.core->LobbyManager().ConnectLobbyWithActivitySecret(secret, 
 				[](discord::Result result, discord::Lobby const& lobby)
 			{
-
-				char ipAddress[4096];
-				char* port;
-
-				memset(ipAddress, '\0', sizeof(ipAddress));
-
-				auto mdResult = g_pDiscordMgr->m_sState.core->LobbyManager().GetLobbyMetadataValue(lobby.GetId(), "ip", ipAddress);
-
-				SDL_Log("Result %d", result);
-				SDL_Log("Meta Data Result %d", mdResult);
-				SDL_Log("IP: %s", ipAddress);
-
-				bool bOk = g_pClientMultiplayerMgr->SetupClient(ipAddress, "Jake DM", 0);
-				bOk = bOk && g_pMissionMgr->StartGameAsClient();
-
-
+				if (result == discord::Result::Ok) {
+					g_pDiscordMgr->JoinLobby(lobby);
+				}
 			});
 		
 		});
@@ -171,76 +159,136 @@ bool DiscordMgr::CreateLobby(StartGameRequest* pGameRequest)
 				}
 			});
 
-
-		
-			
-
-			discord::Activity activity{};
-			discord::Timestamp timestamp = 0;
-
-			int nCurMission = g_pMissionMgr->GetCurrentMission();
-			MISSION* pMission = g_pMissionButeMgr->GetMission(nCurMission);
-
-
-			std::string missionName;
-			std::string levelName;
-
-
-			if (pMission->nNameId > 0)
-				missionName = LoadTempString(pMission->nNameId);
-			else
-				missionName = pMission->sName;
-
-			int nCurLevel = g_pMissionMgr->GetCurrentLevel();
-			levelName = LoadTempString(pMission->aLevels[nCurLevel].nNameId);
-
-			std::string altMissionName = LoadTempString(IDS_CUSTOM_LEVEL);
-			// Split the worldname up into parts so we can get the load string.
-			char const* pszWorldName = g_pMissionMgr->GetCurrentWorldName();
-			char szWorldTitle[MAX_PATH] = "";
-			_splitpath(pszWorldName, NULL, NULL, szWorldTitle, NULL);
-			std::string altLevelName = szWorldTitle;
-
-
-
-			auto level = "Playing " + missionName;
-
-			activity.SetState("Playing Deathmatch");
-			activity.SetDetails(level.c_str());
-			
-			
-			discord::PartySize party;
-
-			char secret[128];
-			memset(secret, '\0', sizeof(secret));
-
-
-			SDL_Log("Found lobby secret -> %s", secret);
-
-			activity.GetParty().SetId(std::to_string(lobby.GetId()).c_str());
-			auto activitySecret = g_pDiscordMgr->m_sState.core->LobbyManager().GetLobbyActivitySecret(lobby.GetId(), secret);
-
-
-			activity.GetParty().GetSize().SetCurrentSize(1);
-			activity.GetParty().GetSize().SetMaxSize(size);
-			
-			activity.GetSecrets().SetJoin(secret); // needed for ask to join to show up
-			//activity.GetSecrets().SetMatch("match");
-			// Map
-			activity.GetAssets().SetLargeImage("dm_05");
-			activity.GetAssets().SetLargeText(level.c_str());
-			activity.SetInstance(true);
-
-			g_pDiscordMgr->m_sState.core->ActivityManager().UpdateActivity(activity, [](discord::Result result) {
-
-			});
+			// Save the lobby
+			g_pDiscordMgr->m_InternalCurrentLobby = (discord::Lobby)lobby;
+			g_pDiscordMgr->m_pCurrentLobby = &g_pDiscordMgr->m_InternalCurrentLobby;
 		}
 	);
 
 	return true;
 }
 
-bool DiscordMgr::JoinLobby()
+bool DiscordMgr::JoinLobby(discord::Lobby const& lobby)
 {
-	return false;
+	char ipAddress[4096];
+
+	memset(ipAddress, '\0', sizeof(ipAddress));
+
+	auto result = g_pDiscordMgr->m_sState.core->LobbyManager().GetLobbyMetadataValue(lobby.GetId(), "ip", ipAddress);
+
+	SDL_Log("Meta Data Result %d", result);
+	SDL_Log("IP: %s", ipAddress);
+
+	bool bOk = g_pClientMultiplayerMgr->SetupClient(ipAddress, "Jake DM", 0);
+
+	// Join the server!
+	bOk = bOk && g_pMissionMgr->StartGameAsClient();
+
+	if (bOk) {
+		g_pDiscordMgr->m_InternalCurrentLobby = (discord::Lobby)lobby;
+		g_pDiscordMgr->m_pCurrentLobby = &g_pDiscordMgr->m_InternalCurrentLobby;
+
+		UpdateActivity();
+	}
+
+	return bOk;
+}
+
+bool DiscordMgr::LeaveLobby()
+{
+	m_pCurrentLobby = NULL;
+	return true;
+}
+
+void DiscordMgr::UpdateActivity()
+{
+	discord::Activity activity{};
+
+	// TODO: Cache a token, so we don't have to actually update the activity if we don't need to!
+
+	if (!g_pGameClientShell->GetPlayerMgr()->IsPlayerInWorld()) {
+		activity.SetState("In Menu");
+		activity.SetDetails("Doing non-essential stuff");
+		activity.GetAssets().SetLargeImage("default");
+		m_sState.core->ActivityManager().UpdateActivity(activity, [](discord::Result result) {});
+		return;
+	}
+
+	std::string levelName = g_pMissionMgr->GetMissionName();
+
+	auto options = g_pClientMultiplayerMgr->GetServerGameOptions();
+	auto request = g_pClientMultiplayerMgr->GetStartGameRequest();
+
+	auto netSession = request.m_pNetSession;
+
+	auto pClientInfoMgr = g_pGameClientShell->GetInterfaceMgr()->GetClientInfoMgr();
+
+	g_pClientMultiplayerMgr->GetNetClientData();
+	
+	activity.SetDetails(levelName.c_str());
+
+	auto gameTypeStringID = options.GetGameTypeStringID();
+
+	activity.SetState("Singleplayer");
+
+	if (gameTypeStringID > 0) {
+		activity.SetState(LoadTempString(options.GetGameTypeStringID()));
+	}
+
+	// Set the party if we have a lobby
+	if (m_pCurrentLobby) {
+		char secret[128];
+		memset(secret, '\0', sizeof(secret));
+
+		auto activitySecret = m_sState.core->LobbyManager().GetLobbyActivitySecret(m_pCurrentLobby->GetId(), secret);
+
+		activity.GetParty().SetId(std::to_string(m_pCurrentLobby->GetId()).c_str());
+
+		int currentPlayers = 1;
+		int maxPlayers = options.GetMaxPlayers();
+
+		if (pClientInfoMgr) {
+			currentPlayers = pClientInfoMgr->GetNumClients();
+		}
+
+		activity.GetParty().GetSize().SetCurrentSize(currentPlayers);
+		activity.GetParty().GetSize().SetMaxSize(maxPlayers);
+		activity.GetSecrets().SetJoin(secret); // needed for ask to join to show up
+	}
+
+	// Map
+	activity.GetAssets().SetLargeImage(GetLevelArt(g_pMissionMgr->GetCurrentWorldName()).c_str());
+	activity.GetAssets().SetLargeText(levelName.c_str());
+	activity.SetInstance(true);
+
+	m_sState.core->ActivityManager().UpdateActivity(activity, [](discord::Result result) {
+		if (result != discord::Result::Ok) {
+			SDL_Log("Error on updating activity! %d", result);
+		}
+	});
+}
+
+std::string DiscordMgr::GetLevelArt(std::string levelName)
+{
+	std::vector<std::string> levelArtList = {
+		"dm_05"
+	};
+	
+	char pathName[128];
+	char name[128];
+
+	pathName[0] = '\0';
+	name[0] = '\0';
+
+	CHelpers::ExtractPathAndFileName(levelName.c_str(), pathName, name);
+
+
+	for (std::vector<std::string>::iterator it = levelArtList.begin(); it != levelArtList.end(); ++it)
+	{
+		if (stricmp(name, it._Ptr->c_str()) == 0) {
+			return it._Ptr->c_str();
+		}
+	}
+
+	return "default";
 }

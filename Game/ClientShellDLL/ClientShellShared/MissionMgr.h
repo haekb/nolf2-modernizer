@@ -65,6 +65,8 @@ class CMissionMgr
 		int				GetNewLevel()	const {return m_nNewLevel;}
 		char const*		GetNewWorldName() const	{ return m_sNewWorldName; }
 
+		std::string     GetMissionName();
+
 		// Handles messages.
 		bool			OnMessage( uint8 messageID, ILTMessage_Read& msg );
 
