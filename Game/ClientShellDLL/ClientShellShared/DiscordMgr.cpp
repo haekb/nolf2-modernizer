@@ -12,6 +12,7 @@ extern CGameClientShell* g_pGameClientShell;
 extern CMissionMgr* g_pMissionMgr;
 extern ILTClient* g_pLTClient;
 extern ClientMultiplayerMgr* g_pClientMultiplayerMgr;
+extern SDL_Window* g_SDLWindow;
 
 void LogProblemsFunction(discord::LogLevel level, std::string message)
 {
@@ -27,6 +28,8 @@ DiscordMgr::DiscordMgr()
 	//g_pDiscordMgr = this;
 	m_pCurrentLobby = NULL;
 	m_pCore = NULL;
+
+	ClearDiscordActivity(m_sCachedActivityData);
 }
 
 DiscordMgr::~DiscordMgr()
@@ -188,6 +191,25 @@ bool DiscordMgr::JoinLobby(discord::Lobby const& lobby)
 		g_pDiscordMgr->m_InternalCurrentLobby = (discord::Lobby)lobby;
 		g_pDiscordMgr->m_pCurrentLobby = &g_pDiscordMgr->m_InternalCurrentLobby;
 
+		// Small hack to grab focus so loading screen thread doesn't cause crash.
+
+		// Small Hack Start
+		HCONSOLEVAR hVar = g_pLTClient->GetConsoleVar("Windowed");
+		bool bFocusWindow = false;
+		if (hVar)
+		{
+			float fVal = g_pLTClient->GetVarValueFloat(hVar);
+			if (fVal == 1.0f)
+			{
+				bFocusWindow = true;
+			}
+		}
+
+		if (bFocusWindow) {
+			SDL_RaiseWindow(g_SDLWindow);
+		}
+		// Small Hack End
+
 		UpdateActivity();
 	}
 
@@ -197,71 +219,113 @@ bool DiscordMgr::JoinLobby(discord::Lobby const& lobby)
 bool DiscordMgr::LeaveLobby()
 {
 	m_pCurrentLobby = NULL;
+	UpdateActivity();
 	return true;
 }
 
+// Overall "Sync"
+// It's slow, I need to move to a more dynamic solution.
 void DiscordMgr::UpdateActivity()
 {
 	discord::Activity activity{};
 
-	// TODO: Cache a token, so we don't have to actually update the activity if we don't need to!
+	// Bit of duplicate data, but easy out. Menus never change!
+	if (m_sCachedActivityData.inMenu && !g_pGameClientShell->GetPlayerMgr()->IsPlayerInWorld()) {
+		return;
+	}
 
-	if (!g_pGameClientShell->GetPlayerMgr()->IsPlayerInWorld()) {
-		activity.SetState("In Menu");
-		activity.SetDetails("Doing non-essential stuff");
-		activity.GetAssets().SetLargeImage("default");
+	DiscordActivityData activityData;
+
+	activityData.state = "In Menu";
+	activityData.details = "Doing non-essential stuff";
+	activityData.largeImageName = "default";
+	activityData.largeImageText = "";
+	activityData.currentPlayers = 1;
+	activityData.maxPlayers = 1;
+	activityData.lobbyId = "N/A";
+	activityData.inMenu = !g_pGameClientShell->GetPlayerMgr()->IsPlayerInWorld();
+
+	if (activityData.inMenu) {
+		activity.SetState(activityData.state.c_str());
+		activity.SetDetails(activityData.details.c_str());
+		activity.GetAssets().SetLargeImage(activityData.largeImageText.c_str());
+
+		ClearDiscordActivity(m_sCachedActivityData);
+		m_sCachedActivityData = activityData;
+
 		m_sState.core->ActivityManager().UpdateActivity(activity, [](discord::Result result) {});
 		return;
 	}
 
 	std::string levelName = g_pMissionMgr->GetMissionName();
 
+	// Ok, we're in singleplayer. Check if the level names match.
+	// If they do, early return.
+	if (!m_pCurrentLobby && levelName.compare(m_sCachedActivityData.details)) {
+		return;
+	}
+
 	auto options = g_pClientMultiplayerMgr->GetServerGameOptions();
-	auto request = g_pClientMultiplayerMgr->GetStartGameRequest();
-
-	auto netSession = request.m_pNetSession;
-
 	auto pClientInfoMgr = g_pGameClientShell->GetInterfaceMgr()->GetClientInfoMgr();
-
-	g_pClientMultiplayerMgr->GetNetClientData();
-	
-	activity.SetDetails(levelName.c_str());
-
 	auto gameTypeStringID = options.GetGameTypeStringID();
 
-	activity.SetState("Singleplayer");
+	activityData.state = "Singleplayer";
+	activityData.details = levelName;
+	activityData.largeImageText = levelName;
+	activityData.largeImageName = levelName;
+	//activityData.largeImageName = GetLevelArt(g_pMissionMgr->GetCurrentWorldName()).c_str();
+	activityData.currentPlayers = 1;
+	activityData.maxPlayers = 1;
+
+	activity.SetDetails(levelName.c_str());
+	activity.SetState(activityData.state.c_str());
 
 	if (gameTypeStringID > 0) {
-		activity.SetState(LoadTempString(options.GetGameTypeStringID()));
+		activityData.state = LoadTempString(options.GetGameTypeStringID());
+		activity.SetState(activityData.state.c_str());
 	}
+
+	// Map
+	activity.GetAssets().SetLargeImage(activityData.largeImageName.c_str());
+	activity.GetAssets().SetLargeText(activityData.largeImageText.c_str());
+	activity.SetInstance(true);
 
 	// Set the party if we have a lobby
 	if (m_pCurrentLobby) {
+		activityData.maxPlayers = options.GetMaxPlayers();
+
+		if (pClientInfoMgr) {
+			activityData.currentPlayers = pClientInfoMgr->GetNumClients();
+		}
+
+		activityData.lobbyId = std::to_string(m_pCurrentLobby->GetId());
+		activity.GetParty().GetSize().SetCurrentSize(activityData.currentPlayers);
+		activity.GetParty().GetSize().SetMaxSize(activityData.maxPlayers);
+
+		// Multiplayer early return point -- Maybe compare game mode?
+		if (m_sCachedActivityData.currentPlayers == activityData.currentPlayers
+			&& m_sCachedActivityData.maxPlayers == activityData.maxPlayers
+			&& m_sCachedActivityData.details.compare(activityData.details) == 0
+			&& m_sCachedActivityData.lobbyId.compare(activityData.lobbyId) == 0) {
+			return;
+		}
+
+		// Handle lobby id and secret
 		char secret[128];
 		memset(secret, '\0', sizeof(secret));
 
 		auto activitySecret = m_sState.core->LobbyManager().GetLobbyActivitySecret(m_pCurrentLobby->GetId(), secret);
-
-		activity.GetParty().SetId(std::to_string(m_pCurrentLobby->GetId()).c_str());
-
-		int currentPlayers = 1;
-		int maxPlayers = options.GetMaxPlayers();
-
-		if (pClientInfoMgr) {
-			currentPlayers = pClientInfoMgr->GetNumClients();
-		}
-
-		activity.GetParty().GetSize().SetCurrentSize(currentPlayers);
-		activity.GetParty().GetSize().SetMaxSize(maxPlayers);
+		activity.GetParty().SetId(activityData.lobbyId.c_str());
 		activity.GetSecrets().SetJoin(secret); // needed for ask to join to show up
 	}
 
-	// Map
-	activity.GetAssets().SetLargeImage(GetLevelArt(g_pMissionMgr->GetCurrentWorldName()).c_str());
-	activity.GetAssets().SetLargeText(levelName.c_str());
-	activity.SetInstance(true);
+
+	ClearDiscordActivity(m_sCachedActivityData);
+	m_sCachedActivityData = activityData;
 
 	m_sState.core->ActivityManager().UpdateActivity(activity, [](discord::Result result) {
+		SDL_Log("Updated activity with result : %d", result);
+
 		if (result != discord::Result::Ok) {
 			SDL_Log("Error on updating activity! %d", result);
 		}
@@ -270,6 +334,14 @@ void DiscordMgr::UpdateActivity()
 
 std::string DiscordMgr::GetLevelArt(std::string levelName)
 {
+#if 1
+	if (levelName.compare("Unity HQ (8-16 Players)") == 0) {
+		return "dm_05";
+	}
+	
+
+	return "default";
+#else // Too slow!
 	std::vector<std::string> levelArtList = {
 		"dm_05"
 	};
@@ -291,4 +363,8 @@ std::string DiscordMgr::GetLevelArt(std::string levelName)
 	}
 
 	return "default";
+
+
+#endif
 }
+

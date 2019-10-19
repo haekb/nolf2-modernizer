@@ -14,6 +14,18 @@ struct DiscordState {
 	std::unique_ptr<discord::Core> core;
 };
 
+// Mainly for hashing
+struct DiscordActivityData {
+	std::string state;
+	std::string details;
+	std::string largeImageName;
+	std::string largeImageText;
+	int currentPlayers;
+	int maxPlayers;
+	std::string lobbyId;
+	bool inMenu;
+};
+
 class DiscordMgr
 {
 public:
@@ -38,6 +50,8 @@ public:
 	discord::Lobby* m_pCurrentLobby;
 	// FIXME: maybe find a better way to handle lobbies.
 	discord::Lobby m_InternalCurrentLobby;
+
+	DiscordActivityData m_sCachedActivityData;
 
 protected:
 

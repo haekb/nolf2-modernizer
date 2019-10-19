@@ -557,6 +557,10 @@ std::string CMissionMgr::GetMissionName()
 	int nCurMission = g_pMissionMgr->GetCurrentMission();
 	MISSION* pMission = g_pMissionButeMgr->GetMission(nCurMission);
 
+	if (pMission == NULL) {
+		return "";
+	}
+
 	missionName = pMission->sName;
 
 	// If we have localized name, use that instead!

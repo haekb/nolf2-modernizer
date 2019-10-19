@@ -789,8 +789,10 @@ LTBOOL CLoadingScreen::Update()
 
 LTBOOL CLoadingScreen::Show(LTBOOL bRun)
 {
-	if (bRun && !GetConsoleInt("DynamicLoadScreen",1))
+	if (bRun && !GetConsoleInt("DynamicLoadScreen", 1)) {
 		bRun = LTFALSE;
+	}
+
 	// Make sure we're in the correct state
 	if (m_eCurState == STATE_NONE)
 	{
@@ -825,8 +827,9 @@ LTBOOL CLoadingScreen::Show(LTBOOL bRun)
 	Update();
 
 	// Start updating if they wanted it to..
-	if (bRun)
+	if (bRun == LTTRUE) { 
 		return Resume();
+	}
 
 	// Ok, it's visible or active
 	return LTTRUE;
@@ -857,6 +860,7 @@ LTBOOL CLoadingScreen::Resume()
 	// Reset the events
 	ResetEvent(m_hEventEnd);
 	ResetEvent(m_hEventThreadRunning);
+
 
 	// Start up the loading screen thread
 	uint32 uThreadID;
