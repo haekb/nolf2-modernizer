@@ -34,11 +34,11 @@ steps:
       Game\\built\\Release\\ServerRes\\TO2\\SRes.dll
     TargetFolder: '$(Pipeline.Workspace)\\Artifacts\\Modernizer'
     
-- task: CopyFiles@2
-  inputs:
-    SourceFolder: 'ASSETS'
-    Contents: '**'
-    TargetFolder: '$(Pipeline.Workspace)\\Artifacts\\Modernizer'
+#- task: CopyFiles@2
+#  inputs:
+#    SourceFolder: 'ASSETS'
+#    Contents: '**'
+#    TargetFolder: '$(Pipeline.Workspace)\\Artifacts\\Modernizer'
 
 - task: CopyFiles@2
   inputs:
