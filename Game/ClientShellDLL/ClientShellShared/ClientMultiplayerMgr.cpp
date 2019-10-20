@@ -816,6 +816,7 @@ void ClientMultiplayerMgr::Update( )
 
 	// Only update every 5 seconds
 	if (seconds - lastTime > 10) {
+		SDL_Log("Update Time! %lld vs %lld", seconds, lastTime);
 		g_pDiscordMgr->UpdateActivity();
 		lastTime = seconds;
 	}
