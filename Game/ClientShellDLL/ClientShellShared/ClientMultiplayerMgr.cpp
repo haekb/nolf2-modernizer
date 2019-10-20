@@ -26,10 +26,40 @@
 #include "DiscordMgr.h"
 #include <chrono>
 #include <ctime>
+#include <winsock.h>
+#include "IGameSpy.h"
 
 extern DiscordMgr* g_pDiscordMgr;
 
 ClientMultiplayerMgr* g_pClientMultiplayerMgr = NULL;
+
+
+inline unsigned char INADDR_B1(const sockaddr_in& addr)
+{
+	return addr.sin_addr.S_un.S_un_b.s_b1;
+}
+inline unsigned char INADDR_B2(const sockaddr_in& addr)
+{
+	return addr.sin_addr.S_un.S_un_b.s_b2;
+}
+inline unsigned char INADDR_B3(const sockaddr_in& addr)
+{
+	return addr.sin_addr.S_un.S_un_b.s_b3;
+}
+inline unsigned char INADDR_B4(const sockaddr_in& addr)
+{
+	return addr.sin_addr.S_un.S_un_b.s_b4;
+}
+#define EXPAND_BASEADDR(addr)\
+              INADDR_B1(addr), INADDR_B2(addr), INADDR_B3(addr), INADDR_B4(addr)
+
+#define EXPAND_ADDR(addr) \
+	EXPAND_BASEADDR(addr),\
+	ntohs((addr).sin_port)
+
+static const char* ADDR_PRINTF = "%d.%d.%d.%d:%d";
+
+static bool SetupGameSpyBrowser(IGameSpyBrowser& gameSpyBrowser);
 
 
 // --------------------------------------------------------------------------- //
@@ -46,7 +76,8 @@ ClientMultiplayerMgr::ClientMultiplayerMgr( )
 	m_nServerKey = 0;
 	m_nDisconnectCode = 0;
 	m_bForceDisconnect = false;
-	m_pServerDir = 0;
+	m_pRetailGameSpyBrowser = 0;
+	m_pDemoGameSpyBrowser = 0;
 	m_aCurMessageSourceAddr[0] = 0;
 	m_aCurMessageSourceAddr[1] = 0;
 	m_aCurMessageSourceAddr[2] = 0;
@@ -76,7 +107,7 @@ ClientMultiplayerMgr::ClientMultiplayerMgr( )
 
 ClientMultiplayerMgr::~ClientMultiplayerMgr( )
 {
-	delete GetServerDir();
+	TermBrowsers();
 
 	g_pClientMultiplayerMgr = NULL;
 }
@@ -276,29 +307,38 @@ void ClientMultiplayerMgr::DoTaunt(uint32 nClientID, uint32 nTauntID)
 
 
 
-bool ClientMultiplayerMgr::SetupClient(char const* pszIpAddress, char const* pszHostName, char const* pszPassword)
+bool ClientMultiplayerMgr::SetupClient(char const* pszHostName, char const* pszPassword,
+	bool bDoNatNegotiations, bool bConnectViaPublic,
+	char const* pszPublicAddress, char const* pszPrivateAddress)
 {
 	// Check inputs.
-	if( !pszIpAddress || !pszIpAddress[0] )
+	if (!pszPublicAddress || !pszPublicAddress[0] || !pszPrivateAddress || !pszPrivateAddress[0])
 	{
-		ASSERT( !"ClientMultiplayerMgr::SetupClient: Invalid inputs." );
+		ASSERT(!"ClientMultiplayerMgr::SetupClient: Invalid inputs.");
 		return false;
 	}
 
-	// Start the game...
+	m_sConnectPublicAddress = pszPublicAddress;
+	m_sConnectPrivateAddress = pszPrivateAddress;
+	m_bConnectViaPublic = bConnectViaPublic;
 
-	memset( &m_StartGameRequest, 0, sizeof( m_StartGameRequest ));
-	m_ServerGameOptions.Clear( );
-	memset( &m_NetClientData, 0, sizeof( m_NetClientData ));
+	// Setup the startgame info.
+	StartGameRequest startGameRequest;
+	m_StartGameRequest = startGameRequest;
+	m_ServerGameOptions.Clear();
+	memset(&m_NetClientData, 0, sizeof(m_NetClientData));
 
-	if( !UpdateNetClientData( ))
+	if (!UpdateNetClientData())
 		return false;
 
+	// Record the default address to try.
+	strncpy(m_StartGameRequest.m_TCPAddress, (m_bConnectViaPublic ? m_sConnectPublicAddress.c_str() :
+		m_sConnectPrivateAddress.c_str()), MAX_SGR_STRINGLEN);
+
 	m_StartGameRequest.m_Type = STARTGAME_CLIENTTCP;
-	strncpy( m_StartGameRequest.m_TCPAddress, pszIpAddress, MAX_SGR_STRINGLEN);
-	if( pszHostName && pszHostName[0] )
+	if (pszHostName && pszHostName[0])
 	{
-		SAFE_STRCPY(m_StartGameRequest.m_HostInfo.m_sName ,pszHostName);
+		SAFE_STRCPY(m_StartGameRequest.m_HostInfo.m_sName, pszHostName);
 	}
 
 	if (pszPassword)
@@ -309,6 +349,9 @@ bool ClientMultiplayerMgr::SetupClient(char const* pszIpAddress, char const* psz
 	{
 		m_nClientPass = 0;
 	}
+
+	// Check if they want us to do natnegotiations.
+	m_bDoNatNegotiations = bDoNatNegotiations;
 
 	return true;
 }
@@ -395,16 +438,6 @@ bool ClientMultiplayerMgr::SetupServerHost( int nPort, bool bLANOnly )
 	
 	m_ServerGameOptions.m_sModName = GetModName();
 	
-
-
-	// Make sure that the multiplayer mgr doesn't have a server directory in use
-	// This must be done because there can only be one IServerDirectory object
-	// created at a time for proper shutdown.  (Internal Titan implementation BS...)
-	// NYI - Note : This shouldn't be necessary, and if it is, it will cause problems
-	// elsewhere.  (Host/Join sequence = 2 objects) Figure out a way to get around this 
-	// restriction.
-	DeleteServerDir( );
-
     return true;
 }
 
@@ -446,61 +479,6 @@ void ClientMultiplayerMgr::ClearDisconnectCode()
 	m_StartGameRequest.m_Type = GAMEMODE_NONE;
 }
 
-// --------------------------------------------------------------------------- //
-//
-//	ROUTINE:	ClientMultiplayerMgr::CreateServerDir
-//
-//	PURPOSE:	Creates the client's serverdir for joining a remote game.
-//
-// --------------------------------------------------------------------------- //
-/*
-IServerDirectory* ClientMultiplayerMgr::CreateServerDir( )
-{
-	// Make sure we don't already have one.
-	DeleteServerDir( );
-
-	// Get the resource module so we can give it to the serverdir for
-	// error messages.
-	void* pModule = NULL;
-	g_pLTClient->GetEngineHook("cres_hinstance",&pModule);
-	HMODULE hModule = (HINSTANCE)pModule;
-
-	m_pServerDir = Factory_Create_IServerDirectory_Titan( true, *g_pLTClient, hModule );
-	if( !m_pServerDir )
-		return NULL;
-
-	// Set the game's name
-	m_pServerDir->SetGameName(g_pVersionMgr->GetNetGameName());
-	// Set the version
-	m_pServerDir->SetVersion(g_pVersionMgr->GetNetVersion());
-	m_pServerDir->SetRegion(g_pVersionMgr->GetNetRegion());
-	// Set up the packet header
-	CAutoMessage cMsg;
-	cMsg.Writeuint8(11); // CMSG_MESSAGE
-	cMsg.Writeuint8(MID_MULTIPLAYER_SERVERDIR);
-	m_pServerDir->SetNetHeader(*cMsg.Read());
-
-	return m_pServerDir;
-}
-*/
-// --------------------------------------------------------------------------- //
-//
-//	ROUTINE:	ClientMultiplayerMgr::DeleteServerDir
-//
-//	PURPOSE:	Remove the server dir.
-//
-// --------------------------------------------------------------------------- //
-/*
-void ClientMultiplayerMgr::DeleteServerDir( )
-{ 
-	if( m_pServerDir )
-	{
-		// No leaking, please...
-		delete m_pServerDir; 
-		m_pServerDir = NULL; 
-	}
-}
-*/
 // --------------------------------------------------------------------------- //
 //
 //	ROUTINE:	ClientMultiplayerMgr::SetCurMessageSource
@@ -591,6 +569,60 @@ bool ClientMultiplayerMgr::OnMessage(uint8 messageID, ILTMessage_Read *pMsg)
 	return false;
 }
 
+// ----------------------------------------------------------------------- //
+// Function name   : ClientMultiplayerMgr::CreateServerBrowsers
+// Description     : Creates the serverbrowser objects needed for joining
+//						public/lan retail/demo servers.
+// Return type     : static bool - true on success.
+// ----------------------------------------------------------------------- //
+bool ClientMultiplayerMgr::CreateServerBrowsers()
+{
+	if (!m_pRetailGameSpyBrowser)
+	{
+		// Create the retail browser.
+		IGameSpyBrowser::StartupInfo startupInfo;
+		startupInfo.m_eGameSKU = eGameSKU_ContractJack_Retail;
+		m_pRetailGameSpyBrowser = IGameSpyBrowser::Create(startupInfo);
+		SetupGameSpyBrowser(*m_pRetailGameSpyBrowser);
+	}
+
+	if (!m_pDemoGameSpyBrowser)
+	{
+		// Create the mpdemo browser.
+		IGameSpyBrowser::StartupInfo startupInfo;
+#if defined( _PRDEMO )
+		startupInfo.m_eGameSKU = eGameSKU_ContractJack_PRDemo;
+#else // defined( _PRDEMO )
+		startupInfo.m_eGameSKU = eGameSKU_ContractJack_MPDemo;
+#endif // defined( _PRDEMO )
+		m_pDemoGameSpyBrowser = IGameSpyBrowser::Create(startupInfo);
+		SetupGameSpyBrowser(*m_pDemoGameSpyBrowser);
+	}
+
+	return true;
+}
+
+
+// ----------------------------------------------------------------------- //
+// Function name   : ClientMultiplayerMgr::TermBrowsers
+// Description     : Deletes the server browser objects.  Good idea
+//						to delete them when you are done with them,
+//						since they can store lots of data in the server lists.
+// ----------------------------------------------------------------------- //
+void ClientMultiplayerMgr::TermBrowsers()
+{
+	// Delete the browsers now that we're joining.
+	if (m_pRetailGameSpyBrowser)
+	{
+		IGameSpyBrowser::Delete(m_pRetailGameSpyBrowser);
+		m_pRetailGameSpyBrowser = NULL;
+	}
+	if (m_pDemoGameSpyBrowser)
+	{
+		IGameSpyBrowser::Delete(m_pDemoGameSpyBrowser);
+		m_pDemoGameSpyBrowser = NULL;
+	}
+}
 
 bool ClientMultiplayerMgr::HandleMsgHandshake( ILTMessage_Read & msg )
 {
@@ -884,6 +916,8 @@ bool ClientMultiplayerMgr::SetService( )
 
 bool ClientMultiplayerMgr::StartClient( )
 {
+	// Start off disconnected.
+	m_eConnectionState = eConnectionState_Disconnected;
 
 	// Initialize the networking.  Always start a new server with hosted games.
     m_nLastConnectionResult = g_pLTClient->InitNetworking(NULL, 0);
@@ -893,34 +927,66 @@ bool ClientMultiplayerMgr::StartClient( )
 	}
 
 	// Initialize our protocol.
-	if (!SetService())
-        return false;
+	if (!SetService()) {
+		return false;
+	}
 
 	// Hook up the netgame and clientinfo.
 	m_StartGameRequest.m_pClientData = &m_NetClientData;
 	m_StartGameRequest.m_ClientDataLen = sizeof( m_NetClientData );
 
-	int nRetries = 0;
-	while (nRetries >= 0)
+	// If we don't need natneg, then go right to connecting.
+	if (!m_bDoNatNegotiations)
 	{
-		// If successful, then we're done.
-		m_nLastConnectionResult = g_pLTClient->StartGame( const_cast< StartGameRequest * >( &m_StartGameRequest ));
-		if( m_nLastConnectionResult == LT_OK )
-		{
-			return true;
-		}
-
-		// If we didn't timeout, then there's no reason to try again.
-		if( m_nLastConnectionResult != LT_TIMEOUT )
-			break;
-
-		// Wait a sec and try again.
-		Sleep(1000);
-		nRetries--;
+		m_eConnectionState = eConnectionState_Connecting;
+		return true;
 	}
 
-	
-	return false;
+	// Convert the address string into ip and port.
+	char szIP[256];
+	uint16 nPort;
+	char* pszPortDelim = strchr(m_StartGameRequest.m_TCPAddress, ':');
+	if (!pszPortDelim || !pszPortDelim[1])
+		return false;
+	uint32 nIPLen = pszPortDelim - m_StartGameRequest.m_TCPAddress;
+	strncpy(szIP, m_StartGameRequest.m_TCPAddress, nIPLen);
+	szIP[nIPLen] = 0;
+	nPort = atoi(pszPortDelim + 1);
+
+	// Start a ping request.  This just gets the networking rolling.
+	SOCKET hSocket;
+	/*
+	if (LT_OK != g_pLTClient->OpenSocket(&hSocket))
+		return false;
+	*/
+	// Try this instead! -- TODO: This might be broken..
+	hSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+
+
+	if (!hSocket) {
+		return LT_ERROR;
+	}
+
+	// Make sure we have a serverbrowser object.
+	if (!m_pRetailGameSpyBrowser)
+	{
+		CreateServerBrowsers();
+	}
+
+	if (m_pRetailGameSpyBrowser && hSocket)
+	{
+		// Start natneg process.
+		if (m_pRetailGameSpyBrowser->RequestNatNegotiation(hSocket, szIP, nPort))
+		{
+			m_StartGameRequest.m_nSocket = hSocket;
+			m_eConnectionState = eConnectionState_NatNeg;
+			return true;
+		}
+	}
+
+	// Couldn't get natneg going, just do regular connecting.
+	m_eConnectionState = eConnectionState_Connecting;
+	return true;
 }
 
 // --------------------------------------------------------------------------- //
@@ -961,8 +1027,12 @@ bool ClientMultiplayerMgr::StartServerAsHost( )
 	}
 
 	// Initialize our protocol.
-	if (!SetService())
-        return false;
+	if (!SetService()) {
+		return false;
+	}
+
+	// Make sure we throw away the serverbrowser objects.
+	TermBrowsers();
 
 	// Hook up the netgame and clientinfo.
 	ServerGameOptions* pServerGameOptions = &m_ServerGameOptions;
@@ -1011,6 +1081,8 @@ bool ClientMultiplayerMgr::StartServerAsSinglePlayer( )
 	m_StartGameRequest.m_pGameInfo = &pServerGameOptions;
 	m_StartGameRequest.m_GameInfoLen = sizeof( pServerGameOptions );
 
+	// Make sure we throw away the serverbrowser objects.
+	TermBrowsers();
 
 	// Start with clean slate
 	m_StartGameRequest.m_Type = STARTGAME_NORMAL;
@@ -1112,4 +1184,196 @@ bool ClientMultiplayerMgr::UpdateNetClientData( )
 	};
 
 	return true;	
+}
+
+// ----------------------------------------------------------------------- //
+// Function name   : SetupGameSpyBrowser
+// Description     : Sets the gamespybrowser object up with property keys.
+// Return type     : static bool - true on success.
+// Argument        : IGameSpyBrowser& gameSpyBrowser - browser to setup.
+// ----------------------------------------------------------------------- //
+static bool SetupGameSpyBrowser(IGameSpyBrowser& gameSpyBrowser)
+{
+	// Register the keys used.
+	gameSpyBrowser.RegisterKey("hostname");
+	gameSpyBrowser.RegisterKey("mapname");
+	gameSpyBrowser.RegisterKey("numplayers");
+	gameSpyBrowser.RegisterKey("maxplayers");
+	gameSpyBrowser.RegisterKey("gametype");
+	gameSpyBrowser.RegisterKey("gamemode");
+	gameSpyBrowser.RegisterKey("password");
+	gameSpyBrowser.RegisterKey("gamever");
+	gameSpyBrowser.RegisterKey("fraglimit");
+	gameSpyBrowser.RegisterKey("timelimit");
+	gameSpyBrowser.RegisterKey("player_");
+	gameSpyBrowser.RegisterKey("frags_");
+	gameSpyBrowser.RegisterKey("ping_");
+	gameSpyBrowser.RegisterKey("modname");
+	gameSpyBrowser.RegisterKey("options");
+
+	// Use these keys for the summary.
+	gameSpyBrowser.AddSummaryKey("hostname");
+	gameSpyBrowser.AddSummaryKey("numplayers");
+	gameSpyBrowser.AddSummaryKey("maxplayers");
+	gameSpyBrowser.AddSummaryKey("gametype");
+	gameSpyBrowser.AddSummaryKey("gamever");
+	gameSpyBrowser.AddSummaryKey("modname");
+	gameSpyBrowser.AddSummaryKey("password");
+
+	return true;
+}
+
+// ----------------------------------------------------------------------- //
+// Function name   : ClientMultiplayerMgr::UpdateConnectionState
+// Description     : Updates the statemachine.
+// ----------------------------------------------------------------------- //
+void ClientMultiplayerMgr::UpdateConnectionState()
+{
+	switch (m_eConnectionState)
+	{
+	case eConnectionState_Disconnected:
+		break;
+	case eConnectionState_NatNeg:
+	{
+		UpdateState_NatNeg();
+	}
+	break;
+	case eConnectionState_SettleComm:
+	{
+		UpdateState_SettleComm();
+	}
+	break;
+	case eConnectionState_Connecting:
+	{
+		UpdateState_Connecting();
+	}
+	break;
+	case eConnectionState_Connected:
+		break;
+	case eConnectionState_Failure:
+	{
+		g_pInterfaceMgr->LoadFailed();
+		m_eConnectionState = eConnectionState_Disconnected;
+	}
+	break;
+	}
+}
+
+// ----------------------------------------------------------------------- //
+// Function name   : ClientMultiplayerMgr::UpdateState_NatNeg
+// Description     : Updates the natneg state.
+// ----------------------------------------------------------------------- //
+void ClientMultiplayerMgr::UpdateState_NatNeg()
+{
+	switch (m_pRetailGameSpyBrowser->GetBrowserStatus())
+	{
+	case IGameSpyBrowser::eBrowserStatus_Processing:
+		break;
+	case IGameSpyBrowser::eBrowserStatus_Error:
+	case IGameSpyBrowser::eBrowserStatus_Idle:
+		// Drop the socket, we don't need it any more.
+		m_StartGameRequest.m_nSocket = StartGameRequest::kInvalidSocket;
+		m_eConnectionState = eConnectionState_Connecting;
+		break;
+	case IGameSpyBrowser::eBrowserStatus_Complete:
+		sockaddr_in sockAddr;
+		m_pRetailGameSpyBrowser->GetNatNegotiationResult((sockaddr*)(&sockAddr));
+
+		// Change our address to the one found.
+		sprintf(m_StartGameRequest.m_TCPAddress, ADDR_PRINTF, EXPAND_ADDR(sockAddr));
+
+		m_SettleCommTimer.Start(2.0f);
+		m_eConnectionState = eConnectionState_SettleComm;
+		break;
+	}
+}
+
+// ----------------------------------------------------------------------- //
+// Function name   : ClientMultiplayerMgr::UpdateState_SettleComm
+// Description     : Lets comm settle for a few seconds.
+// ----------------------------------------------------------------------- //
+void ClientMultiplayerMgr::UpdateState_SettleComm()
+{
+	if (m_SettleCommTimer.Stopped())
+	{
+		m_eConnectionState = eConnectionState_Connecting;
+	}
+}
+
+// ----------------------------------------------------------------------- //
+// Function name   : ClientMultiplayerMgr::UpdateState_Connecting
+// Description     : Updates the connecting state.
+// ----------------------------------------------------------------------- //
+void ClientMultiplayerMgr::UpdateState_Connecting()
+{
+	// We will try to connect to the server using several methods.  First, we'll use
+	// the default address that we have determined through gamespy.  This may or may
+	// not have been setup through natneg.  Then we'll try to connect to the private address.
+	// If that doesn't work, we'll try the public address.  If none of those work, we'll 
+	// give up.
+	enum EConnectAddress
+	{
+		eConnectAddress_Default,
+		eConnectAddress_Private,
+		eConnectAddress_Public,
+		eConnectAddress_Failed,
+	};
+	EConnectAddress eConnectAddress = eConnectAddress_Default;
+	while (eConnectAddress != eConnectAddress_Failed)
+	{
+		bool bConnected = false;
+		int nRetries = 0;
+		while (nRetries >= 0)
+		{
+			// If successful, then we're done.
+			m_nLastConnectionResult = g_pLTClient->StartGame(const_cast<StartGameRequest*>(&m_StartGameRequest));
+			if (m_nLastConnectionResult == LT_OK)
+			{
+				bConnected = true;
+				break;
+			}
+
+			// If we didn't timeout, then there's no reason to try again.
+			if (m_nLastConnectionResult != LT_TIMEOUT)
+			{
+				break;
+			}
+
+			// Wait a little and try again.
+			Sleep(250);
+			nRetries--;
+		}
+
+		// Check if we connected.
+		if (bConnected)
+		{
+			m_eConnectionState = eConnectionState_Connected;
+			break;
+		}
+
+		// Go to the next address to try.
+		if (eConnectAddress == eConnectAddress_Default)
+		{
+			strncpy(m_StartGameRequest.m_TCPAddress, m_sConnectPrivateAddress.c_str(), MAX_SGR_STRINGLEN);
+			eConnectAddress = eConnectAddress_Private;
+		}
+		else if (eConnectAddress == eConnectAddress_Private)
+		{
+			strncpy(m_StartGameRequest.m_TCPAddress, m_sConnectPublicAddress.c_str(), MAX_SGR_STRINGLEN);
+			eConnectAddress = eConnectAddress_Public;
+		}
+		else
+		{
+			eConnectAddress = eConnectAddress_Failed;
+		}
+	}
+
+	if (eConnectAddress == eConnectAddress_Failed)
+	{
+		m_eConnectionState = eConnectionState_Failure;
+	}
+
+	// Make sure we throw away the serverbrowser objects.  Throw away
+	// after startgame call just in case more comm was required.
+	TermBrowsers();
 }

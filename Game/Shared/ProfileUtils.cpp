@@ -7,7 +7,7 @@
 #include "ResShared.h"
 #ifdef _CLIENTBUILD
 #include "ClientUtilities.h"
-#include "clientres.h"
+#include "ClientResShared.h"
 #endif //_CLIENTBUILD
 
 

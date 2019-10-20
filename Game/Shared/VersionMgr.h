@@ -23,7 +23,9 @@ extern int const GAME_HANDSHAKE_VER_MAJOR;
 extern int const GAME_HANDSHAKE_VER_MINOR;
 extern int const GAME_HANDSHAKE_VER;
 
-
+// Defines the retail mod name.  Used to
+// compare mp games from any locale.  Does not get localized.
+#define RETAIL_MOD_NAME "Modernizer"
 
 class CVersionMgr
 {

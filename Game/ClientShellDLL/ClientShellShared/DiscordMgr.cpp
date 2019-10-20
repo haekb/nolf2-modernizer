@@ -173,6 +173,9 @@ bool DiscordMgr::CreateLobby(StartGameRequest* pGameRequest)
 
 bool DiscordMgr::JoinLobby(discord::Lobby const& lobby)
 {
+	// TODO: Fix this
+	return false;
+
 	char ipAddress[4096];
 
 	memset(ipAddress, '\0', sizeof(ipAddress));
@@ -182,8 +185,13 @@ bool DiscordMgr::JoinLobby(discord::Lobby const& lobby)
 	SDL_Log("Meta Data Result %d", result);
 	SDL_Log("IP: %s", ipAddress);
 
-	bool bOk = g_pClientMultiplayerMgr->SetupClient(ipAddress, "Jake DM", 0);
-
+	//bool bOk = g_pClientMultiplayerMgr->SetupClient(ipAddress, "Jake DM", 0);
+	/*
+	bool bOk = g_pClientMultiplayerMgr->SetupClient(serverEntry.m_sName.c_str(), m_sPassword.c_str(),
+		!serverEntry.m_bDirectConnect, serverEntry.m_bConnectViaPublic,
+		serverEntry.m_sPublicAddress.c_str(), sPrivateAddress.c_str());
+		*/
+	bool bOk = false;
 	// Join the server!
 	bOk = bOk && g_pMissionMgr->StartGameAsClient();
 

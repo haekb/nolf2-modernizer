@@ -1171,6 +1171,12 @@ enum
 class StartGameRequest
 {
 public:
+
+	enum
+	{
+		kInvalidSocket = -1,
+	};
+
     StartGameRequest() {
         m_Type = STARTGAME_NORMAL;
         m_WorldName[0] = 0;
@@ -1183,10 +1189,14 @@ public:
         m_pNetSession = LTNULL;
         m_pClientData = LTNULL;
         m_ClientDataLen = 0;
+		m_nSocket = kInvalidSocket;
     }
 
     int m_Type;
     char m_WorldName[MAX_SGR_STRINGLEN];
+
+	// If specified, then it will join on the socket instead of creating a new one.
+	uint32 m_nSocket;
 
 //! TCP/IP address, if any.
     char m_TCPAddress[MAX_SGR_STRINGLEN];

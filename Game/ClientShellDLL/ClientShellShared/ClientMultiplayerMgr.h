@@ -16,15 +16,26 @@
 #include "VarTrack.h"
 #include "NetDefs.h"
 #include "ProfileUtils.h"
+#include "Timer.h"
 
-class IServerDirectory;
-
+class IGameSpyBrowser;
 
 enum eDisconnectCodes
 {
 	eDisconnect_None = 0,
 	eDisconnect_NotSameGUID,
 	eDisconnect_WrongPassword
+};
+
+// Controls state machine of connecting with a server
+enum EConnectionState
+{
+	eConnectionState_Disconnected,
+	eConnectionState_NatNeg,
+	eConnectionState_SettleComm,
+	eConnectionState_Connecting,
+	eConnectionState_Connected,
+	eConnectionState_Failure,
 };
 
 
@@ -47,7 +58,10 @@ public:
 	void		ForceDisconnect() {	m_bForceDisconnect = true;}	
 
 
-	bool		SetupClient(char const* pszIpAddress, char const* pszHostName, char const* pszPassword);
+	// Pass the pNatNegBrowser if server requires NAT Negotiations.
+	bool		SetupClient(char const* pszHostName, char const* pszPassword,
+		bool bDoNatNegotiations, bool bConnectViaPublic,
+		char const* pszPublicAddress, char const* pszPrivateAddress);
 
 	// Setup the server for singleplayer.
 	bool		SetupServerSinglePlayer( );
@@ -94,9 +108,9 @@ public:
 
 	// Server directory access
 	// Note : The server directory is owned by this object once you pass it in.
-	IServerDirectory* GetServerDir() { return m_pServerDir; }
-	IServerDirectory* CreateServerDir( );
-	void		DeleteServerDir( );
+	//IServerDirectory* GetServerDir() { return m_pServerDir; }
+	//IServerDirectory* CreateServerDir( );
+	//void		DeleteServerDir( );
 
 	// Get/Set the source address of the message which is currently being processed
 	void		SetCurMessageSource(const uint8 aAddr[4], uint16 nPort);
@@ -109,6 +123,19 @@ public:
 
 	void		SetModName( const char *pszModName ) { m_sModName = pszModName; }
 	const char*	GetModName( ) const { return m_sModName.c_str(); }
+
+	// Get retail server browser.
+	IGameSpyBrowser* GetRetailServerBrowser() { return m_pRetailGameSpyBrowser; }
+	// Get demo server browser.
+	IGameSpyBrowser* GetDemoServerBrowser() { return m_pDemoGameSpyBrowser; }
+	// Creates the server browsers.
+	bool		CreateServerBrowsers();
+	// Deletes the browsers.
+	void		TermBrowsers();
+
+	// Update the state machine.
+	void		UpdateConnectionState();
+	EConnectionState GetConnectionState() const { return m_eConnectionState; }
 	
 protected :
 
@@ -120,6 +147,10 @@ protected :
 	bool		StartServerAsSinglePlayer( );
 	bool		StartServerAsHost( );
 	bool		StartClient( );
+
+	void		UpdateState_NatNeg();
+	void		UpdateState_SettleComm();
+	void		UpdateState_Connecting();
 
 private:
 
@@ -147,9 +178,6 @@ private:
 	// Connection handling
 	bool			m_bForceDisconnect;	// Set this flag to disconnect on the next update
 
-		// Server directory interface
-	IServerDirectory*	m_pServerDir;
-
 	// Current message source
 	uint8		m_aCurMessageSourceAddr[4];
 	uint16		m_nCurMessageSourcePort;
@@ -160,6 +188,28 @@ private:
 	
 	// The name of our selected mod...
 	std::string		m_sModName;
+
+	// Gamespy browser for retail games.
+	IGameSpyBrowser* m_pRetailGameSpyBrowser;
+
+	// Gamespy browser for demo games.
+	IGameSpyBrowser* m_pDemoGameSpyBrowser;
+
+	// Should do natnegotions on next client connect.
+	bool m_bDoNatNegotiations;
+
+	EConnectionState m_eConnectionState;
+
+	// Used to let comm settle after natneg.
+	CTimer m_SettleCommTimer;
+
+	// Try initial connect through public address.
+	bool m_bConnectViaPublic;
+
+	// public address to try to connect to.
+	std::string m_sConnectPublicAddress;
+	// private address to try to connect to.
+	std::string m_sConnectPrivateAddress;
 	
 };
 

@@ -1339,6 +1339,7 @@ void CInterfaceMgr::EndSplashScreen()
 	GameType eGameType = GameStringTypeToGameType( szGameType );
 	g_pGameClientShell->SetGameType( eGameType );
 
+	/*
 	if( !szIP[0] || !g_pClientMultiplayerMgr->SetupClient( szIP, NULL, szPassword ) || !g_pMissionMgr->StartGameAsClient( ))
 	{
 		// drop them into the join menu
@@ -1347,6 +1348,7 @@ void CInterfaceMgr::EndSplashScreen()
 		MBCreate mb;
 		ShowMessageBox(IDS_CANT_CONNECT_TO_SERVER, &mb);
 	}
+	*/
 }
 
 
