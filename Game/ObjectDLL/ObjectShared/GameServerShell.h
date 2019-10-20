@@ -49,6 +49,7 @@ class Body;
 class CCharacterMgr;
 class CParsedMsg;
 struct ObjectiveMsgInfo;
+class IGameSpyServer;
 
 // Used for time of day colors.
 class TimeRamp
@@ -168,8 +169,9 @@ class CGameServerShell : public IServerShellStub
 
 		// Server directory access
 		// Note : The server directory is owned by this object once you pass it in.
-		IServerDirectory *GetServerDir() { return m_pServerDir; }
-		void		SetServerDir(IServerDirectory *pDir);
+		IGameSpyServer*GetGameSpyServer() { return m_pGameSpyServer; }
+		void		SetGameSpyServer(IGameSpyServer *pGameSpyServer);
+
 
 		// Get/Set the source address of the message which is currently being processed
 		void		SetCurMessageSource(const uint8 aAddr[4], uint16 nPort);
@@ -417,6 +419,7 @@ class CGameServerShell : public IServerShellStub
 
         LTBOOL UpdateSessionName();
         LTBOOL UpdateGameServer();
+		bool UpdateGameSpy();
 
         void		ClearClientList() { for (int i = 0; i < MAX_CLIENTS; i++) { m_aClients[i] = LTNULL; } }
         LTBOOL		AddClientToList(HCLIENT hClient);
@@ -428,7 +431,10 @@ class CGameServerShell : public IServerShellStub
 		LTBOOL IsPositionOccupied(LTVector & vPos, CPlayerObj* pPlayer);
 
 		// Server directory interface
-		IServerDirectory*	m_pServerDir;
+		//IServerDirectory*	m_pServerDir;
+
+		// Gamespy interface.
+		IGameSpyServer* m_pGameSpyServer;
 
 		// Current message source
 		uint8		m_aCurMessageSourceAddr[4];
@@ -460,6 +466,8 @@ class CGameServerShell : public IServerShellStub
 		bool		m_bPreCacheAssets;
 
 		CMusicMgr::Mood	m_eMinMusicMood;
+
+		uint32	m_nLastPublishTime;
 
 		typedef std::vector< ClientData* > ClientDataList;
 		ClientDataList	m_ClientDataList;

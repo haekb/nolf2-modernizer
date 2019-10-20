@@ -14,10 +14,11 @@
 #include "TO2GameServerShell.h"
 #include "GameStartPoint.h"
 #include "ServerMissionMgr.h"
-#include "iserverdir.h"
+//#include "iserverdir.h"
 #include "PlayerObj.h"
 #include "msgids.h"
-#include "iserverdir_titan.h"
+//#include "iserverdir_titan.h"
+#include "IGameSpy.h"
 
 // Refresh every 5 seconds
 const uint32 k_nRepublishDelay = 5000;
@@ -99,10 +100,96 @@ LTRESULT CTO2GameServerShell::OnServerInitialized()
 	// Don't do anything special if we're playing single-player
 	if (!IsMultiplayerGame( ))
 	{
-		SetServerDir(0);
+		SetGameSpyServer(NULL);
+		//SetServerDir(0);
 		return nResult;
 	}
 
+	ServerGameOptions** ppServerGameOptions;
+	uint32 dwLen = sizeof(ServerGameOptions*);
+	g_pLTServer->GetGameInfo((void**)&ppServerGameOptions, &dwLen);
+
+	// get our ip address and port to give to gamespy.
+	char szIpAddr[16];
+	uint16 nPort = 0;
+	if (LT_OK != g_pLTServer->GetTcpIpAddress(szIpAddr, ARRAY_LEN(szIpAddr), nPort))
+	{
+		(**ppServerGameOptions).m_eServerStartResult = eServerStartResult_NetworkError;
+		return LT_ERROR;
+}
+	SOCKET socket;
+	if (LT_OK != g_pLTServer->GetUDPSocket(socket))
+	{
+		(**ppServerGameOptions).m_eServerStartResult = eServerStartResult_NetworkError;
+		return LT_ERROR;
+	}
+
+	// Create a gamespy server.
+	IGameSpyServer::StartupInfo startupInfo;
+#ifdef _MPDEMO
+	startupInfo.m_eGameSKU = eGameSKU_ContractJack_MPDemo;
+#elif defined(_SPDEMO)
+	startupInfo.m_eGameSKU = eGameSKU_ContractJack_SPDemo;
+#elif defined(_PRDEMO)
+	startupInfo.m_eGameSKU = eGameSKU_ContractJack_PRDemo;
+#else
+	startupInfo.m_eGameSKU = eGameSKU_ContractJack_Retail; // NOLF 2
+#endif
+	startupInfo.m_bPublic = !m_ServerGameOptions.m_bLANOnly;
+	startupInfo.m_nPort = nPort;
+	startupInfo.m_sIpAddress = szIpAddr;
+	startupInfo.m_Socket = socket;
+	startupInfo.m_sRegion = g_pVersionMgr->GetNetRegion();
+	startupInfo.m_sVersion = g_pVersionMgr->GetNetVersion();
+	m_pGameSpyServer = IGameSpyServer::Create(startupInfo);
+
+	if (!m_pGameSpyServer)
+	{
+		ASSERT(!"Couldn't create gamespy server.");
+		(**ppServerGameOptions).m_eServerStartResult = eServerStartResult_NetworkError;
+		return LT_ERROR;
+	}
+
+	// Register some reserved keys.
+	m_pGameSpyServer->RegisterKey("hostname");
+	m_pGameSpyServer->RegisterKey("mapname");
+	m_pGameSpyServer->RegisterKey("numplayers");
+	m_pGameSpyServer->RegisterKey("maxplayers");
+	m_pGameSpyServer->RegisterKey("gametype");
+	m_pGameSpyServer->RegisterKey("gamemode");
+	m_pGameSpyServer->RegisterKey("password");
+	m_pGameSpyServer->RegisterKey("fraglimit");
+	m_pGameSpyServer->RegisterKey("timelimit");
+	m_pGameSpyServer->RegisterKey("player_");
+	m_pGameSpyServer->RegisterKey("frags_");
+	m_pGameSpyServer->RegisterKey("ping_");
+	m_pGameSpyServer->RegisterKey("modname");
+	m_pGameSpyServer->RegisterKey("options");
+
+	// Set the properties that don't change.
+	char szString[256];
+	m_pGameSpyServer->SetServerProperty("hostname", m_ServerGameOptions.GetSessionName());
+	m_pGameSpyServer->SetServerProperty("gametype", GameTypeToString(GetGameType()));
+	m_pGameSpyServer->SetServerProperty("gamemode", "openplaying");
+	sprintf(szString, "%d", m_ServerGameOptions.GetCurrentGameOptions_const().m_nMaxPlayers);
+	m_pGameSpyServer->SetServerProperty("maxplayers", szString);
+	m_pGameSpyServer->SetServerProperty("password", m_ServerGameOptions.m_bUsePassword ? "1" : "0");
+	m_pGameSpyServer->SetServerProperty("modname", m_ServerGameOptions.m_sModName.c_str());
+	m_pGameSpyServer->SetNumPlayers(0);
+	m_pGameSpyServer->SetNumTeams(0);
+
+	// Publish the the server.
+	if (!m_pGameSpyServer->Publish())
+	{
+		(**ppServerGameOptions).m_eServerStartResult = eServerStartResult_NetworkError;
+		return LT_ERROR;
+	}
+
+	(**ppServerGameOptions).m_eServerStartResult = eServerStartResult_Success;
+
+	return nResult;
+
+#if 0
 	IServerDirectory *pServerDir = Factory_Create_IServerDirectory_Titan( false, *g_pLTServer, NULL );
 	if( !pServerDir )
 	{	
@@ -137,23 +224,17 @@ LTRESULT CTO2GameServerShell::OnServerInitialized()
 	//pServerDir->SetStartupInfo( *cMsg.Read( ));
 
 	return nResult;
+#endif
 }
 
 void CTO2GameServerShell::OnServerTerm()
 {
 	CGameServerShell::OnServerTerm();
 
-	if (m_pServerDir)
+	if (m_pGameSpyServer)
 	{
-		if (!m_ServerGameOptions.m_bLANOnly)
-		{
-			// Clear the server directory's processing queue
-			m_pServerDir->BlockOnProcessing(3000);
-			// Remove us from the list
-			m_pServerDir->SetActivePeer(0);
-			m_pServerDir->ProcessRequest(IServerDirectory::eRequest_Remove_Server, 3000);
-		}
-		SetServerDir(0);
+		IGameSpyServer::Delete(m_pGameSpyServer);
+		m_pGameSpyServer = NULL;
 	}
 }
 
@@ -172,13 +253,14 @@ void CTO2GameServerShell::Update(LTFLOAT timeElapsed)
 
 	m_VersionMgr.Update();
 
-	if (!GetServerDir())
+	if (!GetGameSpyServer())
 		return;
 
 	//if we're hosting LANOnly game, don't publish the server
 	if( m_ServerGameOptions.m_bLANOnly )
 		return;
 
+#if 0
 	// Are we still waiting?
 	static std::string status;
 	switch (GetServerDir()->GetCurStatus())
@@ -199,7 +281,6 @@ void CTO2GameServerShell::Update(LTFLOAT timeElapsed)
 			}
 			break;
 	};
-
 
 
 	// Publish the server if we've waited long enough since the last directory update
@@ -310,6 +391,7 @@ void CTO2GameServerShell::Update(LTFLOAT timeElapsed)
 		// Tell the world about me...
 		GetServerDir()->QueueRequest(IServerDirectory::eRequest_Publish_Server);
 	}
+#endif
 }
 
 

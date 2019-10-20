@@ -25,7 +25,99 @@ class CButeMgr;
 
 #define MAX_PROFILE_NAME	16
 
+// Value passed back by server after initializing.  Only
+// way to pass error back to client during startgame.
+enum EServerStartResult
+{
+	eServerStartResult_None,
+	eServerStartResult_Success,
+	eServerStartResult_NetworkError,
+	eServerStartResult_Failed,
+};
 
+class BaseGameOptions
+{
+public:
+
+	BaseGameOptions();
+
+	BaseGameOptions& Copy(BaseGameOptions const& other);
+
+	bool LoadFromBute(CButeMgr& bute);
+	bool SaveToBute(CButeMgr& bute);
+
+	// Stuff to override.
+
+		// Gets the tag to use when accessing bute.
+	virtual char const* GetButeTagName() = 0;
+
+	// Clears out variables to default state.
+	virtual void Clear();
+
+	// for transmitting options that may change mid game
+	virtual void Write(ILTMessage_Write* pMsg) { };
+	virtual void Read(ILTMessage_Read* pMsg) { };
+
+	// End stuff to override.
+
+	std::string		m_sSessionName;
+	std::string		m_sCampaignName;
+
+	uint8			m_nMaxPlayers;
+	bool			m_bFriendlyFire;
+
+	// Players can only pickup a weapon type once.  When they pickup,
+	// the weaponitem stays in the world for another player to pickup.
+	bool			m_bWeaponsStay;
+
+	// Coop specific
+	bool			m_bUseSkills;
+	uint8			m_nDifficulty;
+	float			m_fPlayerDiffFactor;
+
+	// Adversarial specific
+	uint8			m_nRunSpeed;
+	uint8			m_nScoreLimit;
+	uint8			m_nTimeLimit;
+	uint8			m_nRounds;
+	uint8			m_nFragScore;
+	uint8			m_nTagScore;
+	uint8			m_nRevivingScore;
+
+	// Team specific
+	uint8			m_nNumTeams;	// Will this ever be anything but 2?
+	uint32			m_nTeamModel[MAX_TEAMS];
+	std::string		m_sTeamName[MAX_TEAMS];
+
+	// Doomsday specific.
+	uint8			m_nDeviceCompletedScore;
+	uint8			m_nLightPiecePlacedScore;
+	uint8			m_nHeavyPiecePlacedScore;
+	uint8			m_nPieceRemovedScore;
+};
+
+
+class SingleplayerGameOptions : public BaseGameOptions
+{
+public:
+
+	// Gets the tag to use when accessing bute.
+	virtual char const* GetButeTagName() { return "Singleplayer"; }
+};
+
+#if 1
+class CoopGameOptions : public BaseGameOptions
+{
+public:
+
+	// Gets the tag to use when accessing bute.
+	virtual char const* GetButeTagName() { return "Cooperative"; }
+
+	// Clears out variables to default state.
+	virtual void Clear();
+};
+
+#else
 class CoopGameOptions
 {
 	public:
@@ -53,7 +145,24 @@ class CoopGameOptions
 		float			m_fPlayerDiffFactor;
 
 };
+#endif
 
+#if 1
+class DMGameOptions : public BaseGameOptions
+{
+public:
+
+	// Gets the tag to use when accessing bute.
+	virtual char const* GetButeTagName() { return "Deathmatch"; }
+
+	// Clears out variables to default state.
+	virtual void Clear();
+
+	// for transmitting options that may change mid game
+	virtual void Write(ILTMessage_Write* pMsg);
+	virtual void Read(ILTMessage_Read* pMsg);
+};
+#else
 class DMGameOptions
 {
 	public:
@@ -83,7 +192,24 @@ class DMGameOptions
 		uint8			m_nFragScore;
 		uint8			m_nTagScore;
 };
+#endif
 
+#if 1
+class TeamDMGameOptions : public BaseGameOptions
+{
+public:
+
+	// Gets the tag to use when accessing bute.
+	virtual char const* GetButeTagName() { return "TeamDM"; }
+
+	// Clears out variables to default state.
+	virtual void Clear();
+
+	// for transmitting options that may change mid game
+	virtual void Write(ILTMessage_Write* pMsg);
+	virtual void Read(ILTMessage_Read* pMsg);
+};
+#else
 class TeamDMGameOptions
 {
 	public:
@@ -119,7 +245,41 @@ class TeamDMGameOptions
 		uint8			m_nTagScore;
 		uint8			m_nRevivingScore;
 };
+#endif
 
+#if 1
+class DemolitionGameOptions : public BaseGameOptions
+{
+public:
+
+	// Gets the tag to use when accessing bute.
+	virtual char const* GetButeTagName() { return "Demolition"; }
+
+	// Clears out variables to default state.
+	virtual void Clear();
+
+	// for transmitting options that may change mid game
+	virtual void Write(ILTMessage_Write* pMsg);
+	virtual void Read(ILTMessage_Read* pMsg);
+};
+#endif
+
+#if 1
+class DoomsdayGameOptions : public BaseGameOptions
+{
+public:
+
+	// Gets the tag to use when accessing bute.
+	virtual char const* GetButeTagName() { return "Doomsday"; }
+
+	// Clears out variables to default state.
+	virtual void Clear();
+
+	// for transmitting options that may change mid game
+	virtual void Write(ILTMessage_Write* pMsg);
+	virtual void Read(ILTMessage_Read* pMsg);
+};
+#else
 class DoomsdayGameOptions
 {
 	public:
@@ -160,7 +320,7 @@ class DoomsdayGameOptions
 
 		uint8			m_nRevivingScore;
 };
-
+#endif
 
 class ServerGameOptions
 {
@@ -221,7 +381,21 @@ class ServerGameOptions
 		TeamDMGameOptions&		GetTeamDeathmatch() { return m_TeamDM; }
 		DoomsdayGameOptions&	GetDoomsday() { return m_DD; }
 
+		// Gets the GameOptions for the current gametype.
+		BaseGameOptions const& GetCurrentGameOptions_const() const;
+		BaseGameOptions& GetCurrentGameOptions()
+		{
+			BaseGameOptions const& bgo = GetCurrentGameOptions_const();
+			return const_cast<BaseGameOptions&>(bgo);
+		}
+
+		// Server fills in with start result.
+		EServerStartResult m_eServerStartResult;
+
 	private:
+
+		//Saved data: cooperative
+		SingleplayerGameOptions	m_Singleplayer;
 
 		//Saved data: cooperative
 		CoopGameOptions		m_Coop;

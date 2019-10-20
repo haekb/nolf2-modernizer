@@ -41,7 +41,8 @@
 #include "AICentralKnowledgeMgr.h"
 #include "ServerTrackedNodeMgr.h"
 #include "GlobalServerMgr.h"
-#include "iserverdir.h"
+//#include "iserverdir.h"
+#include "IGameSpy.h"
 #include "ObjectTemplateMgr.h"
 #include "LiteObjectMgr.h"
 #include "GameBaseLite.h"
@@ -122,6 +123,9 @@ CVarTrack			g_vtDoomsdayRespawnWaitTime;
 
 
 CGameServerShell*   g_pGameServerShell = LTNULL;
+
+// Refresh every 5 seconds
+const uint32 k_nRepublishDelay = 5000;
 
 // ----------------------------------------------------------------------- //
 // Helpers for world time conversion.
@@ -366,8 +370,9 @@ CGameServerShell::CGameServerShell() :
 	, m_pAIClassFactory( 0 )
 	, m_pServerTrackedNodeMgr( 0 )
 	, m_pGlobalMgr( 0 )
-	, m_pServerDir( 0 )
+	, m_pGameSpyServer( 0 )
 	, m_pCharacterMgr( 0 )
+	, m_nLastPublishTime( 0 )
 	, m_bCachedLevelFiles( false )
 {
 	m_aCurMessageSourceAddr[0] = 0;
@@ -440,11 +445,11 @@ CGameServerShell::~CGameServerShell()
 		m_pGlobalMgr = 0;
 	}
 
-	// Get rid of the serverdir, if we have one
-	if( m_pServerDir )
+	// Get rid of the gamespy server, if we have one
+	if( m_pGameSpyServer )
 	{
-		delete m_pServerDir;
-	  	m_pServerDir = 0;
+		delete m_pGameSpyServer;
+		m_pGameSpyServer = 0;
 	}
 
 	// Get rid of the object template mgr
@@ -1631,11 +1636,11 @@ void CGameServerShell::HandleMultiplayerUpdate (HCLIENT hSender, ILTMessage_Read
 //	PURPOSE:	Handle messages sent through the server directory interface
 //
 // ----------------------------------------------------------------------- //
-
+#if 0
 void CGameServerShell::HandleMultiplayerServerDir (HCLIENT hSender, ILTMessage_Read *pMsg)
 {
 	// Only handle this message if we actually have a server directory
-	if (!m_pServerDir)
+	if (!m_pGameSpyServer)
 		return;
 
 	uint8 aNumericAddr[4];
@@ -1659,9 +1664,9 @@ void CGameServerShell::HandleMultiplayerServerDir (HCLIENT hSender, ILTMessage_R
 		(uint32)aNumericAddr[3]);
 
 	// Let the server directory handle it
-	m_pServerDir->HandleNetMessage(*CLTMsgRef_Read(pMsg->SubMsg(pMsg->Tell())), aSourceAddr, nSourcePort);
+	m_pGameSpyServer->HandleNetMessage(*CLTMsgRef_Read(pMsg->SubMsg(pMsg->Tell())), aSourceAddr, nSourcePort);
 } 
-
+#endif
 // ----------------------------------------------------------------------- //
 //
 //	ROUTINE:	CGameServerShell::HandleMultiplayerInit ()
@@ -3674,6 +3679,69 @@ LTBOOL CGameServerShell::UpdateGameServer()
     return(LTTRUE);
 }
 
+bool CGameServerShell::UpdateGameSpy()
+{
+	// No need to continue unless we have a gamespyserver.
+	if (!m_pGameSpyServer)
+		return false;
+
+	// Publish the server if we've waited long enough since the last directory update
+	uint32 nCurTime = (uint32)GetTickCount();
+	if ((m_nLastPublishTime == 0) ||
+		((nCurTime - m_nLastPublishTime) > k_nRepublishDelay))
+	{
+		m_nLastPublishTime = nCurTime;
+		uint32 nMax = 0;
+		g_pLTServer->GetMaxConnections(nMax);
+
+		// If not run by a dedicated server, we need to add one connection
+		// for the local host.
+		if (!m_ServerGameOptions.m_bDedicated)
+			nMax++;
+
+		char szProp[256];
+		char szValue[256];
+
+		// Update the details
+		ServerMissionSettings sms = g_pServerMissionMgr->GetServerSettings();
+		_splitpath(GetCurLevel(), NULL, NULL, szValue, NULL);
+		m_pGameSpyServer->SetServerProperty("mapname", szValue);
+
+		sprintf(szValue, "%d", sms.m_nScoreLimit);
+		m_pGameSpyServer->SetServerProperty("fraglimit", szValue);
+		sprintf(szValue, "%d", sms.m_nTimeLimit);
+		m_pGameSpyServer->SetServerProperty("timelimit", szValue);
+		m_pGameSpyServer->SetNumPlayers(CPlayerObj::GetPlayerObjList().size());
+		sprintf(szValue, "%d", CPlayerObj::GetPlayerObjList().size());
+		m_pGameSpyServer->SetServerProperty("numplayers", szValue);
+
+		sprintf(szValue, "FriendlyFire %d; WeaponsStay %d; Rounds %d; RunSpeed %d", sms.m_bFriendlyFire,
+			/*sms.m_bWeaponsStay*/ 0, sms.m_nRounds, sms.m_nRunSpeed);
+		m_pGameSpyServer->SetServerProperty("options", szValue);
+
+		CPlayerObj::PlayerObjList::const_iterator iter = CPlayerObj::GetPlayerObjList().begin();
+		for (uint32 nIndex = 0; iter != CPlayerObj::GetPlayerObjList().end(); iter++, nIndex++)
+		{
+			CPlayerObj* pPlayerObj = *iter;
+
+			sprintf(szProp, "player_%d", nIndex);
+			m_pGameSpyServer->SetServerProperty(szProp, pPlayerObj->GetNetUniqueName());
+			sprintf(szProp, "frags_%d", nIndex);
+			sprintf(szValue, "%d", pPlayerObj->GetPlayerScore()->GetScore());
+			m_pGameSpyServer->SetServerProperty(szProp, szValue);
+
+			float fPing;
+			g_pLTServer->GetClientPing(pPlayerObj->GetClient(), fPing);
+			uint16 nPing = (uint16)(fPing + 0.5f);
+			sprintf(szProp, "ping_%d", nIndex);
+			sprintf(szValue, "%d", nPing);
+			m_pGameSpyServer->SetServerProperty(szProp, szValue);
+		}
+	}
+
+	return true;
+}
+
 
 // ----------------------------------------------------------------------- //
 //
@@ -4014,6 +4082,8 @@ void CGameServerShell::UpdateMultiplayer()
 
 	// Update game server info...
 	UpdateGameServer();
+
+	UpdateGameSpy();
 
 	if (m_bShowMultiplayerSummary)
 	{
@@ -4645,6 +4715,19 @@ void CGameServerShell::ShowMultiplayerSummary()
 
 LTRESULT CGameServerShell::ProcessPacket(ILTMessage_Read *pMsg, uint8 senderAddr[4], uint16 senderPort)
 {
+	// Check if we have a gamespy server.
+	if (m_pGameSpyServer)
+	{
+		// Read the data out of the message.
+		uint32 nDataLen = pMsg->Size() / 8;
+		uint8* pData = (uint8*)alloca(nDataLen);
+		pMsg->ReadData(pData, nDataLen * 8);
+
+		// See if the gamespyserver wants it.
+		m_pGameSpyServer->HandleNetMessage(pData, nDataLen, senderAddr, senderPort);
+	}
+
+#if 0
 	if (pMsg->Size() >= 16)
 	{
 		// Skip the engine-side portion of the message header
@@ -4663,7 +4746,7 @@ LTRESULT CGameServerShell::ProcessPacket(ILTMessage_Read *pMsg, uint8 senderAddr
 				break;
 		}
 	}
-
+#endif
 	return(LT_OK);
 }
 
@@ -5013,21 +5096,21 @@ void CGameServerShell::ServerAppPostStartWorld( )
 
 // --------------------------------------------------------------------------- //
 //
-//	ROUTINE:	CGameServerShell::SetServerDir
+//	ROUTINE:	CGameServerShell::m_pGameSpyServer
 //
-//	PURPOSE:	Change the server directory object
+//	PURPOSE:	Change the server object
 //
 // --------------------------------------------------------------------------- //
 
-void CGameServerShell::SetServerDir(IServerDirectory *pDir)
+void CGameServerShell::SetGameSpyServer(IGameSpyServer *pGameSpyServer)
 { 
-	if( m_pServerDir )
+	if( m_pGameSpyServer )
 	{
 		// No leaking, please...
-		delete m_pServerDir; 
+		delete m_pGameSpyServer;
 	}
 
-	m_pServerDir = pDir; 
+	m_pGameSpyServer = pGameSpyServer;
 }
 
 // --------------------------------------------------------------------------- //
