@@ -17,7 +17,8 @@
 #include "GameClientShell.h"
 #include "ClientMultiplayerMgr.h"
 #include "MissionMgr.h"
-#include "iserverdir.h"
+//#include "iserverdir.h"
+
 
 extern bool g_bLAN;
 
@@ -142,6 +143,7 @@ bool CScreenPreload::UpdateCDKeyValidation( )
 		}
 		case kValidatingCDKeyState_Start:
 		{
+			/*
 			IServerDirectory *pServerDir = g_pClientMultiplayerMgr->GetServerDir();
 			if( !pServerDir )
 			{
@@ -164,10 +166,12 @@ bool CScreenPreload::UpdateCDKeyValidation( )
 			}
 
 			m_eValidatingCDKeyState = kValidatingCDKeyState_Waiting;
+			*/
 			break;
 		}
 		case kValidatingCDKeyState_Waiting:
 		{
+			/*
 			IServerDirectory *pServerDir = g_pClientMultiplayerMgr->GetServerDir();
 
 			// Are we still waiting?
@@ -198,7 +202,7 @@ bool CScreenPreload::UpdateCDKeyValidation( )
 					break;
 				}
 			}
-
+			*/
 			break;
 		}
 	}
@@ -365,6 +369,7 @@ void CScreenPreload::FirstUpdate( )
 	// If we are not joining a lan game and the cdkey hasn't been validated,
 	// we need to do it now.
 	m_eValidatingCDKeyState = kValidatingCDKeyState_None;
+	/*
 	if( !g_bLAN && g_pClientMultiplayerMgr->GetStartGameRequest( ).m_Type == STARTGAME_CLIENTTCP )
 	{
 		IServerDirectory *pServerDir = g_pClientMultiplayerMgr->GetServerDir();
@@ -373,6 +378,7 @@ void CScreenPreload::FirstUpdate( )
 			m_eValidatingCDKeyState = kValidatingCDKeyState_Start;
 		}
 	}
+	*/
 
 #ifdef _DISCORDBUILD
 	// Notify Discord we're joining a game

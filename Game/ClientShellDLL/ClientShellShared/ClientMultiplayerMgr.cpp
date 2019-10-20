@@ -16,7 +16,7 @@
 #include "MsgIds.h"
 #include "CharacterFx.h"
 #include "CMoveMgr.h"
-#include "iserverdir.h"
+//#include "iserverdir.h"
 #include "MissionMgr.h"
 #include "MissionButeMgr.h"
 #include "InterfaceMgr.h"
@@ -453,7 +453,7 @@ void ClientMultiplayerMgr::ClearDisconnectCode()
 //	PURPOSE:	Creates the client's serverdir for joining a remote game.
 //
 // --------------------------------------------------------------------------- //
-
+/*
 IServerDirectory* ClientMultiplayerMgr::CreateServerDir( )
 {
 	// Make sure we don't already have one.
@@ -482,7 +482,7 @@ IServerDirectory* ClientMultiplayerMgr::CreateServerDir( )
 
 	return m_pServerDir;
 }
-
+*/
 // --------------------------------------------------------------------------- //
 //
 //	ROUTINE:	ClientMultiplayerMgr::DeleteServerDir
@@ -490,7 +490,7 @@ IServerDirectory* ClientMultiplayerMgr::CreateServerDir( )
 //	PURPOSE:	Remove the server dir.
 //
 // --------------------------------------------------------------------------- //
-
+/*
 void ClientMultiplayerMgr::DeleteServerDir( )
 { 
 	if( m_pServerDir )
@@ -500,7 +500,7 @@ void ClientMultiplayerMgr::DeleteServerDir( )
 		m_pServerDir = NULL; 
 	}
 }
-
+*/
 // --------------------------------------------------------------------------- //
 //
 //	ROUTINE:	ClientMultiplayerMgr::SetCurMessageSource
@@ -567,6 +567,7 @@ bool ClientMultiplayerMgr::OnMessage(uint8 messageID, ILTMessage_Read *pMsg)
 		case MID_MULTIPLAYER_DATA:
 			return HandleMsgMultiplayerData( *pMsg );
 			break;
+			/*
 		case MID_MULTIPLAYER_SERVERDIR:
 			if (GetServerDir())
 			{
@@ -580,6 +581,7 @@ bool ClientMultiplayerMgr::OnMessage(uint8 messageID, ILTMessage_Read *pMsg)
 			}
 			else
 				return false;
+				*/
 			break;
 		default:
 			break;

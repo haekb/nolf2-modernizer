@@ -117,9 +117,19 @@ LTRESULT CTO2GameServerShell::OnServerInitialized()
 		(**ppServerGameOptions).m_eServerStartResult = eServerStartResult_NetworkError;
 		return LT_ERROR;
 }
-	SOCKET socket;
+	SOCKET socketObj;
+
+	/* We don't have a GetUDPSocket function...
 	if (LT_OK != g_pLTServer->GetUDPSocket(socket))
 	{
+		(**ppServerGameOptions).m_eServerStartResult = eServerStartResult_NetworkError;
+		return LT_ERROR;
+	}
+	*/
+	// Try this instead!
+	socketObj = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+
+	if (!socketObj) {
 		(**ppServerGameOptions).m_eServerStartResult = eServerStartResult_NetworkError;
 		return LT_ERROR;
 	}
@@ -138,7 +148,7 @@ LTRESULT CTO2GameServerShell::OnServerInitialized()
 	startupInfo.m_bPublic = !m_ServerGameOptions.m_bLANOnly;
 	startupInfo.m_nPort = nPort;
 	startupInfo.m_sIpAddress = szIpAddr;
-	startupInfo.m_Socket = socket;
+	startupInfo.m_Socket = socketObj;
 	startupInfo.m_sRegion = g_pVersionMgr->GetNetRegion();
 	startupInfo.m_sVersion = g_pVersionMgr->GetNetVersion();
 	m_pGameSpyServer = IGameSpyServer::Create(startupInfo);
