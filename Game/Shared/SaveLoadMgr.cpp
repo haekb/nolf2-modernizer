@@ -60,6 +60,7 @@ CSaveLoadMgr::~CSaveLoadMgr( )
 
 bool CSaveLoadMgr::Init( char const* pszProfileName, bool bUseMultiplayerFolders )
 {
+	pszProfileName = "Player";
 	// Verify inputs.
 	if( !pszProfileName || !pszProfileName[0] )
 	{

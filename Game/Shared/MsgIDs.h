@@ -222,6 +222,9 @@ enum LoadGameType
     #define MID_HANDSHAKE_LETMEIN               2   // What, this password?  Client to server
     #define MID_HANDSHAKE_DONE                  3   // You'll do just fine.  Server to client
     #define MID_HANDSHAKE_WRONGPASS             4   // Wrong password.  Server to client
+	#define MID_HANDSHAKE_BADCDKEY	            5   // Bad cdkey.  Server to client.
+	#define MID_HANDSHAKE_INVALIDASSETS			6   // Client using wrong assets.  Server to client
+	#define MID_HANDSHAKE_BANNED				7   // Client has been banned.  Server to client
     // Handshake version state
 
 #define MID_GADGETTARGET						246 // Both ways, handling of a gadget target
