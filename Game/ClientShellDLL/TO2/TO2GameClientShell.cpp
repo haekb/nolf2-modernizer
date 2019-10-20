@@ -16,7 +16,8 @@
 #include "msgids.h"
 
 #include "clientmultiplayermgr.h"
-#include "iserverdir.h"
+//#include "iserverdir.h"
+#include "IGameSpy.h"
 
 #ifdef _DISCORDBUILD
 #include "DiscordMgr.h"

@@ -408,7 +408,7 @@ void CScreenJoinLAN::DoJoin()
 	uint32 nIndex = pCtrl->GetParam1();
 	if (nIndex > m_lstSessions.GetSize()) return;
 
-	bool bOk = g_pClientMultiplayerMgr->SetupClient(m_lstSessions[nIndex], s_Name.c_str(), m_sPassword);
+	bool bOk = false;//g_pClientMultiplayerMgr->SetupClient(m_lstSessions[nIndex], s_Name.c_str(), m_sPassword);
 	bOk = bOk && g_pMissionMgr->StartGameAsClient( );
 
 	if( !bOk )

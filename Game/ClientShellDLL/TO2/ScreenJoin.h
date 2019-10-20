@@ -21,6 +21,7 @@
 #include "IGameSpy.h"
 #include "winsync.h"
 
+
 struct PlayerEntry
 {
 	std::string m_sName;
@@ -65,8 +66,39 @@ struct ServerEntry
 	CLTGUIColumnCtrl* m_pColumnCtrl;
 };
 
-typedef stdext::hash_map<std::string, ServerEntry, ButeMgr_Hasher > TServerEntryMap;
-//typedef stdext::hash_map<std::string, ServerEntry, hash_map_stdstring_nocase> TServerEntryMap;
+class ScreenJoin_Hasher {
+public:
+	enum { bucket_size = 10 };
+
+	ScreenJoin_Hasher() {}
+
+	size_t operator()(std::string key) const {
+		return hash(key.c_str());
+	}
+
+	bool operator()(std::string left, std::string right) const {
+		return compare(left.c_str(), right.c_str());
+	}
+private:
+	// Was `equal_str_nocase`, need to left side.
+	bool compare(const char* s1, const char* s2) const
+	{
+		return stricmp(s1, s2) < 0;
+	}
+	// Was hash_str_nocase, still kinda is!
+	// Copied for stl-port's std::hash<const char*>.
+	// Added tolower function on the string.
+	unsigned long hash(const char* str) const
+	{
+		unsigned long hash = 0;
+		for (; *str; ++str)
+			hash = 5 * hash + tolower(*str);
+
+		return hash;
+	}
+};
+
+typedef stdext::hash_map<std::string, ServerEntry, ScreenJoin_Hasher> TServerEntryMap;
 
 
 class CScreenJoin : public CBaseScreen
