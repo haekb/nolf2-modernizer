@@ -433,7 +433,8 @@ LTBOOL CScreenJoin::Build()
 	m_pPort->AddColumn("Scanning Ports", kPortColumnWidth);
 
 
-	SAFE_STRCPY(m_szPort, "27888");
+	//SAFE_STRCPY(m_szPort, "27888");
+	SAFE_STRCPY(m_szPort, "27890");
 	m_pPort->AddColumn(m_szPort, kPortColumnWidth, LTTRUE);
 
 	CLTGUICycleCtrl* pCycle = AddCycle(IDS_VERSION_FILTER, IDS_HELP_VERSION_FILTER, kFilterNameWidth, &m_nVersionFilter);
