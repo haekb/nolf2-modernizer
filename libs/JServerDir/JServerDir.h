@@ -4,8 +4,17 @@
 #define SERVERDIR_EXPORTS
 
 #include "IServerDir.h"
+#include "IServerDir_Titan.h"
 
 #define FAKE_CD_KEY "ABC1-EFG2-IJK3-LMN3-4567"
+#define LOCAL_PEER "_LOCAL_PEER"
+
+// TODO: This seems bad. How does PeerInfo connect with PeerList?
+struct PeerData {
+	int position;
+	std::string* peer;
+	PeerInfo_Service_Titan data;
+};
 
 class JServerDir :
 	public IServerDirectory
@@ -16,6 +25,13 @@ protected:
 	bool m_bClientSide;
 
 	std::string m_szGameName;
+	std::string m_szVersion;
+	std::string m_szRegion;
+
+	StartupInfo_Titan m_StartupInfo;
+
+	TPeerList m_PeerList;
+	int m_nActivePeer;
 
 	EStatus m_eStatus;
 
@@ -91,21 +107,21 @@ public:
 	// Status
 
 	// Get the current status
-	virtual EStatus GetCurStatus() const = 0;
+	virtual EStatus GetCurStatus() const;
 	// Get the descriptive text associated with the current status
-	virtual const char* GetCurStatusString() const = 0;
+	virtual const char* GetCurStatusString() const;
 
 	//////////////////////////////////////////////////////////////////////////////
 	// Startup - service specific.
 
-	virtual void SetStartupInfo(ILTMessage_Read& cMsg) = 0;
-	virtual void GetStartupInfo(ILTMessage_Write& cMsg) = 0;
+	virtual void SetStartupInfo(ILTMessage_Read& cMsg);
+	virtual void GetStartupInfo(ILTMessage_Write& cMsg);
 
 	//////////////////////////////////////////////////////////////////////////////
 	// Game name
 
-	virtual void SetGameName(const char* pName) = 0;
-	virtual const char* GetGameName() const = 0;
+	virtual void SetGameName(const char* pName);
+	virtual const char* GetGameName() const;
 
 	//////////////////////////////////////////////////////////////////////////////
 	// CD Keys
@@ -122,27 +138,27 @@ public:
 	// Game Version
 
 	// Set the current version
-	virtual void SetVersion(const char* pVersion) = 0;
+	virtual void SetVersion(const char* pVersion);
 	// Set the current region
-	virtual void SetRegion(const char* pRegion) = 0;
+	virtual void SetRegion(const char* pRegion);
 	// Is the current version valid?
 	// Note : Returns false if eRequest_Validate_Version has not been processed
-	virtual bool IsVersionValid() const = 0;
+	virtual bool IsVersionValid() const;
 	// Is the current version the newest version?
 	// Note : Returns false if eRequest_Validate_Version has not been processed
-	virtual bool IsVersionNewest() const = 0;
+	virtual bool IsVersionNewest() const;
 	// Is a patch available?
 	// Note : Returns false if eRequest_Validate_Version has not been processed
-	virtual bool IsPatchAvailable() const = 0;
+	virtual bool IsPatchAvailable() const;
 
 	//////////////////////////////////////////////////////////////////////////////
 	// Message of the Day
 
 	// Is the MOTD "new"?
 	// Note : Returns false if eRequest_MOTD has not been processed
-	virtual bool IsMOTDNew(EMOTD eMOTD) const = 0;
+	virtual bool IsMOTDNew(EMOTD eMOTD) const;
 	// Get the current MOTD
-	virtual char const* GetMOTD(EMOTD eMOTD) const = 0;
+	virtual char const* GetMOTD(EMOTD eMOTD) const;
 
 	//////////////////////////////////////////////////////////////////////////////
 	// Active peer info
