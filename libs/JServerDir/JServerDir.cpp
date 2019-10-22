@@ -167,9 +167,14 @@ bool JServerDir::SetActivePeer(const char* pAddr)
 		activePeer = pAddr;
 	}
 
+	PeerData peer;
+	peer.peerAddress = *pAddr;
+	peer.bIsDataSet = false;
+
 	// Throw in our new ActivePeer(TM)
-	m_PeerList.push_back(pAddr);
-	m_nActivePeer = m_PeerList.size() - 1;
+	//m_PeerList.push_back(pAddr);
+	m_Peers.push_back(peer);
+	m_nActivePeer = m_Peers.size() - 1;
 
 	return true;
 }
@@ -179,11 +184,12 @@ bool JServerDir::SetActivePeer(const char* pAddr)
 bool JServerDir::GetActivePeer(std::string* pAddr, bool* pLocal) const
 {
 	// Peer not set!
-	if (m_nActivePeer < 0 || pAddr == NULL || pLocal == NULL) {
+	if (m_nActivePeer == NO_ACTIVE_PEER || pAddr == NULL || pLocal == NULL) {
 		return false;
 	}
 
-	std::string activePeer = m_PeerList.at(m_nActivePeer);
+	PeerData peer = m_Peers.at(m_nActivePeer);
+	std::string activePeer = peer.peerAddress;
 
 	if (activePeer == LOCAL_PEER) {
 		pAddr = NULL;
@@ -201,18 +207,18 @@ bool JServerDir::GetActivePeer(std::string* pAddr, bool* pLocal) const
 // Returns false if the peer is the local machine
 bool JServerDir::RemoveActivePeer()
 {
-	std::string activePeer = m_PeerList.at(m_nActivePeer);
+	PeerData peer = m_Peers.at(m_nActivePeer);
 
-	if (activePeer == LOCAL_PEER) {
+	if (peer.peerAddress.compare(LOCAL_PEER)) {
 		return false;
 	}
 
-	m_PeerList.erase(m_PeerList.begin() + m_nActivePeer);
+	m_Peers.erase(m_Peers.begin() + m_nActivePeer);
+
+	m_nActivePeer = NO_ACTIVE_PEER;
 
 	return true;
 }
-
-// TODO: Is this where I shove PeerInfo_Service_Titan?
 
 // Change the active peer info
 bool JServerDir::SetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Read& cMsg)

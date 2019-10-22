@@ -6,15 +6,59 @@
 #include "IServerDir.h"
 #include "IServerDir_Titan.h"
 
-#define FAKE_CD_KEY "ABC1-EFG2-IJK3-LMN3-4567"
+#define FAKE_CD_KEY "ABC1-EFG2-IJK3-LMN4-5678"
 #define LOCAL_PEER "_LOCAL_PEER"
+#define NO_ACTIVE_PEER -1
 
-// TODO: This seems bad. How does PeerInfo connect with PeerList?
-struct PeerData {
-	int position;
-	std::string* peer;
-	PeerInfo_Service_Titan data;
+struct PeerInfo_Name {
+	std::string szHostName;
 };
+
+struct PeerInfo_Summary {
+	std::string szBuild;
+	std::string szWorldName;
+	uint8 nCurrentPlayers;
+	uint8 nMaxPlayers;
+	bool bUsePassword;
+	uint8 nGameType;
+	std::string szModName;
+};
+
+struct playerDetailsData {
+	bool bHasPlayerInfo; // This is always true?
+	std::string szUniqueName;
+	uint16 nPing;
+};
+
+struct PeerInfo_Details {
+	bool bUseSkills;
+	bool bFriendlyFire;
+	uint8 nMPDifficulty;
+	float fPlayerDiffFactor;
+	playerDetailsData* pPlayers; // Reference summaryData::nCurrentPlayers?
+	bool bEndOfPlayerData; // This is always false!
+	uint8 nRunSpeed;
+	uint8 nScoreLimit;
+	uint8 nTimeLimit;
+};
+
+struct PeerInfo_Port {
+	uint16 nHostPort;
+};
+
+// Nice and complete struct!
+struct PeerData {
+	std::string peerAddress;
+	bool bIsDataSet;
+
+	// Data
+	PeerInfo_Name nameData;
+	PeerInfo_Summary summaryData;
+	PeerInfo_Details detailsData;
+	PeerInfo_Port portData;
+	PeerInfo_Service_Titan serviceData;
+};
+
 
 class JServerDir :
 	public IServerDirectory
@@ -30,7 +74,12 @@ protected:
 
 	StartupInfo_Titan m_StartupInfo;
 
-	TPeerList m_PeerList;
+	// Maybe just generate this on the fly for the client?
+	//TPeerList m_PeerList;
+
+	// All I see is pears
+	std::vector<PeerData> m_Peers;
+
 	int m_nActivePeer;
 
 	EStatus m_eStatus;
