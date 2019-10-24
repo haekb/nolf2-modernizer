@@ -432,3 +432,20 @@ void JServerDir::ClearPeerList()
 
 	m_Peers.clear();
 }
+
+bool JServerDir::HandleNetMessage(ILTMessage_Read& cMsg, const char* pSender, uint16 nPort)
+{
+
+	// We don't know any of the messages yet :thinking:
+	// Probably has to do with sending the challenge to the server, and getting lists and stuff.
+
+	return false;
+}
+
+bool JServerDir::SetNetHeader(ILTMessage_Read& cMsg)
+{
+	
+	// ????
+
+	return false;
+}

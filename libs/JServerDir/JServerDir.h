@@ -203,8 +203,8 @@ public:
 	// Handle an incoming net message
 	// Returns false if the message was not recognized
 	// Note : Remove all external headers before calling this function
-	virtual bool HandleNetMessage(ILTMessage_Read& cMsg, const char* pSender, uint16 nPort) = 0;
+	virtual bool HandleNetMessage(ILTMessage_Read& cMsg, const char* pSender, uint16 nPort);
 	// Set the header which will be appended to the beginning of all outgoing messages
-	virtual bool SetNetHeader(ILTMessage_Read& cMsg) = 0;
+	virtual bool SetNetHeader(ILTMessage_Read& cMsg);
 };
 
