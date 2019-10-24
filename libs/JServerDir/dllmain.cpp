@@ -36,6 +36,6 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 // PARAMETER:	hResourceModule		- optional resource module to use with error strings.
 SERVERDIR_API IServerDirectory* Factory_Create_IServerDirectory_Titan(bool bClientSide, ILTCSBase& ltCSBase, HMODULE hResourceModule)
 {
-	g_pServerDir = new JServerDir();
+	g_pServerDir = new JServerDir(bClientSide, ltCSBase, hResourceModule);
 	return (IServerDirectory*)g_pServerDir;
 }
