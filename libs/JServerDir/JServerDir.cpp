@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "JServerDir.h"
-
+#include "AutoMessage.h"
 
 JServerDir::JServerDir(bool bClientSide, ILTCSBase& ltCSBase, HMODULE hResourceModule)
 {
@@ -67,12 +67,12 @@ void JServerDir::GetStartupInfo(ILTMessage_Write& cMsg)
 
 void JServerDir::SetGameName(const char* pName)
 {
-	m_szGameName = pName;
+	m_sGameName = pName;
 }
 
 const char* JServerDir::GetGameName() const
 {
-	return m_szGameName.c_str();
+	return m_sGameName.c_str();
 }
 
 
@@ -103,13 +103,13 @@ bool JServerDir::IsCDKeyValid() const
 // Set the current version
 void JServerDir::SetVersion(const char* pVersion)
 {
-	m_szVersion = pVersion;
+	m_sVersion = pVersion;
 }
 
 // Set the current region
 void JServerDir::SetRegion(const char* pRegion)
 {
-	m_szRegion = pRegion;
+	m_sRegion = pRegion;
 }
 
 // Is the current version valid?
@@ -168,8 +168,10 @@ bool JServerDir::SetActivePeer(const char* pAddr)
 	}
 
 	PeerData peer;
-	peer.peerAddress = *pAddr;
+	peer.sPeerAddress = *pAddr;
 	peer.bIsDataSet = false;
+	// TODO: High precision timer? Not sure if it's needed here. 
+	peer.fCreatedAt = m_pLTCSBase->GetTime();
 
 	// Throw in our new ActivePeer(TM)
 	//m_PeerList.push_back(pAddr);
@@ -189,9 +191,9 @@ bool JServerDir::GetActivePeer(std::string* pAddr, bool* pLocal) const
 	}
 
 	PeerData peer = m_Peers.at(m_nActivePeer);
-	std::string activePeer = peer.peerAddress;
+	std::string activePeer = peer.sPeerAddress;
 
-	if (activePeer == LOCAL_PEER) {
+	if (activePeer.compare(LOCAL_PEER)) {
 		pAddr = NULL;
 		*pLocal = true;
 		return true;
@@ -209,7 +211,7 @@ bool JServerDir::RemoveActivePeer()
 {
 	PeerData peer = m_Peers.at(m_nActivePeer);
 
-	if (peer.peerAddress.compare(LOCAL_PEER)) {
+	if (peer.sPeerAddress.compare(LOCAL_PEER)) {
 		return false;
 	}
 
@@ -223,7 +225,98 @@ bool JServerDir::RemoveActivePeer()
 // Change the active peer info
 bool JServerDir::SetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Read& cMsg)
 {
+	if (m_nActivePeer == NO_ACTIVE_PEER || eInfoType >= ePeerInfo_TotalNum) {
+		return false;
+	}
 
+	PeerData peer = m_Peers.at(m_nActivePeer);
+
+
+	switch (eInfoType) {
+	case ePeerInfo_Age:
+		peer.fCreatedAt = cMsg.Readfloat();
+		break;
+	case ePeerInfo_Details:
+		{
+		PeerInfo_Details* details = &peer.detailsData;
+		details->bUseSkills = cMsg.Readbool();
+		details->bFriendlyFire = cMsg.Readbool();
+		details->nMPDifficulty = cMsg.Readuint8();
+		details->fPlayerDiffFactor = cMsg.Readfloat();
+
+		bool containsPlayerData = cMsg.Readbool();
+
+		// Loop until we hit false
+		while (containsPlayerData) {
+			PeerInfo_PlayerDetails playerDetails;
+
+			char buffer[MAX_PACKET_LEN];
+			buffer[0] = 0;
+
+			cMsg.ReadString(buffer, MAX_PACKET_LEN);
+
+			playerDetails.sUniqueName = buffer;
+
+			playerDetails.nPing = cMsg.Readuint16();
+
+			details->Players.push_back(playerDetails);
+
+			containsPlayerData = cMsg.Readbool();
+		}
+
+		details->nRunSpeed = cMsg.Readuint8();
+		details->nScoreLimit = cMsg.Readuint8();
+		details->nTimeLimit = cMsg.Readuint8();
+		}
+		break;
+	case ePeerInfo_Name:
+		char buffer[MAX_PACKET_LEN];
+		buffer[0] = 0;
+
+		cMsg.ReadString(buffer, MAX_PACKET_LEN);
+
+		peer.nameData.sHostName = buffer;
+		break;
+	case ePeerInfo_Ping:
+		peer.nPing = cMsg.Readuint16();
+		// TODO: Do this
+		break;
+	case ePeerInfo_Port:
+		peer.portData.nHostPort = cMsg.Readuint16();
+		break;
+	case ePeerInfo_Service:
+	{
+		// Double pointer!
+		PeerInfo_Service_Titan* pServiceInfo = (PeerInfo_Service_Titan*)&cMsg;
+		peer.serviceData = *pServiceInfo;
+	}
+		break;
+	case ePeerInfo_Summary:
+	{
+		PeerInfo_Summary* summary = &peer.summaryData;
+		char buffer[MAX_PACKET_LEN];
+		buffer[0] = 0;
+
+		cMsg.ReadString(buffer, MAX_PACKET_LEN);
+		summary->sBuild = buffer;
+		memset(buffer, 0, sizeof(buffer));
+
+		cMsg.ReadString(buffer, MAX_PACKET_LEN);
+		summary->sWorldName = buffer;
+		memset(buffer, 0, sizeof(buffer));
+
+		summary->nCurrentPlayers = cMsg.Readuint8();
+		summary->nMaxPlayers = cMsg.Readuint8();
+		summary->bUsePassword = cMsg.Readbool();
+		summary->nGameType = cMsg.Readuint8();
+
+		cMsg.ReadString(buffer, MAX_PACKET_LEN);
+		summary->sModName = buffer;
+	}
+		break;
+	}
+
+	return true;
 }
 // Has the active peer info been queried from the directory server?
 // Returns true if the required information has been queried
@@ -236,5 +329,76 @@ bool JServerDir::HasActivePeerInfo(EPeerInfo eInfoType) const
 // or if pMsg is null
 bool JServerDir::GetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Write* pMsg) const
 {
+	CAutoMessage cMsg;
 
+	if (pMsg == NULL || eInfoType >= ePeerInfo_TotalNum || m_nActivePeer == NO_ACTIVE_PEER) {
+		return false;
+	}
+
+	PeerData peer = m_Peers.at(m_nActivePeer);
+
+	switch (eInfoType) {
+	case ePeerInfo_Age:
+		cMsg.Writefloat(peer.fCreatedAt);
+		break;
+	case ePeerInfo_Details:
+	{
+		PeerInfo_Details* details = &peer.detailsData;
+		cMsg.Writebool(details->bUseSkills);
+		cMsg.Writebool(details->bFriendlyFire);
+		cMsg.Writeuint8(details->nMPDifficulty);
+		cMsg.Writefloat(details->fPlayerDiffFactor);
+
+		if (details->Players.size() > 0) {
+			// If we have players to send over, mark it as so!
+			cMsg.Writebool(true);
+		}
+
+		std::vector<PeerInfo_PlayerDetails>::iterator it = details->Players.begin();
+
+		for (it = details->Players.begin(); it != details->Players.end(); it++) {
+			cMsg.WriteString(it->sUniqueName.c_str());
+			cMsg.Writeuint16(it->nPing);
+		}
+
+		// Tell them we're done printing out players
+		cMsg.Writebool(false);
+
+		cMsg.Writeuint8(details->nRunSpeed);
+		cMsg.Writeuint8(details->nScoreLimit);
+		cMsg.Writeuint8(details->nTimeLimit);
+	}
+	break;
+	case ePeerInfo_Name:
+		cMsg.WriteString(peer.nameData.sHostName.c_str());
+		break;
+	case ePeerInfo_Ping:
+		cMsg.Writeuint16(peer.nPing);
+		break;
+	case ePeerInfo_Port:
+		cMsg.Writeuint16(peer.portData.nHostPort);
+		break;
+	case ePeerInfo_Service:
+	{
+		// Double pointer!
+		uint32 servicePointer = (uint32)&peer.serviceData;
+		cMsg.Writeuint32(servicePointer);
+	}
+		break;
+	case ePeerInfo_Summary:
+	{
+		PeerInfo_Summary* summary = &peer.summaryData;
+
+		cMsg.WriteString(summary->sBuild.c_str());
+		cMsg.WriteString(summary->sWorldName.c_str());
+		cMsg.Writeuint8(summary->nCurrentPlayers);
+		cMsg.Writeuint8(summary->nMaxPlayers);
+		cMsg.Writebool(summary->bUsePassword);
+		cMsg.Writeuint8(summary->nGameType);
+		cMsg.WriteString(summary->sModName.c_str());
+	}
+	break;
+	}
+
+	return true;
 }

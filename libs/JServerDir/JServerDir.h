@@ -5,28 +5,29 @@
 
 #include "IServerDir.h"
 #include "IServerDir_Titan.h"
+#include "iltcsbase.h"
+
 
 #define FAKE_CD_KEY "ABC1-EFG2-IJK3-LMN4-5678"
 #define LOCAL_PEER "_LOCAL_PEER"
 #define NO_ACTIVE_PEER -1
 
 struct PeerInfo_Name {
-	std::string szHostName;
+	std::string sHostName;
 };
 
 struct PeerInfo_Summary {
-	std::string szBuild;
-	std::string szWorldName;
+	std::string sBuild;
+	std::string sWorldName;
 	uint8 nCurrentPlayers;
 	uint8 nMaxPlayers;
 	bool bUsePassword;
 	uint8 nGameType;
-	std::string szModName;
+	std::string sModName;
 };
 
-struct playerDetailsData {
-	bool bHasPlayerInfo; // This is always true?
-	std::string szUniqueName;
+struct PeerInfo_PlayerDetails {
+	std::string sUniqueName;
 	uint16 nPing;
 };
 
@@ -35,8 +36,7 @@ struct PeerInfo_Details {
 	bool bFriendlyFire;
 	uint8 nMPDifficulty;
 	float fPlayerDiffFactor;
-	playerDetailsData* pPlayers; // Reference summaryData::nCurrentPlayers?
-	bool bEndOfPlayerData; // This is always false!
+	std::vector<PeerInfo_PlayerDetails> Players; // Reference summaryData::nCurrentPlayers?
 	uint8 nRunSpeed;
 	uint8 nScoreLimit;
 	uint8 nTimeLimit;
@@ -48,7 +48,9 @@ struct PeerInfo_Port {
 
 // Nice and complete struct!
 struct PeerData {
-	std::string peerAddress;
+	std::string sPeerAddress;
+	uint16 nPing;
+	LTFLOAT fCreatedAt;
 	bool bIsDataSet;
 
 	// Data
@@ -68,9 +70,9 @@ protected:
 	HMODULE m_hResourceModule;
 	bool m_bClientSide;
 
-	std::string m_szGameName;
-	std::string m_szVersion;
-	std::string m_szRegion;
+	std::string m_sGameName;
+	std::string m_sVersion;
+	std::string m_sRegion;
 
 	StartupInfo_Titan m_StartupInfo;
 
@@ -215,24 +217,24 @@ public:
 	// Sets the active peer address and port
 	// Note : Use NULL to indicate the local machine
 	// Returns false if there was some problem
-	virtual bool SetActivePeer(const char* pAddr) = 0;
+	virtual bool SetActivePeer(const char* pAddr);
 	// Get the currently selected active peer
 	// Returns false if there was some problem  (e.g. a null parameter)
-	virtual bool GetActivePeer(std::string* pAddr, bool* pLocal) const = 0;
+	virtual bool GetActivePeer(std::string* pAddr, bool* pLocal) const;
 	// Remove the active peer from the peer list
 	// The active peer will be set to the local machine
 	// Returns false if the peer is the local machine
-	virtual bool RemoveActivePeer() = 0;
+	virtual bool RemoveActivePeer();
 
 	// Change the active peer info
-	virtual bool SetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Read& cMsg) = 0;
+	virtual bool SetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Read& cMsg);
 	// Has the active peer info been queried from the directory server?
 	// Returns true if the required information has been queried
-	virtual bool HasActivePeerInfo(EPeerInfo eInfoType) const = 0;
+	virtual bool HasActivePeerInfo(EPeerInfo eInfoType) const;
 	// Get the current active server info
 	// Returns false if that information has not been queried for the active peer,
 	// or if pMsg is null
-	virtual bool GetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Write* pMsg) const = 0;
+	virtual bool GetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Write* pMsg) const;
 
 	//////////////////////////////////////////////////////////////////////////////
 	// Peer listing
