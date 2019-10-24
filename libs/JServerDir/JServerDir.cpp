@@ -363,11 +363,9 @@ bool JServerDir::GetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Write* pMsg) 
 			cMsg.Writebool(true);
 		}
 
-		std::vector<PeerInfo_PlayerDetails>::iterator it = details->Players.begin();
-
-		for (it = details->Players.begin(); it != details->Players.end(); it++) {
-			cMsg.WriteString(it->sUniqueName.c_str());
-			cMsg.Writeuint16(it->nPing);
+		for (auto player : details->Players) {
+			cMsg.WriteString(player.sUniqueName.c_str());
+			cMsg.Writeuint16(player.nPing);
 		}
 
 		// Tell them we're done printing out players
