@@ -167,11 +167,14 @@ bool JServerDir::SetActivePeer(const char* pAddr)
 		activePeer = pAddr;
 	}
 
-	PeerData peer;
-	peer.sPeerAddress = *pAddr;
-	peer.bIsDataSet = false;
+	Peer* peer = new Peer();
+
+	peer->SetAddress(activePeer);
+
 	// TODO: High precision timer? Not sure if it's needed here. 
-	peer.fCreatedAt = m_pLTCSBase->GetTime();
+	peer->SetCreatedAt(m_pLTCSBase->GetTime());
+
+
 
 	// Throw in our new ActivePeer(TM)
 	//m_PeerList.push_back(pAddr);
@@ -190,8 +193,8 @@ bool JServerDir::GetActivePeer(std::string* pAddr, bool* pLocal) const
 		return false;
 	}
 
-	PeerData peer = m_Peers.at(m_nActivePeer);
-	std::string activePeer = peer.sPeerAddress;
+	Peer* peer = m_Peers.at(m_nActivePeer);
+	std::string activePeer = peer->GetAddress();
 
 	if (activePeer.compare(LOCAL_PEER)) {
 		pAddr = NULL;
@@ -209,13 +212,17 @@ bool JServerDir::GetActivePeer(std::string* pAddr, bool* pLocal) const
 // Returns false if the peer is the local machine
 bool JServerDir::RemoveActivePeer()
 {
-	PeerData peer = m_Peers.at(m_nActivePeer);
+	Peer* peer = m_Peers.at(m_nActivePeer);
 
-	if (peer.sPeerAddress.compare(LOCAL_PEER)) {
+	if (peer->GetAddress().compare(LOCAL_PEER)) {
 		return false;
 	}
 
+	// Remove it from the list
 	m_Peers.erase(m_Peers.begin() + m_nActivePeer);
+
+	// Now remove it
+	delete peer;
 
 	m_nActivePeer = NO_ACTIVE_PEER;
 
@@ -229,16 +236,16 @@ bool JServerDir::SetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Read& cMsg)
 		return false;
 	}
 
-	PeerData peer = m_Peers.at(m_nActivePeer);
+	Peer* peer = m_Peers.at(m_nActivePeer);
 
 
 	switch (eInfoType) {
 	case ePeerInfo_Age:
-		peer.fCreatedAt = cMsg.Readfloat();
+		peer->SetCreatedAt(cMsg.Readfloat());
 		break;
 	case ePeerInfo_Details:
 		{
-		PeerInfo_Details* details = &peer.detailsData;
+		PeerInfo_Details* details = &peer->m_DetailsData;
 		details->bUseSkills = cMsg.Readbool();
 		details->bFriendlyFire = cMsg.Readbool();
 		details->nMPDifficulty = cMsg.Readuint8();
@@ -275,25 +282,25 @@ bool JServerDir::SetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Read& cMsg)
 
 		cMsg.ReadString(buffer, MAX_PACKET_LEN);
 
-		peer.nameData.sHostName = buffer;
+		peer->m_NameData.sHostName = buffer;
 		break;
 	case ePeerInfo_Ping:
-		peer.nPing = cMsg.Readuint16();
+		peer->SetPing(cMsg.Readuint16());
 		// TODO: Do this
 		break;
 	case ePeerInfo_Port:
-		peer.portData.nHostPort = cMsg.Readuint16();
+		peer->m_PortData.nHostPort = cMsg.Readuint16();
 		break;
 	case ePeerInfo_Service:
 	{
 		// Double pointer!
 		PeerInfo_Service_Titan* pServiceInfo = (PeerInfo_Service_Titan*)&cMsg;
-		peer.serviceData = *pServiceInfo;
+		peer->m_ServiceData = *pServiceInfo;
 	}
 		break;
 	case ePeerInfo_Summary:
 	{
-		PeerInfo_Summary* summary = &peer.summaryData;
+		PeerInfo_Summary* summary = &peer->m_SummaryData;
 		char buffer[MAX_PACKET_LEN];
 		buffer[0] = 0;
 
@@ -322,7 +329,7 @@ bool JServerDir::SetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Read& cMsg)
 // Returns true if the required information has been queried
 bool JServerDir::HasActivePeerInfo(EPeerInfo eInfoType) const
 {
-
+	return false;
 }
 // Get the current active server info
 // Returns false if that information has not been queried for the active peer,
@@ -335,15 +342,15 @@ bool JServerDir::GetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Write* pMsg) 
 		return false;
 	}
 
-	PeerData peer = m_Peers.at(m_nActivePeer);
+	Peer* peer = m_Peers.at(m_nActivePeer);
 
 	switch (eInfoType) {
 	case ePeerInfo_Age:
-		cMsg.Writefloat(peer.fCreatedAt);
+		cMsg.Writefloat(peer->GetCreatedAt());
 		break;
 	case ePeerInfo_Details:
 	{
-		PeerInfo_Details* details = &peer.detailsData;
+		PeerInfo_Details* details = &peer->m_DetailsData;
 		cMsg.Writebool(details->bUseSkills);
 		cMsg.Writebool(details->bFriendlyFire);
 		cMsg.Writeuint8(details->nMPDifficulty);
@@ -370,24 +377,24 @@ bool JServerDir::GetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Write* pMsg) 
 	}
 	break;
 	case ePeerInfo_Name:
-		cMsg.WriteString(peer.nameData.sHostName.c_str());
+		cMsg.WriteString(peer->m_NameData.sHostName.c_str());
 		break;
 	case ePeerInfo_Ping:
-		cMsg.Writeuint16(peer.nPing);
+		cMsg.Writeuint16(peer->GetPing());
 		break;
 	case ePeerInfo_Port:
-		cMsg.Writeuint16(peer.portData.nHostPort);
+		cMsg.Writeuint16(peer->m_PortData.nHostPort);
 		break;
 	case ePeerInfo_Service:
 	{
 		// Double pointer!
-		uint32 servicePointer = (uint32)&peer.serviceData;
+		uint32 servicePointer = (uint32)&peer->m_ServiceData;
 		cMsg.Writeuint32(servicePointer);
 	}
 		break;
 	case ePeerInfo_Summary:
 	{
-		PeerInfo_Summary* summary = &peer.summaryData;
+		PeerInfo_Summary* summary = &peer->m_SummaryData;
 
 		cMsg.WriteString(summary->sBuild.c_str());
 		cMsg.WriteString(summary->sWorldName.c_str());
@@ -398,6 +405,9 @@ bool JServerDir::GetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Write* pMsg) 
 		cMsg.WriteString(summary->sModName.c_str());
 	}
 	break;
+	case ePeerInfo_Validated:
+		cMsg.Writeuint8(1);
+		break;
 	}
 
 	return true;

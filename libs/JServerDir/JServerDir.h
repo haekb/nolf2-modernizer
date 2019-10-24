@@ -6,61 +6,12 @@
 #include "IServerDir.h"
 #include "IServerDir_Titan.h"
 #include "iltcsbase.h"
+#include "Peer.h"
 
 
 #define FAKE_CD_KEY "ABC1-EFG2-IJK3-LMN4-5678"
 #define LOCAL_PEER "_LOCAL_PEER"
 #define NO_ACTIVE_PEER -1
-
-struct PeerInfo_Name {
-	std::string sHostName;
-};
-
-struct PeerInfo_Summary {
-	std::string sBuild;
-	std::string sWorldName;
-	uint8 nCurrentPlayers;
-	uint8 nMaxPlayers;
-	bool bUsePassword;
-	uint8 nGameType;
-	std::string sModName;
-};
-
-struct PeerInfo_PlayerDetails {
-	std::string sUniqueName;
-	uint16 nPing;
-};
-
-struct PeerInfo_Details {
-	bool bUseSkills;
-	bool bFriendlyFire;
-	uint8 nMPDifficulty;
-	float fPlayerDiffFactor;
-	std::vector<PeerInfo_PlayerDetails> Players; // Reference summaryData::nCurrentPlayers?
-	uint8 nRunSpeed;
-	uint8 nScoreLimit;
-	uint8 nTimeLimit;
-};
-
-struct PeerInfo_Port {
-	uint16 nHostPort;
-};
-
-// Nice and complete struct!
-struct PeerData {
-	std::string sPeerAddress;
-	uint16 nPing;
-	LTFLOAT fCreatedAt;
-	bool bIsDataSet;
-
-	// Data
-	PeerInfo_Name nameData;
-	PeerInfo_Summary summaryData;
-	PeerInfo_Details detailsData;
-	PeerInfo_Port portData;
-	PeerInfo_Service_Titan serviceData;
-};
-
 
 class JServerDir :
 	public IServerDirectory
@@ -80,7 +31,7 @@ protected:
 	//TPeerList m_PeerList;
 
 	// All I see is pears
-	std::vector<PeerData> m_Peers;
+	std::vector<Peer*> m_Peers;
 
 	int m_nActivePeer;
 
