@@ -193,9 +193,9 @@ public:
 	// Get the current list of known peers
 	// Note : This list will be empty until a eRequest_Update_List request has been
 	// successfully processed, or SetActivePeer has been called with a non-local peer
-	virtual TPeerList GetPeerList() const = 0;
+	virtual TPeerList GetPeerList() const;
 	// Clear the current list of known peers
-	virtual void ClearPeerList() = 0;
+	virtual void ClearPeerList();
 
 	//////////////////////////////////////////////////////////////////////////////
 	// Net message handling

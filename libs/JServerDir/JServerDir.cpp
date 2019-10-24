@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "JServerDir.h"
+#include "IServerDir.h"
 #include "AutoMessage.h"
+
 
 JServerDir::JServerDir(bool bClientSide, ILTCSBase& ltCSBase, HMODULE hResourceModule)
 {
@@ -411,4 +413,24 @@ bool JServerDir::GetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Write* pMsg) 
 	}
 
 	return true;
+}
+
+IServerDirectory::TPeerList JServerDir::GetPeerList() const
+{
+	TPeerList list;
+
+	for (auto peer : m_Peers) {
+		list.push_back(peer->GetAddress());
+	}
+
+	return list;
+}
+
+void JServerDir::ClearPeerList()
+{
+	for (auto peer : m_Peers) {
+		delete peer;
+	}
+
+	m_Peers.clear();
 }
