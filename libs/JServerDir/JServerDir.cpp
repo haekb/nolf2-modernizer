@@ -2,7 +2,15 @@
 #include "JServerDir.h"
 #include "IServerDir.h"
 #include "AutoMessage.h"
+#include <WinSock2.h>
+#include <WS2tcpip.h>
 
+//
+#include <string>
+#include <vector>
+#include <sstream>
+#include <iostream>
+//
 
 JServerDir::JServerDir(bool bClientSide, ILTCSBase& ltCSBase, HMODULE hResourceModule)
 {
@@ -15,6 +23,139 @@ JServerDir::JServerDir(bool bClientSide, ILTCSBase& ltCSBase, HMODULE hResourceM
 JServerDir::~JServerDir()
 {
 
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// Request handling
+
+// Add a request to the end of the queue
+// Returns false if unable to add the request to the queue
+// Note : A return value of true does NOT imply that the request completed
+// successfully.
+bool JServerDir::QueueRequest(ERequest eNewRequest)
+{
+
+	if (eNewRequest == ERequest::eRequest_Validate_Version
+		|| eNewRequest == ERequest::eRequest_MOTD) {
+		return true;
+	}
+
+	if (eNewRequest == ERequest::eRequest_Update_List) {
+		QueryMasterServer();
+	}
+
+	return true;
+}
+
+// Add a list of requests to the queue
+// Returns false if any of the requests could not be added.  (And does not
+// add any of them in that case.)
+bool JServerDir::QueueRequestList(const TRequestList& cNewRequests)
+{
+	return false;
+}
+
+// Retrieve the list of waiting requests.  
+// The first entry is the entry which is currently being processed.
+IServerDirectory::TRequestList JServerDir::GetWaitingRequestList() const
+{
+	return TRequestList();
+}
+
+// Clear the request list
+// Note : Request list processing must be paused to clear the request list
+// Returns false if the request list is currently being processed.
+bool JServerDir::ClearRequestList()
+{
+	return false;
+}
+
+// Pause processing, process the given request, return the result,
+// and go back to the previous state.
+// Returns the result of the request
+IServerDirectory::ERequestResult JServerDir::ProcessRequest(ERequest eNewRequest, uint32 nTimeout)
+{
+	return eRequestResult_Success;
+}
+
+// Pauses the request list processing
+// Note : This will cancel the active request, and schedule it for 
+// re-processing when processing is resumed.
+bool JServerDir::PauseRequestList()
+{
+	return false;
+}
+// Process (or continue processing) the request list
+bool JServerDir::ProcessRequestList()
+{
+	return false;
+}
+
+// Wait until the next request is completed and return the result
+IServerDirectory::ERequestResult JServerDir::BlockOnActiveRequest(uint32 nTimeout)
+{
+	Sleep(nTimeout);
+	return eRequestResult_Success;
+}
+// Wait until the next request matching eBlockRequest is completed and 
+// return its result
+// Note : Returns eRequestResult_Aborted if an earlier request fails
+IServerDirectory::ERequestResult JServerDir::BlockOnRequest(ERequest eBlockRequest, uint32 nTimeout)
+{
+	Sleep(nTimeout);
+	return eRequestResult_Success;
+}
+// Wait until the next request matching one of the entries in 
+// eBlockRequestList is completed and return its result
+// Note : Returns eRequestResult_Aborted if an earlier request fails
+IServerDirectory::ERequestResult JServerDir::BlockOnRequestList(const TRequestList& cBlockRequestList, uint32 nTimeout)
+{
+	Sleep(nTimeout);
+	return eRequestResult_Success;
+}
+// Wait until we go out of the processing state
+IServerDirectory::ERequestResult JServerDir::BlockOnProcessing(uint32 nTimeout)
+{
+	Sleep(nTimeout);
+	return eRequestResult_Success;
+}
+
+// Is this request in request list?
+bool JServerDir::IsRequestPending(ERequest ePendingRequest) const
+{
+	return false;
+}
+
+// Returns the most recently successful request
+IServerDirectory::ERequest JServerDir::GetLastSuccessfulRequest() const
+{
+	return eRequest_Nothing;
+}
+// Returns the most recently failed request
+IServerDirectory::ERequest JServerDir::GetLastErrorRequest() const
+{
+	return eRequest_Nothing;
+}
+// Returns the currently active request
+IServerDirectory::ERequest JServerDir::GetActiveRequest() const
+{
+	return eRequest_Nothing;
+}
+
+// Get the most recently processed request
+IServerDirectory::ERequest JServerDir::GetLastRequest() const
+{
+	return eRequest_Nothing;
+}
+// Get the result of the most recently processed result
+IServerDirectory::ERequestResult JServerDir::GetLastRequestResult() const
+{
+	return eRequestResult_Success;
+}
+// Get the string associated with the most recently processed result
+const char* JServerDir::GetLastRequestResultString() const
+{
+	return "T E S T";
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -148,7 +289,12 @@ bool JServerDir::IsMOTDNew(EMOTD eMOTD) const
 // Get the current MOTD
 char const* JServerDir::GetMOTD(EMOTD eMOTD) const
 {
-	return "Hello world!";
+	if (eMOTD == eMOTD_Game) {
+		return "Welcome to NOLF2 online!\nMake sure to check out https://www.spawnsite.net/ for the latest map packs.";
+	}
+
+
+	return "This is a system message:\n\n-There is no scheduled downtime\n\nWe also do not know if there will be any ever since we don't control the servers. oopsie!";
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -448,4 +594,76 @@ bool JServerDir::SetNetHeader(ILTMessage_Read& cMsg)
 	// ????
 
 	return false;
+}
+
+void JServerDir::QueryMasterServer()
+{
+	WORD wVersionRequested;
+	WSADATA wsaData;
+	wVersionRequested = MAKEWORD(2, 2);
+
+	WSAStartup(wVersionRequested, &wsaData);
+
+	auto sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+
+	if (sock == INVALID_SOCKET) {
+		int error = WSAGetLastError();
+		bool debug = true;
+	}
+
+	std::string timeout = "2500";
+
+	setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, timeout.c_str(), sizeof(timeout.c_str()));
+
+	int iBuffer[32];
+
+	inet_pton(AF_INET, MASTER_SERVER, (int*)iBuffer);
+
+	sockaddr_in  saMasterAddress;
+	saMasterAddress.sin_family = AF_INET;
+	saMasterAddress.sin_addr.s_addr = *iBuffer;
+	saMasterAddress.sin_port = htons(MASTER_PORT);
+
+	int result = connect(sock, (SOCKADDR*)&saMasterAddress, sizeof(saMasterAddress));
+	if (result == SOCKET_ERROR) {
+		wprintf(L"connect function failed with error: %ld\n", WSAGetLastError());
+		result = closesocket(sock);
+		if (result == SOCKET_ERROR)
+			wprintf(L"closesocket function failed with error: %ld\n", WSAGetLastError());
+		WSACleanup();
+		return;
+	}
+
+	// Send our query!
+	result = send(sock, QUERY_UPDATE_LIST, sizeof(QUERY_UPDATE_LIST), 0);
+
+	char buffer[2048];
+	buffer[0] = '\0';
+
+	result = recv(sock, buffer, sizeof(buffer), 0);
+
+	std::string sServerList = buffer;
+
+	//\\basic\\secure\\TXKOAT
+
+	// Even php has better string handling than std! Geeeeez.
+	// Easier to use c strings here.
+	char* pch = strtok(buffer, "\\");
+	while (pch != NULL)
+	{
+		printf("%s\n", pch);
+
+		std::string temp = pch;
+
+		if (temp.find_first_of("TXKOAT") == 0) {
+
+		}
+
+		pch = strtok(NULL, "\\");
+	}
+
+
+	result = closesocket(sock);
+
+	bool de = true;
 }

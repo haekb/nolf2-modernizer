@@ -97,7 +97,12 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>Lib_Lith.lib;Lib_StdLith.lib;ClientShellShared.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\libs\built\Debug\Lib_Lith;$(SolutionDir)..\libs\built\Debug\Lib_StdLith;$(SolutionDir)\built\debug\ClientShellDLL\ClientShellShared;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>call "D:\GameDev\nolf2-modernizer\Game\_server_dir_debug.bat"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

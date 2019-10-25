@@ -13,30 +13,16 @@
 #define LOCAL_PEER "_LOCAL_PEER"
 #define NO_ACTIVE_PEER -1
 
+// TODO: Throw this in a ini file!
+#define MASTER_SERVER "65.112.87.186"
+#define MASTER_PORT 28900
+
+#define QUERY_UPDATE_LIST "\\gamename\\nolf2\\gamever\\1.3\\location\\0\\validate\\lolfake\\final\\"
+//#define QUERY_UPDATE_LIST "\\list\\gamename\\nolf2\\final\\"
+
 class JServerDir :
 	public IServerDirectory
 {
-protected:
-	ILTCSBase* m_pLTCSBase;
-	HMODULE m_hResourceModule;
-	bool m_bClientSide;
-
-	std::string m_sGameName;
-	std::string m_sVersion;
-	std::string m_sRegion;
-
-	StartupInfo_Titan m_StartupInfo;
-
-	// Maybe just generate this on the fly for the client?
-	//TPeerList m_PeerList;
-
-	// All I see is pears
-	std::vector<Peer*> m_Peers;
-
-	int m_nActivePeer;
-
-	EStatus m_eStatus;
-
 public:
 
 	JServerDir(bool bClientSide, ILTCSBase& ltCSBase, HMODULE hResourceModule);
@@ -49,61 +35,61 @@ public:
 	// Returns false if unable to add the request to the queue
 	// Note : A return value of true does NOT imply that the request completed
 	// successfully.
-	virtual bool QueueRequest(ERequest eNewRequest) = 0;
+	virtual bool QueueRequest(ERequest eNewRequest);
 	// Add a list of requests to the queue
 	// Returns false if any of the requests could not be added.  (And does not
 	// add any of them in that case.)
-	virtual bool QueueRequestList(const TRequestList& cNewRequests) = 0;
+	virtual bool QueueRequestList(const TRequestList& cNewRequests);
 	// Retrieve the list of waiting requests.  
 	// The first entry is the entry which is currently being processed.
-	virtual TRequestList GetWaitingRequestList() const = 0;
+	virtual TRequestList GetWaitingRequestList() const;
 	// Clear the request list
 	// Note : Request list processing must be paused to clear the request list
 	// Returns false if the request list is currently being processed.
-	virtual bool ClearRequestList() = 0;
+	virtual bool ClearRequestList();
 	// Pause processing, process the given request, return the result,
 	// and go back to the previous state.
 	// Returns the result of the request
-	virtual ERequestResult ProcessRequest(ERequest eNewRequest, uint32 nTimeout) = 0;
+	virtual ERequestResult ProcessRequest(ERequest eNewRequest, uint32 nTimeout);
 
 	// Pauses the request list processing
 	// Note : This will cancel the active request, and schedule it for 
 	// re-processing when processing is resumed.
-	virtual bool PauseRequestList() = 0;
+	virtual bool PauseRequestList();
 	// Process (or continue processing) the request list
-	virtual bool ProcessRequestList() = 0;
+	virtual bool ProcessRequestList();
 
 	// Wait until the next request is completed and return the result
-	virtual ERequestResult BlockOnActiveRequest(uint32 nTimeout) = 0;
+	virtual ERequestResult BlockOnActiveRequest(uint32 nTimeout);
 	// Wait until the next request matching eBlockRequest is completed and 
 	// return its result
 	// Note : Returns eRequestResult_Aborted if an earlier request fails
-	virtual ERequestResult BlockOnRequest(ERequest eBlockRequest, uint32 nTimeout) = 0;
+	virtual ERequestResult BlockOnRequest(ERequest eBlockRequest, uint32 nTimeout);
 	// Wait until the next request matching one of the entries in 
 	// eBlockRequestList is completed and return its result
 	// Note : Returns eRequestResult_Aborted if an earlier request fails
-	virtual ERequestResult BlockOnRequestList(const TRequestList& cBlockRequestList, uint32 nTimeout) = 0;
+	virtual ERequestResult BlockOnRequestList(const TRequestList& cBlockRequestList, uint32 nTimeout);
 	// Wait until we go out of the processing state
-	virtual ERequestResult BlockOnProcessing(uint32 nTimeout) = 0;
+	virtual ERequestResult BlockOnProcessing(uint32 nTimeout);
 
 	// Is this request in request list?
-	virtual bool IsRequestPending(ERequest ePendingRequest) const = 0;
+	virtual bool IsRequestPending(ERequest ePendingRequest) const;
 
 	// A list of servers
 	typedef std::vector<std::string> TPeerList;
 	// Returns the most recently successful request
-	virtual ERequest GetLastSuccessfulRequest() const = 0;
+	virtual ERequest GetLastSuccessfulRequest() const;
 	// Returns the most recently failed request
-	virtual ERequest GetLastErrorRequest() const = 0;
+	virtual ERequest GetLastErrorRequest() const;
 	// Returns the currently active request
-	virtual ERequest GetActiveRequest() const = 0;
+	virtual ERequest GetActiveRequest() const;
 
 	// Get the most recently processed request
-	virtual ERequest GetLastRequest() const = 0;
+	virtual ERequest GetLastRequest() const;
 	// Get the result of the most recently processed result
-	virtual ERequestResult GetLastRequestResult() const = 0;
+	virtual ERequestResult GetLastRequestResult() const;
 	// Get the string associated with the most recently processed result
-	virtual const char* GetLastRequestResultString() const = 0;
+	virtual const char* GetLastRequestResultString() const;
 
 	//////////////////////////////////////////////////////////////////////////////
 	// Status
@@ -206,5 +192,30 @@ public:
 	virtual bool HandleNetMessage(ILTMessage_Read& cMsg, const char* pSender, uint16 nPort);
 	// Set the header which will be appended to the beginning of all outgoing messages
 	virtual bool SetNetHeader(ILTMessage_Read& cMsg);
+
+	protected:
+		ILTCSBase* m_pLTCSBase;
+		HMODULE m_hResourceModule;
+		bool m_bClientSide;
+
+		std::string m_sGameName;
+		std::string m_sVersion;
+		std::string m_sRegion;
+
+		StartupInfo_Titan m_StartupInfo;
+
+		// Maybe just generate this on the fly for the client?
+		//TPeerList m_PeerList;
+
+		// All I see is pears
+		std::vector<Peer*> m_Peers;
+
+		int m_nActivePeer;
+
+		EStatus m_eStatus;
+
+		// 
+		void QueryMasterServer();
+
 };
 
