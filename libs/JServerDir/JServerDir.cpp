@@ -10,7 +10,12 @@
 #include <vector>
 #include <sstream>
 #include <iostream>
+#include <thread>
 //
+
+extern ILTCommon* g_pCommonLT;
+
+JServerDir* g_pJServerDir;
 
 JServerDir::JServerDir(bool bClientSide, ILTCSBase& ltCSBase, HMODULE hResourceModule)
 {
@@ -18,11 +23,18 @@ JServerDir::JServerDir(bool bClientSide, ILTCSBase& ltCSBase, HMODULE hResourceM
 	m_pLTCSBase = &ltCSBase;
 	m_hResourceModule = hResourceModule;
 	m_nActivePeer = -1;
+	m_bIsRequestQueueRunning = false;
+
+	g_pCommonLT = m_pLTCSBase->Common();
+
+	g_pJServerDir = this;
 }
 
 JServerDir::~JServerDir()
 {
-
+	if (m_bIsRequestQueueRunning) {
+		m_bStopThread = true;
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -40,8 +52,20 @@ bool JServerDir::QueueRequest(ERequest eNewRequest)
 		return true;
 	}
 
+	if (!m_bIsRequestQueueRunning) {
+		m_bStopThread = false;
+		m_tRequestQueue = std::thread(&JServerDir::RequestQueueLoop, this);
+		m_tRequestQueue.detach();
+		m_bIsRequestQueueRunning = true;
+	}
+
 	if (eNewRequest == ERequest::eRequest_Update_List) {
-		QueryMasterServer();
+
+		m_mJobMutex.lock();
+		m_vJobs.push_back({ eNewRequest });
+		m_mJobMutex.unlock();
+
+		m_eStatus = eStatus_Processing;
 	}
 
 	return true;
@@ -88,6 +112,8 @@ bool JServerDir::PauseRequestList()
 // Process (or continue processing) the request list
 bool JServerDir::ProcessRequestList()
 {
+
+
 	return false;
 }
 
@@ -123,6 +149,13 @@ IServerDirectory::ERequestResult JServerDir::BlockOnProcessing(uint32 nTimeout)
 // Is this request in request list?
 bool JServerDir::IsRequestPending(ERequest ePendingRequest) const
 {
+
+
+	if (m_Peers.size() == 0) {
+		return true;
+	}
+
+
 	return false;
 }
 
@@ -170,6 +203,15 @@ IServerDirectory::EStatus JServerDir::GetCurStatus() const
 // Get the descriptive text associated with the current status
 const char* JServerDir::GetCurStatusString() const
 {
+
+#ifdef _DROPIN
+	// This is really stupid,
+	// but since this suppose to be compatiable as a drop-in replacement
+	// We need a place to run our update, and this function gets called every ScreenJoin Update!
+	g_pJServerDir->Update();
+#endif
+
+
 	switch (m_eStatus) {
 	case IServerDirectory::eStatus_Error:
 		return "Error";
@@ -596,6 +638,11 @@ bool JServerDir::SetNetHeader(ILTMessage_Read& cMsg)
 	return false;
 }
 
+void JServerDir::Update()
+{
+	CheckForQueuedPeers();
+}
+
 void JServerDir::QueryMasterServer()
 {
 	WORD wVersionRequested;
@@ -640,11 +687,12 @@ void JServerDir::QueryMasterServer()
 	char buffer[2048];
 	buffer[0] = '\0';
 
-	result = recv(sock, buffer, sizeof(buffer), 0);
+	result = recv(sock, buffer, sizeof(buffer), MSG_WAITALL);
 
 	std::string sServerList = buffer;
 
 	//\\basic\\secure\\TXKOAT
+	//+		buffer	0x0019e894 "\\basic\\\\secure\\TXKOAT6ÑZ\x3lñ\\final\\
 
 	// Even php has better string handling than std! Geeeeez.
 	// Easier to use c strings here.
@@ -656,7 +704,35 @@ void JServerDir::QueryMasterServer()
 		std::string temp = pch;
 
 		if (temp.find_first_of("TXKOAT") == 0) {
+			std::string servers = temp.substr(6);
 
+
+			struct ipTest {
+				unsigned char ip[4];
+				unsigned short port;
+			};
+
+			ipTest* test1 = (ipTest*)servers.c_str();
+
+			unsigned short ordered = htons(test1->port);
+
+			std::string ipBuffer;
+			char buffer[32];
+			//ipBuffer = test1->ip[0] << '.' << test1->ip[1] << '.' << test1->ip[2] << '.' << test1->ip[3] << ':' << ordered;
+
+			sprintf(buffer, "%d.%d.%d.%d:%d", test1->ip[0], test1->ip[1], test1->ip[2], test1->ip[3], ordered);
+
+			ipBuffer = buffer;
+
+			Peer* peer = new Peer();
+			peer->SetAddress(ipBuffer);
+
+			m_mQueuedPeerMutex.lock();
+			m_QueuedPeers.push_back(peer);
+			m_mQueuedPeerMutex.unlock();
+			//unsigned short test2 = MAKEWORD(test1->port[0], test1->port[1]);//test1->port & 0xFFFF;
+
+			bool depro = true;
 		}
 
 		pch = strtok(NULL, "\\");
@@ -665,5 +741,60 @@ void JServerDir::QueryMasterServer()
 
 	result = closesocket(sock);
 
+	WSACleanup();
+
 	bool de = true;
+}
+
+void JServerDir::CheckForQueuedPeers()
+{
+	m_mQueuedPeerMutex.lock();
+	auto queuedPeers = m_QueuedPeers;
+	m_QueuedPeers.clear();
+	m_mQueuedPeerMutex.unlock();
+
+	for (Peer* peer : queuedPeers) {
+		m_Peers.push_back(peer);
+	}
+
+	if (m_Peers.size() > 0) {
+		m_eStatus = eStatus_Waiting;
+	}
+}
+
+void JServerDir::RequestQueueLoop()
+{
+
+	while (true) {
+		// See if we wanna kill the thread!
+		if (m_bStopThread) {
+			return;
+		}
+
+		Sleep(10);
+
+		bool locked = m_mJobMutex.try_lock();
+
+		if (!locked) {
+			continue;
+		}
+
+		if (m_vJobs.size() == 0) {
+			m_mJobMutex.unlock();
+			continue;
+		}
+
+		Job job = m_vJobs.back();
+		m_vJobs.pop_back();
+
+		m_mJobMutex.unlock();
+
+		switch (job.eRequestType) {
+		case eRequest_Update_List:
+			QueryMasterServer();
+			break;
+		}
+
+	}
+
 }

@@ -3,11 +3,16 @@
 
 #define SERVERDIR_EXPORTS
 
+#define _DROPIN
+
 #include "IServerDir.h"
 #include "IServerDir_Titan.h"
 #include "iltcsbase.h"
 #include "Peer.h"
 
+#include <thread>
+#include <atomic>
+#include <mutex>
 
 #define FAKE_CD_KEY "ABC1-EFG2-IJK3-LMN4-5678"
 #define LOCAL_PEER "_LOCAL_PEER"
@@ -17,8 +22,12 @@
 #define MASTER_SERVER "65.112.87.186"
 #define MASTER_PORT 28900
 
-#define QUERY_UPDATE_LIST "\\gamename\\nolf2\\gamever\\1.3\\location\\0\\validate\\lolfake\\final\\"
+#define QUERY_UPDATE_LIST "\\gamename\\nolf2\\gamever\\1.3\\location\\0\\validate\\g3Fo6x\\final\\"
 //#define QUERY_UPDATE_LIST "\\list\\gamename\\nolf2\\final\\"
+
+struct Job {
+	IServerDirectory::ERequest eRequestType;
+};
 
 class JServerDir :
 	public IServerDirectory
@@ -214,8 +223,24 @@ public:
 
 		EStatus m_eStatus;
 
+		bool m_bIsRequestQueueRunning;
+
+		std::thread m_tRequestQueue;
+
 		// 
+		void Update();
 		void QueryMasterServer();
+		void CheckForQueuedPeers();
+
+		// Thread Stuff
+		std::atomic_bool m_bStopThread;
+		std::mutex m_mJobMutex;
+		std::mutex m_mQueuedPeerMutex;
+		std::vector<Job> m_vJobs;
+		// Weird, but to avoid a lot of mutexing, this is the prep vector that will eventually be merged into Peers
+		std::vector<Peer*> m_QueuedPeers;
+
+		void RequestQueueLoop();
 
 };
 
