@@ -206,7 +206,7 @@ const char* JServerDir::GetCurStatusString() const
 
 #ifdef _DROPIN
 	// This is really stupid,
-	// but since this suppose to be compatiable as a drop-in replacement
+	// but since this suppose to be compatible as a drop-in replacement
 	// We need a place to run our update, and this function gets called every ScreenJoin Update!
 	g_pJServerDir->Update();
 #endif
