@@ -665,10 +665,19 @@ void JServerDir::QueryMasterServer()
 		return;
 	}
 
+	// Try doing a basic dummy query first
+#if 0
+	bResult = Query("\\basic\\", MASTER_SERVER, MASTER_PORT, sock);
+	std::string sThrowAway = Recieve(MASTER_SERVER, MASTER_PORT, sock);
+	bResult = Query("\\validate\\g3Fo6x\\", MASTER_SERVER, MASTER_PORT, sock);
+	std::string sThrowAway2 = Recieve(MASTER_SERVER, MASTER_PORT, sock);
+#endif
+
 	bResult = Query(QUERY_UPDATE_LIST, MASTER_SERVER, MASTER_PORT, sock);
 
 	if (!bResult) {
 		auto error = WSAGetLastError();
+		
 		ASSERT(error == 0 && "Socket Query Error!");
 		// Throw error
 		return;
@@ -703,14 +712,37 @@ void JServerDir::QueryMasterServer()
 
 			std::string ipBuffer;
 			char buffer[32];
+			buffer[0] = '\0';
 			//ipBuffer = test1->ip[0] << '.' << test1->ip[1] << '.' << test1->ip[2] << '.' << test1->ip[3] << ':' << ordered;
 
-			sprintf(buffer, "%d.%d.%d.%d:%d", test1->ip[0], test1->ip[1], test1->ip[2], test1->ip[3], ordered);
+			//sprintf(buffer, "%d.%d.%d.%d:%d", test1->ip[0], test1->ip[1], test1->ip[2], test1->ip[3], ordered);
+			sprintf(buffer, "%d.%d.%d.%d", test1->ip[0], test1->ip[1], test1->ip[2], test1->ip[3]);
 
 			ipBuffer = buffer;
 
 			Peer* peer = new Peer();
-			peer->SetAddress(ipBuffer);
+
+			// This code should not be here!
+			{
+				SOCKET uSock = NULL;
+				int iResult = SetupSocket(uSock, true);
+
+				bResult = Query("\\status\\", ipBuffer, ordered, uSock);
+				if (!bResult) {
+					auto error = WSAGetLastError();
+					ASSERT(error == 0 && "Socket Peer Query Error!");
+					// Throw error
+					return;
+				}
+				std::string sStatus = "";
+
+					sStatus = Recieve(ipBuffer, ordered, uSock);
+
+				
+				peer->SetAddress(ipBuffer);
+
+				closesocket(uSock);
+			}
 
 			m_mQueuedPeerMutex.lock();
 			m_QueuedPeers.push_back(peer);
@@ -762,8 +794,12 @@ int JServerDir::SetupSocket(SOCKET &pSock, bool bIsUDP)
 		return error;
 	}
 
-	std::string timeout = "2500";
-	setsockopt(pSock, SOL_SOCKET, SO_RCVTIMEO, timeout.c_str(), sizeof(timeout.c_str()));
+	timeval timeout;
+	timeout.tv_sec = 5;
+	timeout.tv_usec = 0;
+
+	setsockopt(pSock, SOL_SOCKET, SO_RCVTIMEO, (char*)&timeout, sizeof(timeout));
+	setsockopt(pSock, SOL_SOCKET, SO_SNDTIMEO, (char*)&timeout, sizeof(timeout));
 
 	return 0;
 }
@@ -773,17 +809,17 @@ int JServerDir::SetupSocket(SOCKET &pSock, bool bIsUDP)
 //
 bool JServerDir::Connect(std::string sIpAddress, unsigned short nPort, SOCKET& pSock)
 {
-	int iBuffer[32];
+	ULONG iBuffer = 0;
 
 	// Setup our address
-	inet_pton(AF_INET, MASTER_SERVER, (int*)iBuffer);
+	inet_pton(AF_INET, sIpAddress.c_str(), (ULONG*)&iBuffer);
 
-	sockaddr_in  saMasterAddress;
-	saMasterAddress.sin_family = AF_INET;
-	saMasterAddress.sin_addr.s_addr = *iBuffer;
-	saMasterAddress.sin_port = htons(MASTER_PORT);
+	sockaddr_in  saAddress;
+	saAddress.sin_family = AF_INET;
+	saAddress.sin_addr.s_addr = iBuffer;
+	saAddress.sin_port = htons(nPort);
 
-	int iResult = connect(pSock, (SOCKADDR*)&saMasterAddress, sizeof(saMasterAddress));
+	int iResult = connect(pSock, (SOCKADDR*)&saAddress, sizeof(saAddress));
 
 	if (iResult > 0) {
 		return false;
@@ -797,21 +833,36 @@ bool JServerDir::Connect(std::string sIpAddress, unsigned short nPort, SOCKET& p
 //
 bool JServerDir::Query(std::string sQuery, std::string sIpAddress, unsigned short nPort, SOCKET &pSock)
 {
-	int iBuffer[32];
+	ULONG iBuffer = 0;
 
 	// Setup our address
-	inet_pton(AF_INET, MASTER_SERVER, (int*)iBuffer);
+	inet_pton(AF_INET, sIpAddress.c_str(), (ULONG*)&iBuffer);
 
-	sockaddr_in  saMasterAddress;
-	saMasterAddress.sin_family = AF_INET;
-	saMasterAddress.sin_addr.s_addr = *iBuffer;
-	saMasterAddress.sin_port = htons(MASTER_PORT);
+	sockaddr_in  saAddress;
+	saAddress.sin_family = AF_INET;
+	saAddress.sin_addr.s_addr = iBuffer;
+	saAddress.sin_port = htons(nPort);
 	
 	// Send our query!
-	int iResult = sendto(pSock, sQuery.c_str(), sizeof(sQuery.c_str()), 0, (SOCKADDR*)&saMasterAddress, sizeof(saMasterAddress));
+	int iResult = 0;
+	int iIndex = 0;
+	int iLeft = sQuery.size();
+	char* szQueryBuffer = (char*)sQuery.c_str();
 
-	if (iResult == SOCKET_ERROR) {
-		return false;
+	while (iLeft > 0) {
+		iResult = sendto(pSock, &szQueryBuffer[iIndex], iLeft, 0, (SOCKADDR*)&saAddress, sizeof(saAddress));
+
+		if (iResult == SOCKET_ERROR) {
+			return false;
+		}
+
+		// Servers trying to catch up...give it a breather
+		if (iResult == 0) {
+			Sleep(500);
+		}
+
+		iIndex += iResult;
+		iLeft -= iResult;
 	}
 
 	return true;
@@ -822,21 +873,53 @@ bool JServerDir::Query(std::string sQuery, std::string sIpAddress, unsigned shor
 //
 std::string JServerDir::Recieve(std::string sIpAddress, unsigned short nPort, SOCKET &pSock)
 {
-	int iBuffer[32];
+	ULONG iBuffer = 0;
 	char szBuffer[2048];
-	szBuffer[0] = '\0';
+	memset(szBuffer, 0, sizeof(szBuffer));
 
 	// Setup our address
-	inet_pton(AF_INET, MASTER_SERVER, (int*)iBuffer);
+	inet_pton(AF_INET, sIpAddress.c_str(), (ULONG*)&iBuffer);
 
-	sockaddr_in  saMasterAddress;
-	saMasterAddress.sin_family = AF_INET;
-	saMasterAddress.sin_addr.s_addr = *iBuffer;
-	saMasterAddress.sin_port = htons(MASTER_PORT);
+	sockaddr_in  saAddress;
+	saAddress.sin_family = AF_INET;
+	saAddress.sin_addr.s_addr = iBuffer;
+	saAddress.sin_port = htons(nPort);
 
-	int iResult = recv(pSock, szBuffer, sizeof(szBuffer), MSG_WAITALL);
+	int fromSize = sizeof(saAddress);
+	int iResult = -1;
 
-	return std::string(szBuffer);
+	std::string sBuffer = "";
+
+	//\gamename\nolf2\gamever\1.0.0.3\gamemode\openplaying\gametype\DoomsDay\hostip\172.31.41.243\hostname\unityhq.net\hostport\27888\mapname\DD_06\maxplayers\16\numplayers\0\fraglimit\0\options\\password\0\timelimit\20\frags_0\0\frags_1\0\frags_2\0\ping_0\53911\ping_1\24129\ping_2\1287\player_0\Ya Basta\player_1\Ya Basta\player_2\Ya Basta1\final\\queryid\50834.1
+
+	while (iResult != 0) {
+		iResult = recvfrom(pSock, szBuffer, sizeof(szBuffer), 0, (SOCKADDR*)&saAddress, &fromSize);
+
+		if (iResult == SOCKET_ERROR) {
+			int error = WSAGetLastError();
+
+			// That's okay!
+			if (error == WSAETIMEDOUT) {
+				break;
+			}
+
+			WSANOTINITIALISED;
+			ASSERT(iResult != SOCKET_ERROR && "Socket Recieve Error!");
+		}
+
+		if (iResult == 0) {
+			break;
+		}
+
+		sBuffer += szBuffer;
+
+		// Also okay, if final is in, we done!
+		if (sBuffer.find_first_of("\\final\\") != std::string::npos) {
+			break;
+		}
+	}
+
+	return sBuffer;//std::string(szBuffer);
 }
 
 void JServerDir::RequestQueueLoop()
