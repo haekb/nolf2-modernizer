@@ -13,6 +13,9 @@
 #include <thread>
 #include <atomic>
 #include <mutex>
+#include <WinSock2.h>
+#include <WS2tcpip.h>
+
 
 #define FAKE_CD_KEY "ABC1-EFG2-IJK3-LMN4-5678"
 #define LOCAL_PEER "_LOCAL_PEER"
@@ -231,6 +234,11 @@ public:
 		void Update();
 		void QueryMasterServer();
 		void CheckForQueuedPeers();
+
+		int SetupSocket(SOCKET &pSock, bool bIsUDP);
+		bool Connect(std::string sIpAddress, unsigned short nPort, SOCKET& pSock);
+		bool Query(std::string sQuery, std::string sIpAddress, unsigned short nPort, SOCKET &pSock);
+		std::string Recieve(std::string sIpAddress, unsigned short nPort, SOCKET &pSock);
 
 		// Thread Stuff
 		std::atomic_bool m_bStopThread;

@@ -645,58 +645,43 @@ void JServerDir::Update()
 
 void JServerDir::QueryMasterServer()
 {
-	WORD wVersionRequested;
-	WSADATA wsaData;
-	wVersionRequested = MAKEWORD(2, 2);
+	SOCKET sock = NULL;
 
-	WSAStartup(wVersionRequested, &wsaData);
+	int iResult = SetupSocket(sock, false);
 
-	auto sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-
-	if (sock == INVALID_SOCKET) {
-		int error = WSAGetLastError();
-		bool debug = true;
-	}
-
-	std::string timeout = "2500";
-
-	setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, timeout.c_str(), sizeof(timeout.c_str()));
-
-	int iBuffer[32];
-
-	inet_pton(AF_INET, MASTER_SERVER, (int*)iBuffer);
-
-	sockaddr_in  saMasterAddress;
-	saMasterAddress.sin_family = AF_INET;
-	saMasterAddress.sin_addr.s_addr = *iBuffer;
-	saMasterAddress.sin_port = htons(MASTER_PORT);
-
-	int result = connect(sock, (SOCKADDR*)&saMasterAddress, sizeof(saMasterAddress));
-	if (result == SOCKET_ERROR) {
-		wprintf(L"connect function failed with error: %ld\n", WSAGetLastError());
-		result = closesocket(sock);
-		if (result == SOCKET_ERROR)
-			wprintf(L"closesocket function failed with error: %ld\n", WSAGetLastError());
-		WSACleanup();
+	// Bad!
+	if (iResult == INVALID_SOCKET) {
 		return;
 	}
 
-	// Send our query!
-	result = send(sock, QUERY_UPDATE_LIST, sizeof(QUERY_UPDATE_LIST), 0);
+	bool bResult;
 
-	char buffer[2048];
-	buffer[0] = '\0';
+	bResult = Connect(MASTER_SERVER, MASTER_PORT, sock);
 
-	result = recv(sock, buffer, sizeof(buffer), MSG_WAITALL);
+	if (!bResult) {
+		auto error = WSAGetLastError();
+		ASSERT(error == 0 && "Socket Connection Error!");
+		// Throw error
+		return;
+	}
 
-	std::string sServerList = buffer;
+	bResult = Query(QUERY_UPDATE_LIST, MASTER_SERVER, MASTER_PORT, sock);
+
+	if (!bResult) {
+		auto error = WSAGetLastError();
+		ASSERT(error == 0 && "Socket Query Error!");
+		// Throw error
+		return;
+	}
+
+	std::string sServerList = Recieve(MASTER_SERVER, MASTER_PORT, sock);
 
 	//\\basic\\secure\\TXKOAT
 	//+		buffer	0x0019e894 "\\basic\\\\secure\\TXKOAT6ÑZ\x3lñ\\final\\
 
 	// Even php has better string handling than std! Geeeeez.
 	// Easier to use c strings here.
-	char* pch = strtok(buffer, "\\");
+	char* pch = strtok((char*)sServerList.c_str(), "\\");
 	while (pch != NULL)
 	{
 		printf("%s\n", pch);
@@ -738,12 +723,7 @@ void JServerDir::QueryMasterServer()
 		pch = strtok(NULL, "\\");
 	}
 
-
-	result = closesocket(sock);
-
-	WSACleanup();
-
-	bool de = true;
+	closesocket(sock);
 }
 
 void JServerDir::CheckForQueuedPeers()
@@ -762,13 +742,115 @@ void JServerDir::CheckForQueuedPeers()
 	}
 }
 
+//
+// Setup the socket with timeout
+//
+int JServerDir::SetupSocket(SOCKET &pSock, bool bIsUDP)
+{
+	int type = SOCK_STREAM;
+	IPPROTO protocol = IPPROTO_TCP;
+
+	if (bIsUDP) {
+		type = SOCK_DGRAM;
+		protocol = IPPROTO_UDP;
+	}
+
+	pSock = socket(AF_INET, type, protocol);
+
+	if (pSock == INVALID_SOCKET) {
+		int error = WSAGetLastError();
+		return error;
+	}
+
+	std::string timeout = "2500";
+	setsockopt(pSock, SOL_SOCKET, SO_RCVTIMEO, timeout.c_str(), sizeof(timeout.c_str()));
+
+	return 0;
+}
+
+//
+// For TCP only
+//
+bool JServerDir::Connect(std::string sIpAddress, unsigned short nPort, SOCKET& pSock)
+{
+	int iBuffer[32];
+
+	// Setup our address
+	inet_pton(AF_INET, MASTER_SERVER, (int*)iBuffer);
+
+	sockaddr_in  saMasterAddress;
+	saMasterAddress.sin_family = AF_INET;
+	saMasterAddress.sin_addr.s_addr = *iBuffer;
+	saMasterAddress.sin_port = htons(MASTER_PORT);
+
+	int iResult = connect(pSock, (SOCKADDR*)&saMasterAddress, sizeof(saMasterAddress));
+
+	if (iResult > 0) {
+		return false;
+	}
+
+	return true;
+}
+
+//
+// Will throw a query at the requested server
+//
+bool JServerDir::Query(std::string sQuery, std::string sIpAddress, unsigned short nPort, SOCKET &pSock)
+{
+	int iBuffer[32];
+
+	// Setup our address
+	inet_pton(AF_INET, MASTER_SERVER, (int*)iBuffer);
+
+	sockaddr_in  saMasterAddress;
+	saMasterAddress.sin_family = AF_INET;
+	saMasterAddress.sin_addr.s_addr = *iBuffer;
+	saMasterAddress.sin_port = htons(MASTER_PORT);
+	
+	// Send our query!
+	int iResult = sendto(pSock, sQuery.c_str(), sizeof(sQuery.c_str()), 0, (SOCKADDR*)&saMasterAddress, sizeof(saMasterAddress));
+
+	if (iResult == SOCKET_ERROR) {
+		return false;
+	}
+
+	return true;
+}
+
+//
+// Will do a blocking attempt to retrieve up to 2048 bytes from the requested server
+//
+std::string JServerDir::Recieve(std::string sIpAddress, unsigned short nPort, SOCKET &pSock)
+{
+	int iBuffer[32];
+	char szBuffer[2048];
+	szBuffer[0] = '\0';
+
+	// Setup our address
+	inet_pton(AF_INET, MASTER_SERVER, (int*)iBuffer);
+
+	sockaddr_in  saMasterAddress;
+	saMasterAddress.sin_family = AF_INET;
+	saMasterAddress.sin_addr.s_addr = *iBuffer;
+	saMasterAddress.sin_port = htons(MASTER_PORT);
+
+	int iResult = recv(pSock, szBuffer, sizeof(szBuffer), MSG_WAITALL);
+
+	return std::string(szBuffer);
+}
+
 void JServerDir::RequestQueueLoop()
 {
+	WORD wVersionRequested;
+	WSADATA wsaData;
+
+	wVersionRequested = MAKEWORD(2, 2);
+	WSAStartup(wVersionRequested, &wsaData);
 
 	while (true) {
 		// See if we wanna kill the thread!
 		if (m_bStopThread) {
-			return;
+			break;
 		}
 
 		Sleep(10);
@@ -797,4 +879,5 @@ void JServerDir::RequestQueueLoop()
 
 	}
 
+	WSACleanup();
 }
