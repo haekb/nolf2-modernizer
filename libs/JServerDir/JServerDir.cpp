@@ -1034,7 +1034,7 @@ void JServerDir::RequestQueueLoop()
 		// Quite the statement...
 		auto nSeconds = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
-		// After 20 seconds of no activity, kill the thread
+		// After 5 seconds of no activity, kill the thread
 		if (nSeconds - m_nThreadLastActivity > 5) {
 			break;
 		}
