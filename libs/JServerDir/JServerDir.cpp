@@ -39,7 +39,8 @@ JServerDir::~JServerDir()
 {
 	if (m_bIsRequestQueueRunning) {
 		m_bStopThread = true;
-		m_tRequestQueue.join();
+		// Regrettably use windows api
+		WaitForSingleObject(m_tRequestQueue.native_handle(), INFINITE);
 	}
 }
 
