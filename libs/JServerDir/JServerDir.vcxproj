@@ -88,7 +88,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;JSERVERDIR_EXPORTS;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;NOPS2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;JSERVERDIR_EXPORTS;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;NOPS2;__STL_DONT_REDEFINE_STD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>..\..\Engine\sdk\inc;..\lith;..\stdlith;..\..\Game\Shared;..\..\Game\Libs\ServerDir;..\STLPort-STD;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -162,6 +162,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
+    <ClInclude Include="Helpers.h" />
     <ClInclude Include="JServerDir.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Peer.h" />

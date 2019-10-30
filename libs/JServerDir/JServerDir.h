@@ -3,7 +3,8 @@
 
 #define SERVERDIR_EXPORTS
 
-#define _DROPIN
+// Uncomment if you want it to work with NOLF2 vanilla
+//#define _DROPIN
 
 #include "IServerDir.h"
 #include "IServerDir_Titan.h"
@@ -15,6 +16,7 @@
 #include <mutex>
 #include <WinSock2.h>
 #include <WS2tcpip.h>
+#include <stl_vector.h>
 
 
 #define FAKE_CD_KEY "ABC1-EFG2-IJK3-LMN4-5678"
@@ -88,7 +90,18 @@ public:
 	virtual bool IsRequestPending(ERequest ePendingRequest) const;
 
 	// A list of servers
+#ifdef _DROPIN
+	// std::vector is different in STLPort, we need to it to match up exactly...sadly
+#undef std
+#define std STLPORT
+	typedef std::vector
+#undef std
+#define std std
+		<std::string> TPeerList;
+#else
 	typedef std::vector<std::string> TPeerList;
+#endif
+
 	// Returns the most recently successful request
 	virtual ERequest GetLastSuccessfulRequest() const;
 	// Returns the most recently failed request

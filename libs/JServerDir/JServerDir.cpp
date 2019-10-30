@@ -1,9 +1,10 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "JServerDir.h"
 #include "IServerDir.h"
 #include "AutoMessage.h"
 #include <WinSock2.h>
 #include <WS2tcpip.h>
+#include "Helpers.h"
 
 //
 #include <string>
@@ -11,6 +12,7 @@
 #include <sstream>
 #include <iostream>
 #include <thread>
+#include <map>
 //
 
 extern ILTCommon* g_pCommonLT;
@@ -299,7 +301,7 @@ void JServerDir::SetRegion(const char* pRegion)
 
 // Is the current version valid?
 // Note : Returns false if eRequest_Validate_Version has not been processed
-bool JServerDir::IsVersionValid() const 
+bool JServerDir::IsVersionValid() const
 {
 	return true;
 }
@@ -356,6 +358,17 @@ bool JServerDir::SetActivePeer(const char* pAddr)
 	else {
 		activePeer = pAddr;
 	}
+
+	// See if we're already in the list!
+	int index = 0;
+	for (auto peer : m_Peers) {
+		if (peer->GetAddress().compare(activePeer) == 0) {
+			m_nActivePeer = index;
+			return true;
+		}
+		index++;
+	}
+
 
 	Peer* peer = new Peer();
 
@@ -434,7 +447,7 @@ bool JServerDir::SetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Read& cMsg)
 		peer->SetCreatedAt(cMsg.Readfloat());
 		break;
 	case ePeerInfo_Details:
-		{
+	{
 		PeerInfo_Details* details = &peer->m_DetailsData;
 		details->bUseSkills = cMsg.Readbool();
 		details->bFriendlyFire = cMsg.Readbool();
@@ -464,8 +477,8 @@ bool JServerDir::SetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Read& cMsg)
 		details->nRunSpeed = cMsg.Readuint8();
 		details->nScoreLimit = cMsg.Readuint8();
 		details->nTimeLimit = cMsg.Readuint8();
-		}
-		break;
+	}
+	break;
 	case ePeerInfo_Name:
 		char buffer[MAX_PACKET_LEN];
 		buffer[0] = 0;
@@ -487,7 +500,7 @@ bool JServerDir::SetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Read& cMsg)
 		PeerInfo_Service_Titan* pServiceInfo = (PeerInfo_Service_Titan*)&cMsg;
 		peer->m_ServiceData = *pServiceInfo;
 	}
-		break;
+	break;
 	case ePeerInfo_Summary:
 	{
 		PeerInfo_Summary* summary = &peer->m_SummaryData;
@@ -510,7 +523,7 @@ bool JServerDir::SetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Read& cMsg)
 		cMsg.ReadString(buffer, MAX_PACKET_LEN);
 		summary->sModName = buffer;
 	}
-		break;
+	break;
 	}
 
 	return true;
@@ -532,69 +545,71 @@ bool JServerDir::GetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Write* pMsg) 
 		return false;
 	}
 
+	pMsg->Reset();
+
 	Peer* peer = m_Peers.at(m_nActivePeer);
 
 	switch (eInfoType) {
 	case ePeerInfo_Age:
-		cMsg.Writefloat(peer->GetCreatedAt());
+		pMsg->Writefloat(peer->GetCreatedAt());
 		break;
 	case ePeerInfo_Details:
 	{
 		PeerInfo_Details* details = &peer->m_DetailsData;
-		cMsg.Writebool(details->bUseSkills);
-		cMsg.Writebool(details->bFriendlyFire);
-		cMsg.Writeuint8(details->nMPDifficulty);
-		cMsg.Writefloat(details->fPlayerDiffFactor);
+		pMsg->Writebool(details->bUseSkills);
+		pMsg->Writebool(details->bFriendlyFire);
+		pMsg->Writeuint8(details->nMPDifficulty);
+		pMsg->Writefloat(details->fPlayerDiffFactor);
 
 		if (details->Players.size() > 0) {
 			// If we have players to send over, mark it as so!
-			cMsg.Writebool(true);
+			pMsg->Writebool(true);
 		}
 
 		for (auto player : details->Players) {
-			cMsg.WriteString(player.sUniqueName.c_str());
-			cMsg.Writeuint16(player.nPing);
+			pMsg->WriteString(player.sUniqueName.c_str());
+			pMsg->Writeuint16(player.nPing);
 		}
 
 		// Tell them we're done printing out players
-		cMsg.Writebool(false);
+		pMsg->Writebool(false);
 
-		cMsg.Writeuint8(details->nRunSpeed);
-		cMsg.Writeuint8(details->nScoreLimit);
-		cMsg.Writeuint8(details->nTimeLimit);
+		pMsg->Writeuint8(details->nRunSpeed);
+		pMsg->Writeuint8(details->nScoreLimit);
+		pMsg->Writeuint8(details->nTimeLimit);
 	}
 	break;
 	case ePeerInfo_Name:
-		cMsg.WriteString(peer->m_NameData.sHostName.c_str());
+		pMsg->WriteString(peer->m_NameData.sHostName.c_str());
 		break;
 	case ePeerInfo_Ping:
-		cMsg.Writeuint16(peer->GetPing());
+		pMsg->Writeuint16(peer->GetPing());
 		break;
 	case ePeerInfo_Port:
-		cMsg.Writeuint16(peer->m_PortData.nHostPort);
+		pMsg->Writeuint16(peer->m_PortData.nHostPort);
 		break;
 	case ePeerInfo_Service:
 	{
 		// Double pointer!
 		uint32 servicePointer = (uint32)&peer->m_ServiceData;
-		cMsg.Writeuint32(servicePointer);
+		pMsg->Writeuint32(servicePointer);
 	}
-		break;
+	break;
 	case ePeerInfo_Summary:
 	{
 		PeerInfo_Summary* summary = &peer->m_SummaryData;
 
-		cMsg.WriteString(summary->sBuild.c_str());
-		cMsg.WriteString(summary->sWorldName.c_str());
-		cMsg.Writeuint8(summary->nCurrentPlayers);
-		cMsg.Writeuint8(summary->nMaxPlayers);
-		cMsg.Writebool(summary->bUsePassword);
-		cMsg.Writeuint8(summary->nGameType);
-		cMsg.WriteString(summary->sModName.c_str());
+		pMsg->WriteString(summary->sBuild.c_str());
+		pMsg->WriteString(summary->sWorldName.c_str());
+		pMsg->Writeuint8(summary->nCurrentPlayers);
+		pMsg->Writeuint8(summary->nMaxPlayers);
+		pMsg->Writebool(summary->bUsePassword);
+		pMsg->Writeuint8(summary->nGameType);
+		pMsg->WriteString(summary->sModName.c_str());
 	}
 	break;
 	case ePeerInfo_Validated:
-		cMsg.Writeuint8(1);
+		pMsg->Writeuint8(1);
 		break;
 	}
 
@@ -632,7 +647,7 @@ bool JServerDir::HandleNetMessage(ILTMessage_Read& cMsg, const char* pSender, ui
 
 bool JServerDir::SetNetHeader(ILTMessage_Read& cMsg)
 {
-	
+
 	// ????
 
 	return false;
@@ -673,23 +688,31 @@ void JServerDir::QueryMasterServer()
 	std::string sThrowAway2 = Recieve(MASTER_SERVER, MASTER_PORT, sock);
 #endif
 
+	// For testing, to avoid hitting the server everytime
+#if 1
 	bResult = Query(QUERY_UPDATE_LIST, MASTER_SERVER, MASTER_PORT, sock);
 
 	if (!bResult) {
 		auto error = WSAGetLastError();
-		
+
 		ASSERT(error == 0 && "Socket Query Error!");
 		// Throw error
 		return;
 	}
 
 	std::string sServerList = Recieve(MASTER_SERVER, MASTER_PORT, sock);
+#else
+	std::string sServerList = "\\basic\\secure\\TXKOAT6ï¿½Zlï¿½\\final\\";
+#endif
 
 	//\\basic\\secure\\TXKOAT
-	//+		buffer	0x0019e894 "\\basic\\\\secure\\TXKOAT6ÑZ\x3lñ\\final\\
+	//+		buffer	0x0019e894 "\\basic\\\\secure\\TXKOAT6ï¿½Z\x3lï¿½\\final\\
 
 	// Even php has better string handling than std! Geeeeez.
 	// Easier to use c strings here.
+
+	ASSERT(!sServerList.empty());
+
 	char* pch = strtok((char*)sServerList.c_str(), "\\");
 	while (pch != NULL)
 	{
@@ -723,6 +746,7 @@ void JServerDir::QueryMasterServer()
 			Peer* peer = new Peer();
 
 			// This code should not be here!
+#if 1
 			{
 				SOCKET uSock = NULL;
 				int iResult = SetupSocket(uSock, true);
@@ -730,26 +754,56 @@ void JServerDir::QueryMasterServer()
 				bResult = Query("\\status\\", ipBuffer, ordered, uSock);
 				if (!bResult) {
 					auto error = WSAGetLastError();
+					WSANOTINITIALISED;
 					ASSERT(error == 0 && "Socket Peer Query Error!");
 					// Throw error
 					return;
 				}
 				std::string sStatus = "";
+				Sleep(1000);
+				sStatus = Recieve(ipBuffer, ordered, uSock);
 
-					sStatus = Recieve(ipBuffer, ordered, uSock);
-
+				ASSERT(!sStatus.empty() && "Status returned empty!");
 				
+				std::map<std::string, std::string> mappy = splitResultsToMap(sStatus);
+				std::vector<std::string> arr = split(sStatus, "\\");
+				
+				PeerInfo_Name name;
+				name.sHostName = mappy.at("hostname");
+				PeerInfo_Summary summary;
+				summary.bUsePassword = std::stoi(mappy.at("password"));
+				summary.nCurrentPlayers = std::stoi(mappy.at("numplayers"));
+				summary.nMaxPlayers = std::stoi(mappy.at("maxplayers"));
+				summary.sBuild = mappy.at("gamever");
+				summary.sModName = "";//mappy.at("gamename");
+				summary.sWorldName = mappy.at("mapname");
+
+				std::string gameType = mappy.at("gametype");
+
+				//if (gameType == "DoomsDay") {
+				summary.nGameType = 0;
+				//}
+
+
+				peer->SetPing(0);
+
+				peer->m_NameData = name;
+				peer->m_SummaryData = summary;
 				peer->SetAddress(ipBuffer);
 
 				closesocket(uSock);
 			}
+#else
+
+#endif
 
 			m_mQueuedPeerMutex.lock();
 			m_QueuedPeers.push_back(peer);
 			m_mQueuedPeerMutex.unlock();
 			//unsigned short test2 = MAKEWORD(test1->port[0], test1->port[1]);//test1->port & 0xFFFF;
-
+			
 			bool depro = true;
+			break;
 		}
 
 		pch = strtok(NULL, "\\");
@@ -760,14 +814,18 @@ void JServerDir::QueryMasterServer()
 
 void JServerDir::CheckForQueuedPeers()
 {
+
 	m_mQueuedPeerMutex.lock();
-	auto queuedPeers = m_QueuedPeers;
+	std::vector<Peer*> queuedPeers = m_QueuedPeers;
 	m_QueuedPeers.clear();
 	m_mQueuedPeerMutex.unlock();
 
+
+	
 	for (Peer* peer : queuedPeers) {
 		m_Peers.push_back(peer);
 	}
+
 
 	if (m_Peers.size() > 0) {
 		m_eStatus = eStatus_Waiting;
@@ -777,7 +835,7 @@ void JServerDir::CheckForQueuedPeers()
 //
 // Setup the socket with timeout
 //
-int JServerDir::SetupSocket(SOCKET &pSock, bool bIsUDP)
+int JServerDir::SetupSocket(SOCKET& pSock, bool bIsUDP)
 {
 	int type = SOCK_STREAM;
 	IPPROTO protocol = IPPROTO_TCP;
@@ -831,7 +889,7 @@ bool JServerDir::Connect(std::string sIpAddress, unsigned short nPort, SOCKET& p
 //
 // Will throw a query at the requested server
 //
-bool JServerDir::Query(std::string sQuery, std::string sIpAddress, unsigned short nPort, SOCKET &pSock)
+bool JServerDir::Query(std::string sQuery, std::string sIpAddress, unsigned short nPort, SOCKET& pSock)
 {
 	ULONG iBuffer = 0;
 
@@ -842,7 +900,7 @@ bool JServerDir::Query(std::string sQuery, std::string sIpAddress, unsigned shor
 	saAddress.sin_family = AF_INET;
 	saAddress.sin_addr.s_addr = iBuffer;
 	saAddress.sin_port = htons(nPort);
-	
+
 	// Send our query!
 	int iResult = 0;
 	int iIndex = 0;
@@ -853,6 +911,13 @@ bool JServerDir::Query(std::string sQuery, std::string sIpAddress, unsigned shor
 		iResult = sendto(pSock, &szQueryBuffer[iIndex], iLeft, 0, (SOCKADDR*)&saAddress, sizeof(saAddress));
 
 		if (iResult == SOCKET_ERROR) {
+			int error = WSAGetLastError();
+
+			// That's okay!
+			if (error == WSAETIMEDOUT) {
+				continue;
+			}
+
 			return false;
 		}
 
@@ -871,7 +936,7 @@ bool JServerDir::Query(std::string sQuery, std::string sIpAddress, unsigned shor
 //
 // Will do a blocking attempt to retrieve up to 2048 bytes from the requested server
 //
-std::string JServerDir::Recieve(std::string sIpAddress, unsigned short nPort, SOCKET &pSock)
+std::string JServerDir::Recieve(std::string sIpAddress, unsigned short nPort, SOCKET& pSock)
 {
 	ULONG iBuffer = 0;
 	char szBuffer[2048];
@@ -890,9 +955,8 @@ std::string JServerDir::Recieve(std::string sIpAddress, unsigned short nPort, SO
 
 	std::string sBuffer = "";
 
-	//\gamename\nolf2\gamever\1.0.0.3\gamemode\openplaying\gametype\DoomsDay\hostip\172.31.41.243\hostname\unityhq.net\hostport\27888\mapname\DD_06\maxplayers\16\numplayers\0\fraglimit\0\options\\password\0\timelimit\20\frags_0\0\frags_1\0\frags_2\0\ping_0\53911\ping_1\24129\ping_2\1287\player_0\Ya Basta\player_1\Ya Basta\player_2\Ya Basta1\final\\queryid\50834.1
-
 	while (iResult != 0) {
+		
 		iResult = recvfrom(pSock, szBuffer, sizeof(szBuffer), 0, (SOCKADDR*)&saAddress, &fromSize);
 
 		if (iResult == SOCKET_ERROR) {
@@ -900,7 +964,8 @@ std::string JServerDir::Recieve(std::string sIpAddress, unsigned short nPort, SO
 
 			// That's okay!
 			if (error == WSAETIMEDOUT) {
-				break;
+				continue;
+				//break;
 			}
 
 			WSANOTINITIALISED;
@@ -913,8 +978,10 @@ std::string JServerDir::Recieve(std::string sIpAddress, unsigned short nPort, SO
 
 		sBuffer += szBuffer;
 
+		size_t found = sBuffer.find("\\final\\");
+
 		// Also okay, if final is in, we done!
-		if (sBuffer.find_first_of("\\final\\") != std::string::npos) {
+		if (found != std::string::npos) {
 			break;
 		}
 	}
@@ -936,7 +1003,7 @@ void JServerDir::RequestQueueLoop()
 			break;
 		}
 
-		Sleep(10);
+		Sleep(50);
 
 		bool locked = m_mJobMutex.try_lock();
 

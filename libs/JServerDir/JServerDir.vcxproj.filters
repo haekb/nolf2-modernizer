@@ -27,6 +27,9 @@
     <ClInclude Include="Peer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Helpers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -35,10 +38,10 @@
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="JServerDir.cpp">
+    <ClCompile Include="Peer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Peer.cpp">
+    <ClCompile Include="JServerDir.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
