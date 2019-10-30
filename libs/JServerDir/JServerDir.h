@@ -4,7 +4,7 @@
 #define SERVERDIR_EXPORTS
 
 // Uncomment if you want it to work with NOLF2 vanilla
-//#define _DROPIN
+#define _DROPIN
 
 #include "IServerDir.h"
 #include "IServerDir_Titan.h"
@@ -90,17 +90,7 @@ public:
 	virtual bool IsRequestPending(ERequest ePendingRequest) const;
 
 	// A list of servers
-#ifdef _DROPIN
-	// std::vector is different in STLPort, we need to it to match up exactly...sadly
-#undef std
-#define std STLPORT
-	typedef std::vector
-#undef std
-#define std std
-		<std::string> TPeerList;
-#else
 	typedef std::vector<std::string> TPeerList;
-#endif
 
 	// Returns the most recently successful request
 	virtual ERequest GetLastSuccessfulRequest() const;

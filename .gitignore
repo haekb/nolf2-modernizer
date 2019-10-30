@@ -56,3 +56,4 @@ JServerDir.dll
 *.lastbuildstate
 *FileListAbsolute.txt
 *.enc
+*.res
