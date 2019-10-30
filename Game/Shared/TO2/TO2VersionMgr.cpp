@@ -38,21 +38,21 @@ char const GAME_NAME[] = "No One Lives Forever 2";
 #endif
 
 int const GAME_HANDSHAKE_VER_MAJOR = 1;
-int const GAME_HANDSHAKE_VER_MINOR = 3;
+int const GAME_HANDSHAKE_VER_MINOR = 4;
 int const GAME_HANDSHAKE_VER = ((GAME_HANDSHAKE_VER_MAJOR << 8) + GAME_HANDSHAKE_VER_MINOR);
 
 
 #ifdef _TO2DEMO
 static const char* s_szVersion		= "Demo v1.0";
 #elif defined( _FINAL )
-static const char* s_szVersion		= "v1.3";
+static const char* s_szVersion		= "v1.4M";
 #else
-static const char* s_szVersion		= "NOLF 2 Development Build 123 (DO NOT DISTRIBUTE)";
+static const char* s_szVersion		= "Dev build";
 #endif // _TO2DEMO
 
 static const char* s_szBuild		= "Build 123";
 static const uint32 s_nBuildNumber = 123;
-static const char* s_szNetVersion	= "1.0.0.3";
+static const char* s_szNetVersion	= "1.0.0.4M";
 static const char* s_szNetGameName	= "NOLF2";
 
 const CVersionMgr::TSaveVersion CVersionMgr::kSaveVersion__1_1 = 72;
