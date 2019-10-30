@@ -66,10 +66,18 @@ bool JServerDir::QueueRequest(ERequest eNewRequest)
 		m_bIsRequestQueueRunning = true;
 	}
 
+	Job eJob;
+
 	if (eNewRequest == ERequest::eRequest_Update_List) {
-		AddJob(eJobRequest_Query_Master_Server, "");
-		SwitchStatus(eStatus_Processing);
+		eJob = { eJobRequest_Query_Master_Server, "", {} };
 	}
+	else if (eNewRequest == ERequest::eRequest_Publish_Server) {
+		Peer peer = *m_Peers.at(m_nActivePeer);
+		eJob = { eJobRequest_Publish_Server, "", peer };
+	}
+
+	AddJob(eJob);
+	SwitchStatus(eStatus_Processing);
 
 	return true;
 }
@@ -731,7 +739,8 @@ void JServerDir::QueryMasterServer()
 			ipBuffer = buffer;
 
 			// Loop through all the servers
-			AddJob(eJobRequest_Query_Server, ipBuffer + ":" + std::to_string(ordered));
+			Job job = { eJobRequest_Query_Server, ipBuffer + ":" + std::to_string(ordered), {} };
+			AddJob(job);
 
 			break;
 		}
@@ -989,10 +998,10 @@ std::string JServerDir::Recieve(std::string sIpAddress, unsigned short nPort, SO
 	return sBuffer;//std::string(szBuffer);
 }
 
-void JServerDir::AddJob(EJobRequest eRequest, std::string sData)
+void JServerDir::AddJob(Job eJob)
 {
 	m_mJobMutex.lock();
-	m_vJobs.push_back({ eRequest, sData });
+	m_vJobs.push_back(eJob);
 	m_mJobMutex.unlock();
 }
 
@@ -1052,6 +1061,9 @@ void JServerDir::RequestQueueLoop()
 			break;
 		case eJobRequest_Query_Server:
 			QueryServer(job.sData);
+			break;
+		case eJobRequest_Publish_Server:
+			bool run = true;
 			break;
 		}
 

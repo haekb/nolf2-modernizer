@@ -37,8 +37,14 @@ enum EJobRequest {
 };
 
 struct Job {
+	// Required
 	EJobRequest eRequestType;
+
+	// Any
 	std::string sData;
+
+	// Publish server specific
+	Peer Peer;
 };
 
 class JServerDir :
@@ -248,7 +254,7 @@ public:
 		bool Query(std::string sQuery, std::string sIpAddress, unsigned short nPort, SOCKET &pSock);
 		std::string Recieve(std::string sIpAddress, unsigned short nPort, SOCKET &pSock);
 
-		void AddJob(EJobRequest eRequest, std::string sData);
+		void AddJob(Job eJob);
 		void SwitchStatus(EStatus eStatus);
 
 		//
@@ -273,6 +279,6 @@ public:
 		void RequestQueueLoop();
 		void QueryMasterServer();
 		void QueryServer(std::string sAddress);
-
+		void PublishServer();
 };
 
