@@ -253,7 +253,8 @@ void JServerDir::SetStartupInfo(ILTMessage_Read& cMsg)
 
 	//	cMsg.Writeuint32(( uint32 )&startupInfo );
 
-	StartupInfo_Titan* pStartupInfo = (StartupInfo_Titan*)&cMsg;
+	StartupInfo_Titan* pStartupInfo = (StartupInfo_Titan*)cMsg.Readuint32();
+
 	m_StartupInfo = *pStartupInfo;
 }
 
@@ -507,7 +508,7 @@ bool JServerDir::SetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Read& cMsg)
 	case ePeerInfo_Service:
 	{
 		// Double pointer!
-		PeerInfo_Service_Titan* pServiceInfo = (PeerInfo_Service_Titan*)&cMsg;
+		PeerInfo_Service_Titan* pServiceInfo = (PeerInfo_Service_Titan*)cMsg.Readuint32();
 		peer->m_ServiceData = *pServiceInfo;
 	}
 	break;
