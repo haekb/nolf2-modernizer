@@ -50,7 +50,7 @@ static const char* s_szVersion		= "v1.4M";
 static const char* s_szVersion		= "Dev build";
 #endif // _TO2DEMO
 
-static const char* s_szBuild		= "Build 123";
+static const char* s_szBuild		= "Build 4M-Dev";
 static const uint32 s_nBuildNumber = 123;
 static const char* s_szNetVersion	= "1.0.0.4M";
 static const char* s_szNetGameName	= "NOLF2";
