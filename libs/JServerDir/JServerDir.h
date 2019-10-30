@@ -30,8 +30,14 @@
 #define QUERY_UPDATE_LIST "\\gamename\\nolf2\\gamever\\1.3\\location\\0\\validate\\g3Fo6x\\final\\"
 //#define QUERY_UPDATE_LIST "\\list\\gamename\\nolf2\\final\\"
 
+enum EJobRequest {
+	eJobRequest_Query_Master_Server,
+	eJobRequest_Query_Server
+};
+
 struct Job {
-	IServerDirectory::ERequest eRequestType;
+	EJobRequest eRequestType;
+	std::string sData;
 };
 
 class JServerDir :
@@ -93,14 +99,14 @@ public:
 	typedef std::vector<std::string> TPeerList;
 
 	// Returns the most recently successful request
-	virtual ERequest GetLastSuccessfulRequest() const;
+	virtual IServerDirectory::ERequest GetLastSuccessfulRequest() const;
 	// Returns the most recently failed request
-	virtual ERequest GetLastErrorRequest() const;
+	virtual IServerDirectory::ERequest GetLastErrorRequest() const;
 	// Returns the currently active request
-	virtual ERequest GetActiveRequest() const;
+	virtual IServerDirectory::ERequest GetActiveRequest() const;
 
 	// Get the most recently processed request
-	virtual ERequest GetLastRequest() const;
+	virtual IServerDirectory::ERequest GetLastRequest() const;
 	// Get the result of the most recently processed result
 	virtual ERequestResult GetLastRequestResult() const;
 	// Get the string associated with the most recently processed result
@@ -232,13 +238,15 @@ public:
 
 		// 
 		void Update();
-		void QueryMasterServer();
+
 		void CheckForQueuedPeers();
 
 		int SetupSocket(SOCKET &pSock, bool bIsUDP);
 		bool Connect(std::string sIpAddress, unsigned short nPort, SOCKET& pSock);
 		bool Query(std::string sQuery, std::string sIpAddress, unsigned short nPort, SOCKET &pSock);
 		std::string Recieve(std::string sIpAddress, unsigned short nPort, SOCKET &pSock);
+
+		void AddJob(EJobRequest eRequest, std::string sData);
 
 		//
 		// Thread Stuff
@@ -258,6 +266,8 @@ public:
 		long long m_nThreadLastActivity;
 
 		void RequestQueueLoop();
+		void QueryMasterServer();
+		void QueryServer(std::string sAddress);
 
 };
 

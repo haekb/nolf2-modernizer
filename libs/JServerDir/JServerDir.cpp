@@ -5,6 +5,7 @@
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 #include "Helpers.h"
+#include "NetDefs.h"
 
 //
 #include <string>
@@ -65,11 +66,7 @@ bool JServerDir::QueueRequest(ERequest eNewRequest)
 	}
 
 	if (eNewRequest == ERequest::eRequest_Update_List) {
-
-		m_mJobMutex.lock();
-		m_vJobs.push_back({ eNewRequest });
-		m_mJobMutex.unlock();
-
+		AddJob(eJobRequest_Query_Master_Server, "");
 		m_eStatus = eStatus_Processing;
 	}
 
@@ -165,23 +162,23 @@ bool JServerDir::IsRequestPending(ERequest ePendingRequest) const
 // Returns the most recently successful request
 IServerDirectory::ERequest JServerDir::GetLastSuccessfulRequest() const
 {
-	return eRequest_Nothing;
+	return IServerDirectory::eRequest_Nothing;
 }
 // Returns the most recently failed request
 IServerDirectory::ERequest JServerDir::GetLastErrorRequest() const
 {
-	return eRequest_Nothing;
+	return IServerDirectory::eRequest_Nothing;
 }
 // Returns the currently active request
 IServerDirectory::ERequest JServerDir::GetActiveRequest() const
 {
-	return eRequest_Nothing;
+	return IServerDirectory::eRequest_Nothing;
 }
 
 // Get the most recently processed request
 IServerDirectory::ERequest JServerDir::GetLastRequest() const
 {
-	return eRequest_Nothing;
+	return IServerDirectory::eRequest_Nothing;
 }
 // Get the result of the most recently processed result
 IServerDirectory::ERequestResult JServerDir::GetLastRequestResult() const
@@ -662,15 +659,13 @@ void JServerDir::Update()
 void JServerDir::QueryMasterServer()
 {
 	SOCKET sock = NULL;
-
+	bool bResult;
 	int iResult = SetupSocket(sock, false);
 
 	// Bad!
 	if (iResult == INVALID_SOCKET) {
 		return;
 	}
-
-	bool bResult;
 
 	bResult = Connect(MASTER_SERVER, MASTER_PORT, sock);
 
@@ -681,16 +676,6 @@ void JServerDir::QueryMasterServer()
 		return;
 	}
 
-	// Try doing a basic dummy query first
-#if 0
-	bResult = Query("\\basic\\", MASTER_SERVER, MASTER_PORT, sock);
-	std::string sThrowAway = Recieve(MASTER_SERVER, MASTER_PORT, sock);
-	bResult = Query("\\validate\\g3Fo6x\\", MASTER_SERVER, MASTER_PORT, sock);
-	std::string sThrowAway2 = Recieve(MASTER_SERVER, MASTER_PORT, sock);
-#endif
-
-	// For testing, to avoid hitting the server everytime
-#if 1
 	bResult = Query(QUERY_UPDATE_LIST, MASTER_SERVER, MASTER_PORT, sock);
 
 	if (!bResult) {
@@ -702,15 +687,6 @@ void JServerDir::QueryMasterServer()
 	}
 
 	std::string sServerList = Recieve(MASTER_SERVER, MASTER_PORT, sock);
-#else
-	std::string sServerList = "\\basic\\secure\\TXKOAT6�Zl�\\final\\";
-#endif
-
-	//\\basic\\secure\\TXKOAT
-	//+		buffer	0x0019e894 "\\basic\\\\secure\\TXKOAT6�Z\x3l�\\final\\
-
-	// Even php has better string handling than std! Geeeeez.
-	// Easier to use c strings here.
 
 	ASSERT(!sServerList.empty());
 
@@ -744,6 +720,10 @@ void JServerDir::QueryMasterServer()
 
 			ipBuffer = buffer;
 
+			// Loop through all the servers
+			AddJob(eJobRequest_Query_Server, ipBuffer + ":" + std::to_string(ordered));
+
+#if 0
 			Peer* peer = new Peer();
 
 			// This code should not be here!
@@ -781,10 +761,18 @@ void JServerDir::QueryMasterServer()
 
 				std::string gameType = mappy.at("gametype");
 
-				//if (gameType == "DoomsDay") {
-				summary.nGameType = 0;
-				//}
-
+				if (gameType.compare("Cooperative") == 0) {
+					summary.nGameType = 0;
+				}
+				else if (gameType.compare("DeathMatch") == 0) {
+					summary.nGameType = 1;
+				}
+				else if (gameType.compare("DoomsDay") == 0) {
+					summary.nGameType = 2;
+				}
+				else if (gameType.compare("TeamDeathMatch") == 0) {
+					summary.nGameType = 3;
+				}
 
 				peer->SetPing(0);
 
@@ -801,6 +789,7 @@ void JServerDir::QueryMasterServer()
 			m_mQueuedPeerMutex.lock();
 			m_QueuedPeers.push_back(peer);
 			m_mQueuedPeerMutex.unlock();
+#endif
 			//unsigned short test2 = MAKEWORD(test1->port[0], test1->port[1]);//test1->port & 0xFFFF;
 			
 			bool depro = true;
@@ -811,6 +800,76 @@ void JServerDir::QueryMasterServer()
 	}
 
 	closesocket(sock);
+}
+
+void JServerDir::QueryServer(std::string sAddress)
+{
+	Peer* peer = new Peer();
+
+	bool bResult;
+
+	std::vector<std::string> addressInfo = splitByCharacter(sAddress, ':');
+	std::string sIPAddress = addressInfo[0];
+	unsigned short nPort = std::stoi(addressInfo[1]);
+
+	// This code should not be here!
+	{
+		SOCKET uSock = NULL;
+		int iResult = SetupSocket(uSock, true);
+
+		bResult = Query("\\status\\", sIPAddress, nPort, uSock);
+		if (!bResult) {
+			auto error = WSAGetLastError();
+			WSANOTINITIALISED;
+			ASSERT(error == 0 && "Socket Peer Query Error!");
+			// Throw error
+			return;
+		}
+		std::string sStatus = "";
+		Sleep(1000);
+		sStatus = Recieve(sIPAddress, nPort, uSock);
+
+		ASSERT(!sStatus.empty() && "Status returned empty!");
+
+		std::map<std::string, std::string> mappy = splitResultsToMap(sStatus);
+
+		PeerInfo_Name name;
+		name.sHostName = mappy.at("hostname");
+		PeerInfo_Summary summary;
+		summary.bUsePassword = std::stoi(mappy.at("password"));
+		summary.nCurrentPlayers = std::stoi(mappy.at("numplayers"));
+		summary.nMaxPlayers = std::stoi(mappy.at("maxplayers"));
+		summary.sBuild = mappy.at("gamever");
+		summary.sModName = "";//mappy.at("gamename");
+		summary.sWorldName = mappy.at("mapname");
+
+		std::string gameType = mappy.at("gametype");
+
+		if (gameType.compare("Cooperative") == 0) {
+			summary.nGameType = eGameTypeCooperative;
+		}
+		else if (gameType.compare("DeathMatch") == 0) {
+			summary.nGameType = eGameTypeDeathmatch;
+		}
+		else if (gameType.compare("DoomsDay") == 0) {
+			summary.nGameType = eGameTypeDoomsDay;
+		}
+		else if (gameType.compare("TeamDeathMatch") == 0) {
+			summary.nGameType = eGameTypeTeamDeathmatch;
+		}
+
+		peer->SetPing(0);
+
+		peer->m_NameData = name;
+		peer->m_SummaryData = summary;
+		peer->SetAddress(sIPAddress);
+
+		closesocket(uSock);
+	}
+
+	m_mQueuedPeerMutex.lock();
+	m_QueuedPeers.push_back(peer);
+	m_mQueuedPeerMutex.unlock();
 }
 
 void JServerDir::CheckForQueuedPeers()
@@ -990,6 +1049,13 @@ std::string JServerDir::Recieve(std::string sIpAddress, unsigned short nPort, SO
 	return sBuffer;//std::string(szBuffer);
 }
 
+void JServerDir::AddJob(EJobRequest eRequest, std::string sData)
+{
+	m_mJobMutex.lock();
+	m_vJobs.push_back({ eRequest, sData });
+	m_mJobMutex.unlock();
+}
+
 //
 // Thread loop!
 //
@@ -1036,8 +1102,11 @@ void JServerDir::RequestQueueLoop()
 		m_mJobMutex.unlock();
 
 		switch (job.eRequestType) {
-		case eRequest_Update_List:
+		case eJobRequest_Query_Master_Server:
 			QueryMasterServer();
+			break;
+		case eJobRequest_Query_Server:
+			QueryServer(job.sData);
 			break;
 		}
 

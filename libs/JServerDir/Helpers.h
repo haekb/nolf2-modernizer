@@ -2,25 +2,21 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <sstream>
 #include <regex>
 
-std::vector<std::string> split(std::string stringToBeSplitted, std::string delimeter)
+std::vector<std::string> splitByCharacter(std::string input, char character)
 {
-	std::vector<std::string> splittedString;
-	int startIndex = 0;
-	int  endIndex = 0;
-	while ((endIndex = stringToBeSplitted.find(delimeter, startIndex)) < stringToBeSplitted.size())
+	std::stringstream test(input);
+	std::string segment;
+	std::vector<std::string> seglist;
+
+	while (std::getline(test, segment, character))
 	{
-		std::string val = stringToBeSplitted.substr(startIndex, endIndex - startIndex);
-		splittedString.push_back(val);
-		startIndex = endIndex + delimeter.size();
+		seglist.push_back(segment);
 	}
-	if (startIndex < stringToBeSplitted.size())
-	{
-		std::string val = stringToBeSplitted.substr(startIndex);
-		splittedString.push_back(val);
-	}
-	return splittedString;
+
+	return seglist;
 }
 
 //
