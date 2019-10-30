@@ -36,6 +36,7 @@ JServerDir::~JServerDir()
 {
 	if (m_bIsRequestQueueRunning) {
 		m_bStopThread = true;
+		m_tRequestQueue.join();
 	}
 }
 
