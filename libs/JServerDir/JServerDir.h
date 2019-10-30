@@ -253,6 +253,8 @@ public:
 		//
 
 		std::atomic_bool m_bIsRequestQueueRunning;
+		std::atomic_bool m_bProcessJobs;
+
 		std::thread m_tRequestQueue;
 
 		std::atomic_bool m_bStopThread;

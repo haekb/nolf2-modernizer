@@ -93,7 +93,15 @@ IServerDirectory::TRequestList JServerDir::GetWaitingRequestList() const
 // Returns false if the request list is currently being processed.
 bool JServerDir::ClearRequestList()
 {
-	return false;
+	if (m_bProcessJobs) {
+		return false;
+	}
+	
+	m_mJobMutex.lock();
+	m_vJobs.clear();
+	m_mJobMutex.unlock();
+
+	return true;
 }
 
 // Pause processing, process the given request, return the result,
@@ -109,12 +117,20 @@ IServerDirectory::ERequestResult JServerDir::ProcessRequest(ERequest eNewRequest
 // re-processing when processing is resumed.
 bool JServerDir::PauseRequestList()
 {
-	return false;
+	m_bProcessJobs = false;
+
+	// TODO: Pause the active request (Maybe store the last ran job?)
+
+	return true;
 }
 // Process (or continue processing) the request list
 bool JServerDir::ProcessRequestList()
 {
-	return false;
+	m_bProcessJobs = true;
+
+	// TODO: Resume the last ran job
+
+	return true;
 }
 
 // Wait until the next request is completed and return the result
@@ -149,12 +165,9 @@ IServerDirectory::ERequestResult JServerDir::BlockOnProcessing(uint32 nTimeout)
 // Is this request in request list?
 bool JServerDir::IsRequestPending(ERequest ePendingRequest) const
 {
-
-
 	if (m_Peers.size() == 0) {
 		return true;
 	}
-
 
 	return false;
 }
@@ -325,7 +338,7 @@ bool JServerDir::IsPatchAvailable() const
 // Note : Returns false if eRequest_MOTD has not been processed
 bool JServerDir::IsMOTDNew(EMOTD eMOTD) const
 {
-	return true;
+	return false;
 }
 
 // Get the current MOTD
@@ -374,8 +387,6 @@ bool JServerDir::SetActivePeer(const char* pAddr)
 
 	// TODO: High precision timer? Not sure if it's needed here. 
 	peer->SetCreatedAt(m_pLTCSBase->GetTime());
-
-
 
 	// Throw in our new ActivePeer(TM)
 	//m_PeerList.push_back(pAddr);
@@ -438,7 +449,6 @@ bool JServerDir::SetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Read& cMsg)
 	}
 
 	Peer* peer = m_Peers.at(m_nActivePeer);
-
 
 	switch (eInfoType) {
 	case ePeerInfo_Age:
@@ -537,8 +547,6 @@ bool JServerDir::HasActivePeerInfo(EPeerInfo eInfoType) const
 // or if pMsg is null
 bool JServerDir::GetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Write* pMsg) const
 {
-	CAutoMessage cMsg;
-
 	if (pMsg == NULL || eInfoType >= ePeerInfo_TotalNum || m_nActivePeer == NO_ACTIVE_PEER) {
 		return false;
 	}
@@ -713,9 +721,7 @@ void JServerDir::QueryMasterServer()
 			std::string ipBuffer;
 			char buffer[32];
 			buffer[0] = '\0';
-			//ipBuffer = test1->ip[0] << '.' << test1->ip[1] << '.' << test1->ip[2] << '.' << test1->ip[3] << ':' << ordered;
 
-			//sprintf(buffer, "%d.%d.%d.%d:%d", test1->ip[0], test1->ip[1], test1->ip[2], test1->ip[3], ordered);
 			sprintf(buffer, "%d.%d.%d.%d", test1->ip[0], test1->ip[1], test1->ip[2], test1->ip[3]);
 
 			ipBuffer = buffer;
@@ -723,76 +729,6 @@ void JServerDir::QueryMasterServer()
 			// Loop through all the servers
 			AddJob(eJobRequest_Query_Server, ipBuffer + ":" + std::to_string(ordered));
 
-#if 0
-			Peer* peer = new Peer();
-
-			// This code should not be here!
-#if 1
-			{
-				SOCKET uSock = NULL;
-				int iResult = SetupSocket(uSock, true);
-
-				bResult = Query("\\status\\", ipBuffer, ordered, uSock);
-				if (!bResult) {
-					auto error = WSAGetLastError();
-					WSANOTINITIALISED;
-					ASSERT(error == 0 && "Socket Peer Query Error!");
-					// Throw error
-					return;
-				}
-				std::string sStatus = "";
-				Sleep(1000);
-				sStatus = Recieve(ipBuffer, ordered, uSock);
-
-				ASSERT(!sStatus.empty() && "Status returned empty!");
-				
-				std::map<std::string, std::string> mappy = splitResultsToMap(sStatus);
-				std::vector<std::string> arr = split(sStatus, "\\");
-				
-				PeerInfo_Name name;
-				name.sHostName = mappy.at("hostname");
-				PeerInfo_Summary summary;
-				summary.bUsePassword = std::stoi(mappy.at("password"));
-				summary.nCurrentPlayers = std::stoi(mappy.at("numplayers"));
-				summary.nMaxPlayers = std::stoi(mappy.at("maxplayers"));
-				summary.sBuild = mappy.at("gamever");
-				summary.sModName = "";//mappy.at("gamename");
-				summary.sWorldName = mappy.at("mapname");
-
-				std::string gameType = mappy.at("gametype");
-
-				if (gameType.compare("Cooperative") == 0) {
-					summary.nGameType = 0;
-				}
-				else if (gameType.compare("DeathMatch") == 0) {
-					summary.nGameType = 1;
-				}
-				else if (gameType.compare("DoomsDay") == 0) {
-					summary.nGameType = 2;
-				}
-				else if (gameType.compare("TeamDeathMatch") == 0) {
-					summary.nGameType = 3;
-				}
-
-				peer->SetPing(0);
-
-				peer->m_NameData = name;
-				peer->m_SummaryData = summary;
-				peer->SetAddress(ipBuffer);
-
-				closesocket(uSock);
-			}
-#else
-
-#endif
-
-			m_mQueuedPeerMutex.lock();
-			m_QueuedPeers.push_back(peer);
-			m_mQueuedPeerMutex.unlock();
-#endif
-			//unsigned short test2 = MAKEWORD(test1->port[0], test1->port[1]);//test1->port & 0xFFFF;
-			
-			bool depro = true;
 			break;
 		}
 
