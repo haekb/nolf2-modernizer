@@ -67,7 +67,7 @@ bool JServerDir::QueueRequest(ERequest eNewRequest)
 
 	if (eNewRequest == ERequest::eRequest_Update_List) {
 		AddJob(eJobRequest_Query_Master_Server, "");
-		m_eStatus = eStatus_Processing;
+		SwitchStatus(eStatus_Processing);
 	}
 
 	return true;
@@ -96,7 +96,9 @@ bool JServerDir::ClearRequestList()
 	if (m_bProcessJobs) {
 		return false;
 	}
-	
+
+	SwitchStatus(eStatus_Waiting);
+
 	m_mJobMutex.lock();
 	m_vJobs.clear();
 	m_mJobMutex.unlock();
@@ -210,7 +212,7 @@ const char* JServerDir::GetLastRequestResultString() const
 // Get the current status
 IServerDirectory::EStatus JServerDir::GetCurStatus() const
 {
-	return m_eStatus;
+	return (EStatus)m_iStatus.load();
 }
 
 // Get the descriptive text associated with the current status
@@ -225,7 +227,7 @@ const char* JServerDir::GetCurStatusString() const
 #endif
 
 
-	switch (m_eStatus) {
+	switch (m_iStatus.load()) {
 	case IServerDirectory::eStatus_Error:
 		return "Error";
 	case IServerDirectory::eStatus_Paused:
@@ -824,7 +826,7 @@ void JServerDir::CheckForQueuedPeers()
 
 
 	if (m_Peers.size() > 0) {
-		m_eStatus = eStatus_Waiting;
+		SwitchStatus(eStatus_Waiting);
 	}
 }
 
@@ -992,6 +994,11 @@ void JServerDir::AddJob(EJobRequest eRequest, std::string sData)
 	m_mJobMutex.unlock();
 }
 
+void JServerDir::SwitchStatus(EStatus eStatus)
+{
+	m_iStatus = eStatus;
+}
+
 //
 // Thread loop!
 //
@@ -1054,4 +1061,6 @@ void JServerDir::RequestQueueLoop()
 
 	// We're not running anymore.
 	m_bIsRequestQueueRunning = false;
+
+	SwitchStatus(eStatus_Waiting);
 }

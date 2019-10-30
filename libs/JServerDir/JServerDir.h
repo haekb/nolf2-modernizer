@@ -233,8 +233,9 @@ public:
 
 		int m_nActivePeer;
 
-		EStatus m_eStatus;
-
+		// Replaced with an atomic int that casts to EStatus
+		//EStatus m_eStatus;
+		std::atomic_int m_iStatus;
 
 		// 
 		void Update();
@@ -247,6 +248,7 @@ public:
 		std::string Recieve(std::string sIpAddress, unsigned short nPort, SOCKET &pSock);
 
 		void AddJob(EJobRequest eRequest, std::string sData);
+		void SwitchStatus(EStatus eStatus);
 
 		//
 		// Thread Stuff
