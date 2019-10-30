@@ -13,6 +13,8 @@
 #include <iostream>
 #include <thread>
 #include <map>
+#include <time.h>
+#include <chrono>
 //
 
 extern ILTCommon* g_pCommonLT;
@@ -115,8 +117,6 @@ bool JServerDir::PauseRequestList()
 // Process (or continue processing) the request list
 bool JServerDir::ProcessRequestList()
 {
-
-
 	return false;
 }
 
@@ -990,6 +990,9 @@ std::string JServerDir::Recieve(std::string sIpAddress, unsigned short nPort, SO
 	return sBuffer;//std::string(szBuffer);
 }
 
+//
+// Thread loop!
+//
 void JServerDir::RequestQueueLoop()
 {
 	WORD wVersionRequested;
@@ -998,6 +1001,8 @@ void JServerDir::RequestQueueLoop()
 	wVersionRequested = MAKEWORD(2, 2);
 	WSAStartup(wVersionRequested, &wsaData);
 
+	m_nThreadLastActivity = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+
 	while (true) {
 		// See if we wanna kill the thread!
 		if (m_bStopThread) {
@@ -1005,6 +1010,14 @@ void JServerDir::RequestQueueLoop()
 		}
 
 		Sleep(50);
+
+		// Quite the statement...
+		auto nSeconds = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+
+		// After 20 seconds of no activity, kill the thread
+		if (nSeconds - m_nThreadLastActivity > 5) {
+			break;
+		}
 
 		bool locked = m_mJobMutex.try_lock();
 
@@ -1028,7 +1041,12 @@ void JServerDir::RequestQueueLoop()
 			break;
 		}
 
+		// We did something, neat! So update the last activity time.
+		m_nThreadLastActivity = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 	}
 
 	WSACleanup();
+
+	// We're not running anymore.
+	m_bIsRequestQueueRunning = false;
 }

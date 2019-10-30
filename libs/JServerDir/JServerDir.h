@@ -229,9 +229,6 @@ public:
 
 		EStatus m_eStatus;
 
-		bool m_bIsRequestQueueRunning;
-
-		std::thread m_tRequestQueue;
 
 		// 
 		void Update();
@@ -243,13 +240,22 @@ public:
 		bool Query(std::string sQuery, std::string sIpAddress, unsigned short nPort, SOCKET &pSock);
 		std::string Recieve(std::string sIpAddress, unsigned short nPort, SOCKET &pSock);
 
+		//
 		// Thread Stuff
+		//
+
+		std::atomic_bool m_bIsRequestQueueRunning;
+		std::thread m_tRequestQueue;
+
 		std::atomic_bool m_bStopThread;
 		std::mutex m_mJobMutex;
 		std::mutex m_mQueuedPeerMutex;
 		std::vector<Job> m_vJobs;
 		// Weird, but to avoid a lot of mutexing, this is the prep vector that will eventually be merged into Peers
 		std::vector<Peer*> m_QueuedPeers;
+
+		// Time we start our thread (for thread only!)
+		long long m_nThreadLastActivity;
 
 		void RequestQueueLoop();
 
