@@ -833,13 +833,13 @@ void JServerDir::PublishServer(Peer peer)
 	// \\status\\ response
 	//\P\gamename\nolf\gamever\1.003\location\0\hostname\Good vs. Evil\hostport\27888\mapname\MUDTOWN_DM\gametype\deathmatch\numplayers\1\maxplayers\16\NetDMGameEnd\3\NetEndFrags\25\NetEndTime\15\NetMaxPlayers\16\NetRunSpeed\100\NetRespawnScale\100\NetDefaultWeapon\21\NetWeaponsStay\0\NetHitLocation\0\NetAudioTaunts\1\NetFallDamageScale\0\NetArmorHealthPercent\0\player_0\Jake\frags_0\0\ping_0\1\final\\queryid\2.1
 
-	std::string heartbeat = "\\heartbeat\\27888\\gamename\\nolf2\\final\\";//\\queryid\\1.1";
+	std::string heartbeat = "\\heartbeat\\27889\\gamename\\nolf2\\final\\\\queryid\\1.1";
 
 	ULONG iBuffer = 0;
 	int error;
 
-	// Setup our address
-	inet_pton(AF_INET, INADDR_ANY, (ULONG*)&iBuffer);
+	// Setup our address - INADDR_ANY
+	inet_pton(AF_INET, "0.0.0.0", (ULONG*)&iBuffer);
 
 	// Gotta be on the same socket as the server!
 	int enable = 1;
@@ -851,8 +851,8 @@ void JServerDir::PublishServer(Peer peer)
 
 	sockaddr_in  saAddress;
 	saAddress.sin_family = AF_INET;
-	saAddress.sin_addr.s_addr = INADDR_ANY;
-	saAddress.sin_port = htons(27888);
+	saAddress.sin_addr.s_addr = iBuffer;
+	saAddress.sin_port = htons(27889);
 
 	iResult = bind(listenSock, (SOCKADDR*)&saAddress, sizeof(saAddress));
 	error = WSAGetLastError();
@@ -869,7 +869,7 @@ void JServerDir::PublishServer(Peer peer)
 	char szBuffer[1024];
 	szBuffer[0] = '\0';
 
-	bResult = Query(heartbeat, MASTER_SERVER, MASTER_PORT, listenSock);
+	bResult = Query(heartbeat, MASTER_SERVER, MASTER_PORT_UDP, listenSock);
 	if (!bResult) {
 		error = WSAGetLastError();
 
@@ -881,7 +881,7 @@ void JServerDir::PublishServer(Peer peer)
 
 #if 1
 	//std::string result = Recieve(listenSock);
-	std::string result = Recieve("0.0.0.0", 0, listenSock);
+	std::string result = Recieve(listenSock);
 #else
 	int len, n;
 	n = recvfrom(listenSock, (char*)buffer, 1024,
@@ -889,9 +889,13 @@ void JServerDir::PublishServer(Peer peer)
 		&saIncomingAddressSize);
 #endif
 
+	std::string gameInfo = "\\P\\gamename\\nolf2\\gamever\\1.003\\location\\0\\hostname\\TEST GAME\\hostport\\27888\\mapname\\MUDTOWN_DM\\gametype\\deathmatch\\numplayers\\1\\maxplayers\\16\\NetDMGameEnd\\3\\NetEndFrags\\25\\NetEndTime\\15\\NetMaxPlayers\\16\\NetRunSpeed\\100\\NetRespawnScale\\100\\NetDefaultWeapon\\21\\NetWeaponsStay\\0\\NetHitLocation\\0\\NetAudioTaunts\\1\\NetFallDamageScale\\0\\NetArmorHealthPercent\\0\\player_0\\Jake\\frags_0\\0\\ping_0\\1\\final\\\\queryid\\2.1";
 
+	bResult = Query(gameInfo, MASTER_SERVER, MASTER_PORT_UDP, listenSock);
 
-	std::string returnStr = szBuffer;
+	Sleep(500);
+	result = Recieve(listenSock);
+
 	error = WSAGetLastError();
 	WSANOTINITIALISED;
 	bool halp = true;

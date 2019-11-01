@@ -26,6 +26,7 @@
 // TODO: Throw this in a ini file!
 #define MASTER_SERVER "65.112.87.186"
 #define MASTER_PORT 28900
+#define MASTER_PORT_UDP 27900
 
 #define QUERY_UPDATE_LIST "\\gamename\\nolf2\\gamever\\1.3\\location\\0\\validate\\g3Fo6x\\final\\"
 //#define QUERY_UPDATE_LIST "\\list\\gamename\\nolf2\\final\\"
