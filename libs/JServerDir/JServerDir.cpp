@@ -821,6 +821,126 @@ void JServerDir::QueryServer(std::string sAddress)
 	m_mQueuedPeerMutex.unlock();
 }
 
+void JServerDir::PublishServer(Peer peer)
+{
+	SOCKET uSock = NULL;
+	SOCKET listenSock = NULL;
+	bool bResult;
+	int iResult = SetupSocket(uSock, true);
+	iResult = SetupSocket(listenSock, true);
+	//Connect(MASTER_SERVER, MASTER_PORT, uSock);
+
+	// \\status\\ response
+	//\P\gamename\nolf\gamever\1.003\location\0\hostname\Good vs. Evil\hostport\27888\mapname\MUDTOWN_DM\gametype\deathmatch\numplayers\1\maxplayers\16\NetDMGameEnd\3\NetEndFrags\25\NetEndTime\15\NetMaxPlayers\16\NetRunSpeed\100\NetRespawnScale\100\NetDefaultWeapon\21\NetWeaponsStay\0\NetHitLocation\0\NetAudioTaunts\1\NetFallDamageScale\0\NetArmorHealthPercent\0\player_0\Jake\frags_0\0\ping_0\1\final\\queryid\2.1
+
+	std::string heartbeat = "\\heartbeat\\27888\\gamename\\nolf2\\final\\";//\\queryid\\1.1";
+
+	ULONG iBuffer = 0;
+	int error;
+
+	// Setup our address
+	inet_pton(AF_INET, INADDR_ANY, (ULONG*)&iBuffer);
+
+	// Gotta be on the same socket as the server!
+	int enable = 1;
+	if (setsockopt(listenSock, SOL_SOCKET, SO_REUSEADDR, (char*)&enable, sizeof(int)) < 0)
+	{
+		ASSERT(1 == 0 && "Reuse Opt failed");
+	}
+
+
+	sockaddr_in  saAddress;
+	saAddress.sin_family = AF_INET;
+	saAddress.sin_addr.s_addr = INADDR_ANY;
+	saAddress.sin_port = htons(27888);
+
+	iResult = bind(listenSock, (SOCKADDR*)&saAddress, sizeof(saAddress));
+	error = WSAGetLastError();
+	ASSERT(iResult == 0 && "Socket Bind Server Error!");
+
+	//iResult = listen(listenSock, 2);
+
+	//ASSERT(iResult == 0 && "Socket Listen Server Error!");
+
+
+	sockaddr_in  saIncomingAddress = {};
+	int saIncomingAddressSize = sizeof(saIncomingAddress);
+
+	char szBuffer[1024];
+	szBuffer[0] = '\0';
+
+	bResult = Query(heartbeat, MASTER_SERVER, MASTER_PORT, listenSock);
+	if (!bResult) {
+		error = WSAGetLastError();
+
+		ASSERT(error == 0 && "Socket Publish Server Query Error!");
+		// Throw error
+		return;
+	}
+	Sleep(500);
+
+#if 1
+	//std::string result = Recieve(listenSock);
+	std::string result = Recieve("0.0.0.0", 0, listenSock);
+#else
+	int len, n;
+	n = recvfrom(listenSock, (char*)buffer, 1024,
+		0, (struct sockaddr*) & saIncomingAddress,
+		&saIncomingAddressSize);
+#endif
+
+
+
+	std::string returnStr = szBuffer;
+	error = WSAGetLastError();
+	WSANOTINITIALISED;
+	bool halp = true;
+
+#if 0
+	sockaddr_in  saIncomingAddress = {};
+	int saIncomingAddressSize = sizeof(saIncomingAddress);
+	while (true) {
+
+		auto ret = accept(listenSock, (SOCKADDR*)&saIncomingAddress, &saIncomingAddressSize);
+
+		if (ret == INVALID_SOCKET) {
+			auto error = WSAGetLastError();
+			WSANOTINITIALISED;
+			ASSERT(error == 0 && "Socket Publish Server Query Error!");
+			continue;
+		}
+
+		std::string sStatus = "";
+		auto error = WSAGetLastError();
+		sStatus = Recieve(listenSock);
+
+		bool true2 = true;
+		break;
+	}
+#endif
+
+
+#if 0
+	//iResult = listen(listenSock, 2);
+	std::string sStatus = "";
+	auto error = WSAGetLastError();
+	WSANOTINITIALISED;
+	sStatus = Recieve(listenSock);
+	/*
+	std::string sStatus = "";
+	Sleep(1000);
+	sStatus = Recieve(MASTER_SERVER, MASTER_PORT, uSock);
+
+	bResult = Query("\\validate\\g3Fo6x\\final\\", MASTER_SERVER, MASTER_PORT, uSock);
+	Sleep(1000);
+	sStatus = Recieve(MASTER_SERVER, MASTER_PORT, uSock);
+	*/
+#endif
+	closesocket(uSock);
+	closesocket(listenSock);
+	m_bServerPublished = true;
+}
+
 void JServerDir::CheckForQueuedPeers()
 {
 
@@ -964,15 +1084,24 @@ std::string JServerDir::Recieve(std::string sIpAddress, unsigned short nPort, SO
 
 	std::string sBuffer = "";
 
+	int loopIterations = 0;
+
 	while (iResult != 0) {
-		
+		loopIterations++;
+
 		iResult = recvfrom(pSock, szBuffer, sizeof(szBuffer), 0, (SOCKADDR*)&saAddress, &fromSize);
 
 		if (iResult == SOCKET_ERROR) {
 			int error = WSAGetLastError();
 
+			// Prevent infinite loop
+			if (loopIterations > 10) {
+				break;
+			}
+
 			// That's okay!
 			if (error == WSAETIMEDOUT) {
+				Sleep(1000);
 				continue;
 				//break;
 			}
@@ -996,6 +1125,58 @@ std::string JServerDir::Recieve(std::string sIpAddress, unsigned short nPort, SO
 	}
 
 	return sBuffer;//std::string(szBuffer);
+}
+
+std::string JServerDir::Recieve(SOCKET& pSock)
+{
+	char szBuffer[2048];
+	memset(szBuffer, 0, sizeof(szBuffer));
+
+	int iResult = -1;
+
+	std::string sBuffer = "";
+
+	int loopIterations = 0;
+
+	while (iResult != 0) {
+		loopIterations++;
+
+		iResult = recv(pSock, szBuffer, sizeof(szBuffer), 0);
+
+		if (iResult == SOCKET_ERROR) {
+			int error = WSAGetLastError();
+
+			// Prevent infinite loop
+			if (loopIterations > 10) {
+				break;
+			}
+
+			// That's okay!
+			if (error == WSAETIMEDOUT) {
+				Sleep(1000);
+				continue;
+				//break;
+			}
+
+			WSANOTINITIALISED;
+			ASSERT(iResult != SOCKET_ERROR && "Socket Recieve Error!");
+		}
+
+		if (iResult == 0) {
+			break;
+		}
+
+		sBuffer += szBuffer;
+
+		size_t found = sBuffer.find("\\final\\");
+
+		// Also okay, if final is in, we done!
+		if (found != std::string::npos) {
+			break;
+		}
+	}
+
+	return sBuffer;
 }
 
 void JServerDir::AddJob(Job eJob)
@@ -1022,6 +1203,8 @@ void JServerDir::RequestQueueLoop()
 	WSAStartup(wVersionRequested, &wsaData);
 
 	m_nThreadLastActivity = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+
+	m_bServerPublished = false;
 
 	while (true) {
 		// See if we wanna kill the thread!
@@ -1063,7 +1246,7 @@ void JServerDir::RequestQueueLoop()
 			QueryServer(job.sData);
 			break;
 		case eJobRequest_Publish_Server:
-			bool run = true;
+			PublishServer(job.Peer);
 			break;
 		}
 

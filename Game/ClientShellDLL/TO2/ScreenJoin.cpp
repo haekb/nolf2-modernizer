@@ -663,6 +663,8 @@ void CScreenJoin::DisplayCurServerList()
 			continue;
 		char aTempBuffer[256];
 
+		memset(aTempBuffer, 0, sizeof(aTempBuffer));
+
 		// Create a control
 		CLTGUIColumnCtrl* pCtrl = CreateColumnCtrl(CMD_DETAILS, IDS_HELP_JOIN);
 		// Do the name
@@ -670,12 +672,16 @@ void CScreenJoin::DisplayCurServerList()
 
 		// Do the mod...
 
-		sprintf( aTempBuffer, "%s", iCurServer->m_sModName );
+		sprintf( aTempBuffer, "%s", iCurServer->m_sModName.c_str() );
 		pCtrl->AddColumn( aTempBuffer, kColumnWidth_Mod );
+
+		memset(aTempBuffer, 0, sizeof(aTempBuffer));
 
 		// Do the ping
 		sprintf(aTempBuffer, "%d", iCurServer->m_nPing);
 		pCtrl->AddColumn(aTempBuffer, kColumnWidth_Ping);
+
+		memset(aTempBuffer, 0, sizeof(aTempBuffer));
 
 		// Do the number of players
 		sprintf(aTempBuffer, "%d/%d", iCurServer->m_nNumPlayers, iCurServer->m_nMaxPlayers);
@@ -922,6 +928,7 @@ void CScreenJoin::Update()
 
 	FormatString(IDS_STATUS_STRING,aTempBuffer,sizeof(aTempBuffer),g_pClientMultiplayerMgr->GetServerDir()->GetCurStatusString());
 	m_pStatusCtrl->SetString(aTempBuffer);
+
 
 	switch (m_eCurState)
 	{

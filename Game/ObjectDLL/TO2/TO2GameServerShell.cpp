@@ -134,7 +134,7 @@ LTRESULT CTO2GameServerShell::OnServerInitialized()
 	cMsg.Writeuint32(( uint32 )&startupInfo );
 
 	// JAKE: Causes OOM error!
-	//pServerDir->SetStartupInfo( *cMsg.Read( ));
+	pServerDir->SetStartupInfo( *cMsg.Read( ));
 
 	return nResult;
 }

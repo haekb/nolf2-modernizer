@@ -253,6 +253,7 @@ public:
 		bool Connect(std::string sIpAddress, unsigned short nPort, SOCKET& pSock);
 		bool Query(std::string sQuery, std::string sIpAddress, unsigned short nPort, SOCKET &pSock);
 		std::string Recieve(std::string sIpAddress, unsigned short nPort, SOCKET &pSock);
+		std::string Recieve(SOCKET& pSock);
 
 		void AddJob(Job eJob);
 		void SwitchStatus(EStatus eStatus);
@@ -273,12 +274,14 @@ public:
 		// Weird, but to avoid a lot of mutexing, this is the prep vector that will eventually be merged into Peers
 		std::vector<Peer*> m_QueuedPeers;
 
+		bool m_bServerPublished;
+
 		// Time we start our thread (for thread only!)
 		long long m_nThreadLastActivity;
 
 		void RequestQueueLoop();
 		void QueryMasterServer();
 		void QueryServer(std::string sAddress);
-		void PublishServer();
+		void PublishServer(Peer peer);
 };
 
