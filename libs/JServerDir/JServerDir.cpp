@@ -6,6 +6,8 @@
 #include <WS2tcpip.h>
 #include "Helpers.h"
 #include "NetDefs.h"
+#include "UDPSocket.h"
+#include "TCPSocket.h"
 
 //
 #include <string>
@@ -678,6 +680,60 @@ void JServerDir::Update()
 
 void JServerDir::QueryMasterServer()
 {
+#if 1
+	TCPSocket* pSock = new TCPSocket();
+
+	ConnectionData connectionData = { MASTER_SERVER, MASTER_PORT };
+
+	pSock->Connect(connectionData);
+	pSock->Query(QUERY_UPDATE_LIST, connectionData);
+
+	Sleep(500);
+
+	std::string sServerList = pSock->Recieve(connectionData);
+
+	char* pch = strtok((char*)sServerList.c_str(), "\\");
+	while (pch != NULL)
+	{
+		printf("%s\n", pch);
+
+		std::string temp = pch;
+
+		if (temp.find_first_of("TXKOAT") == 0) {
+			std::string servers = temp.substr(6);
+
+
+			struct ipTest {
+				unsigned char ip[4];
+				unsigned short port;
+			};
+
+			ipTest* test1 = (ipTest*)servers.c_str();
+
+			unsigned short ordered = htons(test1->port);
+
+			std::string ipBuffer;
+			char buffer[32];
+			buffer[0] = '\0';
+
+			sprintf(buffer, "%d.%d.%d.%d", test1->ip[0], test1->ip[1], test1->ip[2], test1->ip[3]);
+
+			ipBuffer = buffer;
+
+			// Loop through all the servers
+			Job job = { eJobRequest_Query_Server, ipBuffer + ":" + std::to_string(ordered), {} };
+			AddJob(job);
+
+			break;
+		}
+
+		pch = strtok(NULL, "\\");
+	}
+
+	delete pSock;
+	pSock = NULL;
+
+#else
 	SOCKET sock = NULL;
 	bool bResult;
 	int iResult = SetupSocket(sock, false);
@@ -749,6 +805,7 @@ void JServerDir::QueryMasterServer()
 	}
 
 	closesocket(sock);
+#endif
 }
 
 void JServerDir::QueryServer(std::string sAddress)
@@ -763,22 +820,14 @@ void JServerDir::QueryServer(std::string sAddress)
 
 	// This code should not be here!
 	{
-		SOCKET uSock = NULL;
-		int iResult = SetupSocket(uSock, true);
+		UDPSocket* pSock = new UDPSocket();
+		ConnectionData connectionData = { sIPAddress, nPort };
 
-		bResult = Query("\\status\\", sIPAddress, nPort, uSock);
-		if (!bResult) {
-			auto error = WSAGetLastError();
-			WSANOTINITIALISED;
-			ASSERT(error == 0 && "Socket Peer Query Error!");
-			// Throw error
-			return;
-		}
-		std::string sStatus = "";
+		pSock->Query("\\status\\", connectionData);
+		
 		Sleep(1000);
-		sStatus = Recieve(sIPAddress, nPort, uSock);
 
-		ASSERT(!sStatus.empty() && "Status returned empty!");
+		std::string sStatus = pSock->Recieve(connectionData);
 
 		std::map<std::string, std::string> mappy = splitResultsToMap(sStatus);
 
@@ -813,7 +862,8 @@ void JServerDir::QueryServer(std::string sAddress)
 		peer->m_SummaryData = summary;
 		peer->SetAddress(sIPAddress);
 
-		closesocket(uSock);
+		delete pSock;
+		pSock = NULL;
 	}
 
 	m_mQueuedPeerMutex.lock();
