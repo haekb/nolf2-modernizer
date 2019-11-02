@@ -34,7 +34,7 @@
 enum EJobRequest {
 	eJobRequest_Query_Master_Server,
 	eJobRequest_Query_Server,
-	eJobRequest_Publish_Server
+	eJobRequest_Publish_Server,
 };
 
 struct Job {

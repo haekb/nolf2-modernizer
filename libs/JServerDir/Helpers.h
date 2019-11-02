@@ -10,6 +10,46 @@
 #include "JServerDir.h"
 #include "IServerDir_Titan.h"
 
+extern JServerDir* g_pJServerDir;
+
+int gameTypeStringToInt(std::string sGameType)
+{
+	if (sGameType.compare("Cooperative") == 0) {
+		return eGameTypeCooperative;
+	}
+	else if (sGameType.compare("DeathMatch") == 0) {
+		return eGameTypeDeathmatch;
+	}
+	else if (sGameType.compare("DoomsDay") == 0) {
+		return eGameTypeDoomsDay;
+	}
+	else if (sGameType.compare("TeamDeathMatch") == 0) {
+		return eGameTypeTeamDeathmatch;
+	}
+
+	// Error!
+	return -1;
+}
+
+std::string gameTypeIntToString(int nGameType)
+{
+	switch (nGameType) {
+	case eGameTypeCooperative:
+		return "Cooperative";
+	case eGameTypeDeathmatch:
+		return "DeathMatch";
+	case eGameTypeDoomsDay:
+		return "DoomsDay";
+	case eGameTypeTeamDeathmatch:
+		return "TeamDeathMatch";
+	case eGameTypeSingle: // ??
+		return "SinglePlayer";
+	}
+
+	// Error!
+	return "N/A";
+}
+
 std::vector<std::string> splitByCharacter(std::string input, char character)
 {
 	std::stringstream test(input);
@@ -49,7 +89,7 @@ std::string encodeGameInfoToString(Peer* peer)
 {
 	std::string gameInfo = "\\gamename\\nolf2\\gamever\\1.0.0.3\\gamemode\\openplaying\\gametype\\DoomsDay\\hostip\\172.31.41.243\\hostname\\Jake DM\\hostport\\27888\\mapname\\DD_06\\maxplayers\\16\\numplayers\\0\\fraglimit\\0\\options\\\\password\\0\\timelimit\\20\\frags_0\\0\\frags_1\\0\\frags_2\\0\\ping_0\\334\\ping_1\\24129\\ping_2\\1287\\player_0\\A DEAD BABY\\player_1\\Ya Basta\\player_2\\Ya Basta1\\final\\\\queryid\\74383.1";
 
-	if (!peer->HasSummaryData || !peer->HasServiceData || !peer->HasPortData)
+	if (!peer->HasSummaryData() || !peer->HasServiceData() || !peer->HasPortData())
 	{
 		return "";
 	}
@@ -57,12 +97,16 @@ std::string encodeGameInfoToString(Peer* peer)
 	// TODO: Move this to outside the function, and make this function take in the map.
 	std::map<std::string, std::string> splitMap;
 
-	splitMap.insert({ "gamename", g_pJServerDir->GetGameName() });
-	splitMap.insert({ "gamever" , g_pJServerDir->GetVersion()  });
+	std::string gameName = g_pJServerDir->GetGameName();
+
+	std::transform(gameName.begin(), gameName.end(), gameName.begin(), ::tolower);
+
+	splitMap.insert({ "gamename", gameName });
+	splitMap.insert({ "gamever" , "1.0.0.3" });//g_pJServerDir->GetVersion()  });
 	splitMap.insert({ "gamemode", "openplaying" });
 
 	splitMap.insert({ "gametype", gameTypeIntToString(peer->m_SummaryData.nGameType) });
-	splitMap.insert({ "hostip"  , peer->GetAddress() });
+	splitMap.insert({ "hostip"  , "192.168.1.1" });//peer->GetAddress() });
 	splitMap.insert({ "hostname", peer->m_ServiceData.m_sHostName });
 	splitMap.insert({ "hostport", std::to_string(peer->m_PortData.nHostPort) });
 	splitMap.insert({ "mapname", peer->m_ServiceData.m_sCurWorld });
@@ -94,45 +138,8 @@ std::string encodeGameInfoToString(Peer* peer)
 		sGameInfo += "\\" + map.first + "\\" + map.second;
 	}
 
-	sGameInfo += "\\final\\";
+	sGameInfo += "\\final\\queryid\\1.1";
 
 	return sGameInfo;
 }
 
-int gameTypeStringToInt(std::string sGameType)
-{
-	if (sGameType.compare("Cooperative") == 0) {
-		return eGameTypeCooperative;
-	}
-	else if (sGameType.compare("DeathMatch") == 0) {
-		return eGameTypeDeathmatch;
-	}
-	else if (sGameType.compare("DoomsDay") == 0) {
-		return eGameTypeDoomsDay;
-	}
-	else if (sGameType.compare("TeamDeathMatch") == 0) {
-		return eGameTypeTeamDeathmatch;
-	}
-
-	// Error!
-	return -1;
-}
-
-std::string gameTypeIntToString(int nGameType)
-{
-	switch (nGameType) {
-	case eGameTypeCooperative:
-		return "Cooperative";
-	case eGameTypeDeathmatch:
-		return "DeathMatch";
-	case eGameTypeDoomsDay:
-		return "DoomsDay";
-	case eGameTypeTeamDeathmatch:
-		return "TeamDeathMatch";
-	case eGameTypeSingle: // ??
-		return "SinglePlayer";
-	}
-
-	// Error!
-	return "N/A";
-}

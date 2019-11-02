@@ -501,7 +501,7 @@ bool JServerDir::SetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Read& cMsg)
 		details->nScoreLimit = cMsg.Readuint8();
 		details->nTimeLimit = cMsg.Readuint8();
 
-		peer->HasDetailsData = true;
+		peer->SetHasDetailsData(true);
 	}
 	break;
 	case ePeerInfo_Name:
@@ -512,7 +512,7 @@ bool JServerDir::SetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Read& cMsg)
 
 		peer->m_NameData.sHostName = buffer;
 
-		peer->HasNameData = true;
+		peer->SetHasNameData(true);
 		break;
 	case ePeerInfo_Ping:
 		peer->SetPing(cMsg.Readuint16());
@@ -520,7 +520,7 @@ bool JServerDir::SetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Read& cMsg)
 		break;
 	case ePeerInfo_Port:
 		peer->m_PortData.nHostPort = cMsg.Readuint16();
-		peer->HasPortData = true;
+		peer->SetHasPortData(true);
 		break;
 	case ePeerInfo_Service:
 	{
@@ -528,7 +528,7 @@ bool JServerDir::SetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Read& cMsg)
 		PeerInfo_Service_Titan* pServiceInfo = (PeerInfo_Service_Titan*)cMsg.Readuint32();
 		peer->m_ServiceData = *pServiceInfo;
 
-		peer->HasServiceData = true;
+		peer->SetHasServiceData(true);
 	}
 	break;
 	case ePeerInfo_Summary:
@@ -553,7 +553,7 @@ bool JServerDir::SetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Read& cMsg)
 		cMsg.ReadString(buffer, MAX_PACKET_LEN);
 		summary->sModName = buffer;
 
-		peer->HasSummaryData = true;
+		peer->SetHasSummaryData(true);
 	}
 	break;
 	}
@@ -694,8 +694,17 @@ void JServerDir::QueryMasterServer()
 
 	ConnectionData connectionData = { MASTER_SERVER, MASTER_PORT };
 
-	pSock->Connect(connectionData);
-	pSock->Query(QUERY_UPDATE_LIST, connectionData);
+	try {
+		pSock->Connect(connectionData);
+		pSock->Query(QUERY_UPDATE_LIST, connectionData);
+	}
+	catch (std::exception ex) {
+		SwitchStatus(eStatus_Error);
+		delete pSock;
+		pSock = NULL;
+
+		return;
+	}
 
 	Sleep(500);
 
@@ -758,8 +767,17 @@ void JServerDir::QueryServer(std::string sAddress)
 		UDPSocket* pSock = new UDPSocket();
 		ConnectionData connectionData = { sIPAddress, nPort };
 
-		pSock->Query("\\status\\", connectionData);
-		
+		try {
+			pSock->Query("\\status\\", connectionData);
+		}
+		catch (std::exception ex) {
+			SwitchStatus(eStatus_Error);
+			delete pSock;
+			pSock = NULL;
+
+			return;
+		}
+
 		Sleep(1000);
 
 		std::string sStatus = pSock->Recieve(connectionData);
@@ -795,6 +813,9 @@ void JServerDir::QueryServer(std::string sAddress)
 	m_mQueuedPeerMutex.unlock();
 }
 
+//
+// This job blocks!
+// 
 void JServerDir::PublishServer(Peer peer)
 {
 	UDPSocket* pSock = new UDPSocket();
@@ -803,28 +824,65 @@ void JServerDir::PublishServer(Peer peer)
 	ConnectionData incomingConnectionData = { "0.0.0.0", 0 };
 
 	std::string heartbeat = "\\heartbeat\\27889\\gamename\\nolf2\\final\\\\queryid\\1.1";
-	std::string gameInfo = "\\gamename\\nolf2\\gamever\\1.0.0.3\\gamemode\\openplaying\\gametype\\DoomsDay\\hostip\\172.31.41.243\\hostname\\Jake DM\\hostport\\27888\\mapname\\DD_06\\maxplayers\\16\\numplayers\\0\\fraglimit\\0\\options\\\\password\\0\\timelimit\\20\\frags_0\\0\\frags_1\\0\\frags_2\\0\\ping_0\\334\\ping_1\\24129\\ping_2\\1287\\player_0\\A DEAD BABY\\player_1\\Ya Basta\\player_2\\Ya Basta1\\final\\\\queryid\\74383.1";
+	std::string gameInfo = encodeGameInfoToString(&peer);//"\\gamename\\nolf2\\gamever\\1.0.0.3\\gamemode\\openplaying\\gametype\\DoomsDay\\hostip\\172.31.41.243\\hostname\\Jake DM\\hostport\\27888\\mapname\\DD_06\\maxplayers\\16\\numplayers\\0\\fraglimit\\0\\options\\\\password\\0\\timelimit\\20\\frags_0\\0\\frags_1\\0\\frags_2\\0\\ping_0\\334\\ping_1\\24129\\ping_2\\1287\\player_0\\A DEAD BABY\\player_1\\Ya Basta\\player_2\\Ya Basta1\\final\\\\queryid\\74383.1";
 	//std::string gameInfo = "\\P\\gamename\\nolf2\\gamever\\1.003\\location\\0\\hostname\\TEST GAME\\hostport\\27888\\mapname\\MUDTOWN_DM\\gametype\\deathmatch\\numplayers\\1\\maxplayers\\16\\NetDMGameEnd\\3\\NetEndFrags\\25\\NetEndTime\\15\\NetMaxPlayers\\16\\NetRunSpeed\\100\\NetRespawnScale\\100\\NetDefaultWeapon\\21\\NetWeaponsStay\\0\\NetHitLocation\\0\\NetAudioTaunts\\1\\NetFallDamageScale\\0\\NetArmorHealthPercent\\0\\player_0\\Jake\\frags_0\\0\\ping_0\\1\\final\\\\queryid\\2.1";
 
 	try {
 		pSock->Bind(selfConnectionData);
 
 		pSock->Query(heartbeat, masterConnectionData);
-
-		Sleep(500);
-
-		std::string result = pSock->Recieve(incomingConnectionData);
-
-		pSock->Query(gameInfo, incomingConnectionData);
 	}
 	catch (std::exception e) {
-
 		std::string message = e.what();
 
 		m_bServerPublished = false;
 
+		delete pSock;
+		pSock = NULL;
+
 		return;
 	}
+
+	Sleep(500);
+
+	while (true) {
+
+		try {
+			incomingConnectionData = { "0.0.0.0", 0 };
+
+			std::string result = pSock->Recieve(incomingConnectionData);
+
+			// TODO: What now?
+			if (result.find("\\status\\") == std::string::npos) {
+				continue;
+				// Not this!
+				// Didn't recieve the expected status message!
+				delete pSock;
+				pSock = NULL;
+				m_bServerPublished = false;
+				return;
+			}
+
+			pSock->Query(gameInfo, incomingConnectionData);
+		}
+		catch (std::exception e) {
+			std::string message = e.what();
+
+			// todo: log
+			LPCWSTR str = (wchar_t*)message.c_str();
+			OutputDebugString(str);
+
+		}
+
+		// So many outs!
+		if (!m_bProcessJobs || !m_bIsRequestQueueRunning || !m_bStopThread) {
+			break;
+		}
+
+	}
+
+	
+
 
 	delete pSock;
 	pSock = NULL;

@@ -67,6 +67,12 @@ public:
 	inline bool HasPortData() { return m_bHasPortData; }
 	inline bool HasServiceData() { return m_bHasServiceData; }
 
+	inline void SetHasNameData(bool bVal) { m_bHasNameData = bVal; };
+	inline void SetHasSummaryData(bool bVal) { m_bHasSummaryData = bVal; };
+	inline void SetHasDetailsData(bool bVal) { m_bHasDetailsData = bVal; };
+	inline void SetHasPortData(bool bVal) { m_bHasPortData = bVal; };
+	inline void SetHasServiceData(bool bVal) { m_bHasServiceData = bVal; };
+
 	inline bool IsValidated() { return m_bIsValidated; }
 
 	// Data -- Here because i'm lazy
