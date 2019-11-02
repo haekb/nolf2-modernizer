@@ -138,7 +138,7 @@ std::string encodeGameInfoToString(Peer* peer)
 		sGameInfo += "\\" + map.first + "\\" + map.second;
 	}
 
-	sGameInfo += "\\final\\queryid\\1.1";
+	sGameInfo += "\\final\\queryid\\";
 
 	return sGameInfo;
 }

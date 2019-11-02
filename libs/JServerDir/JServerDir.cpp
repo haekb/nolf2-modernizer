@@ -823,7 +823,7 @@ void JServerDir::PublishServer(Peer peer)
 	ConnectionData masterConnectionData = { MASTER_SERVER, MASTER_PORT_UDP };
 	ConnectionData incomingConnectionData = { "0.0.0.0", 0 };
 
-	std::string heartbeat = "\\heartbeat\\27889\\gamename\\nolf2\\final\\\\queryid\\1.1";
+	std::string heartbeat = "\\heartbeat\\27889\\gamename\\nolf2\\final\\\\queryid\\" + std::to_string(++m_iQueryNum) + ".1";
 	std::string gameInfo = encodeGameInfoToString(&peer);//"\\gamename\\nolf2\\gamever\\1.0.0.3\\gamemode\\openplaying\\gametype\\DoomsDay\\hostip\\172.31.41.243\\hostname\\Jake DM\\hostport\\27888\\mapname\\DD_06\\maxplayers\\16\\numplayers\\0\\fraglimit\\0\\options\\\\password\\0\\timelimit\\20\\frags_0\\0\\frags_1\\0\\frags_2\\0\\ping_0\\334\\ping_1\\24129\\ping_2\\1287\\player_0\\A DEAD BABY\\player_1\\Ya Basta\\player_2\\Ya Basta1\\final\\\\queryid\\74383.1";
 	//std::string gameInfo = "\\P\\gamename\\nolf2\\gamever\\1.003\\location\\0\\hostname\\TEST GAME\\hostport\\27888\\mapname\\MUDTOWN_DM\\gametype\\deathmatch\\numplayers\\1\\maxplayers\\16\\NetDMGameEnd\\3\\NetEndFrags\\25\\NetEndTime\\15\\NetMaxPlayers\\16\\NetRunSpeed\\100\\NetRespawnScale\\100\\NetDefaultWeapon\\21\\NetWeaponsStay\\0\\NetHitLocation\\0\\NetAudioTaunts\\1\\NetFallDamageScale\\0\\NetArmorHealthPercent\\0\\player_0\\Jake\\frags_0\\0\\ping_0\\1\\final\\\\queryid\\2.1";
 
@@ -855,13 +855,11 @@ void JServerDir::PublishServer(Peer peer)
 			// TODO: What now?
 			if (result.find("\\status\\") == std::string::npos) {
 				continue;
-				// Not this!
-				// Didn't recieve the expected status message!
-				delete pSock;
-				pSock = NULL;
-				m_bServerPublished = false;
-				return;
 			}
+
+			std::string gameInfo = encodeGameInfoToString(&peer);
+
+			gameInfo += std::to_string(++m_iQueryNum) + ".1";
 
 			pSock->Query(gameInfo, incomingConnectionData);
 		}
@@ -879,15 +877,15 @@ void JServerDir::PublishServer(Peer peer)
 			break;
 		}
 
+		m_bServerPublished = true;
 	}
 
+	m_bServerPublished = false;
 	
-
-
 	delete pSock;
 	pSock = NULL;
 
-	m_bServerPublished = true;
+
 }
 
 void JServerDir::CheckForQueuedPeers()
@@ -936,6 +934,8 @@ void JServerDir::RequestQueueLoop()
 	m_nThreadLastActivity = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
 	m_bServerPublished = false;
+
+	m_iQueryNum = 0;
 
 	while (true) {
 		// See if we wanna kill the thread!
