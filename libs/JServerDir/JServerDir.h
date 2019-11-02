@@ -250,12 +250,6 @@ public:
 
 		void CheckForQueuedPeers();
 
-		int SetupSocket(SOCKET &pSock, bool bIsUDP);
-		bool Connect(std::string sIpAddress, unsigned short nPort, SOCKET& pSock);
-		bool Query(std::string sQuery, std::string sIpAddress, unsigned short nPort, SOCKET &pSock);
-		std::string Recieve(std::string sIpAddress, unsigned short nPort, SOCKET &pSock);
-		std::string Recieve(SOCKET& pSock);
-
 		void AddJob(Job eJob);
 		void SwitchStatus(EStatus eStatus);
 
