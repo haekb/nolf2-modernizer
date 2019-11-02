@@ -222,6 +222,10 @@ public:
 	// Set the header which will be appended to the beginning of all outgoing messages
 	virtual bool SetNetHeader(ILTMessage_Read& cMsg);
 
+	inline std::string GetGameName() { return m_sGameName; };
+	inline std::string GetVersion() { return m_sVersion; };
+	inline std::string GetRegion() { return m_sRegion; };
+
 	protected:
 		ILTCSBase* m_pLTCSBase;
 		HMODULE m_hResourceModule;
