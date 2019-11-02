@@ -8,6 +8,7 @@
 #include "NetDefs.h"
 #include "UDPSocket.h"
 #include "TCPSocket.h"
+#include <exception>
 
 //
 #include <string>
@@ -680,7 +681,6 @@ void JServerDir::Update()
 
 void JServerDir::QueryMasterServer()
 {
-#if 1
 	TCPSocket* pSock = new TCPSocket();
 
 	ConnectionData connectionData = { MASTER_SERVER, MASTER_PORT };
@@ -732,80 +732,6 @@ void JServerDir::QueryMasterServer()
 
 	delete pSock;
 	pSock = NULL;
-
-#else
-	SOCKET sock = NULL;
-	bool bResult;
-	int iResult = SetupSocket(sock, false);
-
-	// Bad!
-	if (iResult == INVALID_SOCKET) {
-		return;
-	}
-
-	bResult = Connect(MASTER_SERVER, MASTER_PORT, sock);
-
-	if (!bResult) {
-		auto error = WSAGetLastError();
-		ASSERT(error == 0 && "Socket Connection Error!");
-		// Throw error
-		return;
-	}
-
-	bResult = Query(QUERY_UPDATE_LIST, MASTER_SERVER, MASTER_PORT, sock);
-
-	if (!bResult) {
-		auto error = WSAGetLastError();
-
-		ASSERT(error == 0 && "Socket Query Error!");
-		// Throw error
-		return;
-	}
-
-	std::string sServerList = Recieve(MASTER_SERVER, MASTER_PORT, sock);
-
-	ASSERT(!sServerList.empty());
-
-	char* pch = strtok((char*)sServerList.c_str(), "\\");
-	while (pch != NULL)
-	{
-		printf("%s\n", pch);
-
-		std::string temp = pch;
-
-		if (temp.find_first_of("TXKOAT") == 0) {
-			std::string servers = temp.substr(6);
-
-
-			struct ipTest {
-				unsigned char ip[4];
-				unsigned short port;
-			};
-
-			ipTest* test1 = (ipTest*)servers.c_str();
-
-			unsigned short ordered = htons(test1->port);
-
-			std::string ipBuffer;
-			char buffer[32];
-			buffer[0] = '\0';
-
-			sprintf(buffer, "%d.%d.%d.%d", test1->ip[0], test1->ip[1], test1->ip[2], test1->ip[3]);
-
-			ipBuffer = buffer;
-
-			// Loop through all the servers
-			Job job = { eJobRequest_Query_Server, ipBuffer + ":" + std::to_string(ordered), {} };
-			AddJob(job);
-
-			break;
-		}
-
-		pch = strtok(NULL, "\\");
-	}
-
-	closesocket(sock);
-#endif
 }
 
 void JServerDir::QueryServer(std::string sAddress)
@@ -873,125 +799,37 @@ void JServerDir::QueryServer(std::string sAddress)
 
 void JServerDir::PublishServer(Peer peer)
 {
-	SOCKET uSock = NULL;
-	SOCKET listenSock = NULL;
-	bool bResult;
-	int iResult = SetupSocket(uSock, true);
-	iResult = SetupSocket(listenSock, true);
-	//Connect(MASTER_SERVER, MASTER_PORT, uSock);
-
-	// \\status\\ response
-	//\P\gamename\nolf\gamever\1.003\location\0\hostname\Good vs. Evil\hostport\27888\mapname\MUDTOWN_DM\gametype\deathmatch\numplayers\1\maxplayers\16\NetDMGameEnd\3\NetEndFrags\25\NetEndTime\15\NetMaxPlayers\16\NetRunSpeed\100\NetRespawnScale\100\NetDefaultWeapon\21\NetWeaponsStay\0\NetHitLocation\0\NetAudioTaunts\1\NetFallDamageScale\0\NetArmorHealthPercent\0\player_0\Jake\frags_0\0\ping_0\1\final\\queryid\2.1
+	UDPSocket* pSock = new UDPSocket();
+	ConnectionData selfConnectionData = { "0.0.0.0", 27889 };
+	ConnectionData masterConnectionData = { MASTER_SERVER, MASTER_PORT_UDP };
+	ConnectionData incomingConnectionData = { "0.0.0.0", 0 };
 
 	std::string heartbeat = "\\heartbeat\\27889\\gamename\\nolf2\\final\\\\queryid\\1.1";
-
-	ULONG iBuffer = 0;
-	int error;
-
-	// Setup our address - INADDR_ANY
-	inet_pton(AF_INET, "0.0.0.0", (ULONG*)&iBuffer);
-
-	// Gotta be on the same socket as the server!
-	int enable = 1;
-	if (setsockopt(listenSock, SOL_SOCKET, SO_REUSEADDR, (char*)&enable, sizeof(int)) < 0)
-	{
-		ASSERT(1 == 0 && "Reuse Opt failed");
-	}
-
-
-	sockaddr_in  saAddress;
-	saAddress.sin_family = AF_INET;
-	saAddress.sin_addr.s_addr = iBuffer;
-	saAddress.sin_port = htons(27889);
-
-	iResult = bind(listenSock, (SOCKADDR*)&saAddress, sizeof(saAddress));
-	error = WSAGetLastError();
-	ASSERT(iResult == 0 && "Socket Bind Server Error!");
-
-	//iResult = listen(listenSock, 2);
-
-	//ASSERT(iResult == 0 && "Socket Listen Server Error!");
-
-
-	sockaddr_in  saIncomingAddress = {};
-	int saIncomingAddressSize = sizeof(saIncomingAddress);
-
-	char szBuffer[1024];
-	szBuffer[0] = '\0';
-
-	bResult = Query(heartbeat, MASTER_SERVER, MASTER_PORT_UDP, listenSock);
-	if (!bResult) {
-		error = WSAGetLastError();
-
-		ASSERT(error == 0 && "Socket Publish Server Query Error!");
-		// Throw error
-		return;
-	}
-	Sleep(500);
-
-#if 1
-	//std::string result = Recieve(listenSock);
-	std::string result = Recieve(listenSock);
-#else
-	int len, n;
-	n = recvfrom(listenSock, (char*)buffer, 1024,
-		0, (struct sockaddr*) & saIncomingAddress,
-		&saIncomingAddressSize);
-#endif
-
 	std::string gameInfo = "\\P\\gamename\\nolf2\\gamever\\1.003\\location\\0\\hostname\\TEST GAME\\hostport\\27888\\mapname\\MUDTOWN_DM\\gametype\\deathmatch\\numplayers\\1\\maxplayers\\16\\NetDMGameEnd\\3\\NetEndFrags\\25\\NetEndTime\\15\\NetMaxPlayers\\16\\NetRunSpeed\\100\\NetRespawnScale\\100\\NetDefaultWeapon\\21\\NetWeaponsStay\\0\\NetHitLocation\\0\\NetAudioTaunts\\1\\NetFallDamageScale\\0\\NetArmorHealthPercent\\0\\player_0\\Jake\\frags_0\\0\\ping_0\\1\\final\\\\queryid\\2.1";
 
-	bResult = Query(gameInfo, MASTER_SERVER, MASTER_PORT_UDP, listenSock);
+	try {
+		pSock->Bind(selfConnectionData);
 
-	Sleep(500);
-	result = Recieve(listenSock);
+		pSock->Query(heartbeat, masterConnectionData);
 
-	error = WSAGetLastError();
-	WSANOTINITIALISED;
-	bool halp = true;
+		Sleep(500);
 
-#if 0
-	sockaddr_in  saIncomingAddress = {};
-	int saIncomingAddressSize = sizeof(saIncomingAddress);
-	while (true) {
+		std::string result = pSock->Recieve(incomingConnectionData);
 
-		auto ret = accept(listenSock, (SOCKADDR*)&saIncomingAddress, &saIncomingAddressSize);
-
-		if (ret == INVALID_SOCKET) {
-			auto error = WSAGetLastError();
-			WSANOTINITIALISED;
-			ASSERT(error == 0 && "Socket Publish Server Query Error!");
-			continue;
-		}
-
-		std::string sStatus = "";
-		auto error = WSAGetLastError();
-		sStatus = Recieve(listenSock);
-
-		bool true2 = true;
-		break;
+		pSock->Query(gameInfo, incomingConnectionData);
 	}
-#endif
+	catch (std::exception e) {
 
+		std::string message = e.what();
 
-#if 0
-	//iResult = listen(listenSock, 2);
-	std::string sStatus = "";
-	auto error = WSAGetLastError();
-	WSANOTINITIALISED;
-	sStatus = Recieve(listenSock);
-	/*
-	std::string sStatus = "";
-	Sleep(1000);
-	sStatus = Recieve(MASTER_SERVER, MASTER_PORT, uSock);
+		m_bServerPublished = false;
 
-	bResult = Query("\\validate\\g3Fo6x\\final\\", MASTER_SERVER, MASTER_PORT, uSock);
-	Sleep(1000);
-	sStatus = Recieve(MASTER_SERVER, MASTER_PORT, uSock);
-	*/
-#endif
-	closesocket(uSock);
-	closesocket(listenSock);
+		return;
+	}
+
+	delete pSock;
+	pSock = NULL;
+
 	m_bServerPublished = true;
 }
 

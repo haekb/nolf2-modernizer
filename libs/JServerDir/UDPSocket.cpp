@@ -171,10 +171,9 @@ std::string UDPSocket::Recieve(ConnectionData& connectionData)
 	}
 
 	char addressBuffer[32];
-	addressBuffer[0] = '0';
-	size_t addressLength = sizeof(addressBuffer);
+	memset(addressBuffer, 0, sizeof(addressBuffer));
 
-	inet_ntop(AF_INET, (void*)saAddress.sin_addr.s_addr, addressBuffer, addressLength);
+	sprintf(addressBuffer, "%d.%d.%d.%d", saAddress.sin_addr.S_un.S_un_b.s_b1, saAddress.sin_addr.S_un.S_un_b.s_b2, saAddress.sin_addr.S_un.S_un_b.s_b3, saAddress.sin_addr.S_un.S_un_b.s_b4);
 
 	connectionData.sIp = addressBuffer;
 	connectionData.nPort = htons(saAddress.sin_port);
