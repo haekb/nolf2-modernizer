@@ -103,7 +103,7 @@ std::string encodeGameInfoToString(Peer* peer)
 
 	splitMap.insert({ "gamename", gameName });
 	splitMap.insert({ "gamever" , "1.0.0.3" });//g_pJServerDir->GetVersion()  });
-	splitMap.insert({ "gamemode", "openplaying" });
+	splitMap.insert({ "gamemode", peer->IsShuttingDown() ? "exiting" : "openplaying" });
 
 	splitMap.insert({ "gametype", gameTypeIntToString(peer->m_SummaryData.nGameType) });
 	splitMap.insert({ "hostip"  , "192.168.1.1" });//peer->GetAddress() });
@@ -143,3 +143,7 @@ std::string encodeGameInfoToString(Peer* peer)
 	return sGameInfo;
 }
 
+long long getTimestamp()
+{
+	return std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+}

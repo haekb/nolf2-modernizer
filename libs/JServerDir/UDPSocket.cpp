@@ -134,6 +134,7 @@ std::string UDPSocket::Recieve(ConnectionData& connectionData)
 
 	int loopIterations = 0;
 
+	// TODO: this needs to feed into a queue
 	while (iResult != 0) {
 		loopIterations++;
 
@@ -143,14 +144,14 @@ std::string UDPSocket::Recieve(ConnectionData& connectionData)
 			int error = WSAGetLastError();
 
 			// Prevent infinite loop
-			if (loopIterations > 10) {
+			if (loopIterations > 2) {
 				break;
 			}
 
 			// That's okay!
 			if (error == WSAETIMEDOUT) {
-				Sleep(1000);
-				continue;
+				//Sleep(1000);
+				break;
 			}
 
 			throw UnknownSocketError();
@@ -168,6 +169,8 @@ std::string UDPSocket::Recieve(ConnectionData& connectionData)
 		if (found != std::string::npos) {
 			break;
 		}
+
+		break;
 	}
 
 	char addressBuffer[32];

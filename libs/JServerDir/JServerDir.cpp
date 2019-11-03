@@ -824,7 +824,9 @@ void JServerDir::QueryServer(std::string sAddress)
 
 //
 // This job blocks!
-// 
+//
+// TODO: Need a way to get updated peer info.
+//
 void JServerDir::PublishServer(Peer peer)
 {
 	UDPSocket* pSock = new UDPSocket();
@@ -857,23 +859,35 @@ void JServerDir::PublishServer(Peer peer)
 
 	Sleep(500);
 
+	auto nCurrentTime = getTimestamp();
+	auto nLastHeartbeat = getTimestamp();
+
 	while (true) {
 
 		try {
+			nCurrentTime = getTimestamp();
+
 			incomingConnectionData = { "0.0.0.0", 0 };
 
 			std::string result = pSock->Recieve(incomingConnectionData);
 
-			// TODO: What now?
-			if (result.find("\\status\\") == std::string::npos) {
-				continue;
+			// Handle status requests
+			if (result.find("\\status\\") != std::string::npos) {
+
+				std::string gameInfo = encodeGameInfoToString(&peer);
+
+				gameInfo += std::to_string(++m_iQueryNum) + ".1";
+
+				pSock->Query(gameInfo, incomingConnectionData);
+
 			}
 
-			std::string gameInfo = encodeGameInfoToString(&peer);
+			// After 60 seconds, poke the master server
+			if (nCurrentTime - nLastHeartbeat > 60) {
+				pSock->Query(heartbeat, masterConnectionData);
+				nLastHeartbeat = nCurrentTime;
+			}
 
-			gameInfo += std::to_string(++m_iQueryNum) + ".1";
-
-			pSock->Query(gameInfo, incomingConnectionData);
 		}
 		catch (std::exception e) {
 			std::string message = e.what();
@@ -884,8 +898,24 @@ void JServerDir::PublishServer(Peer peer)
 
 		}
 
-		// So many outs!
-		if (!m_bProcessJobs || !m_bIsRequestQueueRunning || !m_bStopThread) {
+		// If we want to stop, stop!
+		if (m_bStopThread.load()) {
+
+			// TODO: This kinda sucks. Feed it into the main loop up there.
+			std::string exitbeat = "\\heartbeat\\27889\\gamename\\nolf2\\statechanged\\\\final\\\\queryid\\" + std::to_string(++m_iQueryNum) + ".1";
+			pSock->Query(heartbeat, masterConnectionData);
+
+			std::string exitResult = pSock->Recieve(incomingConnectionData);
+
+			/*
+			peer.Shutdown();
+
+			std::string exitGameInfo = encodeGameInfoToString(&peer);
+			*/
+
+
+			pSock->Query("\\gamename\\nolf2\\gamever\\1.0.0.3\\gamemode\\exiting\\final\\\\queryid\\"+ std::to_string(++m_iQueryNum) + ".1", masterConnectionData);
+
 			break;
 		}
 
@@ -943,7 +973,7 @@ void JServerDir::RequestQueueLoop()
 	wVersionRequested = MAKEWORD(2, 2);
 	WSAStartup(wVersionRequested, &wsaData);
 
-	m_nThreadLastActivity = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+	m_nThreadLastActivity = getTimestamp();
 
 	m_bServerPublished = false;
 
@@ -958,7 +988,7 @@ void JServerDir::RequestQueueLoop()
 		Sleep(50);
 
 		// Quite the statement...
-		auto nSeconds = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+		auto nSeconds = getTimestamp();
 
 		// After 5 seconds of no activity, kill the thread
 		if (nSeconds - m_nThreadLastActivity > 5) {
@@ -989,12 +1019,15 @@ void JServerDir::RequestQueueLoop()
 			QueryServer(job.sData);
 			break;
 		case eJobRequest_Publish_Server:
+
+			if (m_bServerPublished) continue;
+
 			PublishServer(job.Peer);
 			break;
 		}
 
 		// We did something, neat! So update the last activity time.
-		m_nThreadLastActivity = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+		m_nThreadLastActivity = getTimestamp();
 	}
 
 	WSACleanup();

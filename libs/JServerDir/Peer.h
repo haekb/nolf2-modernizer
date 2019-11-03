@@ -57,9 +57,15 @@ public:
 		m_fCreatedAt = fCreatedAt;
 	}
 
+	// Only needs to happen once!
+	inline void Shutdown() {
+		m_bShuttingDown = true;
+	}
+
 	inline std::string GetAddress() { return m_sPeerAddress; }
 	inline uint16 GetPing() { return m_nPing; }
 	inline LTFLOAT GetCreatedAt() { return m_fCreatedAt; }
+	inline bool IsShuttingDown() { return m_bShuttingDown; }
 
 	inline bool HasNameData() { return m_bHasNameData; }
 	inline bool HasSummaryData() { return m_bHasSummaryData; }
@@ -86,6 +92,7 @@ protected:
 	std::string m_sPeerAddress;
 	uint16 m_nPing;
 	LTFLOAT m_fCreatedAt;
+	bool m_bShuttingDown;
 
 	// Is the data set?
 	bool m_bHasNameData;

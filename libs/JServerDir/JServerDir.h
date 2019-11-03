@@ -275,7 +275,7 @@ public:
 
 		std::atomic_int m_iQueryNum;
 
-		bool m_bServerPublished;
+		std::atomic_bool m_bServerPublished;
 
 		// Time we start our thread (for thread only!)
 		long long m_nThreadLastActivity;
