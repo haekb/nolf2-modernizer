@@ -694,9 +694,24 @@ void JServerDir::QueryMasterServer()
 
 	ConnectionData connectionData = { MASTER_SERVER, MASTER_PORT };
 
+	std::string sServerList = "";
+
 	try {
 		pSock->Connect(connectionData);
-		pSock->Query(QUERY_UPDATE_LIST, connectionData);
+
+		// Say hello
+		pSock->Query("", connectionData);
+
+		std::string sChallenge = pSock->Recieve(connectionData);
+
+		std::string sResponse = QUERY_UPDATE_LIST;
+		sResponse += "queryid\\" + std::to_string(++m_iQueryNum) + ".1";
+
+		pSock->Query(sResponse, connectionData);
+
+		sServerList = pSock->Recieve(connectionData);
+
+		bool done = true;
 	}
 	catch (std::exception ex) {
 		SwitchStatus(eStatus_Error);
@@ -708,44 +723,38 @@ void JServerDir::QueryMasterServer()
 
 	Sleep(500);
 
-	std::string sServerList = pSock->Recieve(connectionData);
+	struct ipTest {
+		unsigned char ip[4];
+		unsigned short port;
+	};
 
-	char* pch = strtok((char*)sServerList.c_str(), "\\");
-	while (pch != NULL)
-	{
-		printf("%s\n", pch);
+	int nCurrentPosition = 0;
 
-		std::string temp = pch;
+	std::string sCursor = sServerList;
 
-		if (temp.find_first_of("TXKOAT") == 0) {
-			std::string servers = temp.substr(6);
+	while (true) {
+		sCursor = sServerList.substr(nCurrentPosition, sCursor.size());
+		nCurrentPosition += sizeof(ipTest);
 
-
-			struct ipTest {
-				unsigned char ip[4];
-				unsigned short port;
-			};
-
-			ipTest* test1 = (ipTest*)servers.c_str();
-
-			unsigned short ordered = htons(test1->port);
-
-			std::string ipBuffer;
-			char buffer[32];
-			buffer[0] = '\0';
-
-			sprintf(buffer, "%d.%d.%d.%d", test1->ip[0], test1->ip[1], test1->ip[2], test1->ip[3]);
-
-			ipBuffer = buffer;
-
-			// Loop through all the servers
-			Job job = { eJobRequest_Query_Server, ipBuffer + ":" + std::to_string(ordered), {} };
-			AddJob(job);
-
+		if (sCursor.find("\\final\\") == 0) {
 			break;
 		}
 
-		pch = strtok(NULL, "\\");
+		ipTest* serverIp = (ipTest*)sCursor.c_str();
+
+		unsigned short nPort = htons(serverIp->port);
+
+		std::string ipBuffer;
+		char buffer[32];
+		buffer[0] = '\0';
+
+		sprintf(buffer, "%d.%d.%d.%d", serverIp->ip[0], serverIp->ip[1], serverIp->ip[2], serverIp->ip[3]);
+
+		ipBuffer = buffer;
+
+		// Loop through all the servers
+		Job job = { eJobRequest_Query_Server, ipBuffer + ":" + std::to_string(nPort), {} };
+		AddJob(job);
 	}
 
 	delete pSock;
@@ -842,6 +851,9 @@ void JServerDir::PublishServer(Peer peer)
 
 		return;
 	}
+
+
+	//De±ôéLíûfþE¹ÛÀ¨HApW>lðlü¥\U\gamename\nolf\gamever\1.003\location\0\hostname\Jake's Fake Server\hostport\27888\mapname\MUDTOWN_DM\gametype\deathmatch\numplayers\1\maxplayers\16\NetDMGameEnd\3\NetEndFrags\25\NetEndTime\15\NetMaxPlayers\16\NetRunSpeed\100\NetRespawnScale\100\NetDefaultWeapon\21\NetWeaponsStay\0\NetHitLocation\0\NetAudioTaunts\1\NetFallDamageScale\0\NetArmorHealthPercent\0\player_0\Jake\frags_0\0\ping_0\1\final\\queryid\8.1
 
 	Sleep(500);
 
