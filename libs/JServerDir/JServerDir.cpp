@@ -591,13 +591,12 @@ bool JServerDir::GetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Write* pMsg) 
 		pMsg->Writeuint8(details->nMPDifficulty);
 		pMsg->Writefloat(details->fPlayerDiffFactor);
 
-		if (details->Players.size() > 0) {
-			// If we have players to send over, mark it as so!
-			pMsg->Writebool(true);
-		}
-
 		for (auto player : details->Players) {
-			pMsg->WriteString(player.sUniqueName.c_str());
+			// Bool: Hey we have player info to read!
+			pMsg->Writebool(true);
+
+			// Player info
+			pMsg->WriteString(getMsgString(player.sUniqueName));
 			pMsg->Writeuint16(player.nPing);
 		}
 
@@ -610,7 +609,7 @@ bool JServerDir::GetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Write* pMsg) 
 	}
 	break;
 	case ePeerInfo_Name:
-		pMsg->WriteString(peer->m_NameData.sHostName.c_str());
+		pMsg->WriteString(getMsgString(peer->m_NameData.sHostName));
 		break;
 	case ePeerInfo_Ping:
 		pMsg->Writeuint16(peer->GetPing());
@@ -629,13 +628,13 @@ bool JServerDir::GetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Write* pMsg) 
 	{
 		PeerInfo_Summary* summary = &peer->m_SummaryData;
 
-		pMsg->WriteString(summary->sBuild.c_str());
-		pMsg->WriteString(summary->sWorldName.c_str());
+		pMsg->WriteString(getMsgString(summary->sBuild));
+		pMsg->WriteString(getMsgString(summary->sWorldName));
 		pMsg->Writeuint8(summary->nCurrentPlayers);
 		pMsg->Writeuint8(summary->nMaxPlayers);
 		pMsg->Writebool(summary->bUsePassword);
 		pMsg->Writeuint8(summary->nGameType);
-		pMsg->WriteString(summary->sModName.c_str());
+		pMsg->WriteString(getMsgString(summary->sModName));
 	}
 	break;
 	case ePeerInfo_Validated:
@@ -798,8 +797,15 @@ void JServerDir::QueryServer(std::string sAddress)
 
 		std::map<std::string, std::string> mappy = splitResultsToMap(sStatus);
 
+		/*
+		\gamename\nolf2\gamever\1.0.0.3\gamemode\openplaying\gametype\DoomsDay\hostip\172.31.41.243\hostname\unityhq.net\hostport\27888\mapname\DD_06\maxplayers\16\numplayers\0\fraglimit\0\options\\password\0\timelimit\20\frags_0\0\frags_1\0\frags_2\0\ping_0\334\ping_1\24129\ping_2\1287\player_0\A DEAD BABY\player_1\Ya Basta\player_2\Ya Basta1\final\\queryid\85894.1
+		*/
+
 		PeerInfo_Name name;
 		name.sHostName = mappy.at("hostname");
+
+
+		// Set summary data
 		PeerInfo_Summary summary;
 		summary.bUsePassword = std::stoi(mappy.at("password"));
 		summary.nCurrentPlayers = std::stoi(mappy.at("numplayers"));
@@ -816,6 +822,48 @@ void JServerDir::QueryServer(std::string sAddress)
 
 		peer->m_NameData = name;
 		peer->m_SummaryData = summary;
+		peer->SetHasSummaryData(true);
+
+		// Set details data
+		PeerInfo_Details details;
+		// Not available?
+		details.bFriendlyFire = false;
+		details.bUseSkills = false;
+		details.fPlayerDiffFactor = 0;
+		details.nMPDifficulty = 0;
+		details.nRunSpeed = 1;
+		details.nScoreLimit = std::stoi(mappy.at("fraglimit"));
+		details.nTimeLimit = std::stoi(mappy.at("timelimit"));
+
+		std::vector<std::string> pingList;
+		std::vector<std::string> playerList; 
+		std::vector<std::string> fragList; // We don't actually use this..
+		
+		// Luckily mappy gives it to us in order!
+		for (auto keyVal : mappy) {
+			if(keyVal.first.find("ping_") == 0) {
+				pingList.push_back(keyVal.second);
+			}
+			else if (keyVal.first.find("player_") == 0) {
+				playerList.push_back(keyVal.second);
+			}
+			else if (keyVal.first.find("frag_") == 0) {
+				fragList.push_back(keyVal.second);
+			}
+		}
+
+		for (int i = 0; i < playerList.size(); i++) {
+			PeerInfo_PlayerDetails player;
+
+			player.sUniqueName = playerList.at(i);
+			player.nPing = std::stoi(pingList.at(i));
+
+			details.Players.push_back(player);
+		}
+
+		peer->m_DetailsData = details;
+		peer->SetHasDetailsData(true);
+
 		peer->SetAddress(sIPAddress);
 
 		delete pSock;

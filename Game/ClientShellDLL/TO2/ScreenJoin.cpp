@@ -1002,7 +1002,7 @@ bool CScreenJoin::PreState_QueryDetails()
 		return false;
 	}
 
-#if 1
+#if 0
 	if (stricmp(m_cServerList[m_nSelectedServer].m_sVersion.c_str(), g_pVersionMgr->GetNetVersion()) != 0)
 	{
 		SetDetailErrorMessage(LoadTempString(IDS_SERVER_DETAIL_VERSION));
@@ -1373,7 +1373,8 @@ void CScreenJoin::ReadDMDetails(std::string& sOptions,CLTMsgRef_Read& cRead)
 	bool bPlayerToRead = cRead->Readbool();
 	while (bPlayerToRead)
 	{
-		cRead->ReadString(aStringBuffer, sizeof(aStringBuffer));
+		size_t strSize = sizeof(aStringBuffer);
+		cRead->ReadString(aStringBuffer, strSize);
 		uint16 nPing = cRead->Readuint16();
 		bPlayerToRead = cRead->Readbool();
 

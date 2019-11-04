@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <map>
+#include <unordered_map>
 #include <string>
 #include <sstream>
 #include <regex>
@@ -93,7 +94,7 @@ std::string encodeGameInfoToString(Peer* peer)
 	}
 
 	// TODO: Move this to outside the function, and make this function take in the map.
-	std::map<std::string, std::string> splitMap;
+	std::unordered_map<std::string, std::string> splitMap;
 
 	std::string gameName = g_pJServerDir->GetGameName();
 
@@ -157,4 +158,17 @@ std::string getHeartbeat(int &iQueryNum, bool bStateChanged = false)
 	heartbeat += "final\\\\queryid\\" + std::to_string(++iQueryNum) + ".1";
 
 	return heartbeat;
+}
+
+//
+// WriteString seems to take up to 256 characters (at least with player details.)
+//
+char* getMsgString(std::string str)
+{
+	char szMsg[256];
+	memset(szMsg, 0, sizeof(szMsg));
+
+	sprintf(szMsg, "%s", str.c_str());
+
+	return szMsg;
 }
