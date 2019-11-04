@@ -102,7 +102,7 @@ std::string encodeGameInfoToString(Peer* peer)
 	std::transform(gameName.begin(), gameName.end(), gameName.begin(), ::tolower);
 
 	splitMap.insert({ "gamename", gameName });
-	splitMap.insert({ "gamever" , "1.0.0.3" });//g_pJServerDir->GetVersion()  });
+	splitMap.insert({ "gamever" , g_pJServerDir->GetVersion()  }); //"1.0.0.3" });
 	splitMap.insert({ "gamemode", peer->IsShuttingDown() ? "exiting" : "openplaying" });
 
 	splitMap.insert({ "gametype", gameTypeIntToString(peer->m_SummaryData.nGameType) });

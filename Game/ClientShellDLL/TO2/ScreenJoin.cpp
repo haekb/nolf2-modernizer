@@ -441,8 +441,8 @@ uint32 CScreenJoin::OnCommand(uint32 dwCommand, uint32 dwParam1, uint32 dwParam2
 			return 0;
 
 
-
-		if (stricmp(m_cServerList[m_nSelectedServer].m_sVersion.c_str(), g_pVersionMgr->GetBuild()) != 0)
+		 
+		if (stricmp(m_cServerList[m_nSelectedServer].m_sVersion.c_str(), g_pVersionMgr->GetNetVersion()) != 0)
 		{
 			MBCreate mb;
 			g_pInterfaceMgr->ShowMessageBox(IDS_SERVER_WRONGVERSION,&mb);
@@ -1002,11 +1002,13 @@ bool CScreenJoin::PreState_QueryDetails()
 		return false;
 	}
 
-	if (stricmp(m_cServerList[m_nSelectedServer].m_sVersion.c_str(), g_pVersionMgr->GetBuild()) != 0)
+#if 1
+	if (stricmp(m_cServerList[m_nSelectedServer].m_sVersion.c_str(), g_pVersionMgr->GetNetVersion()) != 0)
 	{
 		SetDetailErrorMessage(LoadTempString(IDS_SERVER_DETAIL_VERSION));
 		return false;
 	}
+#endif
 
 	pServerDir->SetActivePeer(m_cServerList[m_nSelectedServer].m_sAddress.c_str());
 
@@ -1209,7 +1211,7 @@ void CScreenJoin::FilterServers()
 		//Version Filter
 		if (m_nVersionFilter)
 		{
-			bShow &= (stricmp(m_cServerList[nIndex].m_sVersion.c_str(), g_pVersionMgr->GetBuild()) == 0);
+			bShow &= (stricmp(m_cServerList[nIndex].m_sVersion.c_str(), g_pVersionMgr->GetNetVersion()) == 0);
 		}
 
 		//Game type filter
