@@ -66,9 +66,10 @@ uint32 CTO2GameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
 
 	uint32 nResult = CGameClientShell::OnEngineInitialized(pMode, pAppGuid);
 
+#ifdef _DISCORDBUILD
 	g_pDiscordMgr = new DiscordMgr();
 	g_pDiscordMgr->Init();
-
+#endif
 
 	m_VersionMgr.Update();
 
