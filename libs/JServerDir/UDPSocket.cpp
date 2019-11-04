@@ -144,7 +144,7 @@ std::string UDPSocket::Recieve(ConnectionData& connectionData)
 			int error = WSAGetLastError();
 
 			// Prevent infinite loop
-			if (loopIterations > 2) {
+			if (loopIterations > 1) {
 				break;
 			}
 

@@ -13,6 +13,7 @@ Peer::Peer()
 	m_bHasPortData = false;
 	m_bHasServiceData = false;
 	m_bIsValidated = false;
+	m_bShuttingDown = false;
 }
 
 Peer::~Peer()

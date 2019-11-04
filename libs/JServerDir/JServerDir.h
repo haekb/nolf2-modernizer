@@ -18,6 +18,7 @@
 #include <WS2tcpip.h>
 #include <stl_vector.h>
 
+#include "UDPSocket.h"
 
 #define FAKE_CD_KEY "ABC1-EFG2-IJK3-LMN4-5678"
 #define LOCAL_PEER "_LOCAL_PEER"
@@ -275,7 +276,11 @@ public:
 
 		std::atomic_int m_iQueryNum;
 
-		std::atomic_bool m_bServerPublished;
+		std::atomic_bool m_bPublishingServer;
+		Peer m_PublishedPeer;
+		UDPSocket* m_pPublishSocket;
+		
+		bool m_bBoundConnection;
 
 		// Time we start our thread (for thread only!)
 		long long m_nThreadLastActivity;
