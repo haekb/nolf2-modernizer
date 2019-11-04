@@ -274,12 +274,10 @@ public:
 		// Weird, but to avoid a lot of mutexing, this is the prep vector that will eventually be merged into Peers
 		std::vector<Peer*> m_QueuedPeers;
 
-		std::atomic_int m_iQueryNum;
+		int m_iQueryNum;
 
 		std::atomic_bool m_bPublishingServer;
-		Peer m_PublishedPeer;
-		UDPSocket* m_pPublishSocket;
-		
+
 		bool m_bBoundConnection;
 
 		// Time we start our thread (for thread only!)

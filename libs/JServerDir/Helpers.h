@@ -87,8 +87,6 @@ std::map<std::string, std::string> splitResultsToMap(std::string input)
 
 std::string encodeGameInfoToString(Peer* peer)
 {
-	std::string gameInfo = "\\gamename\\nolf2\\gamever\\1.0.0.3\\gamemode\\openplaying\\gametype\\DoomsDay\\hostip\\172.31.41.243\\hostname\\Jake DM\\hostport\\27888\\mapname\\DD_06\\maxplayers\\16\\numplayers\\0\\fraglimit\\0\\options\\\\password\\0\\timelimit\\20\\frags_0\\0\\frags_1\\0\\frags_2\\0\\ping_0\\334\\ping_1\\24129\\ping_2\\1287\\player_0\\A DEAD BABY\\player_1\\Ya Basta\\player_2\\Ya Basta1\\final\\\\queryid\\74383.1";
-
 	if (!peer->HasSummaryData() || !peer->HasServiceData() || !peer->HasPortData())
 	{
 		return "";
@@ -146,4 +144,17 @@ std::string encodeGameInfoToString(Peer* peer)
 long long getTimestamp()
 {
 	return std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+}
+
+std::string getHeartbeat(int &iQueryNum, bool bStateChanged = false)
+{
+	std::string heartbeat = "\\heartbeat\\27889\\gamename\\nolf2\\";
+
+	if (bStateChanged) {
+		heartbeat += "statechanged\\\\";
+	}
+
+	heartbeat += "final\\\\queryid\\" + std::to_string(++iQueryNum) + ".1";
+
+	return heartbeat;
 }

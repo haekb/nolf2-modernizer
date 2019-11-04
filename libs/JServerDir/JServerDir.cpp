@@ -364,7 +364,7 @@ char const* JServerDir::GetMOTD(EMOTD eMOTD) const
 	}
 
 
-	return "This is a system message:\n\n-There is no scheduled downtime\n\nWe also do not know if there will be any ever since we don't control the servers. oopsie!";
+	return "Master server provided by QTracker.\nVisit https://www.qtracker.com/ for more information.";
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -830,25 +830,26 @@ void JServerDir::QueryServer(std::string sAddress)
 //
 // This job blocks!
 //
-// TODO: Need a way to get updated peer info.
 //
 void JServerDir::PublishServer(Peer peerParam)
 {
+	UDPSocket* uSock = new UDPSocket();
+
 	Peer peer = peerParam;
+
 	ConnectionData selfConnectionData = { "0.0.0.0", 27889 };
 	ConnectionData masterConnectionData = { MASTER_SERVER, MASTER_PORT_UDP };
 	ConnectionData incomingConnectionData = { "0.0.0.0", 0 };
 
-	std::string heartbeat = "\\heartbeat\\27889\\gamename\\nolf2\\final\\\\queryid\\" + std::to_string(++m_iQueryNum) + ".1";
-	std::string gameInfo = encodeGameInfoToString(&peer);//"\\gamename\\nolf2\\gamever\\1.0.0.3\\gamemode\\openplaying\\gametype\\DoomsDay\\hostip\\172.31.41.243\\hostname\\Jake DM\\hostport\\27888\\mapname\\DD_06\\maxplayers\\16\\numplayers\\0\\fraglimit\\0\\options\\\\password\\0\\timelimit\\20\\frags_0\\0\\frags_1\\0\\frags_2\\0\\ping_0\\334\\ping_1\\24129\\ping_2\\1287\\player_0\\A DEAD BABY\\player_1\\Ya Basta\\player_2\\Ya Basta1\\final\\\\queryid\\74383.1";
-	//std::string gameInfo = "\\P\\gamename\\nolf2\\gamever\\1.003\\location\\0\\hostname\\TEST GAME\\hostport\\27888\\mapname\\MUDTOWN_DM\\gametype\\deathmatch\\numplayers\\1\\maxplayers\\16\\NetDMGameEnd\\3\\NetEndFrags\\25\\NetEndTime\\15\\NetMaxPlayers\\16\\NetRunSpeed\\100\\NetRespawnScale\\100\\NetDefaultWeapon\\21\\NetWeaponsStay\\0\\NetHitLocation\\0\\NetAudioTaunts\\1\\NetFallDamageScale\\0\\NetArmorHealthPercent\\0\\player_0\\Jake\\frags_0\\0\\ping_0\\1\\final\\\\queryid\\2.1";
+	std::string heartbeat = getHeartbeat(m_iQueryNum, false);
+	std::string gameInfo = encodeGameInfoToString(&peer);
 
 	if (!m_bBoundConnection) {
 
 		try {
-			m_pPublishSocket->Bind(selfConnectionData);
+			uSock->Bind(selfConnectionData);
 
-			m_pPublishSocket->Query(heartbeat, masterConnectionData);
+			uSock->Query(heartbeat, masterConnectionData);
 
 			m_bBoundConnection = true;
 
@@ -860,70 +861,64 @@ void JServerDir::PublishServer(Peer peerParam)
 
 			m_bPublishingServer = false;
 
-			delete m_pPublishSocket;
-			m_pPublishSocket = NULL;
+			delete uSock;
+			uSock = NULL;
 
 			return;
 		}
 
 	}
 
-	//De±ôéLíûfþE¹ÛÀ¨HApW>lðlü¥\U\gamename\nolf\gamever\1.003\location\0\hostname\Jake's Fake Server\hostport\27888\mapname\MUDTOWN_DM\gametype\deathmatch\numplayers\1\maxplayers\16\NetDMGameEnd\3\NetEndFrags\25\NetEndTime\15\NetMaxPlayers\16\NetRunSpeed\100\NetRespawnScale\100\NetDefaultWeapon\21\NetWeaponsStay\0\NetHitLocation\0\NetAudioTaunts\1\NetFallDamageScale\0\NetArmorHealthPercent\0\player_0\Jake\frags_0\0\ping_0\1\final\\queryid\8.1
-
-
 	auto nCurrentTime = getTimestamp();
-	static auto nLastHeartbeat = getTimestamp();
+	auto nLastHeartbeat = getTimestamp();
+
+	// TODO: figure out what counts as a state change
+	bool bStateChanged = false;
 
 	while (true) {
 
-		try {
-			nCurrentTime = getTimestamp();
+		nCurrentTime = getTimestamp();
 
-#if 1
-			// Move the peer updating code here
-			bool locked = m_mJobMutex.try_lock();
+		// Gameplay and Main ServerDir threads will pump us a Publish_Server request every 5 seconds or so.
+		// So let's see if it's ready, and update our peer object!
+		bool locked = m_mJobMutex.try_lock();
 
-			if (locked) {
-				if (m_vJobs.size() > 0) {
-					Job job = m_vJobs.back();
-					m_vJobs.pop_back();
+		if (locked) {
+			if (m_vJobs.size() > 0) {
+				Job job = m_vJobs.back();
+				m_vJobs.pop_back();
 
-					// Update the peer
-					if (job.eRequestType == eJobRequest_Publish_Server) {
-						peer = job.Peer;
-					}
+				// Update the peer
+				if (job.eRequestType == eJobRequest_Publish_Server) {
+					peer = job.Peer;
 				}
-				m_mJobMutex.unlock();
 			}
 
-#else
-			if (result.empty())
-			{
-				break;
-			}
-#endif
+			m_mJobMutex.unlock();
+		}
 
+		try {
 			incomingConnectionData = { "0.0.0.0", 0 };
 
-			std::string result = m_pPublishSocket->Recieve(incomingConnectionData);
+			std::string result = uSock->Recieve(incomingConnectionData);
 
 			// Handle status requests
 			if (result.find("\\status\\") != std::string::npos) {
 
-				std::string gameInfo = encodeGameInfoToString(&peer);
-
+				gameInfo = encodeGameInfoToString(&peer);
 				gameInfo += std::to_string(++m_iQueryNum) + ".1";
 
-				m_pPublishSocket->Query(gameInfo, incomingConnectionData);
+				uSock->Query(gameInfo, incomingConnectionData);
 
 			}
 
 			// After 60 seconds, poke the master server
-			if (nCurrentTime - nLastHeartbeat > 60) {
-				m_pPublishSocket->Query(heartbeat, masterConnectionData);
+			if (bStateChanged || nCurrentTime - nLastHeartbeat > 60) {
+				uSock->Query(getHeartbeat(m_iQueryNum, bStateChanged), masterConnectionData);
 				nLastHeartbeat = nCurrentTime;
 			}
 
+			bStateChanged = false;
 		}
 		catch (std::exception e) {
 			std::string message = e.what();
@@ -939,22 +934,10 @@ void JServerDir::PublishServer(Peer peerParam)
 
 			// TODO: This kinda sucks. Feed it into the main loop up there.
 			// Also it seems QTracker will just drop it, if we don't send it anything after a statechange. I'lllll take it!
-			std::string exitbeat = "\\heartbeat\\27889\\gamename\\nolf2\\statechanged\\\\final\\\\queryid\\" + std::to_string(++m_iQueryNum) + ".1";
-			m_pPublishSocket->Query(heartbeat, masterConnectionData);
+			uSock->Query(getHeartbeat(m_iQueryNum, true), masterConnectionData);
 
-			//std::string exitResult = m_pPublishSocket->Recieve(incomingConnectionData);
-
-			/*
-			peer.Shutdown();
-
-			std::string exitGameInfo = encodeGameInfoToString(&peer);
-			*/
-
-
-			//m_pPublishSocket->Query("\\gamename\\nolf2\\gamever\\1.0.0.3\\gamemode\\exiting\\final\\\\queryid\\"+ std::to_string(++m_iQueryNum) + ".1", masterConnectionData);
-
-			delete m_pPublishSocket;
-			m_pPublishSocket = NULL;
+			delete uSock;
+			uSock = NULL;
 
 			break;
 		}
@@ -1011,7 +994,6 @@ void JServerDir::RequestQueueLoop()
 	m_nThreadLastActivity = getTimestamp();
 
 	m_bPublishingServer = false;
-	m_pPublishSocket = new UDPSocket();
 	m_bBoundConnection = false;
 
 	m_iQueryNum = 0;
@@ -1056,23 +1038,15 @@ void JServerDir::RequestQueueLoop()
 			QueryServer(job.sData);
 			break;
 		case eJobRequest_Publish_Server:
-			m_PublishedPeer = job.Peer;
 			m_bPublishingServer = true;
-			break;
-		}
 
-		// This needs to be a thread :(
-		if (m_bPublishingServer) {
-			PublishServer(m_PublishedPeer);
+			// This will block, until we're done publishing.
+			PublishServer(job.Peer);
+			break;
 		}
 
 		// We did something, neat! So update the last activity time.
 		m_nThreadLastActivity = getTimestamp();
-	}
-
-	if (m_pPublishSocket) {
-		delete m_pPublishSocket;
-		m_pPublishSocket = NULL;
 	}
 
 	WSACleanup();
