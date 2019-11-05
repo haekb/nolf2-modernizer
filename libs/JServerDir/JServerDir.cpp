@@ -42,9 +42,13 @@ JServerDir::~JServerDir()
 {
 	if (m_bIsRequestQueueRunning) {
 		m_bStopThread = true;
+		Sleep(1000);
+
 		// Regrettably use windows api
 		WaitForSingleObject(m_tRequestQueue.native_handle(), INFINITE);
 	}
+
+	g_pJServerDir = NULL;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1048,7 +1052,7 @@ void JServerDir::RequestQueueLoop()
 
 	while (true) {
 		// See if we wanna kill the thread!
-		if (m_bStopThread) {
+		if (m_bStopThread.load()) {
 			break;
 		}
 

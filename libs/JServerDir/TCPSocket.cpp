@@ -120,7 +120,7 @@ void TCPSocket::Query(std::string sQuery, ConnectionData connectionData)
 
 		// Servers trying to catch up...give it a breather
 		if (iResult == 0) {
-			Sleep(500);
+			Sleep(100);
 		}
 
 		iIndex += iResult;

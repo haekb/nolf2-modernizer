@@ -18,10 +18,12 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     case DLL_THREAD_DETACH:
 		break;
     case DLL_PROCESS_DETACH:
+#if 0
 		if (g_pServerDir) {
 			delete g_pServerDir;
 			g_pServerDir = NULL;
 		}
+#endif
         break;
     }
     return TRUE;
