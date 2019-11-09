@@ -128,6 +128,10 @@ bool CScreenPreload::UpdateInterfaceSFX()
 
 bool CScreenPreload::UpdateCDKeyValidation( )
 {
+	// Don't validate cd key!
+	m_eValidatingCDKeyState = kValidatingCDKeyState_None;
+	return true;
+
 	switch( m_eValidatingCDKeyState )
 	{
 		case kValidatingCDKeyState_None:
@@ -369,6 +373,11 @@ void CScreenPreload::FirstUpdate( )
 			m_eValidatingCDKeyState = kValidatingCDKeyState_Start;
 		}
 	}
+
+#ifdef _DISCORDBUILD
+	// Notify Discord we're joining a game
+
+#endif
 }
 
 void CScreenPreload::CreateInterfaceSFX()

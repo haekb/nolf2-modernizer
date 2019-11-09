@@ -178,20 +178,20 @@ copy $(TargetPath) $(GAME_REZ_DIR) </Command>
       <Outputs>$(GAME_REZ_DIR)\ClientFx.fxd;%(Outputs)</Outputs>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>call "D:\GameDev\no-one-lives-forever-2-source\Game\_after_build_debug.bat"</Command>
+      <Command>call "D:\GameDev\nolf2-modernizer\Game\_after_build_debug.bat"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <StringPooling>true</StringPooling>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <Optimization>MaxSpeed</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>..\..\libs\STLPORT-4.0\STLPORT;..\shared;..\..\Engine\sdk\inc;..\..\libs\mfcstub;..\..\libs\stdlith;..\..\libs\butemgr;..\..\libs\cryptmgr;..\..\libs\lith;..\libs\ltguimgr;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;WIN32;_WINDOWS;NOPS2;MEMTRACK_CLIENTFX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\libs\STLPORT-4.0\STLPORT_NO;..\shared;..\..\Engine\sdk\inc;..\..\libs\mfcstub;..\..\libs\stdlith;..\..\libs\butemgr;..\..\libs\cryptmgr;..\..\libs\lith;..\libs\ltguimgr;..\..\libs\STLPORT-STD\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;WIN32;_WINDOWS;NOPS2;MEMTRACK_CLIENTFX;_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\built\Release\ClientFxDll\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\..\built\Release\ClientFxDll\ClientFxDLL.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -199,6 +199,7 @@ copy $(TargetPath) $(GAME_REZ_DIR) </Command>
       <ObjectFileName>.\..\built\Release\ClientFxDll\</ObjectFileName>
       <ProgramDataBaseFileName>.\..\built\Release\ClientFxDll\</ProgramDataBaseFileName>
       <AdditionalOptions> /Zm1000 </AdditionalOptions>
+      <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
     </ClCompile>
     <Midl>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -224,9 +225,8 @@ copy $(TargetPath) $(GAME_REZ_DIR) </Command>
       <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
-      <Command>Rem IncrediBuild_OutputFile $(TargetPath) 
-echo copy $(TargetPath) $(GAME_REZ_DIR) 
-copy $(TargetPath) $(GAME_REZ_DIR) </Command>
+      <Command>
+      </Command>
       <Outputs>$(GAME_REZ_DIR)\ClientFx.fxd;%(Outputs)</Outputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
