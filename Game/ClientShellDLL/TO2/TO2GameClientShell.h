@@ -37,6 +37,8 @@ class CTO2GameClientShell : public CGameClientShell
 	    virtual LTRESULT ProcessPacket(ILTMessage_Read *pMsg, uint8 senderAddr[4], uint16 senderPort);
 	    virtual void OnMessage(ILTMessage_Read *pMsg);
 		
+		virtual void		Update();
+
 		// Are we able to use the radar functionality
 		virtual bool	ShouldUseRadar( ) { return true; }
 

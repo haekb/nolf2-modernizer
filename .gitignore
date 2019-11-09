@@ -51,3 +51,9 @@ Cres.dll
 Sres.dll
 ClientFX.fxd
 Object.lto
+JServerDir.lib
+JServerDir.dll
+*.lastbuildstate
+*FileListAbsolute.txt
+*.enc
+*.res

@@ -134,7 +134,7 @@ LTRESULT CTO2GameServerShell::OnServerInitialized()
 	cMsg.Writeuint32(( uint32 )&startupInfo );
 
 	// JAKE: Causes OOM error!
-	//pServerDir->SetStartupInfo( *cMsg.Read( ));
+	pServerDir->SetStartupInfo( *cMsg.Read( ));
 
 	return nResult;
 }
@@ -229,7 +229,7 @@ void CTO2GameServerShell::Update(LTFLOAT timeElapsed)
 		_splitpath( GetCurLevel(), NULL, NULL, fname, NULL );
 
 		// Update the summary info
-		cMsg.WriteString(g_pVersionMgr->GetBuild());
+		cMsg.WriteString(g_pVersionMgr->GetNetVersion());
 		cMsg.WriteString( fname );
 		cMsg.Writeuint8(GetNumPlayers());
 		cMsg.Writeuint8(nMax);

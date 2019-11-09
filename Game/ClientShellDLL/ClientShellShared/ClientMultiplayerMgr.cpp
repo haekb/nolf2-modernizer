@@ -23,6 +23,11 @@
 #include "ProfileMgr.h"
 #include "WeaponMgr.h"
 #include "CRC32.h"
+#include "DiscordMgr.h"
+#include <chrono>
+#include <ctime>
+
+extern DiscordMgr* g_pDiscordMgr;
 
 ClientMultiplayerMgr* g_pClientMultiplayerMgr = NULL;
 
@@ -390,6 +395,7 @@ bool ClientMultiplayerMgr::SetupServerHost( int nPort, bool bLANOnly )
 	
 	m_ServerGameOptions.m_sModName = GetModName();
 	
+
 
 	// Make sure that the multiplayer mgr doesn't have a server directory in use
 	// This must be done because there can only be one IServerDirectory object
@@ -803,6 +809,18 @@ void ClientMultiplayerMgr::Update( )
 		m_bForceDisconnect = false;
 		return;
 	}
+
+#ifdef _DISCORDBUILD
+	static long long lastTime = 0;
+	auto seconds = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+
+	// Only update every 5 seconds
+	if (seconds - lastTime > 10) {
+		g_pDiscordMgr->UpdateActivity();
+		lastTime = seconds;
+	}
+#endif
+
 }
 
 // --------------------------------------------------------------------------- //
@@ -952,6 +970,14 @@ bool ClientMultiplayerMgr::StartServerAsHost( )
 
 	// Start the server.
 	m_nLastConnectionResult = g_pLTClient->StartGame( const_cast< StartGameRequest * >( &m_StartGameRequest ));
+
+	// Ok we can start a lobby now
+	if (m_nLastConnectionResult == LT_OK) {
+#ifdef _DISCORDBUILD
+		g_pDiscordMgr->CreateLobby(&m_StartGameRequest);
+#endif
+	}
+
 	return ( m_nLastConnectionResult == LT_OK );
 }
 

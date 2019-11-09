@@ -441,8 +441,8 @@ uint32 CScreenJoin::OnCommand(uint32 dwCommand, uint32 dwParam1, uint32 dwParam2
 			return 0;
 
 
-
-		if (stricmp(m_cServerList[m_nSelectedServer].m_sVersion.c_str(), g_pVersionMgr->GetBuild()) != 0)
+		 
+		if (stricmp(m_cServerList[m_nSelectedServer].m_sVersion.c_str(), g_pVersionMgr->GetNetVersion()) != 0)
 		{
 			MBCreate mb;
 			g_pInterfaceMgr->ShowMessageBox(IDS_SERVER_WRONGVERSION,&mb);
@@ -663,6 +663,8 @@ void CScreenJoin::DisplayCurServerList()
 			continue;
 		char aTempBuffer[256];
 
+		memset(aTempBuffer, 0, sizeof(aTempBuffer));
+
 		// Create a control
 		CLTGUIColumnCtrl* pCtrl = CreateColumnCtrl(CMD_DETAILS, IDS_HELP_JOIN);
 		// Do the name
@@ -670,12 +672,16 @@ void CScreenJoin::DisplayCurServerList()
 
 		// Do the mod...
 
-		sprintf( aTempBuffer, "%s", iCurServer->m_sModName );
+		sprintf( aTempBuffer, "%s", iCurServer->m_sModName.c_str() );
 		pCtrl->AddColumn( aTempBuffer, kColumnWidth_Mod );
+
+		memset(aTempBuffer, 0, sizeof(aTempBuffer));
 
 		// Do the ping
 		sprintf(aTempBuffer, "%d", iCurServer->m_nPing);
 		pCtrl->AddColumn(aTempBuffer, kColumnWidth_Ping);
+
+		memset(aTempBuffer, 0, sizeof(aTempBuffer));
 
 		// Do the number of players
 		sprintf(aTempBuffer, "%d/%d", iCurServer->m_nNumPlayers, iCurServer->m_nMaxPlayers);
@@ -923,6 +929,7 @@ void CScreenJoin::Update()
 	FormatString(IDS_STATUS_STRING,aTempBuffer,sizeof(aTempBuffer),g_pClientMultiplayerMgr->GetServerDir()->GetCurStatusString());
 	m_pStatusCtrl->SetString(aTempBuffer);
 
+
 	switch (m_eCurState)
 	{
 		case eState_Startup :
@@ -995,11 +1002,13 @@ bool CScreenJoin::PreState_QueryDetails()
 		return false;
 	}
 
-	if (stricmp(m_cServerList[m_nSelectedServer].m_sVersion.c_str(), g_pVersionMgr->GetBuild()) != 0)
+#if 0
+	if (stricmp(m_cServerList[m_nSelectedServer].m_sVersion.c_str(), g_pVersionMgr->GetNetVersion()) != 0)
 	{
 		SetDetailErrorMessage(LoadTempString(IDS_SERVER_DETAIL_VERSION));
 		return false;
 	}
+#endif
 
 	pServerDir->SetActivePeer(m_cServerList[m_nSelectedServer].m_sAddress.c_str());
 
@@ -1202,7 +1211,7 @@ void CScreenJoin::FilterServers()
 		//Version Filter
 		if (m_nVersionFilter)
 		{
-			bShow &= (stricmp(m_cServerList[nIndex].m_sVersion.c_str(), g_pVersionMgr->GetBuild()) == 0);
+			bShow &= (stricmp(m_cServerList[nIndex].m_sVersion.c_str(), g_pVersionMgr->GetNetVersion()) == 0);
 		}
 
 		//Game type filter
@@ -1364,7 +1373,8 @@ void CScreenJoin::ReadDMDetails(std::string& sOptions,CLTMsgRef_Read& cRead)
 	bool bPlayerToRead = cRead->Readbool();
 	while (bPlayerToRead)
 	{
-		cRead->ReadString(aStringBuffer, sizeof(aStringBuffer));
+		size_t strSize = sizeof(aStringBuffer);
+		cRead->ReadString(aStringBuffer, strSize);
 		uint16 nPing = cRead->Readuint16();
 		bPlayerToRead = cRead->Readbool();
 

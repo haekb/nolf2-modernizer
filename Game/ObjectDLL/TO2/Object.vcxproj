@@ -88,8 +88,8 @@
       <Optimization>MaxSpeed</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>.\;..\objectshared;..\..\..\libs\STLPORT-4.0\STLPORT;..\..\shared;..\..\..\Engine\sdk\inc;..\..\..\libs\stdlith;..\..\..\libs\butemgr;..\..\..\libs\cryptmgr;..\..\..\libs\lith;..\..\..\libs\mfcstub;..\..\..\libs\regmgr;..\..\libs;..\..\Shared\TO2;..\..\libs\serverdir;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;_NOLFBUILD;USE_INTEL_COMPILER;WIN32;_WINDOWS;NOPS2;_SERVERBUILD;MEMTRACK_SERVER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\Shared\TO2;.\;..\objectshared;..\..\..\libs\STLPORT-4.0\STLPORT_NO;..\..\shared;..\..\..\Engine\sdk\inc;..\..\..\libs\stdlith;..\..\..\libs\butemgr;..\..\..\libs\cryptmgr;..\..\..\libs\lith;..\..\..\libs\mfcstub;..\..\..\libs\regmgr;..\..\libs;..\..\libs\serverdir;..\..\..\libs\STLPORT-STD;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;_NOLFBUILD;USE_INTEL_COMPILER;WIN32;_WINDOWS;NOPS2;_SERVERBUILD;MEMTRACK_SERVER;_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\..\Built\Release\ObjectDLL\TO2\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\..\..\Built\Release\ObjectDLL\TO2\Object.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -97,6 +97,7 @@
       <ObjectFileName>.\..\..\Built\Release\ObjectDLL\TO2\</ObjectFileName>
       <ProgramDataBaseFileName>.\..\..\Built\Release\ObjectDLL\TO2\</ProgramDataBaseFileName>
       <AdditionalOptions> /Zm1000 </AdditionalOptions>
+      <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
     </ClCompile>
     <Midl>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -117,15 +118,16 @@
     <Link>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <LinkDLL>true</LinkDLL>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OutputFile>..\..\Built\Release\ObjectDLL\TO2\Object.lto</OutputFile>
-      <ImportLibrary>.\..\..\Built\Release\ObjectDLL\TO2\Object.lib</ImportLibrary>
-      <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImportLibrary>.\..\..\Built\Debug\ObjectDLL\TO2\Object.lib</ImportLibrary>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;ButeMgr.lib;ObjectShared.lib;cryptmgr.lib;Lib_Lith.lib;Lib_StdLith.lib;MFCStub.lib;regmgr.lib;ServerDir.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\libs\built\Release\ButeMgr;$(SolutionDir)..\libs\built\Release\cryptmgr;$(SolutionDir)..\libs\built\Release\Lib_Lith;$(SolutionDir)..\libs\built\Release\Lib_StdLith;$(SolutionDir)..\libs\built\Release\MFCStub;$(SolutionDir)..\libs\built\Release\regmgr;$(SolutionDir)\built\Release\ObjectDLL\ObjectShared;$(SolutionDir)\libs\ServerDir\Release</AdditionalLibraryDirectories>
     </Link>
     <CustomBuildStep>
-      <Command>Rem IncrediBuild_OutputFile $(TargetPath) 
-echo copy $(TargetPath) $(GAME_REZ_DIR) 
-copy $(TargetPath) $(GAME_REZ_DIR) </Command>
+      <Command>
+      </Command>
       <Outputs>$(GAME_REZ_DIR)\object.lto;%(Outputs)</Outputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
@@ -184,13 +186,11 @@ copy $(TargetPath) $(GAME_REZ_DIR) </Command>
       </Outputs>
     </CustomBuildStep>
     <PreBuildEvent>
-      <Command>cd ..\
-
-
-call "D:\GameDev\no-one-lives-forever-2-source\Game\_after_build_debug.bat"</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>call "D:\GameDev\no-one-lives-forever-2-source\Game\_after_build_debug.bat"</Command>
+      <Command>call "D:\GameDev\nolf2-modernizer\Game\_after_build_debug.bat"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">

@@ -152,14 +152,14 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <StringPooling>true</StringPooling>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <Optimization>MaxSpeed</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>..\STLPORT-4.0\STLPORT;..\stdlith;..\mfcstub;..\cryptmgr;..\lith;..\..\sdk\inc;..\..\..\LIBS\SDL2-2.0.10\include;..\..\lithshared\incs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\STLPORT-4.0\STLPORT_NO;..\stdlith;..\mfcstub;..\cryptmgr;..\lith</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_NOMFC;WIN32;_WINDOWS;NO_PRAGMA_LIBS;_REZFILE;_FINAL;_NOLFBUILD;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\built\release\ButeMgr\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\..\built\release\ButeMgr\ButeMgr.pch</PrecompiledHeaderOutputFile>

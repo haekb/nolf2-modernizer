@@ -137,15 +137,16 @@ copy $(TargetPath) $(GAME_REZ_DIR) </Command>
       <Optimization>MaxSpeed</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>..\..\Shared\TO2;.\;..\..\..\libs\STLPORT-4.0\STLPORT;..\ClientShellShared;..\..\clientres\shared;..\..\clientres\TO2;..\..\shared;..\..\..\Engine\sdk\inc;..\..\..\libs\stdlith;..\..\..\libs\butemgr;..\..\..\libs\cryptmgr;..\..\..\libs\lith;..\..\..\libs\mfcstub;..\..\libs\ltguimgr;..\..\..\libs\regmgr;..\..\libs\wonapi;..\..\libs\serverdir;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;_CLIENTBUILD;WIN32;_WINDOWS;_NOLFBUILD;NO_PRAGMA_LIBS;NOPS2;MEMTRACK_CLIENT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\Shared\TO2;.\;..\..\..\libs\STLPORT-4.0\STLPORT_NO;..\ClientShellShared;..\..\clientres\shared;..\..\clientres\TO2;..\..\shared;..\..\..\Engine\sdk\inc;..\..\..\libs\stdlith;..\..\..\libs\butemgr;..\..\..\libs\cryptmgr;..\..\..\libs\lith;..\..\..\libs\mfcstub;..\..\libs\ltguimgr;..\..\..\libs\regmgr;..\..\libs\wonapi;..\..\libs\serverdir;..\..\..\libs\STLPORT-STD\;$(SolutionDir)\..\libs\SDL2-2.0.10\include;$(SolutionDir)\..\config\;$(SolutionDir)\..\libs\discord_game_sdk\cpp\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;_CLIENTBUILD;WIN32;_WINDOWS;_NOLFBUILD;NO_PRAGMA_LIBS;NOPS2;MEMTRACK_CLIENT;_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;NDISCORDBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\..\Built\Release\ClientShellDll\TO2\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\..\..\Built\Release\ClientShellDll\TO2\ClientShellDLL.pch</PrecompiledHeaderOutputFile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <ObjectFileName>.\..\..\Built\Release\ClientShellDll\TO2\</ObjectFileName>
       <ProgramDataBaseFileName>.\..\..\Built\Release\ClientShellDll\TO2\</ProgramDataBaseFileName>
       <AdditionalOptions> /Zm1000 </AdditionalOptions>
+      <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
     </ClCompile>
     <Midl>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -166,16 +167,16 @@ copy $(TargetPath) $(GAME_REZ_DIR) </Command>
     <Link>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <LinkDLL>true</LinkDLL>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
-      <IgnoreSpecificDefaultLibraries>LIBCMTD;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <OutputFile>..\..\Built\Release\ClientShellDll\TO2\CShell.dll</OutputFile>
       <ImportLibrary>.\..\..\Built\Release\ClientShellDll\TO2\CShell.lib</ImportLibrary>
-      <AdditionalDependencies>winmm.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>winmm.lib;wsock32.lib;ButeMgr.lib;ClientShellShared.lib;cryptmgr.lib;Lib_Lith.lib;Lib_StdLith.lib;ltguimgr.lib;MFCStub.lib;regmgr.lib;ServerDir.lib;SDL2.lib;SDL2main.lib;discord_game_sdk.dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\..\libs\SDL2-2.0.10\lib\x86;$(SolutionDir)..\libs\built\Release\ButeMgr;$(SolutionDir)..\libs\built\Release\cryptmgr;$(SolutionDir)..\libs\built\Release\Lib_Lith;$(SolutionDir)..\libs\built\Release\Lib_StdLith;$(SolutionDir)..\libs\built\Release\MFCStub;$(SolutionDir)..\libs\built\Release\regmgr;$(SolutionDir)\built\Release\libs\ltguimgr;$(SolutionDir)\built\Release\ClientShellDLL\ClientShellShared;$(SolutionDir)\libs\ServerDir\Release;$(SolutionDir)..\libs\discord_game_sdk\lib\x86;D:\GameDev\no-one-lives-forever-2-source\libs\discord_game_sdk\lib\x86</AdditionalLibraryDirectories>
     </Link>
     <CustomBuildStep>
-      <Command>Rem IncrediBuild_OutputFile $(TargetPath) 
-echo copy $(TargetPath) $(GAME_REZ_DIR) 
-copy $(TargetPath) $(GAME_REZ_DIR) </Command>
+      <Command>
+      </Command>
       <Outputs>$(GAME_REZ_DIR)\cshell.dll;%(Outputs)</Outputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
@@ -188,18 +189,21 @@ copy $(TargetPath) $(GAME_REZ_DIR) </Command>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\Shared\TO2;.\;..\..\..\libs\STLPORT-4.0\STLPORT_NO;..\ClientShellShared;..\..\clientres\shared;..\..\clientres\TO2;..\..\shared;..\..\..\Engine\sdk\inc;..\..\..\libs\stdlith;..\..\..\libs\butemgr;..\..\..\libs\cryptmgr;..\..\..\libs\lith;..\..\..\libs\mfcstub;..\..\libs\ltguimgr;..\..\..\libs\regmgr;..\..\libs\wonapi;..\..\libs\serverdir;..\..\..\libs\STLPORT-STD\;$(SolutionDir)\..\libs\SDL2-2.0.10\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;_CLIENTBUILD;WIN32;_WINDOWS;NOPS2;MEMTRACK_CLIENT;_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\Shared\TO2;.\;..\..\..\libs\STLPORT-4.0\STLPORT_NO;..\ClientShellShared;..\..\clientres\shared;..\..\clientres\TO2;..\..\shared;..\..\..\Engine\sdk\inc;..\..\..\libs\stdlith;..\..\..\libs\butemgr;..\..\..\libs\cryptmgr;..\..\..\libs\lith;..\..\..\libs\mfcstub;..\..\libs\ltguimgr;..\..\..\libs\regmgr;..\..\libs\wonapi;..\..\libs\serverdir;..\..\..\libs\STLPORT-STD\;$(SolutionDir)\..\libs\SDL2-2.0.10\include;$(SolutionDir)\..\config\;$(SolutionDir)\..\libs\discord_game_sdk\cpp\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;_CLIENTBUILD;WIN32;_WINDOWS;NOPS2;MEMTRACK_CLIENT;_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;NDISCORDBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\..\Built\Debug\ClientShellDll\TO2\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
       <PrecompiledHeaderOutputFile>.\..\..\Built\Debug\ClientShellDll\TO2\ClientShellDLL.pch</PrecompiledHeaderOutputFile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <ObjectFileName>.\..\..\Built\Debug\ClientShellDll\TO2\</ObjectFileName>
       <ProgramDataBaseFileName>.\..\..\Built\Debug\ClientShellDll\TO2\</ProgramDataBaseFileName>
       <AdditionalOptions> /Zm1000 </AdditionalOptions>
       <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <SDLCheck>
+      </SDLCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Midl>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -224,8 +228,8 @@ copy $(TargetPath) $(GAME_REZ_DIR) </Command>
       <SubSystem>Windows</SubSystem>
       <OutputFile>..\..\Built\Debug\ClientShellDll\TO2\CShell.dll</OutputFile>
       <ImportLibrary>.\..\..\Built\Debug\ClientShellDll\TO2\CShell.lib</ImportLibrary>
-      <AdditionalDependencies>winmm.lib;wsock32.lib;ButeMgr.lib;ClientShellShared.lib;cryptmgr.lib;Lib_Lith.lib;Lib_StdLith.lib;ltguimgr.lib;MFCStub.lib;regmgr.lib;ServerDir.lib;SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)\..\libs\SDL2-2.0.10\lib\x86;$(SolutionDir)..\libs\built\Debug\ButeMgr;$(SolutionDir)..\libs\built\Debug\cryptmgr;$(SolutionDir)..\libs\built\Debug\Lib_Lith;$(SolutionDir)..\libs\built\Debug\Lib_StdLith;$(SolutionDir)..\libs\built\Debug\MFCStub;$(SolutionDir)..\libs\built\Debug\regmgr;$(SolutionDir)\built\debug\libs\ltguimgr;$(SolutionDir)\built\debug\ClientShellDLL\ClientShellShared;$(SolutionDir)\libs\ServerDir\debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>winmm.lib;wsock32.lib;ButeMgr.lib;ClientShellShared.lib;cryptmgr.lib;Lib_Lith.lib;Lib_StdLith.lib;ltguimgr.lib;MFCStub.lib;regmgr.lib;ServerDir.lib;SDL2.lib;SDL2main.lib;discord_game_sdk.dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\..\libs\SDL2-2.0.10\lib\x86;$(SolutionDir)..\libs\built\Debug\ButeMgr;$(SolutionDir)..\libs\built\Debug\cryptmgr;$(SolutionDir)..\libs\built\Debug\Lib_Lith;$(SolutionDir)..\libs\built\Debug\Lib_StdLith;$(SolutionDir)..\libs\built\Debug\MFCStub;$(SolutionDir)..\libs\built\Debug\regmgr;$(SolutionDir)\built\debug\libs\ltguimgr;$(SolutionDir)\built\debug\ClientShellDLL\ClientShellShared;$(SolutionDir)\libs\ServerDir\debug;$(SolutionDir)..\libs\discord_game_sdk\lib\x86;D:\GameDev\no-one-lives-forever-2-source\libs\discord_game_sdk\lib\x86</AdditionalLibraryDirectories>
     </Link>
     <CustomBuildStep>
       <Command>
@@ -234,13 +238,11 @@ copy $(TargetPath) $(GAME_REZ_DIR) </Command>
       </Outputs>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>call "D:\GameDev\no-one-lives-forever-2-source\Game\_after_build_debug.bat"</Command>
+      <Command>call "D:\GameDev\nolf2-modernizer\Game\_after_build_debug.bat"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>cd ..\
-
-
-call "D:\GameDev\no-one-lives-forever-2-source\Game\_after_build_debug.bat"</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -288,6 +290,20 @@ call "D:\GameDev\no-one-lives-forever-2-source\Game\_after_build_debug.bat"</Com
       </PrecompiledHeader>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
     </ClCompile>
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\achievement_manager.cpp" />
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\activity_manager.cpp" />
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\application_manager.cpp" />
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\core.cpp" />
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\image_manager.cpp" />
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\lobby_manager.cpp" />
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\network_manager.cpp" />
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\overlay_manager.cpp" />
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\relationship_manager.cpp" />
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\storage_manager.cpp" />
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\store_manager.cpp" />
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\types.cpp" />
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\user_manager.cpp" />
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\voice_manager.cpp" />
     <ClCompile Include="..\..\Shared\TO2\TO2MissionButeMgr.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Final|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
@@ -604,6 +620,23 @@ call "D:\GameDev\no-one-lives-forever-2-source\Game\_after_build_debug.bat"</Com
     <ClInclude Include="..\..\..\Engine\sdk\inc\iltbaseclass.h" />
     <ClInclude Include="..\..\..\Engine\sdk\inc\ltmodule.h" />
     <ClInclude Include="..\..\..\engine\sdk\inc\ltobjref.h" />
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\achievement_manager.h" />
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\activity_manager.h" />
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\application_manager.h" />
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\core.h" />
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\discord.h" />
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\event.h" />
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\ffi.h" />
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\image_manager.h" />
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\lobby_manager.h" />
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\network_manager.h" />
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\overlay_manager.h" />
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\relationship_manager.h" />
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\storage_manager.h" />
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\store_manager.h" />
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\types.h" />
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\user_manager.h" />
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\voice_manager.h" />
     <ClInclude Include="..\..\Libs\ServerDir\IServerDir.h" />
     <ClInclude Include="..\..\Shared\LTPoly.h" />
     <ClInclude Include="..\..\Shared\TO2\TO2MissionButeMgr.h" />

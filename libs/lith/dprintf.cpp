@@ -728,10 +728,10 @@ dprintfinittype::dprintfinittype () {
 #ifdef _DEBUG
   dprintfOutType = otMonochrome;
 #else
-  dprintfOutType = Nothing;
+  dprintfOutType = otNothing;
 #endif
 #else
-  dprintfOutType = Nothing;
+  dprintfOutType = otNothing;
 #endif
 #endif
 

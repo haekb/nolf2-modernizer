@@ -9,6 +9,9 @@
       <UniqueIdentifier>{024b8c6f-502d-48ba-aea1-92216c57126f}</UniqueIdentifier>
       <Extensions>*.h</Extensions>
     </Filter>
+    <Filter Include="Discord">
+      <UniqueIdentifier>{b798b68f-14b0-47fe-b1b0-4cb02c4ea5b1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GlobalsInit.cpp">
@@ -206,6 +209,48 @@
     <ClCompile Include="..\..\Shared\TO2\TO2VersionMgr.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\achievement_manager.cpp">
+      <Filter>Discord</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\activity_manager.cpp">
+      <Filter>Discord</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\application_manager.cpp">
+      <Filter>Discord</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\core.cpp">
+      <Filter>Discord</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\image_manager.cpp">
+      <Filter>Discord</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\lobby_manager.cpp">
+      <Filter>Discord</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\network_manager.cpp">
+      <Filter>Discord</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\overlay_manager.cpp">
+      <Filter>Discord</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\relationship_manager.cpp">
+      <Filter>Discord</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\storage_manager.cpp">
+      <Filter>Discord</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\store_manager.cpp">
+      <Filter>Discord</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\types.cpp">
+      <Filter>Discord</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\user_manager.cpp">
+      <Filter>Discord</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\voice_manager.cpp">
+      <Filter>Discord</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TO2ClientWeaponAllocator.h">
@@ -402,6 +447,57 @@
     </ClInclude>
     <ClInclude Include="..\..\Shared\TO2\TO2VersionMgr.h">
       <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\achievement_manager.h">
+      <Filter>Discord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\activity_manager.h">
+      <Filter>Discord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\application_manager.h">
+      <Filter>Discord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\core.h">
+      <Filter>Discord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\discord.h">
+      <Filter>Discord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\event.h">
+      <Filter>Discord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\ffi.h">
+      <Filter>Discord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\image_manager.h">
+      <Filter>Discord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\lobby_manager.h">
+      <Filter>Discord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\network_manager.h">
+      <Filter>Discord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\overlay_manager.h">
+      <Filter>Discord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\relationship_manager.h">
+      <Filter>Discord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\storage_manager.h">
+      <Filter>Discord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\store_manager.h">
+      <Filter>Discord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\types.h">
+      <Filter>Discord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\user_manager.h">
+      <Filter>Discord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\voice_manager.h">
+      <Filter>Discord</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
