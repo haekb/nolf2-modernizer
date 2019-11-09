@@ -138,7 +138,7 @@ copy $(TargetPath) $(GAME_REZ_DIR) </Command>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <AdditionalIncludeDirectories>..\..\Shared\TO2;.\;..\..\..\libs\STLPORT-4.0\STLPORT_NO;..\ClientShellShared;..\..\clientres\shared;..\..\clientres\TO2;..\..\shared;..\..\..\Engine\sdk\inc;..\..\..\libs\stdlith;..\..\..\libs\butemgr;..\..\..\libs\cryptmgr;..\..\..\libs\lith;..\..\..\libs\mfcstub;..\..\libs\ltguimgr;..\..\..\libs\regmgr;..\..\libs\wonapi;..\..\libs\serverdir;..\..\..\libs\STLPORT-STD\;$(SolutionDir)\..\libs\SDL2-2.0.10\include;$(SolutionDir)\..\config\;$(SolutionDir)\..\libs\discord_game_sdk\cpp\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;_CLIENTBUILD;WIN32;_WINDOWS;_NOLFBUILD;NO_PRAGMA_LIBS;NOPS2;MEMTRACK_CLIENT;_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;_DISCORDBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CLIENTBUILD;WIN32;_WINDOWS;_NOLFBUILD;NO_PRAGMA_LIBS;NOPS2;MEMTRACK_CLIENT;_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;NDISCORDBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\..\Built\Release\ClientShellDll\TO2\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\..\..\Built\Release\ClientShellDll\TO2\ClientShellDLL.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
