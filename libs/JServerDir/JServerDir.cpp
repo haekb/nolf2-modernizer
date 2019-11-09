@@ -699,19 +699,25 @@ void JServerDir::QueryMasterServer()
 
 	std::string sServerList = "";
 
+	auto startTime = getTimestampInMs();
+
 	try {
 		pSock->Connect(connectionData);
 
+		/* Bad way of handling challenge, server times out.
 		// Say hello
 		pSock->Query("", connectionData);
 
 		std::string sChallenge = pSock->Recieve(connectionData);
 
+		Sleep(1000);
+		*/
+
 		std::string sResponse = QUERY_UPDATE_LIST;
 		sResponse += "queryid\\" + std::to_string(++m_iQueryNum) + ".1";
 
 		pSock->Query(sResponse, connectionData);
-
+		
 		sServerList = pSock->Recieve(connectionData);
 
 		bool done = true;
@@ -724,7 +730,9 @@ void JServerDir::QueryMasterServer()
 		return;
 	}
 
-	Sleep(500);
+	auto finishTime = getTimestampInMs();
+
+	auto responseTime = finishTime - startTime;
 
 	struct ipTest {
 		unsigned char ip[4];
@@ -733,9 +741,25 @@ void JServerDir::QueryMasterServer()
 
 	int nCurrentPosition = 0;
 
+	// Couldn't find anything!
+	if (sServerList.empty()) {
+		SwitchStatus(eStatus_Error);
+		delete pSock;
+		pSock = NULL;
+		return;
+	}
+
 	std::string sCursor = sServerList;
 
 	while (true) {
+		// Skip the challenge if it's there.
+		// Kinda bad code, but it gets the job done.
+		if (sCursor.find("\\basic\\\\secure\\TXKOAT") == 0) {
+			nCurrentPosition += 21;
+			sCursor = sServerList.substr(nCurrentPosition, sCursor.size());
+			continue;
+		}
+
 		sCursor = sServerList.substr(nCurrentPosition, sCursor.size());
 		nCurrentPosition += sizeof(ipTest);
 
@@ -803,10 +827,6 @@ void JServerDir::QueryServer(std::string sAddress)
 		}
 
 		std::map<std::string, std::string> mappy = splitResultsToMap(sStatus);
-
-		/*
-		\gamename\nolf2\gamever\1.0.0.3\gamemode\openplaying\gametype\DoomsDay\hostip\172.31.41.243\hostname\unityhq.net\hostport\27888\mapname\DD_06\maxplayers\16\numplayers\0\fraglimit\0\options\\password\0\timelimit\20\frags_0\0\frags_1\0\frags_2\0\ping_0\334\ping_1\24129\ping_2\1287\player_0\A DEAD BABY\player_1\Ya Basta\player_2\Ya Basta1\final\\queryid\85894.1
-		*/
 
 		PeerInfo_Name name;
 		name.sHostName = mappy.at("hostname");
