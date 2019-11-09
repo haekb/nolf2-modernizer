@@ -20,9 +20,10 @@
 
 #ifdef _DISCORDBUILD
 #include "DiscordMgr.h"
+extern DiscordMgr* g_pDiscordMgr;
 #endif
 
-extern DiscordMgr* g_pDiscordMgr;
+
 
 // Sample rate
 int g_nSampleRate = 22050;
