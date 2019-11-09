@@ -788,6 +788,9 @@ void JServerDir::QueryMasterServer()
 	pSock = NULL;
 }
 
+//
+// Does not support split queries
+//
 void JServerDir::QueryServer(std::string sAddress)
 {
 	Peer* peer = new Peer();
