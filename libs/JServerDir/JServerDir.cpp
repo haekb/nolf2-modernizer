@@ -774,7 +774,7 @@ void JServerDir::QueryServer(std::string sAddress)
 	std::string sIPAddress = addressInfo[0];
 	unsigned short nPort = std::stoi(addressInfo[1]);
 
-	// This code should not be here!
+
 	{
 		UDPSocket* pSock = new UDPSocket();
 		ConnectionData connectionData = { sIPAddress, nPort };
@@ -796,6 +796,9 @@ void JServerDir::QueryServer(std::string sAddress)
 
 		// This server is not responding...
 		if (sStatus.empty()) {
+			delete pSock;
+			pSock = NULL;
+
 			return;
 		}
 
@@ -870,9 +873,15 @@ void JServerDir::QueryServer(std::string sAddress)
 
 		peer->SetAddress(sIPAddress);
 
+		PeerInfo_Port port;
+		port.nHostPort = nPort;
+		peer->m_PortData = port;
+
 		delete pSock;
 		pSock = NULL;
 	}
+
+	PingPeer(peer);
 
 	m_mQueuedPeerMutex.lock();
 	m_QueuedPeers.push_back(peer);
@@ -994,21 +1003,73 @@ void JServerDir::PublishServer(Peer peerParam)
 			break;
 		}
 	}
-	
+}
 
+//
+// Ping Peer, was a job but it literally happens sequentially, so ehh.
+// Takes in pointer peer instead of a copy because it gets called from QueryServer, so it doesn't need a full copy.
+//
+void JServerDir::PingPeer(Peer* peer)
+{
+	std::string pingQuery = "\\echo\\hello";
 
+	UDPSocket* pSock = new UDPSocket();
+	ConnectionData connectionData = { peer->GetAddress(), peer->m_PortData.nHostPort };
 
+	auto startTime = getTimestampInMs();
+
+	try {
+		pSock->Query(pingQuery, connectionData);
+	}
+	catch (std::exception ex) {
+		SwitchStatus(eStatus_Error);
+		delete pSock;
+		pSock = NULL;
+
+		return;
+	}
+
+	int iterations = 0;
+
+	// Loop until we got something, or until we hit the iteration count
+	while (iterations < INVALID_PING) {
+
+		std::string sStatus = pSock->Recieve(connectionData);
+
+		// This server is not responding...
+		if (sStatus.empty()) {
+			/*
+			peer->SetPing(INVALID_PING);
+			delete pSock;
+			pSock = NULL;
+			return;
+			*/
+
+			// Affects the ping code a little bit, 
+			// but we want some kind of predictable timing
+			Sleep(1);
+			iterations++;
+			continue;
+		}
+		break;
+	}
+
+	auto finishTime = getTimestampInMs();
+
+	// Short can handle 999.
+	int16 responseTime = (int16)Min((long long)INVALID_PING, finishTime - startTime);
+
+	peer->SetPing(responseTime);
+	delete pSock;
+	pSock = NULL;
 }
 
 void JServerDir::CheckForQueuedPeers()
 {
-
 	m_mQueuedPeerMutex.lock();
 	std::vector<Peer*> queuedPeers = m_QueuedPeers;
 	m_QueuedPeers.clear();
 	m_mQueuedPeerMutex.unlock();
-
-
 	
 	for (Peer* peer : queuedPeers) {
 		m_Peers.push_back(peer);

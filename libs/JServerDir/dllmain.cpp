@@ -18,7 +18,9 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     case DLL_THREAD_DETACH:
 		break;
     case DLL_PROCESS_DETACH:
+		// g_pServerDir goes out of scope from something else? 
 #if 0
+		
 		if (g_pServerDir) {
 			delete g_pServerDir;
 			g_pServerDir = NULL;

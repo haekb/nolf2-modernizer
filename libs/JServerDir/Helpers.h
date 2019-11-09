@@ -147,6 +147,11 @@ long long getTimestamp()
 	return std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 }
 
+long long getTimestampInMs()
+{
+	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+}
+
 std::string getHeartbeat(int &iQueryNum, bool bStateChanged = false)
 {
 	std::string heartbeat = "\\heartbeat\\27889\\gamename\\nolf2\\";
