@@ -149,6 +149,8 @@ public:
 
 	bool		LauncherServerApp( char const* pszProfileFile );
 
+	virtual	void OnConsolePrint(CConsolePrintData* pData);
+
 protected :
     uint32      OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid);
 	void		OnEngineTerm();

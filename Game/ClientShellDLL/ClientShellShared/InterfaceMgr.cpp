@@ -33,8 +33,11 @@
 #include "timer.h"
 #include "WaveFn.h"
 #include "SDL.h"
+#include "ConsoleMgr.h"
 
 CInterfaceMgr*  g_pInterfaceMgr = LTNULL;
+
+extern ConsoleMgr* g_pConsoleMgr;
 
 #define IM_SPLASH_SOUND		"Interface\\Menu\\Snd\\theme_mp3.wav"
 
@@ -605,6 +608,8 @@ LTBOOL CInterfaceMgr::Init()
 
 	// Consider ourselves initialized.
 	m_bInitialized = true;
+
+	g_pConsoleMgr->Init();
 
     return LTTRUE;
 }
@@ -3191,6 +3196,11 @@ LTBOOL CInterfaceMgr::Draw()
 	{
 		m_PopupText.Draw();
 	}
+
+
+	// Actually this is always on top
+	g_pConsoleMgr->Draw();
+
 
 	//this should be last so it is always on top.
 	if (m_MessageBox.IsVisible())

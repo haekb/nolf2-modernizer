@@ -57,6 +57,8 @@
 #include "mmsystem.h"
 #include <SDL.h>
 
+#include "ConsoleMgr.h"
+
 // TEMP DISCORD
 #include <discord.h>
 #include <discord-secret.h>
@@ -113,6 +115,7 @@ extern CCheatMgr*	g_pCheatMgr;
 extern LTVector		g_vPlayerCameraOffset;
 extern VarTrack		g_vtFOVXNormal;
 extern VarTrack		g_vtFOVYNormal;
+extern ConsoleMgr*  g_pConsoleMgr;
 
 // Sample rate
 extern int g_nSampleRate;
@@ -900,6 +903,7 @@ uint32 CGameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
 
 	SDL_Log("-- Hello World, We're all set here. Enjoy the show!");
 
+	ConsoleMgr* conMgr = new ConsoleMgr();
 
     char strTimeDiff[64];
 	float fStartTime = CWinUtil::GetTime();
@@ -5031,6 +5035,11 @@ bool CGameClientShell::LauncherServerApp( char const* pszProfileFile )
 	g_pLTClient->Shutdown();
 
 	return true;
+}
+
+void CGameClientShell::OnConsolePrint(CConsolePrintData* pData)
+{
+	g_pConsoleMgr->Read(pData);
 }
 
 void CGameClientShell::SetGameType(GameType eGameType)	

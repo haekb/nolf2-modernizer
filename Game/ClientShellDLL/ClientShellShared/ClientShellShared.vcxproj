@@ -651,6 +651,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Final|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
     </ClCompile>
+    <ClCompile Include="ConsoleMgr.cpp" />
     <ClCompile Include="Credits.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
@@ -1400,6 +1401,7 @@
     <ClInclude Include="ClientWeaponUtils.h" />
     <ClInclude Include="client_physics.h" />
     <ClInclude Include="CMoveMgr.h" />
+    <ClInclude Include="ConsoleMgr.h" />
     <ClInclude Include="Credits.h" />
     <ClInclude Include="CursorMgr.h" />
     <ClInclude Include="DamageFXMgr.h" />
