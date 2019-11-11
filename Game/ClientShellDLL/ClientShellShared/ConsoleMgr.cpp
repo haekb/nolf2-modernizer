@@ -12,8 +12,9 @@ ConsoleMgr::ConsoleMgr()
 {
 	g_pConsoleMgr = this;
 
-	m_bVisible = true;
+	m_bVisible = false;
 	m_hConsoleSurface = NULL;
+	memset(m_szEdit, 0, sizeof(m_szEdit));
 }
 
 ConsoleMgr::~ConsoleMgr()
@@ -31,8 +32,9 @@ ConsoleMgr::~ConsoleMgr()
 void ConsoleMgr::Init()
 {
 	//m_Frame.Create(g_pInterfaceResMgr->GetTexture("interface\\menu\\sprtex\\frame.dtx"), 200, 320, LTTRUE);
+	m_Window.Create(g_pInterfaceResMgr->GetTexture("interface\\menu\\sprtex\\frame.dtx"), 1280, 240);
 
-	for (int i = 0; i < 15; i++) {
+	for (int i = 0; i < 14; i++) {
 
 		CLTGUITextCtrl* pText = debug_new(CLTGUITextCtrl);
 		if (!pText->Create("", LTNULL, LTNULL, g_pInterfaceResMgr->GetFont(4), 14, NULL))
@@ -45,30 +47,110 @@ void ConsoleMgr::Init()
 		m_Window.AddControl(pText, { 0, 0 });
 	}
 
-	//m_LineItem = g_pFontManager->CreateFormattedPolyString(pFont, "", 0.0f, 0.0f);
+	m_pEditText = debug_new(CLTGUITextCtrl);
+	if (!m_pEditText->Create("", LTNULL, LTNULL, g_pInterfaceResMgr->GetFont(4), 14, NULL))
+	{
+		debug_delete(m_pEditText);
+		m_pEditText = LTNULL;
+	}
 
-	m_Window.Create(g_pInterfaceResMgr->GetTexture("interface\\menu\\sprtex\\frame.dtx"), 1280, 240);
+	m_pEditText->SetString(">");
+	m_Window.AddControl(m_pEditText, { 0,0 });
+	//m_LineItem = g_pFontManager->CreateFormattedPolyString(pFont, "", 0.0f, 0.0f);
+	
+
+	m_pEdit = debug_new(CLTGUIEditCtrl);
+	if (!m_pEdit->Create(g_pLTClient, 1, g_pInterfaceResMgr->GetFont(4), 14, 256, NULL, m_szEdit))
+	{
+		debug_delete(m_pEdit);
+		m_pEdit = LTNULL;
+	}
+	m_pEdit->Show(LTTRUE);
+	m_pEdit->Enable(LTTRUE);
+	m_pEdit->EnableCaret(LTTRUE);
+	
+
+	m_Window.AddControl(m_pEdit, { 0, 0 });
+	
+	auto test = m_Window.GetSelectedControl();
+	
+	m_Window.SetSelection(15);
+
+	test = m_Window.GetSelectedControl();
 
 	if (!m_hConsoleSurface) {
 		m_hConsoleSurface = g_pInterfaceResMgr->GetSharedSurface("interface\\console.pcx");
 	}
 }
 
+LTBOOL ConsoleMgr::HandleChar(unsigned char c)
+{
+	if (!m_bVisible) return LTFALSE;
+
+	// Ignore console key
+	if (c == VK_OEM_3) {
+		return LTFALSE;
+	}
+
+	return m_pEdit->HandleChar(c);
+}
+
+
+LTBOOL ConsoleMgr::HandleKeyDown(int key, int rep)
+{
+	if (!m_bVisible) {
+		if (key == VK_OEM_3) {
+			Show(true);
+			return LTTRUE;
+		}
+
+		return LTFALSE;
+	}
+
+	switch (key) {
+	case VK_OEM_3:
+	case VK_ESCAPE:
+	{
+		Show(false);
+		return LTTRUE;
+	} break;
+
+	case VK_RETURN:
+	{
+		Send();
+		return LTTRUE;
+	} break;
+	}
+
+	m_pEdit->HandleKeyDown(key, rep);
+	return LTTRUE;
+}
+
 void ConsoleMgr::Read(CConsolePrintData* pData)
 {
 	HistoryData data;
 
-	data.iColour = SETRGB(pData->m_Color.r, pData->m_Color.g, pData->m_Color.b);
+	data.iColour = SET_ARGB(255, pData->m_Color.r, pData->m_Color.g, pData->m_Color.b);
 	data.sMessage = pData->m_pMessage;
 	data.iLevel = pData->m_nFilterLevel;
 
 	m_HistorySlice.push_back(data);
 
-	if (m_HistorySlice.size() > 15) {
+	if (m_HistorySlice.size() > 14) {
 		m_HistorySlice.erase(m_HistorySlice.begin());
 	}
 	
 	m_History.push_back(data);
+}
+
+void ConsoleMgr::Send()
+{
+	// Send it off!
+	g_pLTClient->RunConsoleString(m_szEdit);
+
+	// Clear our command string
+	m_pEdit->SetText("");
+	memset(m_szEdit, 0, sizeof(m_szEdit));
 }
 
 void ConsoleMgr::Draw()
@@ -77,7 +159,13 @@ void ConsoleMgr::Draw()
 		return;
 	}
 
-	LTRect dest = { 0, 0, (int)g_pInterfaceResMgr->GetScreenWidth(), 240 };
+	m_pEdit->UpdateData(LTTRUE);
+
+	int iWidth = 0;
+	RMode currentMode;
+	g_pLTClient->GetRenderMode(&currentMode);
+
+	LTRect dest = { 0, 0, (int)currentMode.m_Width, 240 };
 	HLTCOLOR hTransColor = g_pLTClient->SetupColor1(1.0f, 1.0f, 1.0f, LTTRUE);
 	g_pLTClient->ScaleSurfaceToSurfaceTransparent(g_pLTClient->GetScreenSurface(), m_hConsoleSurface, &dest, LTNULL, hTransColor);
 	
@@ -107,7 +195,7 @@ void ConsoleMgr::Draw()
 
 		pText->SetBasePos(pos);
 		pText->SetString(item.sMessage.c_str());
-		//pText->SetColors(item.iColour, item.iColour, item.iColour);
+		pText->SetColors(item.iColour, item.iColour, item.iColour);
 		/*
 		m_Text.SetBasePos(pos);
 		m_Text.SetString(item.sMessage.c_str());
@@ -121,8 +209,19 @@ void ConsoleMgr::Draw()
 		index++;
 		pos.y += 16;
 	}
+
+
+	m_pEditText->SetBasePos(pos);
 	
+	pos.x += 8;
+
+
+	m_pEdit->SetBasePos(pos);
+	
+	//m_pEdit->UpdateData(LTTRUE);
+
 	//m_Text.SetString("HELLO WORLD");
+	m_pEdit->Render();
 	m_Window.Render();
 #endif
 
@@ -154,4 +253,9 @@ void ConsoleMgr::Draw()
 	}
 #endif
 
+}
+
+void ConsoleMgr::Show(bool bShow)
+{
+	m_bVisible = bShow;
 }

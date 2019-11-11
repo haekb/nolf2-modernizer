@@ -17,8 +17,12 @@ public:
 	~ConsoleMgr();
 
 	void Init();
+	LTBOOL HandleChar(unsigned char c);
+	LTBOOL HandleKeyDown(int key, int rep);
 	void Read(CConsolePrintData* pData);
+	void Send();
 	void Draw();
+	void Show(bool bShow);
 
 	LTBOOL  IsVisible() { return m_bVisible; }
 
@@ -31,5 +35,8 @@ protected:
 
 	CLTGUIWindow	    m_Window;
 	std::vector<CLTGUITextCtrl*> m_pLineItems;
+	CLTGUITextCtrl* m_pEditText;
+	char m_szEdit[256];
+	CLTGUIEditCtrl* m_pEdit;
 };
 

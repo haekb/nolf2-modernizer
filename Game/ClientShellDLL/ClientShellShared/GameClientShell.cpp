@@ -132,6 +132,16 @@ void UnhookWindow();
 BOOL OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT msg);
 LRESULT CALLBACK HookedWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
+LTRESULT(*g_pRegisterConsoleProgram)(const char* pName, ConsoleProgramFn fn) = NULL;
+
+// We can build a list of registered console programs here :)!
+LTRESULT proxyRegisterConsoleProgram(const char* pName, ConsoleProgramFn fn)
+{
+	bool test = true;
+
+	return g_pRegisterConsoleProgram(pName, fn);
+}
+
 void SDLLog(void* userdata, int category, SDL_LogPriority priority, const char* message)
 {
 	// Open up SDL Log File
@@ -151,6 +161,9 @@ void InitClientShell()
 	// Get our ClientDE pointer
 
     _ASSERT(g_pLTClient);
+
+	g_pRegisterConsoleProgram = g_pLTClient->RegisterConsoleProgram;
+	g_pLTClient->RegisterConsoleProgram = proxyRegisterConsoleProgram;
 
 	// Init our LT subsystems
 
@@ -1624,6 +1637,9 @@ void CGameClientShell::Update()
 
 	if (GetInterfaceMgr( )->Update())
 	{
+		// Actually this is always on top
+		g_pConsoleMgr->Draw();
+
 		return;
 	}
 
@@ -1639,6 +1655,9 @@ void CGameClientShell::Update()
 		// we should not be here, since we think we should rendering the world, but we are not
 		bool bBlackScreen = true;
 	}
+
+	// Actually this is always on top
+	g_pConsoleMgr->Draw();
 
 }
 

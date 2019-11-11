@@ -2833,6 +2833,11 @@ LTBOOL CInterfaceMgr::OnKeyDown(int key, int rep)
 		return LTFALSE;
 	}
 
+	if (g_pConsoleMgr->HandleKeyDown(key, rep))
+	{
+		return LTTRUE;
+	}
+
 	if (m_MessageBox.IsVisible())
 	{
 		return m_MessageBox.HandleKeyDown(key,rep);
@@ -3071,6 +3076,10 @@ void CInterfaceMgr::OnChar(unsigned char c)
 {
 	if (c < ' ') return;
 
+	if (g_pConsoleMgr->IsVisible()) {
+		g_pConsoleMgr->HandleChar(c);
+		return;
+	}
 
 	if (m_MessageBox.IsVisible())
 	{
@@ -3087,6 +3096,7 @@ void CInterfaceMgr::OnChar(unsigned char c)
 	{
 		GetScreenMgr( )->HandleChar(c);
 	}
+
 
 }
 
@@ -3196,11 +3206,6 @@ LTBOOL CInterfaceMgr::Draw()
 	{
 		m_PopupText.Draw();
 	}
-
-
-	// Actually this is always on top
-	g_pConsoleMgr->Draw();
-
 
 	//this should be last so it is always on top.
 	if (m_MessageBox.IsVisible())
