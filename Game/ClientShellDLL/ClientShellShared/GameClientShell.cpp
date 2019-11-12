@@ -133,13 +133,20 @@ BOOL OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT msg);
 LRESULT CALLBACK HookedWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 LTRESULT(*g_pRegisterConsoleProgram)(const char* pName, ConsoleProgramFn fn) = NULL;
+LTRESULT(*g_pUnregisterConsoleProgram)(const char* pName);
 
 // We can build a list of registered console programs here :)!
 LTRESULT proxyRegisterConsoleProgram(const char* pName, ConsoleProgramFn fn)
 {
-	bool test = true;
+	g_pConsoleMgr->AddToHelp(pName);
 
 	return g_pRegisterConsoleProgram(pName, fn);
+}
+
+LTRESULT proxyUnregisterConsoleProgram(const char* pName)
+{
+	g_pConsoleMgr->RemoveFromHelp(pName);
+	return g_pUnregisterConsoleProgram(pName);
 }
 
 void SDLLog(void* userdata, int category, SDL_LogPriority priority, const char* message)
@@ -164,6 +171,9 @@ void InitClientShell()
 
 	g_pRegisterConsoleProgram = g_pLTClient->RegisterConsoleProgram;
 	g_pLTClient->RegisterConsoleProgram = proxyRegisterConsoleProgram;
+
+	g_pUnregisterConsoleProgram = g_pLTClient->UnregisterConsoleProgram;
+	g_pLTClient->UnregisterConsoleProgram = proxyUnregisterConsoleProgram;
 
 	// Init our LT subsystems
 

@@ -8,17 +8,40 @@
 ConsoleMgr* g_pConsoleMgr = NULL;
 extern CInterfaceResMgr* g_pInterfaceResMgr;
 
+void ShowHelpListCommand(int argc, char** argv)
+{
+	if (!g_pConsoleMgr) {
+		return;
+	}
+
+	g_pLTClient->CPrint("Available commands:");
+	for (auto item : g_pConsoleMgr->GetHelpList()) {
+		g_pLTClient->CPrint(item.c_str());
+	}
+}
+
 ConsoleMgr::ConsoleMgr()
 {
 	g_pConsoleMgr = this;
 
+	m_bInitialized = false;
 	m_bVisible = false;
 	m_hConsoleSurface = NULL;
 	memset(m_szEdit, 0, sizeof(m_szEdit));
+
+	m_iHeight = 240;		// Pixels
+	m_iFontSize = 14;		// Pixels?
+	m_iLineSpacing = 16;	// Pixels
+
+	g_pLTClient->RegisterConsoleProgram("help", ShowHelpListCommand);
 }
 
 ConsoleMgr::~ConsoleMgr()
 {
+	g_pLTClient->UnregisterConsoleProgram("help");
+
+	Destroy();
+
 	if (g_pConsoleMgr) {
 		g_pConsoleMgr = NULL;
 	}
@@ -31,13 +54,25 @@ ConsoleMgr::~ConsoleMgr()
 
 void ConsoleMgr::Init()
 {
-	//m_Frame.Create(g_pInterfaceResMgr->GetTexture("interface\\menu\\sprtex\\frame.dtx"), 200, 320, LTTRUE);
-	m_Window.Create(g_pInterfaceResMgr->GetTexture("interface\\menu\\sprtex\\frame.dtx"), 1280, 240);
+	// If we're re-initializing, then destroy all the items
+	if (m_bInitialized) {
+		Destroy();
+	}
 
-	for (int i = 0; i < 14; i++) {
+	RMode currentMode;
+	g_pLTClient->GetRenderMode(&currentMode);
+
+	m_iHeight = (int)((float)currentMode.m_Height * 0.50f);
+
+	// Calculate the amount of items we need to fill the space, and then minus one for our edit line.
+	int iLineItemLength = (int)((float)m_iHeight / (float)m_iLineSpacing) - 1;
+
+	m_Window.Create(g_pInterfaceResMgr->GetTexture("interface\\console.dtx"), 1280, m_iHeight);
+
+	for (int i = 0; i < iLineItemLength; i++) {
 
 		CLTGUITextCtrl* pText = debug_new(CLTGUITextCtrl);
-		if (!pText->Create("", LTNULL, LTNULL, g_pInterfaceResMgr->GetFont(4), 14, NULL))
+		if (!pText->Create("", LTNULL, LTNULL, g_pInterfaceResMgr->GetFont(4), m_iFontSize, NULL))
 		{
 			debug_delete(pText);
 			pText = LTNULL;
@@ -48,39 +83,50 @@ void ConsoleMgr::Init()
 	}
 
 	m_pEditText = debug_new(CLTGUITextCtrl);
-	if (!m_pEditText->Create("", LTNULL, LTNULL, g_pInterfaceResMgr->GetFont(4), 14, NULL))
+	if (!m_pEditText->Create("", LTNULL, LTNULL, g_pInterfaceResMgr->GetFont(4), m_iFontSize, NULL))
 	{
 		debug_delete(m_pEditText);
 		m_pEditText = LTNULL;
 	}
 
 	m_pEditText->SetString(">");
+	m_pEditText->SetColors(argbWhite, argbWhite, argbWhite);
 	m_Window.AddControl(m_pEditText, { 0,0 });
-	//m_LineItem = g_pFontManager->CreateFormattedPolyString(pFont, "", 0.0f, 0.0f);
 	
-
 	m_pEdit = debug_new(CLTGUIEditCtrl);
-	if (!m_pEdit->Create(g_pLTClient, 1, g_pInterfaceResMgr->GetFont(4), 14, 256, NULL, m_szEdit))
+	if (!m_pEdit->Create(g_pLTClient, 1, g_pInterfaceResMgr->GetFont(4), m_iFontSize, 256, NULL, m_szEdit))
 	{
 		debug_delete(m_pEdit);
 		m_pEdit = LTNULL;
 	}
+
 	m_pEdit->Show(LTTRUE);
 	m_pEdit->Enable(LTTRUE);
 	m_pEdit->EnableCaret(LTTRUE);
 	
-
+	// Add the edit control, and then set it as the selected control
 	m_Window.AddControl(m_pEdit, { 0, 0 });
-	
-	auto test = m_Window.GetSelectedControl();
-	
-	m_Window.SetSelection(15);
+	m_Window.SetSelection(iLineItemLength + 1);
 
-	test = m_Window.GetSelectedControl();
+	m_bInitialized = true;
+}
 
-	if (!m_hConsoleSurface) {
-		m_hConsoleSurface = g_pInterfaceResMgr->GetSharedSurface("interface\\console.pcx");
+void ConsoleMgr::Destroy()
+{
+	if (!m_bInitialized) {
+		return;
 	}
+
+	m_pEdit->Destroy();
+	m_pEditText->Destroy();
+
+	for (auto item : m_pLineItems) {
+		item->Destroy();
+	}
+
+	m_Window.Destroy();
+
+	m_pLineItems.clear();
 }
 
 LTBOOL ConsoleMgr::HandleChar(unsigned char c)
@@ -136,7 +182,7 @@ void ConsoleMgr::Read(CConsolePrintData* pData)
 
 	m_HistorySlice.push_back(data);
 
-	if (m_HistorySlice.size() > 14) {
+	if (m_HistorySlice.size() > m_pLineItems.size()) {
 		m_HistorySlice.erase(m_HistorySlice.begin());
 	}
 	
@@ -145,6 +191,9 @@ void ConsoleMgr::Read(CConsolePrintData* pData)
 
 void ConsoleMgr::Send()
 {
+	// Echo it back
+	g_pLTClient->CPrint(m_szEdit);
+
 	// Send it off!
 	g_pLTClient->RunConsoleString(m_szEdit);
 
@@ -161,28 +210,8 @@ void ConsoleMgr::Draw()
 
 	m_pEdit->UpdateData(LTTRUE);
 
-	int iWidth = 0;
-	RMode currentMode;
-	g_pLTClient->GetRenderMode(&currentMode);
-
-	LTRect dest = { 0, 0, (int)currentMode.m_Width, 240 };
-	HLTCOLOR hTransColor = g_pLTClient->SetupColor1(1.0f, 1.0f, 1.0f, LTTRUE);
-	g_pLTClient->ScaleSurfaceToSurfaceTransparent(g_pLTClient->GetScreenSurface(), m_hConsoleSurface, &dest, LTNULL, hTransColor);
-	
 	LTIntPt pos = { 8, 0 };
 
-#if 0
-	std::string buffer = "";
-
-	for (auto item : m_History) {
-		buffer += item.sMessage;
-
-		
-	}
-
-	m_LineItem->SetText(buffer.c_str());
-	m_LineItem->Render();
-#else
 	m_Window.SetScale(1.0f);
 
 	int index = 0;
@@ -196,66 +225,35 @@ void ConsoleMgr::Draw()
 		pText->SetBasePos(pos);
 		pText->SetString(item.sMessage.c_str());
 		pText->SetColors(item.iColour, item.iColour, item.iColour);
-		/*
-		m_Text.SetBasePos(pos);
-		m_Text.SetString(item.sMessage.c_str());
-		m_Text.SetColors(item.iColour, item.iColour, item.iColour);
-		m_Text.Show(LTTRUE);
-
-
-		m_Text.Render();
-		*/
 
 		index++;
-		pos.y += 16;
+		pos.y += m_iLineSpacing;
 	}
-
 
 	m_pEditText->SetBasePos(pos);
-	
-	pos.x += 8;
-
-
+	pos.x += m_iLineSpacing / 2;
 	m_pEdit->SetBasePos(pos);
-	
-	//m_pEdit->UpdateData(LTTRUE);
 
-	//m_Text.SetString("HELLO WORLD");
-	m_pEdit->Render();
 	m_Window.Render();
-#endif
-
-#if 0
-	CUIFont* pFont = g_pInterfaceResMgr->GetFont(0);
-	LTIntPt pos(640, 480);
-	CUIFormattedPolyString* Text = g_pFontManager->CreateFormattedPolyString(pFont, "", 0.0f, 0.0f);
-
-	//Text->SetScale(1.0f);
-
-	Text->SetFont(pFont);
-
-	//Text.SetFixedWidth(pPopup->nTextWidth);
-
-	//Text.SetScale(g_pInterfaceResMgr->GetXRatio());
-
-	for (auto item : m_History) {
-		Text->SetPosition(pos.x, pos.y);
-		//auto colour = SETRGB(item.m_Color.r, item.m_Color.g, item.m_Color.b);//, item.m_Color.a);
-		Text->SetText(item.sMessage.c_str());
-		//Text->SetColors(item.iColour, item.iColour, item.iColour);
-
-		
-
-		Text->Render();
-
-		pos.y += 14;
-
-	}
-#endif
-
 }
 
 void ConsoleMgr::Show(bool bShow)
 {
 	m_bVisible = bShow;
+}
+
+void ConsoleMgr::AddToHelp(std::string command)
+{
+	m_HelpList.push_back(command);
+}
+
+void ConsoleMgr::RemoveFromHelp(std::string command)
+{
+	int index = 0;
+	for (auto item : m_HelpList) {
+		if (command.compare(item) == 0) {
+			item.erase(item.begin() + index);
+		}
+		index++;
+	}
 }
