@@ -31,7 +31,9 @@ ConsoleMgr::ConsoleMgr()
 
 	m_iHeight = 240;		// Pixels
 	m_iFontSize = 14;		// Pixels?
-	m_iLineSpacing = 16;	// Pixels
+	m_iLineSpacing = 16;	// Pixels!
+
+	m_iCurrentPosition = 0;
 
 	g_pLTClient->RegisterConsoleProgram("help", ShowHelpListCommand);
 }
@@ -69,6 +71,8 @@ void ConsoleMgr::Init()
 
 	m_Window.Create(g_pInterfaceResMgr->GetTexture("interface\\console.dtx"), 1280, m_iHeight);
 
+	// Create the lines for our console text
+	// TODO: Maybe look into large text fields? Not sure if this will cause any performance concerns.
 	for (int i = 0; i < iLineItemLength; i++) {
 
 		CLTGUITextCtrl* pText = debug_new(CLTGUITextCtrl);
@@ -81,7 +85,8 @@ void ConsoleMgr::Init()
 		m_pLineItems.push_back(pText);
 		m_Window.AddControl(pText, { 0, 0 });
 	}
-
+	
+	// This is basically the little symbol, in our case it's `>` in front of the edit line
 	m_pEditText = debug_new(CLTGUITextCtrl);
 	if (!m_pEditText->Create("", LTNULL, LTNULL, g_pInterfaceResMgr->GetFont(4), m_iFontSize, NULL))
 	{
@@ -103,6 +108,7 @@ void ConsoleMgr::Init()
 	m_pEdit->Show(LTTRUE);
 	m_pEdit->Enable(LTTRUE);
 	m_pEdit->EnableCaret(LTTRUE);
+	m_pEdit->SetColors(argbWhite, argbWhite, argbWhite);
 	
 	// Add the edit control, and then set it as the selected control
 	m_Window.AddControl(m_pEdit, { 0, 0 });
@@ -166,6 +172,12 @@ LTBOOL ConsoleMgr::HandleKeyDown(int key, int rep)
 		Send();
 		return LTTRUE;
 	} break;
+	case VK_UP:
+		MoveUp(false);
+		break;
+	case VK_DOWN:
+		MoveDown(false);
+		break;
 	}
 
 	m_pEdit->HandleKeyDown(key, rep);
@@ -174,23 +186,38 @@ LTBOOL ConsoleMgr::HandleKeyDown(int key, int rep)
 
 void ConsoleMgr::Read(CConsolePrintData* pData)
 {
+
+
 	HistoryData data;
 
 	data.iColour = SET_ARGB(255, pData->m_Color.r, pData->m_Color.g, pData->m_Color.b);
 	data.sMessage = pData->m_pMessage;
 	data.iLevel = pData->m_nFilterLevel;
 
-	m_HistorySlice.push_back(data);
+	//m_HistorySlice.push_back(data);
 
+	/*
 	if (m_HistorySlice.size() > m_pLineItems.size()) {
 		m_HistorySlice.erase(m_HistorySlice.begin());
 	}
+	*/
 	
 	m_History.push_back(data);
+
+	// Ok we can't actually adjust our position if we're not init'd.
+	// This happens when the game is launching and setting stuff up before consolemgr is init'd.
+	if (!m_bInitialized) {
+		m_iCurrentPosition++;
+		return;
+	}
+
+	MoveDown(false);
 }
 
 void ConsoleMgr::Send()
 {
+	MoveDown(true);
+
 	// Echo it back
 	g_pLTClient->CPrint(m_szEdit);
 
@@ -214,6 +241,12 @@ void ConsoleMgr::Draw()
 
 	m_Window.SetScale(1.0f);
 
+	for (auto item : m_pLineItems) {
+		item->SetString("");
+	}
+
+	auto selectionColour = SET_ARGB(255, 255, 0, 255);
+
 	int index = 0;
 	for (auto item : m_HistorySlice) {
 		if (index >= m_pLineItems.size()) {
@@ -224,7 +257,7 @@ void ConsoleMgr::Draw()
 
 		pText->SetBasePos(pos);
 		pText->SetString(item.sMessage.c_str());
-		pText->SetColors(item.iColour, item.iColour, item.iColour);
+		pText->SetColors(selectionColour, item.iColour, item.iColour);
 
 		index++;
 		pos.y += m_iLineSpacing;
@@ -239,7 +272,70 @@ void ConsoleMgr::Draw()
 
 void ConsoleMgr::Show(bool bShow)
 {
+	// Clear our command string
+	m_pEdit->SetText("");
+	memset(m_szEdit, 0, sizeof(m_szEdit));
+
 	m_bVisible = bShow;
+}
+
+void ConsoleMgr::MoveUp(bool bTop)
+{
+	if (bTop) {
+		m_iCurrentPosition = 0;
+	}
+	else {
+		if (m_iCurrentPosition > 0) {
+			m_iCurrentPosition--;
+		}
+	}
+
+	AdjustView();
+}
+
+void ConsoleMgr::MoveDown(bool bBottom)
+{
+	if (bBottom) {
+		m_iCurrentPosition = m_History.size();
+	}
+	else {
+		if (m_iCurrentPosition < m_History.size()) {
+			m_iCurrentPosition++;
+		}
+	}
+
+	AdjustView();
+}
+
+void ConsoleMgr::AdjustView()
+{
+	m_HistorySlice.clear();
+
+	int iBegin = m_iCurrentPosition - m_pLineItems.size();
+	int iEnd = m_iCurrentPosition + m_pLineItems.size();
+
+	if (iBegin < 0) {
+		iBegin = 0;
+	}
+
+	// If we haven't filled the screen with commands, don't allow them to move up!
+	if (m_History.size() < m_pLineItems.size()) {
+		iBegin = 0;
+	}
+
+	if (iEnd > m_History.size()) {
+		iEnd = m_History.size();
+	}
+
+	std::vector<HistoryData> historySlice(m_History.begin() + iBegin, m_History.begin() + iEnd);
+
+	for (auto item : historySlice) {
+		m_HistorySlice.push_back(item);
+	}
+
+	historySlice.clear();
+
+	m_Window.SetSelection(m_iCurrentPosition);
 }
 
 void ConsoleMgr::AddToHelp(std::string command)

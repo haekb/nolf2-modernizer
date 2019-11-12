@@ -25,6 +25,10 @@ public:
 	void Draw();
 	void Show(bool bShow);
 
+	void MoveUp(bool bTop);
+	void MoveDown(bool bBottom);
+	void AdjustView();
+
 	void AddToHelp(std::string command);
 	void RemoveFromHelp(std::string command);
 
@@ -49,6 +53,9 @@ protected:
 	int m_iHeight;
 	int m_iFontSize;
 	int m_iLineSpacing;
+
+	// 
+	int m_iCurrentPosition;
 
 	bool m_bInitialized;
 	bool m_bVisible;
