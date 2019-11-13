@@ -56,6 +56,7 @@ protected:
 
 	// 
 	int m_iCurrentPosition;
+	int m_iCursorPosition;
 
 	bool m_bInitialized;
 	bool m_bVisible;

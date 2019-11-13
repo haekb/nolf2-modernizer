@@ -138,15 +138,24 @@ LTRESULT(*g_pUnregisterConsoleProgram)(const char* pName);
 // We can build a list of registered console programs here :)!
 LTRESULT proxyRegisterConsoleProgram(const char* pName, ConsoleProgramFn fn)
 {
-	g_pConsoleMgr->AddToHelp(pName);
+	LTRESULT result = g_pRegisterConsoleProgram(pName, fn);
 
-	return g_pRegisterConsoleProgram(pName, fn);
+	if (result == LT_OK) {
+		g_pConsoleMgr->AddToHelp(pName);
+	}
+
+	return result;
 }
 
 LTRESULT proxyUnregisterConsoleProgram(const char* pName)
 {
-	g_pConsoleMgr->RemoveFromHelp(pName);
-	return g_pUnregisterConsoleProgram(pName);
+	LTRESULT result = g_pUnregisterConsoleProgram(pName);
+
+	if (result == LT_OK) {
+		g_pConsoleMgr->RemoveFromHelp(pName);
+	}
+
+	return result;
 }
 
 void SDLLog(void* userdata, int category, SDL_LogPriority priority, const char* message)
