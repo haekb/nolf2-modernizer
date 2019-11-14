@@ -29,6 +29,7 @@ ConsoleMgr::ConsoleMgr()
 	m_hConsoleSurface = NULL;
 	memset(m_szEdit, 0, sizeof(m_szEdit));
 
+	m_iWidth = 320;			// px
 	m_iHeight = 240;		// Pixels
 	m_iFontSize = 14;		// Pixels?
 	m_iLineSpacing = 16;	// Pixels!
@@ -68,11 +69,12 @@ void ConsoleMgr::Init()
 	g_pLTClient->GetRenderMode(&currentMode);
 
 	m_iHeight = (int)((float)currentMode.m_Height * 0.50f);
+	m_iWidth = (int)currentMode.m_Width;
 
 	// Calculate the amount of items we need to fill the space, and then minus one for our edit line.
 	int iLineItemLength = (int)((float)m_iHeight / (float)m_iLineSpacing) - 1;
 
-	m_Window.Create(g_pInterfaceResMgr->GetTexture("interface\\console.dtx"), 1280, m_iHeight);
+	m_Window.Create(g_pInterfaceResMgr->GetTexture("interface\\console.dtx"), m_iWidth, m_iHeight);
 
 	// Create the lines for our console text
 	// TODO: Maybe look into large text fields? Not sure if this will cause any performance concerns.
@@ -195,21 +197,11 @@ LTBOOL ConsoleMgr::HandleKeyDown(int key, int rep)
 
 void ConsoleMgr::Read(CConsolePrintData* pData)
 {
-
-
 	HistoryData data;
 
 	data.iColour = SET_ARGB(255, pData->m_Color.r, pData->m_Color.g, pData->m_Color.b);
 	data.sMessage = pData->m_pMessage;
 	data.iLevel = pData->m_nFilterLevel;
-
-	//m_HistorySlice.push_back(data);
-
-	/*
-	if (m_HistorySlice.size() > m_pLineItems.size()) {
-		m_HistorySlice.erase(m_HistorySlice.begin());
-	}
-	*/
 	
 	m_History.push_back(data);
 

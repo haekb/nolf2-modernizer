@@ -52,7 +52,8 @@ protected:
 	char m_szEdit[256];
 	CLTGUIEditCtrl* m_pEdit;
 
-	// Console height
+	// Console dims
+	int m_iWidth;
 	int m_iHeight;
 	int m_iFontSize;
 	int m_iLineSpacing;
