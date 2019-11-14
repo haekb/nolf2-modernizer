@@ -14,7 +14,7 @@ void ShowHelpListCommand(int argc, char** argv)
 		return;
 	}
 
-	g_pLTClient->CPrint("Available Game commands:");
+	g_pLTClient->CPrint("Available game commands:");
 	for (auto item : g_pConsoleMgr->GetHelpList()) {
 		g_pLTClient->CPrint(item.c_str());
 	}
@@ -39,12 +39,12 @@ ConsoleMgr::ConsoleMgr()
 	// Position in UI elements
 	m_iCursorPosition = 0;
 
-	g_pLTClient->RegisterConsoleProgram("help", ShowHelpListCommand);
+	g_pLTClient->RegisterConsoleProgram("Help", ShowHelpListCommand);
 }
 
 ConsoleMgr::~ConsoleMgr()
 {
-	g_pLTClient->UnregisterConsoleProgram("help");
+	g_pLTClient->UnregisterConsoleProgram("Help");
 
 	Destroy();
 
@@ -276,6 +276,14 @@ void ConsoleMgr::Draw()
 
 void ConsoleMgr::Show(bool bShow)
 {
+	// For now let's disable it in multiplayer!
+	if (IsMultiplayerGame()) {
+		m_bVisible = false;
+	}
+
+	// Pause the game
+	g_pGameClientShell->PauseGame(bShow, LTTRUE);
+
 	// Clear our command string
 	m_pEdit->SetText("");
 	memset(m_szEdit, 0, sizeof(m_szEdit));
