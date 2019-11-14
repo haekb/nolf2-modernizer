@@ -158,6 +158,13 @@ LTRESULT proxyUnregisterConsoleProgram(const char* pName)
 	return result;
 }
 
+void proxyGetAxisOffsets(LTFLOAT* offsets)
+{
+	offsets[0] = g_pGameClientShell->GetInputAxis()[0];
+	offsets[1] = g_pGameClientShell->GetInputAxis()[1];
+	offsets[2] = g_pGameClientShell->GetInputAxis()[2];
+}
+
 void SDLLog(void* userdata, int category, SDL_LogPriority priority, const char* message)
 {
 	// Open up SDL Log File
@@ -183,6 +190,8 @@ void InitClientShell()
 
 	g_pUnregisterConsoleProgram = g_pLTClient->UnregisterConsoleProgram;
 	g_pLTClient->UnregisterConsoleProgram = proxyUnregisterConsoleProgram;
+
+	g_pLTClient->GetAxisOffsets = proxyGetAxisOffsets;
 
 	// Init our LT subsystems
 
@@ -634,6 +643,8 @@ CGameClientShell::CGameClientShell()
  
 	m_bRunningPerfTest = false;
 	m_pPerformanceTest = LTNULL;
+
+	m_fInputAxis[0] = m_fInputAxis[1] = m_fInputAxis[2] = 0.0f;
 }
 
 
@@ -1636,8 +1647,6 @@ void CGameClientShell::Update()
 	UpdateScreenFlash();
 	m_ScreenTintMgr.Update();
 
-
-
 	// Update client-side physics structs...
 
 	if (IsServerPaused())
@@ -1843,6 +1852,8 @@ void CGameClientShell::PostUpdate()
 
 
 	GetInterfaceMgr( )->PostUpdate();
+
+	GetPlayerMgr()->UpdateRotationAxis();
 }
 
 // ----------------------------------------------------------------------- //

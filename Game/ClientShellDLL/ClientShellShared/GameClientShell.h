@@ -219,6 +219,9 @@ public:
     CScreenTintMgr*     GetScreenTintMgr()          { return &m_ScreenTintMgr; }
 	CLightScaleMgr*		GetLightScaleMgr()			{ return &m_LightScaleMgr; }
 
+	LTFLOAT* GetInputAxis() { return m_fInputAxis; }
+	void SetInputAxis(LTFLOAT* fAxis) { m_fInputAxis[0] = fAxis[0]; m_fInputAxis[1] = fAxis[1]; m_fInputAxis[2] = fAxis[2]; }
+
 protected :
 
     void        SpecialEffectNotify(HLOCALOBJ hObj, ILTMessage_Read *pMsg);
@@ -380,6 +383,8 @@ private :
 	// Performance testing variables
 	bool				m_bRunningPerfTest;
 	CPerformanceTest	*m_pPerformanceTest;
+
+	LTFLOAT m_fInputAxis[3];
 };
 
 void DefaultModelHook(ModelHookData *pData, void *pUser);
