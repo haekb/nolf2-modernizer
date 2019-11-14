@@ -57,6 +57,8 @@
 #include "mmsystem.h"
 #include <SDL.h>
 
+#include "ConsoleMgr.h"
+
 // TEMP DISCORD
 #include <discord.h>
 #include <discord-secret.h>
@@ -113,6 +115,7 @@ extern CCheatMgr*	g_pCheatMgr;
 extern LTVector		g_vPlayerCameraOffset;
 extern VarTrack		g_vtFOVXNormal;
 extern VarTrack		g_vtFOVYNormal;
+extern ConsoleMgr*  g_pConsoleMgr;
 
 // Sample rate
 extern int g_nSampleRate;
@@ -128,6 +131,32 @@ void UnhookWindow();
 
 BOOL OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT msg);
 LRESULT CALLBACK HookedWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+
+LTRESULT(*g_pRegisterConsoleProgram)(const char* pName, ConsoleProgramFn fn) = NULL;
+LTRESULT(*g_pUnregisterConsoleProgram)(const char* pName);
+
+// We can build a list of registered console programs here :)!
+LTRESULT proxyRegisterConsoleProgram(const char* pName, ConsoleProgramFn fn)
+{
+	LTRESULT result = g_pRegisterConsoleProgram(pName, fn);
+
+	if (result == LT_OK) {
+		g_pConsoleMgr->AddToHelp(pName);
+	}
+
+	return result;
+}
+
+LTRESULT proxyUnregisterConsoleProgram(const char* pName)
+{
+	LTRESULT result = g_pUnregisterConsoleProgram(pName);
+
+	if (result == LT_OK) {
+		g_pConsoleMgr->RemoveFromHelp(pName);
+	}
+
+	return result;
+}
 
 void SDLLog(void* userdata, int category, SDL_LogPriority priority, const char* message)
 {
@@ -148,6 +177,12 @@ void InitClientShell()
 	// Get our ClientDE pointer
 
     _ASSERT(g_pLTClient);
+
+	g_pRegisterConsoleProgram = g_pLTClient->RegisterConsoleProgram;
+	g_pLTClient->RegisterConsoleProgram = proxyRegisterConsoleProgram;
+
+	g_pUnregisterConsoleProgram = g_pLTClient->UnregisterConsoleProgram;
+	g_pLTClient->UnregisterConsoleProgram = proxyUnregisterConsoleProgram;
 
 	// Init our LT subsystems
 
@@ -900,6 +935,7 @@ uint32 CGameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
 
 	SDL_Log("-- Hello World, We're all set here. Enjoy the show!");
 
+	ConsoleMgr* conMgr = new ConsoleMgr();
 
     char strTimeDiff[64];
 	float fStartTime = CWinUtil::GetTime();
@@ -1620,6 +1656,9 @@ void CGameClientShell::Update()
 
 	if (GetInterfaceMgr( )->Update())
 	{
+		// Actually this is always on top
+		g_pConsoleMgr->Draw();
+
 		return;
 	}
 
@@ -1635,6 +1674,9 @@ void CGameClientShell::Update()
 		// we should not be here, since we think we should rendering the world, but we are not
 		bool bBlackScreen = true;
 	}
+
+	// Actually this is always on top
+	g_pConsoleMgr->Draw();
 
 }
 
@@ -5031,6 +5073,11 @@ bool CGameClientShell::LauncherServerApp( char const* pszProfileFile )
 	g_pLTClient->Shutdown();
 
 	return true;
+}
+
+void CGameClientShell::OnConsolePrint(CConsolePrintData* pData)
+{
+	g_pConsoleMgr->Read(pData);
 }
 
 void CGameClientShell::SetGameType(GameType eGameType)	

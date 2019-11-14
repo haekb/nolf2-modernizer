@@ -710,6 +710,9 @@
     <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\voice_manager.cpp">
       <Filter>Discord</Filter>
     </ClCompile>
+    <ClCompile Include="ConsoleMgr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ActivateObjectFX.h">
@@ -1389,6 +1392,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\voice_manager.h">
       <Filter>Discord</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsoleMgr.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
