@@ -296,11 +296,19 @@ void ConsoleMgr::Show(bool bShow)
 void ConsoleMgr::MoveUp(bool bTop)
 {
 	if (bTop) {
+#ifdef CONSOLE_CURSOR
 		m_iCurrentPosition = 0;
+#else
+		m_iCurrentPosition = m_pLineItems.size();
+#endif
 		m_iCursorPosition = 0;
 	}
 	else {
+#ifdef CONSOLE_CURSOR
 		if (m_iCurrentPosition > 0) {
+#else
+		if (m_iCurrentPosition > m_pLineItems.size()) {
+#endif
 			m_iCurrentPosition--;
 		}
 		if (m_iCursorPosition > 0) {
@@ -334,7 +342,7 @@ void ConsoleMgr::AdjustView()
 	m_HistorySlice.clear();
 
 	int iBegin = m_iCurrentPosition - m_pLineItems.size();
-	int iEnd = m_iCurrentPosition + m_pLineItems.size() - 1;
+	int iEnd = m_iCurrentPosition + m_pLineItems.size();
 
 	// Clamp our being/end to -> 0 - Max Size
 	if (iBegin < 0) {
@@ -359,7 +367,9 @@ void ConsoleMgr::AdjustView()
 
 	historySlice.clear();
 
+#ifdef CONSOLE_CURSOR
 	m_Window.SetSelection(m_iCursorPosition);
+#endif
 }
 
 void ConsoleMgr::AddToHelp(std::string command)

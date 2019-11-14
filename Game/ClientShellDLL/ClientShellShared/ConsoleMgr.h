@@ -3,6 +3,9 @@
 #include <vector>
 #include "iclientshell.h"
 
+// Disabled for now, has a bug where it moves two positions, and I just wanna push this forward.
+//#define CONSOLE_CURSOR
+
 struct HistoryData {
 	std::string sMessage;
 	unsigned int iColour;
