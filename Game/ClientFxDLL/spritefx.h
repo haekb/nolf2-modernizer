@@ -68,6 +68,8 @@
 
 			const CSpriteProps*				GetProps() { return (const CSpriteProps*)m_pProps; }
 
+			LTFLOAT m_fDefaultOffsetZ;
+
 			// Member Variables
 
 			LTRotation						m_rRot;

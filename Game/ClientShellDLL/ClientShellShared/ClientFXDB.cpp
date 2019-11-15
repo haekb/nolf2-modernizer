@@ -232,7 +232,7 @@ bool CClientFXDB::LoadFxDll()
 	// Load the library
 	const char *sName = "ClientFX.fxd";
 	char sTmp[MAX_PATH + 1];
-	LTSNPrintF(sTmp, sizeof(sTmp), "Game\\%s", sName);
+	LTSNPrintF(sTmp, sizeof(sTmp), "NewGame\\%s", sName);
 
 	//if we have a local copy use it
 	if( CWinUtil::FileExist( sTmp ))
