@@ -254,6 +254,9 @@ public:
 	// Is the camera using an animation to update it's position...
 	LTBOOL	IsCameraAttachedToHead() const { return m_bCameraAttachedToHead; }
 
+	// This should probably be somewhere else
+	void UpdateRotationAxis();
+
 protected:
 
     void	ShowPlayer(LTBOOL bShow=LTTRUE);
@@ -284,6 +287,7 @@ protected:
     LTBOOL	UpdatePlayerCamera();
 	void	UpdateCameraPosition();
 	void	UpdateMultiplayerCameraPosition();
+
 	void	CalculateCameraRotation();
     LTBOOL	UpdateCameraRotation();
 	void	UpdatePlayerInfo(bool bPlaying);

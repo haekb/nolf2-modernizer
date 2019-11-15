@@ -33,8 +33,11 @@
 #include "timer.h"
 #include "WaveFn.h"
 #include "SDL.h"
+#include "ConsoleMgr.h"
 
 CInterfaceMgr*  g_pInterfaceMgr = LTNULL;
+
+extern ConsoleMgr* g_pConsoleMgr;
 
 #define IM_SPLASH_SOUND		"Interface\\Menu\\Snd\\theme_mp3.wav"
 
@@ -605,6 +608,8 @@ LTBOOL CInterfaceMgr::Init()
 
 	// Consider ourselves initialized.
 	m_bInitialized = true;
+
+	g_pConsoleMgr->Init();
 
     return LTTRUE;
 }
@@ -2829,6 +2834,11 @@ LTBOOL CInterfaceMgr::OnKeyDown(int key, int rep)
 		return LTFALSE;
 	}
 
+	if (g_pConsoleMgr->HandleKeyDown(key, rep))
+	{
+		return LTTRUE;
+	}
+
 	if (m_MessageBox.IsVisible())
 	{
 		return m_MessageBox.HandleKeyDown(key,rep);
@@ -3067,6 +3077,10 @@ void CInterfaceMgr::OnChar(unsigned char c)
 {
 	if (c < ' ') return;
 
+	if (g_pConsoleMgr->IsVisible()) {
+		g_pConsoleMgr->HandleChar(c);
+		return;
+	}
 
 	if (m_MessageBox.IsVisible())
 	{
@@ -3083,6 +3097,7 @@ void CInterfaceMgr::OnChar(unsigned char c)
 	{
 		GetScreenMgr( )->HandleChar(c);
 	}
+
 
 }
 

@@ -12,7 +12,9 @@
 #include "gameclientshell.h"
 #include "InterfaceResMgr.h"
 #include "ClientButeMgr.h"
+#include "ConsoleMgr.h"
 
+extern ConsoleMgr* g_pConsoleMgr;
 
 CInterfaceResMgr*   g_pInterfaceResMgr = LTNULL;
 
@@ -340,6 +342,8 @@ void CInterfaceResMgr::ScreenDimsChanged()
 	m_dwScreenWidth = currentMode.m_Width;
 	m_dwScreenHeight = currentMode.m_Height;
 
+	// Re-init the console
+	g_pConsoleMgr->Init();
 }
 
 
