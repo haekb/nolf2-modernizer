@@ -3597,13 +3597,16 @@ LTBOOL CInterfaceMgr::PreLoadingLevelState(GameState eCurState)
 
 	m_LoadingScreen.Show();
 		
+	// Jake: This was commented out, but I found the Music to be a bit crashy. 
+	// So it's back to stop!
+	// ---
 	// Turn off the music (this will be turned on when we start the
-	// next level...
-	//CMusic* pMusic = g_pGameClientShell->GetMusic();
-    //if (pMusic)
-	//{
-	//	pMusic->Stop();
-	//}
+	// next level...)
+	CMusic* pMusic = g_pGameClientShell->GetMusic();
+    if (pMusic)
+	{
+		pMusic->Stop();
+	}
 
 	// Turn off sound
 	((ILTClientSoundMgr*)g_pLTClient->SoundMgr())->SetVolume(0);
