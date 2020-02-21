@@ -74,6 +74,7 @@ public:
     LTFLOAT             GetYRatio()                         {return m_fYRatio;}
 	LTFLOAT				Get4x3Ratio()						{ return 640.0f / 480.0f; }
 	int					Get4x3Offset(int w, int h);
+	int					Get640x480Offset();
 	LTFLOAT				GetAspectRatio()					{ return m_fAspectRatio; }
 	LTFLOAT				GetInvAspectRatio()					{ return m_fInvAspectRatio;  }
 
@@ -193,6 +194,16 @@ inline int CInterfaceResMgr::Get4x3Offset(int w = 0, int h = 0)
 	}
 
 	return (int)(0.5f * ( width - ( height * ratio ) ));
+}
+
+//
+// I hate this name, but it's the only thing that came to mind.
+// All the interfaces seem to be designed for 640x480 then scaled up.
+// 
+inline int CInterfaceResMgr::Get640x480Offset()
+{
+	int adjustedScreenWidth = 480 * g_pInterfaceResMgr->GetAspectRatio();
+	return g_pInterfaceResMgr->Get4x3Offset(adjustedScreenWidth, 480);
 }
 
 inline uint32 CInterfaceResMgr::GetScreenWidth()
