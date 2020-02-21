@@ -182,43 +182,6 @@ LTBOOL ConsoleMgr::HandleChar(unsigned char c)
 
 LTBOOL ConsoleMgr::HandleKeyDown(int key, int rep)
 {
-#if 0
-	if (!m_bVisible) {
-		if (key == VK_OEM_3) {
-			Show(true);
-			return LTTRUE;
-		}
-
-		return LTFALSE;
-	}
-
-	switch (key) {
-	case VK_OEM_3:
-	case VK_ESCAPE:
-	{
-		Show(false);
-		return LTTRUE;
-	} break;
-
-	case VK_RETURN:
-	{
-		Send();
-		return LTTRUE;
-	} break;
-	case VK_UP:
-		MoveUp(false);
-		break;
-	case VK_DOWN:
-		MoveDown(false);
-		break;
-	case VK_PRIOR: // Page Up
-		MoveUp(true);
-		break;
-	case VK_NEXT: // Page Down
-		MoveDown(true);
-		break;
-	}
-#endif
 	if (!m_bVisible) {
 		if (key == BoundConsoleKey()) {
 			Show(true);
