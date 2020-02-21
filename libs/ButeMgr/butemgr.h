@@ -1,7 +1,7 @@
 #if !defined(_BUTEMGR_H_)
 #define _BUTEMGR_H_
 
-#define _SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS
+//#define _SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS
 
 // disable warning C4786: symbol greater than 255 character,
 // okay to ignore
@@ -663,7 +663,7 @@ inline bool CButeMgr::Parse(CString sAttributeFilename, const char* cryptKey)
 	}
 
 	pIs->seekg(0, STD ios::end);
-	long len = pIs->tellg();
+	long len = (long)pIs->tellg();
 
 	pIs->seekg(0);
 

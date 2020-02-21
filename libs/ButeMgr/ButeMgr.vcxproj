@@ -223,13 +223,15 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <AdditionalIncludeDirectories>..\STLPORT-4.0\STLPORT_NO;..\stdlith;..\mfcstub;..\cryptmgr;..\lith</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;_NOMFC;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;NO_PRAGMA_LIBS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_NOMFC;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;NO_PRAGMA_LIBS;_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\built\Debug\ButeMgr\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\..\built\Debug\ButeMgr\ButeMgr.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>StdAfx.h</PrecompiledHeaderFile>
       <ObjectFileName>.\..\built\Debug\ButeMgr\</ObjectFileName>
       <ProgramDataBaseFileName>.\..\built\Debug\ButeMgr\</ProgramDataBaseFileName>
+      <DisableSpecificWarnings>
+      </DisableSpecificWarnings>
     </ClCompile>
     <ResourceCompile>
       <Culture>0x0409</Culture>
