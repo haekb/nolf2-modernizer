@@ -30,14 +30,27 @@ public:
 
 	void MoveUp(bool bTop);
 	void MoveDown(bool bBottom);
+
+	void RecallHistoryUp();
+	void RecallHistoryDown();
+
 	void AdjustView();
 
 	void AddToHelp(std::string command);
 	void RemoveFromHelp(std::string command);
 
+	// TODO: Re-implement console binding in nolf2
+	int BoundConsoleKey() {
+		return VK_OEM_3;
+	};//GetCommandKey(COMMAND_ID_TOGGLE_CONSOLE); }
+
 	LTBOOL  IsVisible() { return m_bVisible; }
 
 	std::vector<std::string> GetHelpList() { return m_HelpList; };
+	std::vector<HistoryData> GetHistory() { return m_History; };
+
+	// We don't want the console popping up if they're trying to customize the controls
+	void SetConsoleLock(bool bOn) { m_bLockConsole = bOn; };
 
 protected:
 	std::vector<HistoryData> m_History;
@@ -45,6 +58,8 @@ protected:
 	HSURFACE m_hConsoleSurface;
 
 	std::vector<std::string> m_HelpList;
+	std::vector<std::string> m_CommandHistory;
+
 
 	CLTGUIWindow	    m_Window;
 	std::vector<CLTGUITextCtrl*> m_pLineItems;
@@ -61,8 +76,10 @@ protected:
 	// 
 	int m_iCurrentPosition;
 	int m_iCursorPosition;
+	int m_iCommandHistoryPosition;
 
 	bool m_bInitialized;
 	bool m_bVisible;
+	bool m_bLockConsole;
 };
 
