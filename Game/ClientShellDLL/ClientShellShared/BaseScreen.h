@@ -101,6 +101,7 @@ public:
     virtual LTBOOL   OnRButtonDown(int x, int y);
     virtual LTBOOL   OnRButtonUp(int x, int y);
     virtual LTBOOL   OnRButtonDblClick(int x, int y);
+	virtual LTBOOL   OnMouseWheel(int x, int y, int delta);
     virtual LTBOOL   OnMouseMove(int x, int y);
 
 	inline int 		GetPageLeft() const {return m_PageRect.left;}

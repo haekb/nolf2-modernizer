@@ -4529,6 +4529,7 @@ LRESULT CALLBACK HookedWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lP
 		HANDLE_MSG(hWnd, WM_RBUTTONUP, CGameClientShell::OnRButtonUp);
 		HANDLE_MSG(hWnd, WM_RBUTTONDOWN, CGameClientShell::OnRButtonDown);
 		HANDLE_MSG(hWnd, WM_RBUTTONDBLCLK, CGameClientShell::OnRButtonDblClick);
+		HANDLE_MSG(hWnd, WM_MOUSEWHEEL, CGameClientShell::OnMouseWheel);
 		HANDLE_MSG(hWnd, WM_MOUSEMOVE, CGameClientShell::OnMouseMove);
 		HANDLE_MSG(hWnd, WM_CHAR, CGameClientShell::OnChar);
 		HANDLE_MSG(hWnd, WM_SETCURSOR, OnSetCursor);
@@ -4583,6 +4584,13 @@ void CGameClientShell::OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y,
 void CGameClientShell::OnRButtonDblClick(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 {
 	g_pInterfaceMgr->OnRButtonDblClick(x,y);
+}
+
+void CGameClientShell::OnMouseWheel(HWND hwnd, int x, int y, int zDelta, UINT fwKeys)
+{
+	//g_mouseMgr.SetMousePos(x,y);
+
+	g_pInterfaceMgr->OnMouseWheel(x, y, zDelta);
 }
 
 void CGameClientShell::OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags)

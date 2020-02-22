@@ -4584,6 +4584,33 @@ void CInterfaceMgr::OnRButtonDblClick(int x, int y)
 
 }
 
+void CInterfaceMgr::OnMouseWheel(int x, int y, int delta)
+{
+	// Make sure we're initialized.
+	if (!IsInitialized())
+		return;
+
+	if (m_MessageBox.IsVisible())
+	{
+		return;
+	}
+	switch (m_eGameState)
+	{
+	case GS_SCREEN:
+	{
+		GetScreenMgr()->OnMouseWheel(x, y, delta);
+	}
+	break;
+
+	case GS_MENU:
+	{
+		//m_MenuMgr.OnRButtonDblClick(x, y);
+	}
+	break;
+	}
+
+}
+
 void CInterfaceMgr::OnMouseMove(int x, int y)
 {
 	// Make sure we're initialized.

@@ -877,6 +877,39 @@ LTBOOL CBaseScreen::OnRButtonDblClick(int x, int y)
         return LTFALSE;
 }
 
+LTBOOL CBaseScreen::OnMouseWheel(int x, int y, int delta)
+{
+	LTBOOL handled = LTFALSE;
+
+	// TODO: Handle this in specific list related cases only.
+#if 0
+	if (delta > 0) {
+		if (m_pCaptureCtrl)
+		{
+			handled = m_pCaptureCtrl->OnUp();
+		}
+		else
+		{
+			handled = OnUp();
+		}
+	}
+
+	if (delta < 0) {
+		if (m_pCaptureCtrl)
+		{
+			handled = m_pCaptureCtrl->OnDown();
+		}
+		else
+		{
+			handled = OnDown();
+		}
+	}
+
+#endif
+
+	return handled;
+}
+
 
 void CBaseScreen::GetHelpString(uint32 dwHelpId, uint16 nControlIndex, char *buffer, int bufLen)
 {

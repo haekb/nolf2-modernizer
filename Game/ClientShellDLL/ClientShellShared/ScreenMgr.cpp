@@ -293,6 +293,13 @@ void	CScreenMgr::OnRButtonDblClick(int x, int y)
 		m_pCurrentScreen->OnRButtonDblClick(x,y);
 }
 
+void CScreenMgr::OnMouseWheel(int x, int y, int delta)
+{
+	if (m_pCurrentScreen) {
+		m_pCurrentScreen->OnMouseWheel(x, y, delta);
+	}
+}
+
 void	CScreenMgr::OnMouseMove(int x, int y)
 {
 	if (m_pCurrentScreen)
