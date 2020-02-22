@@ -114,6 +114,7 @@ public:
 	static void OnRButtonUp(HWND hwnd, int x, int y, UINT keyFlags);
 	static void OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags);
 	static void OnRButtonDblClick(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags);
+	static void OnMouseWheel(HWND hwnd, int xPos, int yPos, int zDelta, UINT fwKeys);
 	static void OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags);
 
 	bool		IsRendererInitted() {return m_bRendererInit;}

@@ -34,12 +34,19 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Hello.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Header.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectName>Game</ProjectName>
     <SccProjectName>game</SccProjectName>
     <SccLocalPath>.</SccLocalPath>
     <Keyword>MakeFileProj</Keyword>
     <ProjectGuid>{F7B134DF-6619-4D1F-9615-90A17C280049}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Template|Win32'" Label="Configuration">
@@ -70,6 +77,7 @@
     <ConfigurationType>Utility</ConfigurationType>
     <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
+    <SpectreMitigation>false</SpectreMitigation>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Final|Win32'" Label="Configuration">
     <ConfigurationType>Makefile</ConfigurationType>

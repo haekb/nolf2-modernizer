@@ -211,6 +211,7 @@ class CInterfaceMgr
 		void OnRButtonUp(int x, int y);
 		void OnRButtonDown(int x, int y);
 		void OnRButtonDblClick(int x, int y);
+		void OnMouseWheel(int x, int y, int delta);
 		void OnMouseMove(int x, int y);
 		void OnChar(unsigned char c);
 

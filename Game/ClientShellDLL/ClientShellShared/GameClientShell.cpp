@@ -4529,6 +4529,7 @@ LRESULT CALLBACK HookedWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lP
 		HANDLE_MSG(hWnd, WM_RBUTTONUP, CGameClientShell::OnRButtonUp);
 		HANDLE_MSG(hWnd, WM_RBUTTONDOWN, CGameClientShell::OnRButtonDown);
 		HANDLE_MSG(hWnd, WM_RBUTTONDBLCLK, CGameClientShell::OnRButtonDblClick);
+		HANDLE_MSG(hWnd, WM_MOUSEWHEEL, CGameClientShell::OnMouseWheel);
 		HANDLE_MSG(hWnd, WM_MOUSEMOVE, CGameClientShell::OnMouseMove);
 		HANDLE_MSG(hWnd, WM_CHAR, CGameClientShell::OnChar);
 		HANDLE_MSG(hWnd, WM_SETCURSOR, OnSetCursor);
@@ -4583,6 +4584,13 @@ void CGameClientShell::OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y,
 void CGameClientShell::OnRButtonDblClick(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 {
 	g_pInterfaceMgr->OnRButtonDblClick(x,y);
+}
+
+void CGameClientShell::OnMouseWheel(HWND hwnd, int x, int y, int zDelta, UINT fwKeys)
+{
+	//g_mouseMgr.SetMousePos(x,y);
+
+	g_pInterfaceMgr->OnMouseWheel(x, y, zDelta);
 }
 
 void CGameClientShell::OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags)
@@ -4645,6 +4653,18 @@ BOOL SetWindowSize(uint32 nWidth, uint32 nHeight)
 		ShowWindow(g_hMainWnd, SW_NORMAL);
 	}
 
+	if (g_SDLWindow)
+	{
+		// Quickly splash the screen with black and delete the renderer
+		SDL_Renderer* renderer = SDL_CreateRenderer(g_SDLWindow, -1, 0);
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+		SDL_RenderClear(renderer);
+		SDL_RenderPresent(renderer);
+
+		// DX will now handle the rest.
+		SDL_DestroyRenderer(renderer);
+	}
+
 
 
 	return TRUE;
@@ -4689,13 +4709,11 @@ BOOL HookWindow()
 
 	g_SDLWindow = SDL_CreateWindowFrom(g_hMainWnd);
 	
-	
 	if (g_SDLWindow) {
 		SDL_Log("Hooked window!");
 
 		// NOLF2 seems to dislike us using raw input, so just use mouse warping.
 		SDL_SetHint(SDL_HINT_MOUSE_RELATIVE_MODE_WARP, "1");
-
 	}
 	else {
 		SDL_Log("Error hooking window: %s", SDL_GetError());

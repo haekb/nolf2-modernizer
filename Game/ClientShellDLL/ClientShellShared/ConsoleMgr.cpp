@@ -20,6 +20,29 @@ void ShowHelpListCommand(int argc, char** argv)
 	}
 }
 
+void WriteToDebugLog(int argc, char** argv)
+{
+	if (!g_pConsoleMgr) {
+		return;
+	}
+
+	g_pLTClient->CPrint("Writing to Debug.log...");
+
+	SDL_Log("Writing Console History");
+	SDL_Log("---------------------------------------");
+
+	std::string sVeryBigStringTime = "";
+
+	for (auto history : g_pConsoleMgr->GetHistory()) {
+		sVeryBigStringTime += history.sMessage;
+		sVeryBigStringTime += "\n";
+	}
+	SDL_Log(sVeryBigStringTime.c_str());
+	SDL_Log("---------------------------------------");
+
+	g_pLTClient->CPrint("Done!");
+}
+
 ConsoleMgr::ConsoleMgr()
 {
 	g_pConsoleMgr = this;
@@ -38,13 +61,17 @@ ConsoleMgr::ConsoleMgr()
 	m_iCurrentPosition = 0;
 	// Position in UI elements
 	m_iCursorPosition = 0;
+	
+	m_iCommandHistoryPosition = 0;
 
 	g_pLTClient->RegisterConsoleProgram("Help", ShowHelpListCommand);
+	g_pLTClient->RegisterConsoleProgram("WriteToDebugLog", WriteToDebugLog);
 }
 
 ConsoleMgr::~ConsoleMgr()
 {
 	g_pLTClient->UnregisterConsoleProgram("Help");
+	g_pLTClient->UnregisterConsoleProgram("WriteToDebugLog");
 
 	Destroy();
 
@@ -156,7 +183,7 @@ LTBOOL ConsoleMgr::HandleChar(unsigned char c)
 LTBOOL ConsoleMgr::HandleKeyDown(int key, int rep)
 {
 	if (!m_bVisible) {
-		if (key == VK_OEM_3) {
+		if (key == BoundConsoleKey()) {
 			Show(true);
 			return LTTRUE;
 		}
@@ -164,30 +191,29 @@ LTBOOL ConsoleMgr::HandleKeyDown(int key, int rep)
 		return LTFALSE;
 	}
 
-	switch (key) {
-	case VK_OEM_3:
-	case VK_ESCAPE:
+	if (key == BoundConsoleKey() || key == VK_ESCAPE)
 	{
 		Show(false);
 		return LTTRUE;
-	} break;
+	}
 
+	switch (key) {
 	case VK_RETURN:
 	{
 		Send();
 		return LTTRUE;
 	} break;
 	case VK_UP:
-		MoveUp(false);
+		RecallHistoryUp();
 		break;
 	case VK_DOWN:
-		MoveDown(false);
+		RecallHistoryDown();
 		break;
 	case VK_PRIOR: // Page Up
-		MoveUp(true);
+		MoveUp(false);
 		break;
 	case VK_NEXT: // Page Down
-		MoveDown(true);
+		MoveDown(false);
 		break;
 	}
 
@@ -218,6 +244,10 @@ void ConsoleMgr::Read(CConsolePrintData* pData)
 void ConsoleMgr::Send()
 {
 	MoveDown(true);
+
+	// Throw it in our history!
+	m_CommandHistory.push_back(m_szEdit);
+	m_iCommandHistoryPosition = m_CommandHistory.size();
 
 	// Echo it back
 	g_pLTClient->CPrint(m_szEdit);
@@ -336,6 +366,34 @@ void ConsoleMgr::MoveDown(bool bBottom)
 
 	AdjustView();
 }
+
+
+void ConsoleMgr::RecallHistoryUp()
+{
+	if (m_CommandHistory.size() == 0) {
+		return;
+	}
+
+	if (m_iCommandHistoryPosition > 0) {
+		m_iCommandHistoryPosition--;
+	}
+
+	m_pEdit->SetText((char*)m_CommandHistory[m_iCommandHistoryPosition].c_str());
+}
+
+void ConsoleMgr::RecallHistoryDown()
+{
+	if (m_CommandHistory.size() == 0) {
+		return;
+	}
+
+	if (m_iCommandHistoryPosition < m_CommandHistory.size() - 1) {
+		m_iCommandHistoryPosition++;
+	}
+
+	m_pEdit->SetText((char*)m_CommandHistory[m_iCommandHistoryPosition].c_str());
+}
+
 
 void ConsoleMgr::AdjustView()
 {

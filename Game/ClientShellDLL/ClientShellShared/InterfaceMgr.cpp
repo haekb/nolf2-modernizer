@@ -1262,11 +1262,12 @@ void CInterfaceMgr::UpdateSplashScreenState()
     HSURFACE hScreen = g_pLTClient->GetScreenSurface();
     uint32 nWidth = 0;
     uint32 nHeight = 0;
+	int nXOffset = g_pInterfaceResMgr->Get4x3Offset();
 
     g_pLTClient->GetSurfaceDims(hScreen, &nWidth, &nHeight);
 
     LTRect rcDst;
-	rcDst.Init(0, 0, nWidth, nHeight);
+	rcDst.Init(nXOffset, 0, nWidth - nXOffset, nHeight);
 
     g_pLTClient->GetSurfaceDims(g_hSplash, &nWidth, &nHeight);
 
@@ -3596,13 +3597,16 @@ LTBOOL CInterfaceMgr::PreLoadingLevelState(GameState eCurState)
 
 	m_LoadingScreen.Show();
 		
+	// Jake: This was commented out, but I found the Music to be a bit crashy. 
+	// So it's back to stop!
+	// ---
 	// Turn off the music (this will be turned on when we start the
-	// next level...
-	//CMusic* pMusic = g_pGameClientShell->GetMusic();
-    //if (pMusic)
-	//{
-	//	pMusic->Stop();
-	//}
+	// next level...)
+	CMusic* pMusic = g_pGameClientShell->GetMusic();
+    if (pMusic)
+	{
+		pMusic->Stop();
+	}
 
 	// Turn off sound
 	((ILTClientSoundMgr*)g_pLTClient->SoundMgr())->SetVolume(0);
@@ -4576,6 +4580,33 @@ void CInterfaceMgr::OnRButtonDblClick(int x, int y)
 			m_MenuMgr.OnRButtonDblClick(x,y);
 		} 
 		break;
+	}
+
+}
+
+void CInterfaceMgr::OnMouseWheel(int x, int y, int delta)
+{
+	// Make sure we're initialized.
+	if (!IsInitialized())
+		return;
+
+	if (m_MessageBox.IsVisible())
+	{
+		return;
+	}
+	switch (m_eGameState)
+	{
+	case GS_SCREEN:
+	{
+		GetScreenMgr()->OnMouseWheel(x, y, delta);
+	}
+	break;
+
+	case GS_MENU:
+	{
+		//m_MenuMgr.OnRButtonDblClick(x, y);
+	}
+	break;
 	}
 
 }

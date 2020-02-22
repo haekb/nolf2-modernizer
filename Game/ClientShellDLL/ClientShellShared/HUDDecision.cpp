@@ -57,8 +57,8 @@ void CHUDDecision::Update()
 	// Sanity checks...
 	if (!IsVisible()) return;
 
-	if (m_fScale != g_pInterfaceResMgr->GetXRatio())
-		SetScale(g_pInterfaceResMgr->GetXRatio());
+	if (m_fScale != g_pInterfaceResMgr->GetYRatio())
+		SetScale(g_pInterfaceResMgr->GetYRatio());
 
 	LTVector vPos;
 	g_pLTClient->GetObjectPos(g_pPlayerMgr->GetMoveMgr()->GetObject(), &vPos);
@@ -220,6 +220,7 @@ void CHUDDecision::UpdateLayout()
 
 	char *pTag = "DecisionWindow";
 	m_BasePos = g_pLayoutMgr->GetPoint(pTag,"Pos");
+	m_BasePos.x += g_pInterfaceResMgr->Get640x480Offset();
 
 	uint8 nFont = (uint8)g_pLayoutMgr->GetInt(pTag,"Font");
 	m_pFont = g_pInterfaceResMgr->GetFont(nFont);
@@ -230,7 +231,9 @@ void CHUDDecision::UpdateLayout()
 	m_nWidth = (uint16)g_pLayoutMgr->GetInt(pTag,"Width");
 
 	m_Offset = g_pLayoutMgr->GetPoint(pTag,"TextOffset");
+
 	LTIntPt offset = m_Offset;
+
 
 	uint16 nTextWidth = (m_nWidth - 2 * offset.x) - nHeaderWidth;
 	LTVector vCol = g_pLayoutMgr->GetVector(pTag,"TextColor");
@@ -276,7 +279,7 @@ void CHUDDecision::UpdateLayout()
 
 	m_Dlg.SetSize(m_nWidth,(offset.y+m_Offset.y));
 
-	m_Dlg.SetScale(g_pInterfaceResMgr->GetXRatio());
+	m_Dlg.SetScale(g_pInterfaceResMgr->GetYRatio());
 }
 
 

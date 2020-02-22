@@ -47,6 +47,7 @@ public:
 	virtual void		OnRButtonDown(int x, int y);
 	virtual void		OnRButtonUp(int x, int y);
 	virtual void		OnRButtonDblClick(int x, int y);
+	virtual void		OnMouseWheel(int x, int y, int delta);
 	virtual void		OnMouseMove(int x, int y);
 
 

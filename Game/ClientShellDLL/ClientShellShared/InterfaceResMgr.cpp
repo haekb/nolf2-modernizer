@@ -276,7 +276,7 @@ void CInterfaceResMgr::DrawMessage(const char *pString, uint8 nFontSize)
 	offset.x =  (640 - nDlgWidth) / 2;
 	offset.y = (480 - nDlgHeight) / 2;
 	m_MsgDlg.SetBasePos(offset);
-	m_MsgDlg.SetScale(GetXRatio());
+	m_MsgDlg.SetScale(GetYRatio());
 
 	m_MsgDlg.Show(LTTRUE);
 
@@ -336,11 +336,17 @@ void CInterfaceResMgr::ScreenDimsChanged()
 	RMode currentMode;
     g_pLTClient->GetRenderMode(&currentMode);
 
-	m_fXRatio = (float)currentMode.m_Width / 640.0f;
-	m_fYRatio = (float)currentMode.m_Height / USABLE_HEIGHT_F;
+	m_fXRatio = (LTFLOAT)currentMode.m_Width / 640.0f;
+	m_fYRatio = (LTFLOAT)currentMode.m_Height / USABLE_HEIGHT_F;
 
 	m_dwScreenWidth = currentMode.m_Width;
 	m_dwScreenHeight = currentMode.m_Height;
+
+	// Additive (> 1.0)
+	m_fAspectRatio = (LTFLOAT)currentMode.m_Width / (LTFLOAT)currentMode.m_Height;
+
+	// Subtractive (< 1.0)
+	m_fInvAspectRatio = (LTFLOAT)currentMode.m_Height / (LTFLOAT)currentMode.m_Width;
 
 	// Re-init the console
 	g_pConsoleMgr->Init();

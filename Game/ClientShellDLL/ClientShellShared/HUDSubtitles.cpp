@@ -132,8 +132,8 @@ void CHUDSubtitles::Update()
 		return;
 	}
 
-	if (m_fScale != g_pInterfaceResMgr->GetXRatio())
-		SetScale(g_pInterfaceResMgr->GetXRatio());
+	if (m_fScale != g_pInterfaceResMgr->GetYRatio())
+		SetScale(g_pInterfaceResMgr->GetYRatio());
 
 
 	//scroll it
@@ -232,7 +232,7 @@ LTBOOL CHUDSubtitles::Show(int nStringId, LTVector vSpeakerPos, LTFLOAT fRadius,
 		m_fDuration = 0.04f * (float)m_pText->GetLength();
 
 
-	SetScale(g_pInterfaceResMgr->GetXRatio());
+	SetScale(g_pInterfaceResMgr->GetYRatio());
 
 	LTIntPt pos = m_FullScreenPos;
 	uint16	width = m_nFullScreenWidth;
@@ -242,7 +242,7 @@ LTBOOL CHUDSubtitles::Show(int nStringId, LTVector vSpeakerPos, LTFLOAT fRadius,
 		width = m_nCinematicWidth;
 	}
 
-	m_DisplayRect.x = (float)pos.x * m_fScale;
+	m_DisplayRect.x = ((float)pos.x * m_fScale) + g_pInterfaceResMgr->Get4x3Offset();
 	m_DisplayRect.y = (float)pos.y * m_fScale;
 	m_DisplayRect.width = (float)width * m_fScale;
 	m_DisplayRect.height = 2.0f + (float)m_nMaxLines * (float)m_nFontSize;

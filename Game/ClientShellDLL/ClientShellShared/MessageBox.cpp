@@ -160,15 +160,17 @@ void CMessageBox::Show(const char *pString, MBCreate* pCreate, uint8 nFontSize, 
 	m_eType = pCreate->eType;
 
 	m_bGameWasPaused = g_pGameClientShell->IsGamePaused();
-	if (!m_bGameWasPaused)
-        g_pGameClientShell->PauseGame(LTTRUE,LTTRUE);
+	if (!m_bGameWasPaused) {
+		g_pGameClientShell->PauseGame(LTTRUE, LTTRUE);
+	}
 
 	uint8 nSize;
-	if (nFontSize)
+	if (nFontSize) {
 		nSize = nFontSize;
-	else
+	}
+	else {
 		nSize = g_pLayoutMgr->GetDialogFontSize();
-
+	}
 	//build everything at normal scale to make calculations easier
 	m_Dlg.SetScale(1.0f);
 
@@ -290,10 +292,12 @@ void CMessageBox::Show(const char *pString, MBCreate* pCreate, uint8 nFontSize, 
 		m_Dlg.SetSelection(m_Dlg.GetIndex(m_pCancel));
 	}
 
-	offset.x =  (640 - nDlgWidth) / 2;
+
+	// Reference: 640 / 2 = 320
+	offset.x = (320 + g_pInterfaceResMgr->Get640x480Offset()) - (nDlgWidth / 2);
 	offset.y = (480 - nDlgHeight) / 2;
 	m_Dlg.SetBasePos(offset);
-	m_Dlg.SetScale(g_pInterfaceResMgr->GetXRatio());
+	m_Dlg.SetScale(g_pInterfaceResMgr->GetYRatio());
 
 	m_Dlg.Show(LTTRUE);
     m_bVisible = LTTRUE;

@@ -231,8 +231,11 @@ bool CSpriteFX::Init(ILTClient *pClientDE, FX_BASEDATA *pBaseData, const CBaseFX
 
 	LTMatrix mMat;
 	ocs.m_Rotation.ConvertToMatrix( mMat );
+	auto offset = GetProps()->m_vOffset;
+	m_vPos = ocs.m_Pos = m_vCreatePos + (mMat * offset);
 
-	m_vPos = ocs.m_Pos = m_vCreatePos + (mMat * GetProps()->m_vOffset);
+	// Keep track of the default createpos z axis
+	m_fDefaultOffsetZ = m_vCreatePos.z;
 
 	// When camera facing we want the Normal rotation at the identity...
 
@@ -246,6 +249,8 @@ bool CSpriteFX::Init(ILTClient *pClientDE, FX_BASEDATA *pBaseData, const CBaseFX
 		return LTFALSE;
 
 	// Success !!
+
+
 
 	return LTTRUE;
 }
@@ -276,7 +281,6 @@ void CSpriteFX::Term()
 bool CSpriteFX::Update(float tmFrameTime)
 {
 	// Shutdown....
-
 	if( IsShuttingDown() )
 	{
 		m_pLTClient->Common()->SetObjectFlags(m_hObject, OFT_Flags, 0, FLAGMASK_ALL);
@@ -290,6 +294,12 @@ bool CSpriteFX::Update(float tmFrameTime)
 		m_pLTClient->GetSpriteControl(m_hObject, pControl);
 
 		pControl->SetCurPos(0, 0);
+	}
+
+	// If our vPos is back to default and we have an offset z, fix it!
+	// This "fixes" a bug where the original pos keeps being reapplied.
+	if (m_fDefaultOffsetZ == m_vPos.z && GetProps()->m_vOffset.z != 0) {
+		m_vPos.z += GetProps()->m_vOffset.z;
 	}
 
 	// Base class update first
