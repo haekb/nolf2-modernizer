@@ -36,6 +36,8 @@ class CTO2GameClientShell : public CGameClientShell
 		virtual uint32 OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid);
 	    virtual LTRESULT ProcessPacket(ILTMessage_Read *pMsg, uint8 senderAddr[4], uint16 senderPort);
 	    virtual void OnMessage(ILTMessage_Read *pMsg);
+
+		virtual void LimitFramerate();
 		
 		virtual void		Update();
 
@@ -53,6 +55,13 @@ class CTO2GameClientShell : public CGameClientShell
 
 		// allocator for client weapons
 		CTO2ClientWeaponAllocator	m_ClientWeaponAllocator;
+
+		// Framerate limiter stuff
+		LTBOOL 		m_bLockFramerate; // Locks framerate for ...everything...
+		LTBOOL		m_bUserWantsFramerateLock; // If the user wants to override it, let them!
+		LONGLONG    m_lNextUpdate;
+		LONGLONG    m_lFrametime;
+		LARGE_INTEGER m_lTimerFrequency;
 };
 
 #endif  // __TO2_GAME_CLIENT_SHELL_H__
