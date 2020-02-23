@@ -59,6 +59,7 @@ class CTO2GameClientShell : public CGameClientShell
 		// Framerate limiter stuff
 		LTBOOL 		m_bLockFramerate; // Locks framerate for ...everything...
 		LTBOOL		m_bUserWantsFramerateLock; // If the user wants to override it, let them!
+		LTFLOAT		m_fMaxFPS;
 		LONGLONG    m_lNextUpdate;
 		LONGLONG    m_lFrametime;
 		LARGE_INTEGER m_lTimerFrequency;

@@ -93,6 +93,7 @@ LTBOOL CTO2HUDMgr::Init()
 
 	m_itemArray.push_back(&m_WpnChooser);
 	m_itemArray.push_back(&m_AmmoChooser);
+	m_itemArray.push_back(&m_Framerate);
 
     return CHUDMgr::Init();
 }

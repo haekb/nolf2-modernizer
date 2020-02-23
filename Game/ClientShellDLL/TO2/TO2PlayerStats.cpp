@@ -48,6 +48,8 @@ void AirFn(int argc, char **argv)
 	g_pPlayerStats->UpdateAir((float)atof(argv[0])/100.0f);
 }
 
+#define TOTAL_FRAMERATE_SAMPLES 10
+
 // ----------------------------------------------------------------------- //
 //
 //	ROUTINE:	CTO2PlayerStats::CTO2PlayerStats()
@@ -95,7 +97,10 @@ CTO2PlayerStats::CTO2PlayerStats()
 
 	memset(m_nSkills,0,sizeof(m_nSkills));
 
-
+	m_bShowFramerate = LTFALSE;
+	m_fFramerate = 0.0f;
+	m_fFramerateSamples = 0.0f;
+	m_iFramerateSampleIndex = 0;
 }
 
 // ----------------------------------------------------------------------- //
@@ -1756,5 +1761,21 @@ void CTO2PlayerStats::SetObjectivesSeen()
 float CTO2PlayerStats::GetSkillModifier(eSkill skl, uint8 nMod)
 {
 	return g_pSkillsButeMgr->GetModifier(skl, (eSkillLevel)m_nSkills[skl], nMod);
+}
+
+void CTO2PlayerStats::UpdateFramerate(LTFLOAT framerate)
+{
+	// Sample up to 10 frames
+	if (m_iFramerateSampleIndex >= TOTAL_FRAMERATE_SAMPLES) {
+		m_fFramerate = m_fFramerateSamples / TOTAL_FRAMERATE_SAMPLES;
+
+		m_iFramerateSampleIndex = 0;
+		m_fFramerateSamples = 0;
+	}
+
+	m_fFramerateSamples += framerate;
+	m_iFramerateSampleIndex++;
+
+	g_pHUDMgr->QueueUpdate(kHUDFramerate);
 }
 

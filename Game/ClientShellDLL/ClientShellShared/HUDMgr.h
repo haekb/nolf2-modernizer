@@ -52,6 +52,7 @@ enum eHUDUpdateFlag
 	kHUDRespawn     = 0x00080000,
 	kHUDScores		= 0x00100000,
 	kHUDDoomsday	= 0x00200000,
+	kHUDFramerate   = 0x00400000,
 	kHUDAll			= 0xFFFFFFFF,
 };
 

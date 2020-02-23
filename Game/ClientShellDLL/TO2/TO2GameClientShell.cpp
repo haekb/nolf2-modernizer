@@ -42,6 +42,7 @@ int g_nSampleRate = 22050;
 CTO2GameClientShell::CTO2GameClientShell() : CGameClientShell()
 {
 	// Just some default
+	m_fMaxFPS = 60.0f;
 	m_lNextUpdate = 1L;
 	m_lFrametime = 0L;
 	m_bLockFramerate = LTTRUE;
@@ -85,8 +86,6 @@ uint32 CTO2GameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
 	//so make sure that the FX managers know about the change
 	UpdateGoreSettings();
 
-	// TEMP DISCORD
-
 	// Setup our framerate limiter
 	m_bLockFramerate = LTTRUE;
 
@@ -101,7 +100,8 @@ uint32 CTO2GameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
 	}
 
 	// Init with a default!
-	m_lFrametime = (m_lTimerFrequency.QuadPart / g_vtMaxFPS.GetFloat());
+	m_fMaxFPS = g_vtMaxFPS.GetFloat();
+	m_lFrametime = (m_lTimerFrequency.QuadPart / m_fMaxFPS);
 
 	return nResult;
 }
@@ -153,8 +153,14 @@ void CTO2GameClientShell::OnMessage(ILTMessage_Read *pMsg)
 
 void CTO2GameClientShell::LimitFramerate()
 {
-	// Animations are still wonky in multiplayer. Allows you to shoot faster, so let's always limit that in mp.
-	// ---
+
+	// Update the max fps if they changed it!
+	if (m_fMaxFPS != g_vtMaxFPS.GetFloat())
+	{
+		m_fMaxFPS = g_vtMaxFPS.GetFloat();
+		m_lFrametime = (m_lTimerFrequency.QuadPart / m_fMaxFPS);
+	}
+
 	// Occasionally we'll need to unlock the framerate (like during loading!)
 	// But we also want the user to have the option to unlock it,
 	// so that's why there's two almost identical lock vars here.
@@ -177,6 +183,10 @@ void CTO2GameClientShell::LimitFramerate()
 void CTO2GameClientShell::Update()
 {
 	CGameClientShell::Update();
+
+	CTO2PlayerStats* pPlayerStats = (CTO2PlayerStats*)g_pInterfaceMgr->GetPlayerStats();
+
+	pPlayerStats->UpdateFramerate(1 / GetFrameTime());
 
 	LimitFramerate();
 

@@ -364,6 +364,7 @@ copy $(TargetPath) $(GAME_REZ_DIR) </Command>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
     </ClCompile>
+    <ClCompile Include="HUDFramerate.cpp" />
     <ClCompile Include="HUDHiding.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Final|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
@@ -654,6 +655,7 @@ copy $(TargetPath) $(GAME_REZ_DIR) </Command>
     <ClInclude Include="HUDCrosshair.h" />
     <ClInclude Include="HUDDamageDir.h" />
     <ClInclude Include="HUDDoomsday.h" />
+    <ClInclude Include="HUDFramerate.h" />
     <ClInclude Include="HUDHiding.h" />
     <ClInclude Include="HUDHidingBar.h" />
     <ClInclude Include="HUDObjectives.h" />

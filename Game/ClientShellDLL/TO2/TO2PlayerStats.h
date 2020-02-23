@@ -146,6 +146,9 @@ public:
 	uint32		GetCostToUpgrade(eSkill skill);
 	float		GetSkillModifier(eSkill skl, uint8 nMod); 
 
+	LTFLOAT		GetFramerate() { return m_fFramerate; }
+	void		UpdateFramerate(LTFLOAT framerate);
+
 protected:
 
     void        AddCanUseWeapon(uint8 nWeaponId);
@@ -202,6 +205,11 @@ protected:
 
 	uint32		m_dwProgress;
 	uint32		m_dwMaxProgress;
+
+	LTBOOL		m_bShowFramerate;
+	LTFLOAT		m_fFramerate;
+	LTFLOAT		m_fFramerateSamples;
+	int			m_iFramerateSampleIndex;
 
 };
 
