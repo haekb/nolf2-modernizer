@@ -29,7 +29,7 @@
 #include "HUDProgressBar.h"
 #include "HUDRespawn.h"
 #include "HUDDoomsday.h"
-
+#include "HUDFramerate.h"
 
 //******************************************************************************************
 //** HUD Manager
@@ -61,6 +61,7 @@ protected:
 	CHUDProgressBar		m_ProgressBar;
 	CHUDRespawn			m_Respawn;
 	CHUDDoomsday		m_Doomsday;
+	CHUDFramerate		m_Framerate;
 
 };
 

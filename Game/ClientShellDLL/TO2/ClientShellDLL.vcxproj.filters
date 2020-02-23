@@ -251,6 +251,9 @@
     <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\voice_manager.cpp">
       <Filter>Discord</Filter>
     </ClCompile>
+    <ClCompile Include="HUDFramerate.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TO2ClientWeaponAllocator.h">
@@ -498,6 +501,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\voice_manager.h">
       <Filter>Discord</Filter>
+    </ClInclude>
+    <ClInclude Include="HUDFramerate.h">
+      <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
