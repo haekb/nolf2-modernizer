@@ -842,7 +842,7 @@ void CVehicleMgr::UpdateVehicleMotion()
 	g_pPhysicsLT->GetAcceleration( hObj, &vAccel );
 
 	// Prevent NAN errors
-	vAccel = FixVectorIfZero(myVel);
+	vAccel = FixVectorIfZero(vAccel);
 
     LTVector moveDir = myVel;
 	moveDir.Normalize();
