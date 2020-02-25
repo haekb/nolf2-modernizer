@@ -45,4 +45,13 @@
 #include "GameClientShell.h"
 #include "AutoMessage.h"
 
+// Enable floating point exceptions
+#include <float.h>
+
+#ifndef _START_STRICT_FP
+// Using this define will clear any fp exceptions, and then look for the next one. Lithtech.exe seems ripe with 'em, so use this carefully.
+#define _START_STRICT_FP _clearfp(); _controlfp(_EM_INEXACT | _EM_UNDERFLOW | _EM_OVERFLOW, _MCW_EM);
+#define _END_STRICT_FP _clearfp(); _controlfp(_EM_INEXACT | _EM_UNDERFLOW | _EM_OVERFLOW | _EM_INVALID | _EM_ZERODIVIDE, _MCW_EM);
+#endif
+
 #endif // __STDAFX_H__
