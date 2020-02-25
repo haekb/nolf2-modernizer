@@ -425,3 +425,24 @@ int CaseInsensitiveCompare(const void *entry1, const void *entry2)
 {
     return _stricmp(*(char **)entry1,*(char **)entry2);
 }
+
+//
+// Jake: Some code relies on old NaN behaviour from MSVC C++ 6.0, 
+// which seems to allow you to cast it to 1?
+// That ain't good, just init the vector to 1.0f if we're all zeros.
+// Use before doing any divison math on vectors!
+//
+// This is a cheap way to fix the problem, would be better to just re-work the function, but ehh.
+//
+LTVector FixVectorIfZero(LTVector vIn)
+{
+	LTVector vZero;
+	vZero.Init();
+
+	if (vIn == vZero)
+	{
+		vIn = { 1.0f, 1.0f, 1.0f };
+	}
+
+	return vIn;
+}

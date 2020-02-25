@@ -211,5 +211,6 @@ inline LTVector ConvertToDEditPos( LTVector &vOrigPosition )
 
 int CaseInsensitiveCompare(const void *entry1, const void *entry2);
 
+LTVector FixVectorIfZero(LTVector vIn);
 
 #endif // __COMMON_UTILITIES_H__

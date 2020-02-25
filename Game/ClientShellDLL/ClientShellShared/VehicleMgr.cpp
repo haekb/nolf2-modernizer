@@ -29,6 +29,7 @@
 #include "SurfaceFunctions.h"
 #include "PlayerViewAttachmentMgr.h"
 
+
 #define ROUNDFLOAT(f) ((int)((f) + ((f) > 0 ? 0.5 : -0.5)))
 
 #define SNOWMOBILE_SLIDE_TO_STOP_TIME	5.0f
@@ -788,7 +789,6 @@ void CVehicleMgr::UpdateVehicleMotion()
     LTBOOL bFreeMovement = (g_pMoveMgr->IsFreeMovement() ||
 		g_pMoveMgr->IsBodyOnLadder() || g_pPlayerMgr->IsSpectatorMode());
 
-
 	// Normally we have gravity on, but the containers might turn it off.
 
 	g_pCommonLT->SetObjectFlags(hObj, OFT_Flags, g_pPlayerMgr->IsSpectatorMode() ? 0 : FLAG_GRAVITY, FLAG_GRAVITY);
@@ -812,6 +812,7 @@ void CVehicleMgr::UpdateVehicleMotion()
 		// The server won't notify us, so change models...
 
 		SetPhysicsModel(PPM_NORMAL);
+
 		return;
 	}
 
@@ -834,8 +835,14 @@ void CVehicleMgr::UpdateVehicleMotion()
 
     LTVector myVel = g_pMoveMgr->GetVelocity();
 	
+	// Prevent NAN errors
+	myVel = FixVectorIfZero(myVel);
+
     LTVector vAccel(0, 0, 0);
 	g_pPhysicsLT->GetAcceleration( hObj, &vAccel );
+
+	// Prevent NAN errors
+	vAccel = FixVectorIfZero(myVel);
 
     LTVector moveDir = myVel;
 	moveDir.Normalize();
@@ -1032,7 +1039,6 @@ void CVehicleMgr::UpdateVehicleMotion()
 		g_pPhysicsLT->SetAcceleration(hObj, &zeroVec);
 		g_pPhysicsLT->SetVelocity(hObj, &zeroVec);
 	}
-
 }
 
 // ----------------------------------------------------------------------- //
