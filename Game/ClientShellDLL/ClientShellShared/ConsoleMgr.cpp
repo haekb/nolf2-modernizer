@@ -34,6 +34,13 @@ void WriteToDebugLog(int argc, char** argv)
 	std::string sVeryBigStringTime = "";
 
 	for (auto history : g_pConsoleMgr->GetHistory()) {
+
+		// SDL_Log has a max buffer size that I can't find, so just flush every 1024 characters or so.
+		if (history.sMessage.size() + sVeryBigStringTime.size() >= 1024) {
+			SDL_Log(sVeryBigStringTime.c_str());
+			sVeryBigStringTime = "";
+		}
+
 		sVeryBigStringTime += history.sMessage;
 		sVeryBigStringTime += "\n";
 	}
