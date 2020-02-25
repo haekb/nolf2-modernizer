@@ -99,7 +99,7 @@ public:
 			)
 		);
 
-		SDL_Log("HFOV : %f", RAD2DEG(fov));
+		//SDL_Log("HFOV : %f", RAD2DEG(fov));
 		return RAD2DEG(fov);
 	}
 
@@ -112,7 +112,7 @@ public:
 			)
 		);
 
-		SDL_Log("HFOV : %f", RAD2DEG(fov));
+		//SDL_Log("HFOV : %f", RAD2DEG(fov));
 		return RAD2DEG(fov);
 	}
 
@@ -125,7 +125,7 @@ public:
 			)
 			);
 
-		SDL_Log("VFOV : %f", RAD2DEG(fov));
+		//SDL_Log("VFOV : %f", RAD2DEG(fov));
 		return RAD2DEG(fov);
 	}
 
