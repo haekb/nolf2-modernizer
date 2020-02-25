@@ -26,6 +26,7 @@
 #include "HUDRadar.h"
 #include "HUDDisplayMeter.h"
 #include "HUDScores.h"
+#include "HUDConsoleLines.h"
 
 enum eHUDUpdateFlag
 {
@@ -53,6 +54,7 @@ enum eHUDUpdateFlag
 	kHUDScores		= 0x00100000,
 	kHUDDoomsday	= 0x00200000,
 	kHUDFramerate   = 0x00400000,
+	kHUDConsoleLines= 0x00800000,
 	kHUDAll			= 0xFFFFFFFF,
 };
 
@@ -111,6 +113,7 @@ protected:
 	CHUDPaused			m_Paused;
 	CHUDDisplayMeter	m_DisplayMeter;
 	CHUDScores			m_Scores;
+	CHUDConsoleLines	m_ConsoleLines;
 
 	//items
 	typedef std::vector<CHUDItem *> ItemArray;

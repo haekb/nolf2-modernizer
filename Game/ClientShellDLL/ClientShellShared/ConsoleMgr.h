@@ -51,6 +51,7 @@ public:
 
 	// We don't want the console popping up if they're trying to customize the controls
 	void SetConsoleLock(bool bOn) { m_bLockConsole = bOn; };
+	std::string GetConsoleLines() { return m_sStr; };
 
 protected:
 	std::vector<HistoryData> m_History;
@@ -59,7 +60,6 @@ protected:
 
 	std::vector<std::string> m_HelpList;
 	std::vector<std::string> m_CommandHistory;
-
 
 	CLTGUIWindow	    m_Window;
 	std::vector<CLTGUITextCtrl*> m_pLineItems;
@@ -81,5 +81,7 @@ protected:
 	bool m_bInitialized;
 	bool m_bVisible;
 	bool m_bLockConsole;
+
+	std::string m_sStr;
 };
 

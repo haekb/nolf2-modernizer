@@ -5,6 +5,8 @@
 #include "LTPoly.h"
 #include "InterfaceResMgr.h"
 
+#include <algorithm>
+
 ConsoleMgr* g_pConsoleMgr = NULL;
 extern CInterfaceResMgr* g_pInterfaceResMgr;
 
@@ -56,6 +58,10 @@ ConsoleMgr::ConsoleMgr()
 
 	m_bInitialized = false;
 	m_bVisible = false;
+	m_bLockConsole = true;
+
+	m_sStr = "";
+
 	m_hConsoleSurface = NULL;
 	memset(m_szEdit, 0, sizeof(m_szEdit));
 
@@ -99,6 +105,8 @@ void ConsoleMgr::Init()
 		Destroy();
 	}
 
+	
+
 	RMode currentMode;
 	g_pLTClient->GetRenderMode(&currentMode);
 
@@ -110,12 +118,14 @@ void ConsoleMgr::Init()
 
 	m_Window.Create(g_pInterfaceResMgr->GetTexture("interface\\console.dtx"), m_iWidth, m_iHeight);
 
+	auto pFont = g_pInterfaceResMgr->GetFont(4);
+
 	// Create the lines for our console text
 	// TODO: Maybe look into large text fields? Not sure if this will cause any performance concerns.
 	for (int i = 0; i < iLineItemLength; i++) {
 
 		CLTGUITextCtrl* pText = debug_new(CLTGUITextCtrl);
-		if (!pText->Create("", LTNULL, LTNULL, g_pInterfaceResMgr->GetFont(4), m_iFontSize, NULL))
+		if (!pText->Create("", LTNULL, LTNULL, pFont, m_iFontSize, NULL))
 		{
 			debug_delete(pText);
 			pText = LTNULL;
@@ -127,7 +137,7 @@ void ConsoleMgr::Init()
 	
 	// This is basically the little symbol, in our case it's `>` in front of the edit line
 	m_pEditText = debug_new(CLTGUITextCtrl);
-	if (!m_pEditText->Create("", LTNULL, LTNULL, g_pInterfaceResMgr->GetFont(4), m_iFontSize, NULL))
+	if (!m_pEditText->Create("", LTNULL, LTNULL, pFont, m_iFontSize, NULL))
 	{
 		debug_delete(m_pEditText);
 		m_pEditText = LTNULL;
@@ -138,7 +148,7 @@ void ConsoleMgr::Init()
 	m_Window.AddControl(m_pEditText, { 0,0 });
 	
 	m_pEdit = debug_new(CLTGUIEditCtrl);
-	if (!m_pEdit->Create(g_pLTClient, 1, g_pInterfaceResMgr->GetFont(4), m_iFontSize, 256, NULL, m_szEdit))
+	if (!m_pEdit->Create(g_pLTClient, 1, pFont, m_iFontSize, 256, NULL, m_szEdit))
 	{
 		debug_delete(m_pEdit);
 		m_pEdit = LTNULL;
@@ -152,6 +162,8 @@ void ConsoleMgr::Init()
 	// Add the edit control, and then set it as the selected control
 	m_Window.AddControl(m_pEdit, { 0, 0 });
 	m_Window.SetSelection(iLineItemLength + 1);
+
+	m_bLockConsole = false;
 
 	m_bInitialized = true;
 }
@@ -245,6 +257,34 @@ void ConsoleMgr::Read(CConsolePrintData* pData)
 		return;
 	}
 
+	// New content? Reset the string!
+	int nNumConsoleLines = GetConsoleInt("NumConsoleLines", 0);
+
+	if (nNumConsoleLines) {
+
+		std::string sLines = "";
+		size_t nHistorySize = m_History.size();
+
+		// 0 indexed
+		nHistorySize -= 1;
+
+		// Make sure we don't overflow
+		nNumConsoleLines = std::min((int)nHistorySize, nNumConsoleLines);
+
+		for (int i = 0; i < nNumConsoleLines; i++)
+		{
+			int index = nHistorySize - i;
+			sLines += m_History.at(index).sMessage;
+			// Most console messages are newlined.
+			//sLines += "\n";
+		}
+
+		m_sStr = sLines;
+
+		// Yell at the hud mgr to update the console lines
+		g_pGameClientShell->GetInterfaceMgr()->GetHUDMgr()->QueueUpdate(kHUDConsoleLines);
+	}
+
 	MoveDown(false);
 }
 
@@ -269,7 +309,7 @@ void ConsoleMgr::Send()
 
 void ConsoleMgr::Draw()
 {
-	if (!m_bVisible) {
+	if (m_bLockConsole || !m_bVisible) {
 		return;
 	}
 
@@ -313,9 +353,10 @@ void ConsoleMgr::Draw()
 
 void ConsoleMgr::Show(bool bShow)
 {
-	// For now let's disable it in multiplayer!
-	if (IsMultiplayerGame()) {
+	// Disable if in MP or if the console is locked
+	if (m_bLockConsole || IsMultiplayerGame()) {
 		m_bVisible = false;
+		return;
 	}
 
 	// Pause the game

@@ -80,6 +80,7 @@ LTBOOL CHUDMgr::Init()
 	m_itemArray.push_back(&m_Radar);
 	m_itemArray.push_back(&m_DisplayMeter);
 	m_itemArray.push_back(&m_Scores);
+	m_itemArray.push_back(&m_ConsoleLines);
 	
 	g_pPopup = &m_Popup;
 	g_pDecision = &m_Decision;

@@ -22,8 +22,10 @@
 #include "ClientMultiplayerMgr.h"
 #include "ScreenPostload.h"
 #include "ClientResShared.h"
+#include "ConsoleMgr.h"
 
 extern CGameClientShell* g_pGameClientShell;
+extern ConsoleMgr* g_pConsoleMgr;
 
 CLoadingScreen::CLoadingScreen() :
 	m_eCurState(STATE_NONE)
@@ -184,6 +186,8 @@ LTBOOL CLoadingScreen::Init()
 {
 	if (m_eCurState != STATE_NONE)
 		return LTFALSE;
+
+	g_pConsoleMgr->SetConsoleLock(true);
 
 	if( m_pRenderScreen )
 	{
@@ -661,6 +665,7 @@ LTBOOL CLoadingScreen::Term()
 		m_pHelpStr = LTNULL;
 	}
 
+	g_pConsoleMgr->SetConsoleLock(false);
 
 	return LTTRUE;
 }
