@@ -396,8 +396,9 @@ bool CClientSaveLoadMgr::HandleSaveData( ILTMessage_Read& msg )
 
 	// If we're not the host, then let the user know a save is happening.
 	// Don't show autosaves.
-	if( g_pClientMultiplayerMgr->IsConnectedToRemoteServer( ) && eSaveDataState != eSaveDataAutoSave )
-		g_pGameClientShell->CSPrint( LoadTempString( IDS_SAVINGGAME ));
+	if (g_pClientMultiplayerMgr->IsConnectedToRemoteServer() && eSaveDataState != eSaveDataAutoSave) {
+		g_pGameClientShell->CSPrint(LoadTempString(IDS_SAVINGGAME));
+	}
 	
 	// Give the server our save data.
 

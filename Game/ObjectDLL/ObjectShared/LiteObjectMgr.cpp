@@ -126,8 +126,9 @@ void CLiteObjectMgr::RemoveObject(GameBaseLite *pObject)
 
 	// Remove it from the map
 	TNameMap::iterator iObjectNamePos = m_aNameMap.find(pObject->GetName());
-	if ((iObjectNamePos != m_aNameMap.end()) && (iObjectNamePos->second == pObject))
+	if ((iObjectNamePos != m_aNameMap.end()) && (iObjectNamePos->second == pObject)) {
 		m_aNameMap.erase(iObjectNamePos);
+	}
 
 	// Make sure it's not in the initialupdate list
 	RemoveObjectFromList(m_aInitialUpdateObjects, pObject);
@@ -409,8 +410,9 @@ GameBaseLite *CLiteObjectMgr::FindObjectByName(const char *pName)
 {
 	// Do a look-up
 	TNameMap::iterator iObj = m_aNameMap.find(pName);
-	if (iObj == m_aNameMap.end())
+	if (iObj == m_aNameMap.end()) {
 		return 0;
+	}
 
 	return iObj->second;
 }
@@ -418,8 +420,9 @@ GameBaseLite *CLiteObjectMgr::FindObjectByName(const char *pName)
 bool CLiteObjectMgr::RemoveObjectFromList(TObjectList &aList, GameBaseLite *pObject)
 {
 	TObjectList::iterator iObj = std::find(aList.begin(), aList.end(), pObject);
-	if (iObj == aList.end())
+	if (iObj == aList.end()) {
 		return false;
+	}
 	*iObj = 0;
 	return true;
 }
@@ -444,17 +447,21 @@ void CLiteObjectMgr::CleanList(TObjectList &aList)
 
 void CLiteObjectMgr::CleanObjectLists()
 {
-	if (!m_bObjectListsDirty)
+	if (!m_bObjectListsDirty) {
 		return;
+	}
+
 
 	// Clean the active objects
-	if (m_aActiveObjects.size() != m_nNumActiveObjects)
+	if (m_aActiveObjects.size() != m_nNumActiveObjects) {
 		CleanList(m_aActiveObjects);
+	}
 	ASSERT(m_aActiveObjects.size() == m_nNumActiveObjects);
 
 	// Clean the inactive objects
-	if (m_aInactiveObjects.size() != m_nNumInactiveObjects)
+	if (m_aInactiveObjects.size() != m_nNumInactiveObjects) {
 		CleanList(m_aInactiveObjects);
+	}
 	ASSERT(m_aInactiveObjects.size() == m_nNumInactiveObjects);
 
 	// You are clean

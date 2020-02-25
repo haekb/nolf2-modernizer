@@ -185,8 +185,9 @@ uint32 GameBaseLite::OnPrecreate(ObjectCreateStruct* pOCS, float precreateType)
 	ASSERT(*GetName() && "Creating lite object without a name!");
 
 	// Read our properties
-	if (!ReadProp(pOCS))
+	if (!ReadProp(pOCS)) {
 		return 0;
+	}
 
 	// Add ourselves to the ObjectLiteMgr
 	g_pGameServerShell->GetLiteObjectMgr()->AddObject(this);

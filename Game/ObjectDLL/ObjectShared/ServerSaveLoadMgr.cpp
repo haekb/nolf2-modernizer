@@ -942,8 +942,9 @@ bool CServerSaveLoadMgr::HandleSaveData( HCLIENT hSender, ILTMessage_Read& msg )
 	}
 
 	// Check if we are still waiting for more save data.
-	if( !m_SaveDataPlayerTracker.IsEmpty( ))
+	if (!m_SaveDataPlayerTracker.IsEmpty()) {
 		return true;
+	}
 
 	return FinishSaveData( );
 }
@@ -1167,8 +1168,9 @@ bool CServerSaveLoadMgr::FinishSaveGame( )
 	}
 
 	// Copy in the save dir.
-	if( !CopyWorkingDir( m_sSaveGameDir )) 
+	if (!CopyWorkingDir(m_sSaveGameDir)) {
 		return false;
+	}
 
 	// Create a save list.
     ObjectList* pSaveList = g_pLTServer->CreateObjectList();
