@@ -75,7 +75,9 @@ public:
 	LTFLOAT				Get4x3Ratio()						{ return 640.0f / 480.0f; }
 	int					Get4x3Offset(int w, int h);
 	int					Get640x480Offset();
+	// Width / Height
 	LTFLOAT				GetAspectRatio()					{ return m_fAspectRatio; }
+	// Height / Width
 	LTFLOAT				GetInvAspectRatio()					{ return m_fInvAspectRatio;  }
 
     uint32              GetScreenWidth();
