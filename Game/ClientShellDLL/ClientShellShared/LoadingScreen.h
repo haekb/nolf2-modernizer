@@ -157,6 +157,8 @@ private:
 	// If this is set the loading screen will render this rather than draw its self...
 	CBaseScreen		*m_pRenderScreen;
 
+	LTBOOL m_bFramerateLockPreference;
+
 };
 
 #endif //__LOADINGSCREEN_H__

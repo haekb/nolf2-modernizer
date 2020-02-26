@@ -57,6 +57,8 @@ CLoadingScreen::CLoadingScreen() :
 	m_nDefaultHelpFontSize = 0;
 	m_nDefaultHelpColor = 0;
 
+	m_bFramerateLockPreference = LTFALSE;
+
 	InitializeCriticalSection(&m_MissionUpdate);
 
 }
@@ -186,6 +188,10 @@ LTBOOL CLoadingScreen::Init()
 {
 	if (m_eCurState != STATE_NONE)
 		return LTFALSE;
+
+	// Save our framerate lock preference, and unlock it for speeeeeeeed.
+	m_bFramerateLockPreference = GetConsoleBool("LockFramerate", LTTRUE);
+	g_pLTClient->RunConsoleString("+LockFramerate 0");
 
 	g_pConsoleMgr->SetConsoleLock(true);
 
@@ -666,6 +672,10 @@ LTBOOL CLoadingScreen::Term()
 	}
 
 	g_pConsoleMgr->SetConsoleLock(false);
+
+	// Re-lock our framerate if we wanted it locked
+	std::string sConsoleString = "+LockFramerate " + std::to_string(m_bFramerateLockPreference);
+	g_pLTClient->RunConsoleString(sConsoleString.c_str());
 
 	return LTTRUE;
 }
