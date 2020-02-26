@@ -4641,7 +4641,7 @@ void CInterfaceMgr::OnMouseWheel(int x, int y, int delta)
 
 	case GS_MENU:
 	{
-		//m_MenuMgr.OnRButtonDblClick(x, y);
+		m_MenuMgr.OnMouseWheel(x, y, delta);
 	}
 	break;
 	}

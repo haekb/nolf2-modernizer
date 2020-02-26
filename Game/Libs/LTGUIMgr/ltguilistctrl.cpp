@@ -447,6 +447,22 @@ LTBOOL CLTGUIListCtrl::OnMouseMove(int x, int y)
     return LTFALSE;
 }
 
+LTBOOL CLTGUIListCtrl::OnMouseWheel(int x, int y, int delta)
+{
+	if (delta > 0)
+	{
+		OnPageUp();
+		return LTTRUE;
+	}
+	else if (delta < 0)
+	{
+		OnPageDown();
+		return LTTRUE;
+	}
+
+	return LTFALSE;
+}
+
 // Add a control the the array of controls
 uint16 CLTGUIListCtrl::AddControl ( CLTGUICtrl *pControl )
 {

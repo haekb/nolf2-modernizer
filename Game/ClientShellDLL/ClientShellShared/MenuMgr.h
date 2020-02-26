@@ -96,7 +96,7 @@ public:
 	void	OnRButtonUp(int x, int y);
 	void	OnRButtonDblClick(int x, int y);
 	void	OnMouseMove(int x, int y);
-
+	void    OnMouseWheel(int x, int y, int delta);
 
 	CBaseMenu*	GetMenu(eMenuID menuID);
 	

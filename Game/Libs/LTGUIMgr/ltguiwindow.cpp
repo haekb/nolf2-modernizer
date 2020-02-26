@@ -257,6 +257,23 @@ LTBOOL CLTGUIWindow::OnMouseMove(int x, int y)
     return LTFALSE;
 }
 
+LTBOOL CLTGUIWindow::OnMouseWheel(int x, int y, int delta)
+{
+	uint16 nControlUnderPoint = 0;
+	CLTGUICtrl* pCtrl = GetControlUnderPoint(x, y, &nControlUnderPoint);
+	if (pCtrl)
+	{
+		// Make sure we're enabled
+		if (!pCtrl->IsEnabled())
+			return LTFALSE;
+
+		if (pCtrl->OnMouseWheel(x, y, delta))
+			return LTTRUE;
+	}
+
+	return LTFALSE;
+}
+
 // Add a control the the array of controls
 uint16 CLTGUIWindow::AddControl ( CLTGUICtrl *pControl, LTIntPt offset )
 {

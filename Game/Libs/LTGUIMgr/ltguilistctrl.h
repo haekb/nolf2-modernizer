@@ -62,6 +62,8 @@ public:
     virtual LTBOOL   OnRButtonDown(int x, int y);
     virtual LTBOOL   OnRButtonUp(int x, int y);
     virtual LTBOOL   OnMouseMove(int x, int y);
+	virtual LTBOOL	 OnMouseWheel(int x, int y, int delta);
+
 
 	// Set the number of pixels between items
 	void		SetItemSpacing ( int nSpacing )		{ m_nItemSpacing=nSpacing; m_bNeedsRecalculation = LTTRUE;}

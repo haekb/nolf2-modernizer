@@ -85,6 +85,7 @@ public:
     virtual LTBOOL   OnRButtonUp(int x, int y) {return LTFALSE;}
     virtual LTBOOL   OnRButtonDblClick(int x, int y) {return LTFALSE;}
     virtual LTBOOL   OnMouseMove(int x, int y) {return LTFALSE;}
+	virtual LTBOOL	 OnMouseWheel(int x, int y, int delta) { return LTFALSE; }
 
 	// Handle a command
     virtual void    OnCommand ( uint32 nCommandID ) {}

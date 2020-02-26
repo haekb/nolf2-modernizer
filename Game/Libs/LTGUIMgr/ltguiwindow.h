@@ -58,6 +58,7 @@ public:
     virtual LTBOOL   OnLButtonDown(int x, int y);
     virtual LTBOOL   OnLButtonUp(int x, int y);
     virtual LTBOOL   OnMouseMove(int x, int y);
+	virtual LTBOOL	 OnMouseWheel(int x, int y, int delta);
 
 	// Add/Remove controls to the array
 	static const uint16	kMaxNumControls;

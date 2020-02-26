@@ -644,6 +644,16 @@ void	CMenuMgr::OnMouseMove(int x, int y)
 	}
 }
 
+void CMenuMgr::OnMouseWheel(int x, int y, int delta)
+{
+	if (m_pSubMenu && m_pSubMenu->OnMouseWheel(x, y, delta)) {
+		return;
+	}
+
+	if (m_pCurrentMenu) {
+		m_pCurrentMenu->OnMouseWheel(x, y, delta);
+	}
+}
 
 const char* CMenuMgr::GetMenuName(eMenuID id)
 {
