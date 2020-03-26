@@ -1,0 +1,1752 @@
+project(ObjectShared CXX)
+
+################################################################################
+# Source groups
+################################################################################
+set(Header_Files
+    "../../Shared/ActivateTypeMgr.h"
+    "../../Shared/ActivationData.h"
+    "../../Shared/Animator.h"
+    "../../Shared/AssertMgr.h"
+    "../../Shared/AttachButeMgr.h"
+    "../../Shared/AutoMessage.h"
+    "../../Shared/ButeListReader.h"
+    "../../Shared/CharacterAlignment.h"
+    "../../Shared/CheatDefs.h"
+    "../../Shared/ClientServerShared.h"
+    "../../Shared/CommandIDs.h"
+    "../../Shared/CommonUtilities.h"
+    "../../Shared/ContainerCodes.h"
+    "../../Shared/CRC32.h"
+    "../../Shared/DamageTypes.h"
+    "../../Shared/DamageTypesEnum.h"
+    "../../Shared/DebrisMgr.h"
+    "../../Shared/DebrisTypes.h"
+    "../../Shared/DebugLine.h"
+    "../../Shared/DebugMgr.h"
+    "../../Shared/FastHeap.h"
+    "../../Shared/FastStack.h"
+    "../../Shared/FXButeMgr.h"
+    "../../Shared/FxDefs.h"
+    "../../Shared/FxFlags.h"
+    "../../Shared/FXStructs.h"
+    "../../Shared/GadgetTargetTypes.h"
+    "../../Shared/GameButeMgr.h"
+    "../../Shared/GibTypes.h"
+    "../../Shared/GlobalMgr.h"
+    "../../Shared/Globals.h"
+    "../../Shared/HierarchicalButeMgr.h"
+    "../../Shared/ImpactType.h"
+    "../../Shared/ModelButeMgr.h"
+    "../../Shared/MsgIDs.h"
+    "../../Shared/NetDefs.h"
+    "../../Shared/ParsedMsg.h"
+    "../../Shared/ProfileUtils.h"
+    "../../Shared/RadarTypeMgr.h"
+    "../../Shared/SaveLoadMgr.h"
+    "../../Shared/ScmdShared.h"
+    "../../Shared/SearchItemMgr.h"
+    "../../Shared/SFXMsgIds.h"
+    "../../Shared/SharedBaseFXStructs.h"
+    "../../Shared/SharedFXStructs.h"
+    "../../Shared/SharedMission.h"
+    "../../Shared/SharedMovement.h"
+    "../../Shared/SharedScoring.h"
+    "../../Shared/SkillsButeMgr.h"
+    "../../Shared/SoundButeMgr.h"
+    "../../Shared/SoundFilterMgr.h"
+    "../../Shared/SoundMgr.h"
+    "../../Shared/SoundTypes.h"
+    "../../Shared/SurfaceFunctions.h"
+    "../../Shared/SurfaceMgr.h"
+    "../../Shared/TeamMgr.h"
+    "../../Shared/TemplateList.h"
+    "../../Shared/Timer.h"
+    "../../Shared/TrackedNode.h"
+    "../../Shared/TrackedNodeMgr.h"
+    "../../Shared/TriggerTypeMgr.h"
+    "../../Shared/UberAssert.h"
+    "../../Shared/VersionMgr.h"
+    "../../Shared/WaveFn.h"
+    "../../Shared/WeaponFXTypes.h"
+    "../../Shared/WeaponMgr.h"
+    "../../Shared/WinUtil.h"
+    "ActiveWorldModel.h"
+    "AI.h"
+    "AIAssert.h"
+    "AIBrain.h"
+    "AIButeMgr.h"
+    "AICentralKnowledgeMgr.h"
+    "AIClassFactory.h"
+    "AIDataTypeEnums.h"
+    "AIGoalAbstract.h"
+    "AIGoalAbstractSearch.h"
+    "AIGoalAbstractStimulated.h"
+    "AIGoalAbstractTargeted.h"
+    "AIGoalAbstractUseObject.h"
+    "AIGoalAlarm.h"
+    "AIGoalAnimate.h"
+    "AIGoalApprehend.h"
+    "AIGoalAssassinate.h"
+    "AIGoalAttack.h"
+    "AIGoalAttackFromCover.h"
+    "AIGoalAttackFromRandomVantage.h"
+    "AIGoalAttackFromRoofVantage.h"
+    "AIGoalAttackFromVantage.h"
+    "AIGoalAttackFromView.h"
+    "AIGoalAttackMelee.h"
+    "AIGoalAttackProne.h"
+    "AIGoalAttackProp.h"
+    "AIGoalAttackRanged.h"
+    "AIGoalAttackRangedDynamic.h"
+    "AIGoalButeMgr.h"
+    "AIGoalCatch.h"
+    "AIGoalCharge.h"
+    "AIGoalChase.h"
+    "AIGoalCheckBody.h"
+    "AIGoalCover.h"
+    "AIGoalDeflect.h"
+    "AIGoalDisappearReappear.h"
+    "AIGoalDisappearReappearEvasive.h"
+    "AIGoalDistress.h"
+    "AIGoalDramaDeath.h"
+    "AIGoalDrawWeapon.h"
+    "AIGoalExitLevel.h"
+    "AIGoalFlee.h"
+    "AIGoalFollow.h"
+    "AIGoalFollowFootprint.h"
+    "AIGoalGetBackup.h"
+    "AIGoalGoto.h"
+    "AIGoalGuard.h"
+    "AIGoalHolsterWeapon.h"
+    "AIGoalInvestigate.h"
+    "AIGoalLoveKitty.h"
+    "AIGoalLunge.h"
+    "AIGoalMenace.h"
+    "AIGoalMgr.h"
+    "AIGoalMountedFlashlight.h"
+    "AIGoalObstruct.h"
+    "AIGoalPatrol.h"
+    "AIGoalProximityCommand.h"
+    "AIGoalPsychoChase.h"
+    "AIGoalReclassifyToEnemy.h"
+    "AIGoalRespondToAlarm.h"
+    "AIGoalRespondToBackup.h"
+    "AIGoalResurrecting.h"
+    "AIGoalRetreat.h"
+    "AIGoalSearch.h"
+    "AIGoalSentryChallenge.h"
+    "AIGoalSentryMark.h"
+    "AIGoalSerumDeath.h"
+    "AIGoalSleep.h"
+    "AIGoalSniper.h"
+    "AIGoalSpecialDamage.h"
+    "AIGoalTail.h"
+    "AIGoalTalk.h"
+    "AIGoalTypeEnums.h"
+    "AIGoalWork.h"
+    "AIHuman.h"
+    "AIHumanState.h"
+    "AIHumanStateApprehend.h"
+    "AIHumanStateAttackMove.h"
+    "AIHumanStateAttackProne.h"
+    "AIHumanStateCatch.h"
+    "AIHumanStateDeflect.h"
+    "AIHumanStateDisappearReappear.h"
+    "AIHumanStateLaunch.h"
+    "AIHumanStateObstruct.h"
+    "AIHumanStateResurrecting.h"
+    "AIHumanStateSentryChallenge.h"
+    "AIHumanStateSniper.h"
+    "AIHumanStrategy.h"
+    "AIHumanStrategyShootStream.h"
+    "AIHumanStrategyToggleLights.h"
+    "AIInformationVolumeMgr.h"
+    "AIMovement.h"
+    "AIMovementModifier.h"
+    "AINode.h"
+    "AINodeDisturbance.h"
+    "AINodeGuard.h"
+    "AINodeMgr.h"
+    "AINodeSensing.h"
+    "AINodeTypeEnums.h"
+    "AIPath.h"
+    "AIPathKnowledgeMgr.h"
+    "AIPathMgr.h"
+    "AIRegion.h"
+    "AIRegionMgr.h"
+    "AISenseRecorderAbstract.h"
+    "AISenseRecorderGame.h"
+    "AISenseTypeEnums.h"
+    "AISensing.h"
+    "AISounds.h"
+    "AISoundTypeEnums.h"
+    "AISpatialRepresentationMgr.h"
+    "AIState.h"
+    "AIStateTypeEnums.h"
+    "AIStimulusMgr.h"
+    "AIStimulusTypeEnums.h"
+    "AIStrategy.h"
+    "AIStrategyTypeEnums.h"
+    "AITarget.h"
+    "AITypes.h"
+    "AIUtils.h"
+    "AIVolume.h"
+    "AIVolumeMgr.h"
+    "AIVolumeNeighbor.h"
+    "AIVolumeTypeEnums.h"
+    "Alarm.h"
+    "AmmoBox.h"
+    "AnimationLex.h"
+    "AnimationMgr.h"
+    "AnimationMovement.h"
+    "AnimationMovementEnums.h"
+    "AnimationParse.h"
+    "AnimationParser.h"
+    "AnimationProp.h"
+    "AnimationPropEnums.h"
+    "AnimationPropGroupEnums.h"
+    "AnimationPropStrings.h"
+    "AnimationStd.h"
+    "AnimatorPlayer.h"
+    "Attachments.h"
+    "BanIPMgr.h"
+    "Body.h"
+    "BodyState.h"
+    "Bombable.h"
+    "Bouncer.h"
+    "Breakable.h"
+    "ButeTools.h"
+    "Camera.h"
+    "CDynArray.h"
+    "Character.h"
+    "CharacterHitBox.h"
+    "CharacterMgr.h"
+    "ClientDeathSFX.h"
+    "ClientFX.h"
+    "ClientLightFX.h"
+    "ClientSFX.h"
+    "ClientWeaponSFX.h"
+    "CollectiveRelationMgr.h"
+    "CommandButeMgr.h"
+    "CommandMgr.h"
+    "CommandObject.h"
+    "Controller.h"
+    "CoopMissionMgr.h"
+    "CVarTrack.h"
+    "DeathMatchMissionMgr.h"
+    "DeathScene.h"
+    "DebrisFuncs.h"
+    "DebugLineSystem.h"
+    "DecisionObject.h"
+    "DEditColors.h"
+    "Destructible.h"
+    "DestructibleModel.h"
+    "Dialogue.h"
+    "DisplayMeter.h"
+    "DisplayTimer.h"
+    "DoomsDayDevice.h"
+    "DoomsDayMissionMgr.h"
+    "DoomsDayPiece.h"
+    "Door.h"
+    "DoorKnob.h"
+    "Editable.h"
+    "EventCounter.h"
+    "ExitTrigger.h"
+    "Explosion.h"
+    "Fire.h"
+    "Fixture.h"
+    "GadgetTarget.h"
+    "GadgetTargetMgr.h"
+    "GameBase.h"
+    "GameBaseLite.h"
+    "GameServerShell.h"
+    "GameStartPoint.h"
+    "GearItems.h"
+    "GlobalServerMgr.h"
+    "Group.h"
+    "HHWeaponModel.h"
+    "IHitBoxUser.h"
+    "Intelligence.h"
+    "IntelMgr.h"
+    "InventoryButeMgr.h"
+    "Joint.h"
+    "JumpVolume.h"
+    "Key.h"
+    "KeyData.h"
+    "KeyFramer.h"
+    "KeyItem.h"
+    "KeyPad.h"
+    "LaserTrigger.h"
+    "LightGroup.h"
+    "Lightning.h"
+    "LiteObjectMgr.h"
+    "Lock.h"
+    "Mine.h"
+    "ModItem.h"
+    "MusicMgr.h"
+    "NodeLine.h"
+    "NoPlayerTrigger.h"
+    "ObjectiveSprite.h"
+    "ObjectMsgs.h"
+    "ObjectRelationMgr.h"
+    "ObjectRemover.h"
+    "ObjectTemplateMgr.h"
+    "ParticleSystem.h"
+    "PickupItem.h"
+    "PlayerButes.h"
+    "PlayerLure.h"
+    "PlayerObj.h"
+    "PlayerTracker.h"
+    "PlayerTrigger.h"
+    "PlayerVehicle.h"
+    "Point.h"
+    "PolyGrid.h"
+    "PowerArmor.h"
+    "Projectile.h"
+    "ProjectileTypes.h"
+    "Prop.h"
+    "PropType.h"
+    "PropTypeMgr.h"
+    "RadarObject.h"
+    "RandomSpawner.h"
+    "RelationButeMgr.h"
+    "RelationChangeObserver.h"
+    "RelationMgr.h"
+    "RotatingDoor.h"
+    "RotatingSwitch.h"
+    "RotatingWorldModel.h"
+    "ScaleSprite.h"
+    "Scanner.h"
+    "ScatterVolume.h"
+    "ScmdServer.h"
+    "ScreenShake.h"
+    "Searchable.h"
+    "SearchLight.h"
+    "SearchProp.h"
+    "SecurityCamera.h"
+    "ServerAppHandler.h"
+    "ServerAssetMgr.h"
+    "ServerButeMgr.h"
+    "ServerMark.h"
+    "ServerMissionMgr.h"
+    "ServerMissionSettings.h"
+    "ServerSaveLoadMgr.h"
+    "ServerSoundFX.h"
+    "ServerSoundMgr.h"
+    "ServerSpecialFX.h"
+    "ServerTrackedNodeContext.h"
+    "ServerTrackedNodeMgr.h"
+    "ServerUtilities.h"
+    "SFXFuncs.h"
+    "SinglePlayerMissionMgr.h"
+    "Skills.h"
+    "SlidingDoor.h"
+    "SlidingSwitch.h"
+    "SlidingWorldModel.h"
+    "SnowVolume.h"
+    "SoundButeFX.h"
+    "Sparam.h"
+    "Spawner.h"
+    "Speaker.h"
+    "SpinningWorldModel.h"
+    "Sprinkles.h"
+    "StartupCommand.h"
+    "Stdafx.h"
+    "Steam.h"
+    "Switch.h"
+    "TeamDeathMatchMissionMgr.h"
+    "TeleportPoint.h"
+    "TextureFX.h"
+    "TransitionAggregate.h"
+    "TransitionArea.h"
+    "TransitionMgr.h"
+    "Trigger.h"
+    "VolumeBrush.h"
+    "VolumeBrushTypes.h"
+    "VolumeEffect.h"
+    "Weapon.h"
+    "WeaponItems.h"
+    "Weapons.h"
+    "WorldModel.h"
+    "WorldModelDebris.h"
+    "WorldProperties.h"
+)
+source_group("Header Files" FILES ${Header_Files})
+
+set(SDK
+    "../../../Engine/sdk/inc/clientheaders.h"
+    "../../../Engine/sdk/inc/iaggregate.h"
+    "../../../Engine/sdk/inc/iclientshell.h"
+    "../../../Engine/sdk/inc/iltclient.h"
+    "../../../Engine/sdk/inc/iltcommon.h"
+    "../../../Engine/sdk/inc/iltcsbase.h"
+    "../../../Engine/sdk/inc/iltcursor.h"
+    "../../../Engine/sdk/inc/iltcustomdraw.h"
+    "../../../Engine/sdk/inc/iltdirectmusic.h"
+    "../../../Engine/sdk/inc/iltmath.h"
+    "../../../Engine/sdk/inc/iltmessage.h"
+    "../../../Engine/sdk/inc/iltmodel.h"
+    "../../../Engine/sdk/inc/iltphysics.h"
+    "../../../Engine/sdk/inc/iltserver.h"
+    "../../../Engine/sdk/inc/iltsoundmgr.h"
+    "../../../Engine/sdk/inc/iltspritecontrol.h"
+    "../../../Engine/sdk/inc/iltstream.h"
+    "../../../Engine/sdk/inc/ilttexmod.h"
+    "../../../Engine/sdk/inc/ilttransform.h"
+    "../../../Engine/sdk/inc/iltvideomgr.h"
+    "../../../Engine/sdk/inc/iobjectplugin.h"
+    "../../../Engine/sdk/inc/iservershell.h"
+    "../../../Engine/sdk/inc/lithtech.h"
+    "../../../Engine/sdk/inc/ltanimtracker.h"
+    "../../../Engine/sdk/inc/ltassert.h"
+    "../../../Engine/sdk/inc/ltbasedefs.h"
+    "../../../Engine/sdk/inc/ltbasetypes.h"
+    "../../../Engine/sdk/inc/ltbbox.h"
+    "../../../Engine/sdk/inc/ltbeziercurve.h"
+    "../../../Engine/sdk/inc/ltcodes.h"
+    "../../../Engine/sdk/inc/ltengineobjects.h"
+    "../../../Engine/sdk/inc/ltlink.h"
+    "../../../Engine/sdk/inc/ltmatrix.h"
+    "../../../Engine/sdk/inc/ltobjref.h"
+    "../../../Engine/sdk/inc/ltplane.h"
+    "../../../Engine/sdk/inc/ltpvalue.h"
+    "../../../Engine/sdk/inc/ltquatbase.h"
+    "../../../Engine/sdk/inc/ltrect.h"
+    "../../../Engine/sdk/inc/ltrotation.h"
+    "../../../Engine/sdk/inc/ltserverobj.h"
+    "../../../Engine/sdk/inc/ltvector.h"
+    "../../../Engine/sdk/inc/serverheaders.h"
+)
+source_group("SDK" FILES ${SDK})
+
+set(Source_Files
+    "../../../Engine/sdk/inc/iltbaseclass.cpp"
+    "../../../Engine/sdk/inc/ltengineobjects.cpp"
+    "../../../Engine/sdk/inc/ltmodule.cpp"
+    "../../../Engine/sdk/inc/ltobjref.cpp"
+    "../../../Engine/sdk/inc/ltquatbase.cpp"
+    "../../Shared/ActivateTypeMgr.cpp"
+    "../../Shared/Animator.cpp"
+    "../../Shared/AssertMgr.cpp"
+    "../../Shared/AttachButeMgr.cpp"
+    "../../Shared/ButeListReader.cpp"
+    "../../Shared/CharacterAlignment.cpp"
+    "../../Shared/ClientServerShared.cpp"
+    "../../Shared/CommonUtilities.cpp"
+    "../../Shared/CRC32.cpp"
+    "../../Shared/DamageTypes.cpp"
+    "../../Shared/DebrisMgr.cpp"
+    "../../Shared/DebugLine.cpp"
+    "../../Shared/DebugNew.cpp"
+    "../../Shared/FXButeMgr.cpp"
+    "../../Shared/FXStructs.cpp"
+    "../../Shared/GameAlloc.cpp"
+    "../../Shared/GameButeMgr.cpp"
+    "../../Shared/GlobalMgr.cpp"
+    "../../Shared/KeyMgr.cpp"
+    "../../Shared/MissionButeMgr.cpp"
+    "../../Shared/ModelButeMgr.cpp"
+    "../../Shared/NetDefs.cpp"
+    "../../Shared/ParsedMsg.cpp"
+    "../../Shared/ProfileUtils.cpp"
+    "../../Shared/RadarTypeMgr.cpp"
+    "../../Shared/SaveLoadMgr.cpp"
+    "../../Shared/SearchItemMgr.cpp"
+    "../../Shared/SharedFXStructs.cpp"
+    "../../Shared/SharedMission.cpp"
+    "../../Shared/SharedMovement.cpp"
+    "../../Shared/SharedScoring.cpp"
+    "../../Shared/SkillsButeMgr.cpp"
+    "../../Shared/SoundButeMgr.cpp"
+    "../../Shared/SoundFilterMgr.cpp"
+    "../../Shared/SoundMgr.cpp"
+    "../../Shared/stacktrace.cpp"
+    "../../Shared/SurfaceFunctions.cpp"
+    "../../Shared/SurfaceMgr.cpp"
+    "../../Shared/TeamMgr.cpp"
+    "../../Shared/TemplateList.cpp"
+    "../../Shared/TrackedNode.cpp"
+    "../../Shared/TrackedNodeContext.cpp"
+    "../../Shared/TrackedNodeControlFn.cpp"
+    "../../Shared/TrackedNodeMgr.cpp"
+    "../../Shared/TriggerTypeMgr.cpp"
+    "../../Shared/UberAssert.cpp"
+    "../../Shared/VersionMgr.cpp"
+    "../../Shared/WaveFn.cpp"
+    "../../Shared/WeaponMgr.cpp"
+    "../../Shared/WinUtil.cpp"
+    "ActiveWorldModel.cpp"
+    "AI.cpp"
+    "AIAssert.cpp"
+    "AIBrain.cpp"
+    "AIButeMgr.cpp"
+    "AICentralKnowledgeMgr.cpp"
+    "AIClassFactory.cpp"
+    "AIGoalAbstract.cpp"
+    "AIGoalAbstractSearch.cpp"
+    "AIGoalAbstractStimulated.cpp"
+    "AIGoalAbstractTargeted.cpp"
+    "AIGoalAbstractUseObject.cpp"
+    "AIGoalAlarm.cpp"
+    "AIGoalAnimate.cpp"
+    "AIGoalApprehend.cpp"
+    "AIGoalAssassinate.cpp"
+    "AIGoalAttack.cpp"
+    "AIGoalAttackFromCover.cpp"
+    "AIGoalAttackfromRandomVantage.cpp"
+    "AIGoalAttackfromRoofVantage.cpp"
+    "AIGoalAttackfromVantage.cpp"
+    "AIGoalAttackFromView.cpp"
+    "AIGoalAttackMelee.cpp"
+    "AIGoalAttackProne.cpp"
+    "AIGoalAttackProp.cpp"
+    "AIGoalAttackRanged.cpp"
+    "AIGoalAttackRangedDynamic.cpp"
+    "AIGoalButeMgr.cpp"
+    "AIGoalCatch.cpp"
+    "AIGoalCharge.cpp"
+    "AIGoalChase.cpp"
+    "AIGoalCheckBody.cpp"
+    "AIGoalCover.cpp"
+    "AIGoalDeflect.cpp"
+    "AIGoalDisappearReappear.cpp"
+    "AIGoalDisappearReappearEvasive.cpp"
+    "AIGoalDistress.cpp"
+    "AIGoalDramaDeath.cpp"
+    "AIGoalDrawWeapon.cpp"
+    "AIGoalExitLevel.cpp"
+    "AIGoalFlee.cpp"
+    "AIGoalFollow.cpp"
+    "AIGoalFollowFootprint.cpp"
+    "AIGoalGetBackup.cpp"
+    "AIGoalGoto.cpp"
+    "AIGoalGuard.cpp"
+    "AIGoalHolsterWeapon.cpp"
+    "AIGoalInvestigate.cpp"
+    "AIGoalLoveKitty.cpp"
+    "AIGoalLunge.cpp"
+    "AIGoalMenace.cpp"
+    "AIGoalMgr.cpp"
+    "AIGoalMountedFlashlight.cpp"
+    "AIGoalObstruct.cpp"
+    "AIGoalPatrol.cpp"
+    "AIGoalProximityCommand.cpp"
+    "AIGoalPsychoChase.cpp"
+    "AIGoalReclassifyToEnemy.cpp"
+    "AIGoalRespondToAlarm.cpp"
+    "AIGoalRespondToBackup.cpp"
+    "AIGoalResurrecting.cpp"
+    "AIGoalRetreat.cpp"
+    "AIGoalSearch.cpp"
+    "AIGoalSentryChallenge.cpp"
+    "AIGoalSentryMark.cpp"
+    "AIGoalSerumDeath.cpp"
+    "AIGoalSleep.cpp"
+    "AIGoalSniper.cpp"
+    "AIGoalSpecialDamage.cpp"
+    "AIGoalTail.cpp"
+    "AIGoalTalk.cpp"
+    "AIGoalWork.cpp"
+    "AIHuman.cpp"
+    "AIHumanState.cpp"
+    "AIHumanStateApprehend.cpp"
+    "AIHumanStateAttackMove.cpp"
+    "AIHumanStateAttackProne.cpp"
+    "AIHumanStateCatch.cpp"
+    "AIHumanStateDeflect.cpp"
+    "AIHumanStateDisappearReappear.cpp"
+    "AIHumanStateLaunch.cpp"
+    "AIHumanStateObstruct.cpp"
+    "AIHumanStateResurrecting.cpp"
+    "AIHumanStateSentryChallenge.cpp"
+    "AIHumanStateSniper.cpp"
+    "AIHumanStrategy.cpp"
+    "AIHumanStrategyShootStream.cpp"
+    "AIHumanStrategyToggleLights.cpp"
+    "AIInformationVolumeMgr.cpp"
+    "AIMovement.cpp"
+    "AIMovementModifier.cpp"
+    "AINode.cpp"
+    "AINodeDisturbance.cpp"
+    "AINodeGuard.cpp"
+    "AINodeMgr.cpp"
+    "AINodeSensing.cpp"
+    "AIPath.cpp"
+    "AIPathKnowledgeMgr.cpp"
+    "AIPathMgr.cpp"
+    "AIRegion.cpp"
+    "AIRegionMgr.cpp"
+    "AISenseRecorderAbstract.cpp"
+    "AISenseRecorderGame.cpp"
+    "AISounds.cpp"
+    "AISpatialRepresentationMgr.cpp"
+    "AIState.cpp"
+    "AIStimulusMgr.cpp"
+    "AITarget.cpp"
+    "AITypes.cpp"
+    "AIUtils.cpp"
+    "AIVolume.cpp"
+    "AIVolumeMgr.cpp"
+    "AIVolumeNeighbor.cpp"
+    "Alarm.cpp"
+    "AmmoBox.cpp"
+    "AnimationLex.cpp"
+    "AnimationMgr.cpp"
+    "AnimationParse.cpp"
+    "AnimationParser.cpp"
+    "AnimatorPlayer.cpp"
+    "Attachments.cpp"
+    "BanIPMgr.cpp"
+    "Body.cpp"
+    "BodyState.cpp"
+    "Bombable.cpp"
+    "Breakable.cpp"
+    "ButeTools.cpp"
+    "Camera.cpp"
+    "Character.cpp"
+    "CharacterHitBox.cpp"
+    "CharacterMgr.cpp"
+    "ClientLightFX.cpp"
+    "ClientSFX.cpp"
+    "ClientWeaponSFX.cpp"
+    "CollectiveRelationMgr.cpp"
+    "CommandButeMgr.cpp"
+    "CommandMgr.cpp"
+    "CommandObject.cpp"
+    "Controller.cpp"
+    "CoopMissionMgr.cpp"
+    "DeathMatchMissionMgr.cpp"
+    "DeathScene.cpp"
+    "DebrisFuncs.cpp"
+    "DebugLineSystem.cpp"
+    "DecisionObject.cpp"
+    "Destructible.cpp"
+    "DestructibleModel.cpp"
+    "Dialogue.cpp"
+    "DisplayMeter.cpp"
+    "DisplayTimer.cpp"
+    "DoomsDayDevice.cpp"
+    "DoomsDayMissionMgr.cpp"
+    "DoomsDayPiece.cpp"
+    "Door.cpp"
+    "DoorKnob.cpp"
+    "DynamicOccluderVolume.cpp"
+    "Editable.cpp"
+    "EventCounter.cpp"
+    "ExitTrigger.cpp"
+    "Explosion.cpp"
+    "Fire.cpp"
+    "GadgetTarget.cpp"
+    "GadgetTargetMgr.cpp"
+    "GameBase.cpp"
+    "GameBaseLite.cpp"
+    "GameServerShell.cpp"
+    "GameStartPoint.cpp"
+    "GearItems.cpp"
+    "GlobalServerMgr.cpp"
+    "Group.cpp"
+    "HHWeaponModel.cpp"
+    "Intelligence.cpp"
+    "IntelMgr.cpp"
+    "InventoryButeMgr.cpp"
+    "JumpVolume.cpp"
+    "Key.cpp"
+    "KeyData.cpp"
+    "KeyFramer.cpp"
+    "KeyItem.cpp"
+    "KeyPad.cpp"
+    "LaserTrigger.cpp"
+    "LightGroup.cpp"
+    "Lightning.cpp"
+    "LiteObjectMgr.cpp"
+    "Lock.cpp"
+    "Mine.cpp"
+    "ModItem.cpp"
+    "MusicMgr.cpp"
+    "NodeLine.cpp"
+    "NoPlayerTrigger.cpp"
+    "ObjectiveSprite.cpp"
+    "ObjectRelationMgr.cpp"
+    "ObjectRemover.cpp"
+    "ObjectTemplateMgr.cpp"
+    "ParticleSystem.cpp"
+    "PickupItem.cpp"
+    "PlayerLure.cpp"
+    "PlayerObj.cpp"
+    "PlayerTracker.cpp"
+    "PlayerTrigger.cpp"
+    "PlayerVehicle.cpp"
+    "Point.cpp"
+    "PolyGrid.cpp"
+    "PolyGridModifier.cpp"
+    "PowerArmor.cpp"
+    "Projectile.cpp"
+    "ProjectileTypes.cpp"
+    "Prop.cpp"
+    "PropType.cpp"
+    "PropTypeMgr.cpp"
+    "RadarObject.cpp"
+    "RandomSpawner.cpp"
+    "RelationButeMgr.cpp"
+    "RelationMgr.cpp"
+    "RotatingDoor.cpp"
+    "RotatingSwitch.cpp"
+    "RotatingWorldModel.cpp"
+    "ScaleSprite.cpp"
+    "Scanner.cpp"
+    "ScatterVolume.cpp"
+    "ScmdServer.cpp"
+    "ScreenShake.cpp"
+    "Searchable.cpp"
+    "SearchLight.cpp"
+    "SearchProp.cpp"
+    "SecurityCamera.cpp"
+    "ServerAssetMgr.cpp"
+    "ServerButeMgr.cpp"
+    "ServerMark.cpp"
+    "ServerMissionMgr.cpp"
+    "ServerSaveLoadMgr.cpp"
+    "ServerSoundFX.cpp"
+    "ServerSoundMgr.cpp"
+    "ServerSpecialFX.cpp"
+    "ServerTrackedNodeContext.cpp"
+    "ServerTrackedNodeMgr.cpp"
+    "ServerUtilities.cpp"
+    "SFXFuncs.cpp"
+    "SinglePlayerMissionMgr.cpp"
+    "Skills.cpp"
+    "SlidingDoor.cpp"
+    "SlidingSwitch.cpp"
+    "SlidingWorldModel.cpp"
+    "SnowVolume.cpp"
+    "SoundButeFX.cpp"
+    "Sparam.cpp"
+    "Spawner.cpp"
+    "Speaker.cpp"
+    "SpinningWorldModel.cpp"
+    "Sprinkles.cpp"
+    "StartupCommand.cpp"
+    "Stdafx.cpp"
+    "Steam.cpp"
+    "Switch.cpp"
+    "TeamDeathMatchMissionMgr.cpp"
+    "TeleportPoint.cpp"
+    "TextureFX.cpp"
+    "TransitionAggregate.cpp"
+    "TransitionArea.cpp"
+    "TransitionMgr.cpp"
+    "Trigger.cpp"
+    "VolumeBrush.cpp"
+    "VolumeBrushTypes.cpp"
+    "VolumeEffect.cpp"
+    "Weapon.cpp"
+    "WeaponItems.cpp"
+    "Weapons.cpp"
+    "WorldModel.cpp"
+    "WorldModelDebris.cpp"
+    "WorldProperties.cpp"
+)
+source_group("Source Files" FILES ${Source_Files})
+
+set(ALL_FILES
+    ${Header_Files}
+    ${SDK}
+    ${Source_Files}
+)
+
+################################################################################
+# Target
+################################################################################
+add_library(${PROJECT_NAME} STATIC ${ALL_FILES})
+
+add_precompiled_header(${PROJECT_NAME} "Stdafx.h" "Stdafx.cpp")
+
+use_props(${PROJECT_NAME} "${CMAKE_CONFIGURATION_TYPES}" "${DEFAULT_CXX_PROPS}")
+################################################################################
+# Target name
+################################################################################
+if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
+    set_target_properties(${PROJECT_NAME} PROPERTIES
+        TARGET_NAME_DEBUG           "ObjectShared"
+        TARGET_NAME_FINAL           "ObjectShared"
+        TARGET_NAME_RELEASE         "ObjectShared"
+    )
+elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
+    set_target_properties(${PROJECT_NAME} PROPERTIES
+        TARGET_NAME_DEBUG MFC DLL   "ObjectShared"
+        TARGET_NAME_DEBUG           "ObjectShared"
+        TARGET_NAME_FINAL DE        "ObjectShared"
+        TARGET_NAME_FINAL ES        "ObjectShared"
+        TARGET_NAME_FINAL FR        "ObjectShared"
+        TARGET_NAME_FINAL IT        "ObjectShared"
+        TARGET_NAME_FINAL MFC DLL   "ObjectShared"
+        TARGET_NAME_FINAL           "ObjectShared"
+        TARGET_NAME_RELEASE MFC DLL "ObjectShared"
+        TARGET_NAME_RELEASE         "ObjectShared"
+    )
+endif()
+################################################################################
+# Output directory
+################################################################################
+if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
+    set_target_properties(${PROJECT_NAME} PROPERTIES
+        OUTPUT_DIRECTORY_DEBUG           "${CMAKE_CURRENT_SOURCE_DIR}/./../../Built/Debug/ObjectDll/ObjectShared"
+        OUTPUT_DIRECTORY_FINAL           "${CMAKE_CURRENT_SOURCE_DIR}/./../../Built/Final/ObjectDll/ObjectShared"
+        OUTPUT_DIRECTORY_RELEASE         "${CMAKE_CURRENT_SOURCE_DIR}/./../../Built/Release/ObjectDll/ObjectShared"
+    )
+elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
+    set_target_properties(${PROJECT_NAME} PROPERTIES
+        OUTPUT_DIRECTORY_DEBUG MFC DLL   "${CMAKE_CURRENT_SOURCE_DIR}/./../../Built/Debug/ObjectDll/ObjectShared"
+        OUTPUT_DIRECTORY_DEBUG           "${CMAKE_CURRENT_SOURCE_DIR}/./../../Built/Debug/ObjectDll/ObjectShared"
+        OUTPUT_DIRECTORY_FINAL DE        "${CMAKE_CURRENT_SOURCE_DIR}/./../../Built/Final/ObjectDll/ObjectShared"
+        OUTPUT_DIRECTORY_FINAL ES        "${CMAKE_CURRENT_SOURCE_DIR}/./../../Built/Final/ObjectDll/ObjectShared"
+        OUTPUT_DIRECTORY_FINAL FR        "${CMAKE_CURRENT_SOURCE_DIR}/./../../Built/Final/ObjectDll/ObjectShared"
+        OUTPUT_DIRECTORY_FINAL IT        "${CMAKE_CURRENT_SOURCE_DIR}/./../../Built/Final/ObjectDll/ObjectShared"
+        OUTPUT_DIRECTORY_FINAL MFC DLL   "${CMAKE_CURRENT_SOURCE_DIR}/./../../Built/Final/ObjectDll/ObjectShared"
+        OUTPUT_DIRECTORY_FINAL           "${CMAKE_CURRENT_SOURCE_DIR}/./../../Built/Final/ObjectDll/ObjectShared"
+        OUTPUT_DIRECTORY_RELEASE MFC DLL "${CMAKE_CURRENT_SOURCE_DIR}/./../../Built/Release/ObjectDll/ObjectShared"
+        OUTPUT_DIRECTORY_RELEASE         "${CMAKE_CURRENT_SOURCE_DIR}/./../../Built/Release/ObjectDll/ObjectShared"
+    )
+endif()
+################################################################################
+# Include directories
+################################################################################
+if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
+    target_include_directories(${PROJECT_NAME} PUBLIC
+        "$<$<CONFIG:Debug>:"
+            "${CMAKE_CURRENT_SOURCE_DIR}/.;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPORT-4.0/STLPORT_NO;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Shared;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/stdlith;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/ButeMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/CryptMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/lith;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/MFCStub;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/RegMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs/ServerDir;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-STD"
+        ">"
+        "$<$<CONFIG:Final>:"
+            "${CMAKE_CURRENT_SOURCE_DIR}/.;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-4.0/stlport;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Shared;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/stdlith;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/ButeMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/CryptMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/lith;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/MFCStub;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/RegMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs/ServerDir"
+        ">"
+        "$<$<CONFIG:Release>:"
+            "${CMAKE_CURRENT_SOURCE_DIR}/.;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPORT-4.0/STLPORT_NO;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Shared;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/stdlith;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/ButeMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/CryptMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/lith;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/MFCStub;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/RegMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs/ServerDir;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-STD"
+        ">"
+    )
+elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
+    target_include_directories(${PROJECT_NAME} PUBLIC
+        "$<$<CONFIG:Debug MFC DLL>:"
+            "${CMAKE_CURRENT_SOURCE_DIR}/.;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPORT-4.0/STLPORT_NO;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Shared;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/stdlith;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/ButeMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/CryptMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/lith;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/MFCStub;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/RegMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs/ServerDir;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-STD"
+        ">"
+        "$<$<CONFIG:Debug>:"
+            "${CMAKE_CURRENT_SOURCE_DIR}/.;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPORT-4.0/STLPORT_NO;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Shared;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/stdlith;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/ButeMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/CryptMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/lith;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/MFCStub;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/RegMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs/ServerDir;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-STD"
+        ">"
+        "$<$<CONFIG:Final DE>:"
+            "${CMAKE_CURRENT_SOURCE_DIR}/.;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-4.0/stlport;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Shared;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/stdlith;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/ButeMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/CryptMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/lith;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/MFCStub;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/RegMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs/ServerDir"
+        ">"
+        "$<$<CONFIG:Final ES>:"
+            "${CMAKE_CURRENT_SOURCE_DIR}/.;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-4.0/stlport;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Shared;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/stdlith;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/ButeMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/CryptMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/lith;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/MFCStub;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/RegMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs/ServerDir"
+        ">"
+        "$<$<CONFIG:Final FR>:"
+            "${CMAKE_CURRENT_SOURCE_DIR}/.;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-4.0/stlport;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Shared;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/stdlith;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/ButeMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/CryptMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/lith;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/MFCStub;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/RegMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs/ServerDir"
+        ">"
+        "$<$<CONFIG:Final IT>:"
+            "${CMAKE_CURRENT_SOURCE_DIR}/.;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-4.0/stlport;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Shared;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/stdlith;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/ButeMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/CryptMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/lith;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/MFCStub;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/RegMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs/ServerDir"
+        ">"
+        "$<$<CONFIG:Final MFC DLL>:"
+            "${CMAKE_CURRENT_SOURCE_DIR}/.;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-4.0/stlport;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Shared;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/stdlith;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/ButeMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/CryptMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/lith;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/MFCStub;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/RegMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs/ServerDir"
+        ">"
+        "$<$<CONFIG:Final>:"
+            "${CMAKE_CURRENT_SOURCE_DIR}/.;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-4.0/stlport;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Shared;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/stdlith;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/ButeMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/CryptMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/lith;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/MFCStub;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/RegMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs/ServerDir"
+        ">"
+        "$<$<CONFIG:Release MFC DLL>:"
+            "${CMAKE_CURRENT_SOURCE_DIR}/.;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPORT-4.0/STLPORT_NO;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Shared;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/stdlith;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/ButeMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/CryptMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/lith;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/MFCStub;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/RegMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs/ServerDir;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-STD"
+        ">"
+        "$<$<CONFIG:Release>:"
+            "${CMAKE_CURRENT_SOURCE_DIR}/.;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPORT-4.0/STLPORT_NO;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Shared;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/stdlith;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/ButeMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/CryptMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/lith;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/MFCStub;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/RegMgr;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs/ServerDir;"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-STD"
+        ">"
+    )
+endif()
+
+################################################################################
+# Compile definitions
+################################################################################
+if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
+    target_compile_definitions(${PROJECT_NAME} PRIVATE
+        "$<$<CONFIG:Debug>:"
+            "_DEBUG;"
+            "_LIB;"
+            "WIN32;"
+            "_WINDOWS;"
+            "NOPS2;"
+            "_SERVERBUILD;"
+            "_NO_AI_ASSERT;"
+            "MEMTRACK_SERVER;"
+            "_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;"
+            "_CRT_SECURE_NO_WARNINGS"
+        ">"
+        "$<$<CONFIG:Final>:"
+            "NDEBUG;"
+            "_LIB;"
+            "_NOLFBUILD;"
+            "USE_INTEL_COMPILER;"
+            "WIN32;"
+            "_WINDOWS;"
+            "NOPS2;"
+            "_SERVERBUILD;"
+            "_NO_AI_ASSERT;"
+            "_FINAL;"
+            "MEMTRACK_SERVER"
+        ">"
+        "$<$<CONFIG:Release>:"
+            "NDEBUG;"
+            "_LIB;"
+            "_NOLFBUILD;"
+            "USE_INTEL_COMPILER;"
+            "WIN32;"
+            "_WINDOWS;"
+            "NOPS2;"
+            "_SERVERBUILD;"
+            "_NO_AI_ASSERT;"
+            "MEMTRACK_SERVER;"
+            "_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;"
+            "_CRT_SECURE_NO_WARNINGS"
+        ">"
+    )
+elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
+    target_compile_definitions(${PROJECT_NAME} PRIVATE
+        "$<$<CONFIG:Debug MFC DLL>:"
+            "_DEBUG;"
+            "_LIB;"
+            "WIN32;"
+            "_WINDOWS;"
+            "NOPS2;"
+            "_SERVERBUILD;"
+            "_NO_AI_ASSERT;"
+            "MEMTRACK_SERVER;"
+            "_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;"
+            "_CRT_SECURE_NO_WARNINGS"
+        ">"
+        "$<$<CONFIG:Debug>:"
+            "_DEBUG;"
+            "_LIB;"
+            "WIN32;"
+            "_WINDOWS;"
+            "NOPS2;"
+            "_SERVERBUILD;"
+            "_NO_AI_ASSERT;"
+            "MEMTRACK_SERVER;"
+            "_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;"
+            "_CRT_SECURE_NO_WARNINGS"
+        ">"
+        "$<$<CONFIG:Final DE>:"
+            "NDEBUG;"
+            "_LIB;"
+            "_NOLFBUILD;"
+            "USE_INTEL_COMPILER;"
+            "WIN32;"
+            "_WINDOWS;"
+            "NOPS2;"
+            "_SERVERBUILD;"
+            "_NO_AI_ASSERT;"
+            "_FINAL;"
+            "MEMTRACK_SERVER"
+        ">"
+        "$<$<CONFIG:Final ES>:"
+            "NDEBUG;"
+            "_LIB;"
+            "_NOLFBUILD;"
+            "USE_INTEL_COMPILER;"
+            "WIN32;"
+            "_WINDOWS;"
+            "NOPS2;"
+            "_SERVERBUILD;"
+            "_NO_AI_ASSERT;"
+            "_FINAL;"
+            "MEMTRACK_SERVER"
+        ">"
+        "$<$<CONFIG:Final FR>:"
+            "NDEBUG;"
+            "_LIB;"
+            "_NOLFBUILD;"
+            "USE_INTEL_COMPILER;"
+            "WIN32;"
+            "_WINDOWS;"
+            "NOPS2;"
+            "_SERVERBUILD;"
+            "_NO_AI_ASSERT;"
+            "_FINAL;"
+            "MEMTRACK_SERVER"
+        ">"
+        "$<$<CONFIG:Final IT>:"
+            "NDEBUG;"
+            "_LIB;"
+            "_NOLFBUILD;"
+            "USE_INTEL_COMPILER;"
+            "WIN32;"
+            "_WINDOWS;"
+            "NOPS2;"
+            "_SERVERBUILD;"
+            "_NO_AI_ASSERT;"
+            "_FINAL;"
+            "MEMTRACK_SERVER"
+        ">"
+        "$<$<CONFIG:Final MFC DLL>:"
+            "NDEBUG;"
+            "_LIB;"
+            "_NOLFBUILD;"
+            "USE_INTEL_COMPILER;"
+            "WIN32;"
+            "_WINDOWS;"
+            "NOPS2;"
+            "_SERVERBUILD;"
+            "_NO_AI_ASSERT;"
+            "_FINAL;"
+            "MEMTRACK_SERVER"
+        ">"
+        "$<$<CONFIG:Final>:"
+            "NDEBUG;"
+            "_LIB;"
+            "_NOLFBUILD;"
+            "USE_INTEL_COMPILER;"
+            "WIN32;"
+            "_WINDOWS;"
+            "NOPS2;"
+            "_SERVERBUILD;"
+            "_NO_AI_ASSERT;"
+            "_FINAL;"
+            "MEMTRACK_SERVER"
+        ">"
+        "$<$<CONFIG:Release MFC DLL>:"
+            "NDEBUG;"
+            "_LIB;"
+            "_NOLFBUILD;"
+            "USE_INTEL_COMPILER;"
+            "WIN32;"
+            "_WINDOWS;"
+            "NOPS2;"
+            "_SERVERBUILD;"
+            "_NO_AI_ASSERT;"
+            "MEMTRACK_SERVER;"
+            "_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;"
+            "_CRT_SECURE_NO_WARNINGS"
+        ">"
+        "$<$<CONFIG:Release>:"
+            "NDEBUG;"
+            "_LIB;"
+            "_NOLFBUILD;"
+            "USE_INTEL_COMPILER;"
+            "WIN32;"
+            "_WINDOWS;"
+            "NOPS2;"
+            "_SERVERBUILD;"
+            "_NO_AI_ASSERT;"
+            "MEMTRACK_SERVER;"
+            "_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;"
+            "_CRT_SECURE_NO_WARNINGS"
+        ">"
+    )
+endif()
+
+################################################################################
+# Compile and link options
+################################################################################
+if(MSVC)
+    if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
+        target_compile_options(${PROJECT_NAME} PRIVATE
+            $<$<CONFIG:Debug MFC DLL>:
+                ${DEFAULT_CXX_RUNTIME_LIBRARY}
+            >
+            $<$<CONFIG:Debug>:
+                /Gm;
+                /Od;
+                /RTC1;
+                /MDd;
+                /Gy;
+                /W3;
+                /GR;
+                /wd4996;
+                /Zc:forScope-
+            >
+            $<$<CONFIG:Final DE>:
+                ${DEFAULT_CXX_RUNTIME_LIBRARY}
+            >
+            $<$<CONFIG:Final ES>:
+                ${DEFAULT_CXX_RUNTIME_LIBRARY}
+            >
+            $<$<CONFIG:Final FR>:
+                ${DEFAULT_CXX_RUNTIME_LIBRARY}
+            >
+            $<$<CONFIG:Final IT>:
+                ${DEFAULT_CXX_RUNTIME_LIBRARY}
+            >
+            $<$<CONFIG:Final MFC DLL>:
+                ${DEFAULT_CXX_RUNTIME_LIBRARY}
+            >
+            $<$<CONFIG:Final>:
+                /O2;
+                /GF;
+                /MD;
+                /Gy;
+                /W3;
+                /GR
+            >
+            $<$<CONFIG:Release MFC DLL>:
+                ${DEFAULT_CXX_RUNTIME_LIBRARY}
+            >
+            $<$<CONFIG:Release>:
+                /O2;
+                /GF;
+                /MD;
+                /Gy;
+                /W3;
+                /GR;
+                /Zc:forScope-
+            >
+            $<$<CONFIG:Template>:
+                ${DEFAULT_CXX_RUNTIME_LIBRARY}
+            >
+            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
+            ${DEFAULT_CXX_EXCEPTION_HANDLING}
+        )
+    elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
+        target_compile_options(${PROJECT_NAME} PRIVATE
+            $<$<CONFIG:Debug MFC DLL>:
+                /Gm;
+                /Od;
+                /RTC1;
+                /MDd;
+                /Gy;
+                /W3;
+                /GR;
+                /wd4996;
+                /Zc:forScope-
+            >
+            $<$<CONFIG:Debug>:
+                /Gm;
+                /Od;
+                /RTC1;
+                /MDd;
+                /Gy;
+                /W3;
+                /GR;
+                /wd4996;
+                /Zc:forScope-
+            >
+            $<$<CONFIG:Final DE>:
+                /O2;
+                /GF;
+                /MD;
+                /Gy;
+                /W3;
+                /GR
+            >
+            $<$<CONFIG:Final ES>:
+                /O2;
+                /GF;
+                /MD;
+                /Gy;
+                /W3;
+                /GR
+            >
+            $<$<CONFIG:Final FR>:
+                /O2;
+                /GF;
+                /MD;
+                /Gy;
+                /W3;
+                /GR
+            >
+            $<$<CONFIG:Final IT>:
+                /O2;
+                /GF;
+                /MD;
+                /Gy;
+                /W3;
+                /GR
+            >
+            $<$<CONFIG:Final MFC DLL>:
+                /O2;
+                /GF;
+                /MD;
+                /Gy;
+                /W3;
+                /GR
+            >
+            $<$<CONFIG:Final>:
+                /O2;
+                /GF;
+                /MD;
+                /Gy;
+                /W3;
+                /GR
+            >
+            $<$<CONFIG:Release MFC DLL>:
+                /O2;
+                /GF;
+                /MD;
+                /Gy;
+                /W3;
+                /GR;
+                /Zc:forScope-
+            >
+            $<$<CONFIG:Release>:
+                /O2;
+                /GF;
+                /MD;
+                /Gy;
+                /W3;
+                /GR;
+                /Zc:forScope-
+            >
+            $<$<CONFIG:Template>:
+                ${DEFAULT_CXX_RUNTIME_LIBRARY}
+            >
+            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
+            ${DEFAULT_CXX_EXCEPTION_HANDLING}
+        )
+    endif()
+    if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
+        string(CONCAT FILE_CL_OPTIONS
+            "$<$<CONFIG:Debug>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Release>:"
+                "/Y-"
+            ">"
+        )
+    elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
+        string(CONCAT FILE_CL_OPTIONS
+            "$<$<CONFIG:Debug MFC DLL>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Debug>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final DE>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final ES>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final FR>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final IT>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final MFC DLL>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Release MFC DLL>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Release>:"
+                "/Y-"
+            ">"
+        )
+    endif()
+    source_file_compile_options(../../../Engine/sdk/inc/iltbaseclass.cpp ${FILE_CL_OPTIONS})
+    if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
+        string(CONCAT FILE_CL_OPTIONS
+            "$<$<CONFIG:Debug>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Release>:"
+                "/Y-"
+            ">"
+        )
+    elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
+        string(CONCAT FILE_CL_OPTIONS
+            "$<$<CONFIG:Debug MFC DLL>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Debug>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final DE>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final ES>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final FR>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final IT>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final MFC DLL>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Release MFC DLL>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Release>:"
+                "/Y-"
+            ">"
+        )
+    endif()
+    source_file_compile_options(../../../Engine/sdk/inc/ltengineobjects.cpp ${FILE_CL_OPTIONS})
+    if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
+        string(CONCAT FILE_CL_OPTIONS
+            "$<$<CONFIG:Debug>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Release>:"
+                "/Y-"
+            ">"
+        )
+    elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
+        string(CONCAT FILE_CL_OPTIONS
+            "$<$<CONFIG:Debug MFC DLL>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Debug>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final DE>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final ES>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final FR>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final IT>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final MFC DLL>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Release MFC DLL>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Release>:"
+                "/Y-"
+            ">"
+        )
+    endif()
+    source_file_compile_options(../../../Engine/sdk/inc/ltmodule.cpp ${FILE_CL_OPTIONS})
+    if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
+        string(CONCAT FILE_CL_OPTIONS
+            "$<$<CONFIG:Debug>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Release>:"
+                "/Y-"
+            ">"
+        )
+    elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
+        string(CONCAT FILE_CL_OPTIONS
+            "$<$<CONFIG:Debug MFC DLL>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Debug>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final DE>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final ES>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final FR>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final IT>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final MFC DLL>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Release MFC DLL>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Release>:"
+                "/Y-"
+            ">"
+        )
+    endif()
+    source_file_compile_options(../../../Engine/sdk/inc/ltobjref.cpp ${FILE_CL_OPTIONS})
+    if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
+        string(CONCAT FILE_CL_OPTIONS
+            "$<$<CONFIG:Debug>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Release>:"
+                "/Y-"
+            ">"
+        )
+    elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
+        string(CONCAT FILE_CL_OPTIONS
+            "$<$<CONFIG:Debug MFC DLL>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Debug>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final DE>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final ES>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final FR>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final IT>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final MFC DLL>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Release MFC DLL>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Release>:"
+                "/Y-"
+            ">"
+        )
+    endif()
+    source_file_compile_options(../../../Engine/sdk/inc/ltquatbase.cpp ${FILE_CL_OPTIONS})
+    if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
+        string(CONCAT FILE_CL_OPTIONS
+            "$<$<CONFIG:Debug>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Release>:"
+                "/Y-"
+            ">"
+        )
+    elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
+        string(CONCAT FILE_CL_OPTIONS
+            "$<$<CONFIG:Debug MFC DLL>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Debug>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final DE>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final ES>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final FR>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final IT>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final MFC DLL>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Release MFC DLL>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Release>:"
+                "/Y-"
+            ">"
+        )
+    endif()
+    source_file_compile_options(AnimationLex.cpp ${FILE_CL_OPTIONS})
+    if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
+        string(CONCAT FILE_CL_OPTIONS
+            "$<$<CONFIG:Debug>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Release>:"
+                "/Y-"
+            ">"
+        )
+    elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
+        string(CONCAT FILE_CL_OPTIONS
+            "$<$<CONFIG:Debug MFC DLL>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Debug>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final DE>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final ES>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final FR>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final IT>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final MFC DLL>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Final>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Release MFC DLL>:"
+                "/Y-"
+            ">"
+            "$<$<CONFIG:Release>:"
+                "/Y-"
+            ">"
+        )
+    endif()
+    source_file_compile_options(AnimationParse.cpp ${FILE_CL_OPTIONS})
+    if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
+        target_link_options(${PROJECT_NAME} PRIVATE
+            $<$<CONFIG:Debug MFC DLL>:
+                /DEBUG:FULL
+            >
+            $<$<CONFIG:Debug>:
+                /NOLOGO
+            >
+            $<$<CONFIG:Final DE>:
+                /DEBUG:FULL
+            >
+            $<$<CONFIG:Final ES>:
+                /DEBUG:FULL
+            >
+            $<$<CONFIG:Final FR>:
+                /DEBUG:FULL
+            >
+            $<$<CONFIG:Final IT>:
+                /DEBUG:FULL
+            >
+            $<$<CONFIG:Final MFC DLL>:
+                /DEBUG:FULL
+            >
+            $<$<CONFIG:Final>:
+                /NOLOGO
+            >
+            $<$<CONFIG:Release MFC DLL>:
+                /DEBUG:FULL
+            >
+            $<$<CONFIG:Release>:
+                /NOLOGO
+            >
+            $<$<CONFIG:Template>:
+                /DEBUG:FULL
+            >
+        )
+    elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
+        target_link_options(${PROJECT_NAME} PRIVATE
+            $<$<CONFIG:Debug MFC DLL>:
+                /NOLOGO
+            >
+            $<$<CONFIG:Debug>:
+                /NOLOGO
+            >
+            $<$<CONFIG:Final DE>:
+                /NOLOGO
+            >
+            $<$<CONFIG:Final ES>:
+                /NOLOGO
+            >
+            $<$<CONFIG:Final FR>:
+                /NOLOGO
+            >
+            $<$<CONFIG:Final IT>:
+                /NOLOGO
+            >
+            $<$<CONFIG:Final MFC DLL>:
+                /NOLOGO
+            >
+            $<$<CONFIG:Final>:
+                /NOLOGO
+            >
+            $<$<CONFIG:Release MFC DLL>:
+                /NOLOGO
+            >
+            $<$<CONFIG:Release>:
+                /NOLOGO
+            >
+            $<$<CONFIG:Template>:
+                /DEBUG:FULL
+            >
+        )
+    endif()
+endif()
+
