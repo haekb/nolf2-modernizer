@@ -64,782 +64,440 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 ################################################################################
 # Target name
 ################################################################################
-if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
-    set_target_properties(${PROJECT_NAME} PROPERTIES
-        TARGET_NAME_DEBUG           "NOLF2Srv"
-        TARGET_NAME_FINAL DE        "NOLF2Srv"
-        TARGET_NAME_FINAL ES        "NOLF2Srv"
-        TARGET_NAME_FINAL FR        "NOLF2Srv"
-        TARGET_NAME_FINAL IT        "NOLF2Srv"
-        TARGET_NAME_FINAL           "NOLF2Srv"
-        TARGET_NAME_RELEASE         "NOLF2Srv"
-    )
-elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
-    set_target_properties(${PROJECT_NAME} PROPERTIES
-        TARGET_NAME_DEBUG MFC DLL   "NOLF2Srv"
-        TARGET_NAME_DEBUG           "NOLF2Srv"
-        TARGET_NAME_FINAL DE        "NOLF2Srv"
-        TARGET_NAME_FINAL ES        "NOLF2Srv"
-        TARGET_NAME_FINAL FR        "NOLF2Srv"
-        TARGET_NAME_FINAL IT        "NOLF2Srv"
-        TARGET_NAME_FINAL MFC DLL   "NOLF2Srv"
-        TARGET_NAME_FINAL           "NOLF2Srv"
-        TARGET_NAME_RELEASE MFC DLL "NOLF2Srv"
-        TARGET_NAME_RELEASE         "NOLF2Srv"
-    )
-endif()
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    TARGET_NAME_DEBUG MFC DLL   "NOLF2Srv"
+    TARGET_NAME_DEBUG           "NOLF2Srv"
+    TARGET_NAME_FINAL DE        "NOLF2Srv"
+    TARGET_NAME_FINAL ES        "NOLF2Srv"
+    TARGET_NAME_FINAL FR        "NOLF2Srv"
+    TARGET_NAME_FINAL IT        "NOLF2Srv"
+    TARGET_NAME_FINAL MFC DLL   "NOLF2Srv"
+    TARGET_NAME_FINAL           "NOLF2Srv"
+    TARGET_NAME_RELEASE MFC DLL "NOLF2Srv"
+    TARGET_NAME_RELEASE         "NOLF2Srv"
+)
 ################################################################################
 # Output directory
 ################################################################################
-if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
-    set_target_properties(${PROJECT_NAME} PROPERTIES
-        OUTPUT_DIRECTORY_DEBUG           "${CMAKE_CURRENT_SOURCE_DIR}/../Built/Debug/ServerApp"
-        OUTPUT_DIRECTORY_FINAL DE        "${CMAKE_CURRENT_SOURCE_DIR}/../Built/FinalDE/ServerApp"
-        OUTPUT_DIRECTORY_FINAL ES        "${CMAKE_CURRENT_SOURCE_DIR}/../Built/FinalES/ServerApp"
-        OUTPUT_DIRECTORY_FINAL FR        "${CMAKE_CURRENT_SOURCE_DIR}/../Built/FinalFR/ServerApp"
-        OUTPUT_DIRECTORY_FINAL IT        "${CMAKE_CURRENT_SOURCE_DIR}/../Built/FinalIT/ServerApp"
-        OUTPUT_DIRECTORY_FINAL           "${CMAKE_CURRENT_SOURCE_DIR}/../Built/Final/ServerApp"
-        OUTPUT_DIRECTORY_RELEASE         "${CMAKE_CURRENT_SOURCE_DIR}/../Built/Release/ServerApp"
-    )
-elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
-    set_target_properties(${PROJECT_NAME} PROPERTIES
-        OUTPUT_DIRECTORY_DEBUG MFC DLL   "${CMAKE_CURRENT_SOURCE_DIR}/../Built/Debug/ServerApp"
-        OUTPUT_DIRECTORY_DEBUG           "${CMAKE_CURRENT_SOURCE_DIR}/../Built/Debug/ServerApp"
-        OUTPUT_DIRECTORY_FINAL DE        "${CMAKE_CURRENT_SOURCE_DIR}/../Built/FinalDE/ServerApp"
-        OUTPUT_DIRECTORY_FINAL ES        "${CMAKE_CURRENT_SOURCE_DIR}/../Built/FinalES/ServerApp"
-        OUTPUT_DIRECTORY_FINAL FR        "${CMAKE_CURRENT_SOURCE_DIR}/../Built/FinalFR/ServerApp"
-        OUTPUT_DIRECTORY_FINAL IT        "${CMAKE_CURRENT_SOURCE_DIR}/../Built/FinalIT/ServerApp"
-        OUTPUT_DIRECTORY_FINAL MFC DLL   "${CMAKE_CURRENT_SOURCE_DIR}/../Built/FinalES/ServerApp"
-        OUTPUT_DIRECTORY_FINAL           "${CMAKE_CURRENT_SOURCE_DIR}/../Built/Final/ServerApp"
-        OUTPUT_DIRECTORY_RELEASE MFC DLL "${CMAKE_CURRENT_SOURCE_DIR}/../Built/Release/ServerApp"
-        OUTPUT_DIRECTORY_RELEASE         "${CMAKE_CURRENT_SOURCE_DIR}/../Built/Release/ServerApp"
-    )
-endif()
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    OUTPUT_DIRECTORY_DEBUG MFC DLL   "${CMAKE_CURRENT_SOURCE_DIR}/../Built/Debug/ServerApp"
+    OUTPUT_DIRECTORY_DEBUG           "${CMAKE_CURRENT_SOURCE_DIR}/../Built/Debug/ServerApp"
+    OUTPUT_DIRECTORY_FINAL DE        "${CMAKE_CURRENT_SOURCE_DIR}/../Built/FinalDE/ServerApp"
+    OUTPUT_DIRECTORY_FINAL ES        "${CMAKE_CURRENT_SOURCE_DIR}/../Built/FinalES/ServerApp"
+    OUTPUT_DIRECTORY_FINAL FR        "${CMAKE_CURRENT_SOURCE_DIR}/../Built/FinalFR/ServerApp"
+    OUTPUT_DIRECTORY_FINAL IT        "${CMAKE_CURRENT_SOURCE_DIR}/../Built/FinalIT/ServerApp"
+    OUTPUT_DIRECTORY_FINAL MFC DLL   "${CMAKE_CURRENT_SOURCE_DIR}/../Built/FinalES/ServerApp"
+    OUTPUT_DIRECTORY_FINAL           "${CMAKE_CURRENT_SOURCE_DIR}/../Built/Final/ServerApp"
+    OUTPUT_DIRECTORY_RELEASE MFC DLL "${CMAKE_CURRENT_SOURCE_DIR}/../Built/Release/ServerApp"
+    OUTPUT_DIRECTORY_RELEASE         "${CMAKE_CURRENT_SOURCE_DIR}/../Built/Release/ServerApp"
+)
 ################################################################################
 # Include directories
 ################################################################################
-if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
-    target_include_directories(${PROJECT_NAME} PUBLIC
-        "$<$<CONFIG:Debug>:"
-            "${CMAKE_CURRENT_SOURCE_DIR}/.;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/STLPORT-4.0/STLPORT_NO;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../Engine/sdk/inc;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/EN;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr32;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/lith;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/ButeMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/CryptMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/stdlith"
-        ">"
-        "$<$<CONFIG:Final DE>:"
-            "${CMAKE_CURRENT_SOURCE_DIR}/.;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/STLPort-4.0/stlport;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../Engine/sdk/inc;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/DE;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr32;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/lith;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/ButeMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/CryptMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/stdlith"
-        ">"
-        "$<$<CONFIG:Final ES>:"
-            "${CMAKE_CURRENT_SOURCE_DIR}/.;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/STLPort-4.0/stlport;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../Engine/sdk/inc;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/ES;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr32;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/lith;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/ButeMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/CryptMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/stdlith"
-        ">"
-        "$<$<CONFIG:Final FR>:"
-            "${CMAKE_CURRENT_SOURCE_DIR}/.;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/STLPort-4.0/stlport;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../Engine/sdk/inc;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/FR;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr32;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/lith;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/ButeMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/CryptMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/stdlith"
-        ">"
-        "$<$<CONFIG:Final IT>:"
-            "${CMAKE_CURRENT_SOURCE_DIR}/.;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/STLPort-4.0/stlport;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../Engine/sdk/inc;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/IT;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr32;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/lith;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/ButeMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/CryptMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/stdlith"
-        ">"
-        "$<$<CONFIG:Final>:"
-            "${CMAKE_CURRENT_SOURCE_DIR}/.;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/STLPort-4.0/stlport;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../Engine/sdk/inc;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/EN;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr32;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/lith;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/ButeMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/CryptMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/stdlith"
-        ">"
-        "$<$<CONFIG:Release>:"
-            "${CMAKE_CURRENT_SOURCE_DIR}/.;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/STLPort-4.0/stlport;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../Engine/sdk/inc;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/EN;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr32;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/lith;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/ButeMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/CryptMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/stdlith"
-        ">"
-    )
-elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
-    target_include_directories(${PROJECT_NAME} PUBLIC
-        "$<$<CONFIG:Debug MFC DLL>:"
-            "${CMAKE_CURRENT_SOURCE_DIR}/.;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/STLPORT-4.0/STLPORT_NO;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../Engine/sdk/inc;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/EN;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr32;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/lith;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/ButeMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/CryptMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/stdlith"
-        ">"
-        "$<$<CONFIG:Debug>:"
-            "${CMAKE_CURRENT_SOURCE_DIR}/.;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/STLPORT-4.0/STLPORT_NO;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../Engine/sdk/inc;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/EN;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr32;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/lith;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/ButeMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/CryptMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/stdlith"
-        ">"
-        "$<$<CONFIG:Final DE>:"
-            "${CMAKE_CURRENT_SOURCE_DIR}/.;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/STLPort-4.0/stlport;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../Engine/sdk/inc;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/DE;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr32;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/lith;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/ButeMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/CryptMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/stdlith"
-        ">"
-        "$<$<CONFIG:Final ES>:"
-            "${CMAKE_CURRENT_SOURCE_DIR}/.;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/STLPort-4.0/stlport;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../Engine/sdk/inc;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/ES;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr32;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/lith;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/ButeMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/CryptMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/stdlith"
-        ">"
-        "$<$<CONFIG:Final FR>:"
-            "${CMAKE_CURRENT_SOURCE_DIR}/.;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/STLPort-4.0/stlport;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../Engine/sdk/inc;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/FR;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr32;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/lith;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/ButeMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/CryptMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/stdlith"
-        ">"
-        "$<$<CONFIG:Final IT>:"
-            "${CMAKE_CURRENT_SOURCE_DIR}/.;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/STLPort-4.0/stlport;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../Engine/sdk/inc;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/IT;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr32;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/lith;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/ButeMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/CryptMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/stdlith"
-        ">"
-        "$<$<CONFIG:Final MFC DLL>:"
-            "${CMAKE_CURRENT_SOURCE_DIR}/.;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/STLPort-4.0/stlport;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../Engine/sdk/inc;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/ES;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr32;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/lith;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/ButeMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/CryptMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/stdlith"
-        ">"
-        "$<$<CONFIG:Final>:"
-            "${CMAKE_CURRENT_SOURCE_DIR}/.;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/STLPort-4.0/stlport;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../Engine/sdk/inc;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/EN;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr32;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/lith;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/ButeMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/CryptMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/stdlith"
-        ">"
-        "$<$<CONFIG:Release MFC DLL>:"
-            "${CMAKE_CURRENT_SOURCE_DIR}/.;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/STLPort-4.0/stlport;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../Engine/sdk/inc;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/EN;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr32;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/lith;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/ButeMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/CryptMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/stdlith"
-        ">"
-        "$<$<CONFIG:Release>:"
-            "${CMAKE_CURRENT_SOURCE_DIR}/.;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/STLPort-4.0/stlport;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../Engine/sdk/inc;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/EN;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr32;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/lith;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/ButeMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/CryptMgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/stdlith"
-        ">"
-    )
-endif()
+target_include_directories(${PROJECT_NAME} PUBLIC
+    "$<$<CONFIG:Debug MFC DLL>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/.;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/STLPORT-4.0/STLPORT_NO;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../Engine/sdk/inc;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/EN;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr32;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/lith;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/ButeMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/CryptMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/stdlith"
+    ">"
+    "$<$<CONFIG:Debug>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/.;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/STLPORT-4.0/STLPORT_NO;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../Engine/sdk/inc;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/EN;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr32;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/lith;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/ButeMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/CryptMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/stdlith"
+    ">"
+    "$<$<CONFIG:Final DE>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/.;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/STLPort-4.0/stlport;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../Engine/sdk/inc;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/DE;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr32;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/lith;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/ButeMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/CryptMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/stdlith"
+    ">"
+    "$<$<CONFIG:Final ES>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/.;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/STLPort-4.0/stlport;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../Engine/sdk/inc;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/ES;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr32;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/lith;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/ButeMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/CryptMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/stdlith"
+    ">"
+    "$<$<CONFIG:Final FR>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/.;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/STLPort-4.0/stlport;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../Engine/sdk/inc;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/FR;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr32;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/lith;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/ButeMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/CryptMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/stdlith"
+    ">"
+    "$<$<CONFIG:Final IT>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/.;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/STLPort-4.0/stlport;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../Engine/sdk/inc;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/IT;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr32;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/lith;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/ButeMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/CryptMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/stdlith"
+    ">"
+    "$<$<CONFIG:Final MFC DLL>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/.;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/STLPort-4.0/stlport;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../Engine/sdk/inc;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/ES;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr32;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/lith;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/ButeMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/CryptMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/stdlith"
+    ">"
+    "$<$<CONFIG:Final>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/.;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/STLPort-4.0/stlport;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../Engine/sdk/inc;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/EN;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr32;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/lith;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/ButeMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/CryptMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/stdlith"
+    ">"
+    "$<$<CONFIG:Release MFC DLL>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/.;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/STLPort-4.0/stlport;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../Engine/sdk/inc;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/EN;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr32;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/lith;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/ButeMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/CryptMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/stdlith"
+    ">"
+    "$<$<CONFIG:Release>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/.;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/STLPort-4.0/stlport;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../Engine/sdk/inc;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/EN;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/RegMgr32;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/lith;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/ButeMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/CryptMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/stdlith"
+    ">"
+)
 
 ################################################################################
 # Compile definitions
 ################################################################################
-if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
-    target_compile_definitions(${PROJECT_NAME} PRIVATE
-        "$<$<CONFIG:Debug>:"
-            "_DEBUG;"
-            "WIN32;"
-            "_WINDOWS;"
-            "_MBCS"
-        ">"
-        "$<$<CONFIG:Final DE>:"
-            "WIN32;"
-            "NDEBUG;"
-            "_WINDOWS;"
-            "_FINAL;"
-            "_MBCS"
-        ">"
-        "$<$<CONFIG:Final ES>:"
-            "WIN32;"
-            "NDEBUG;"
-            "_WINDOWS;"
-            "_FINAL;"
-            "_MBCS"
-        ">"
-        "$<$<CONFIG:Final FR>:"
-            "WIN32;"
-            "NDEBUG;"
-            "_WINDOWS;"
-            "_FINAL;"
-            "_MBCS"
-        ">"
-        "$<$<CONFIG:Final IT>:"
-            "WIN32;"
-            "NDEBUG;"
-            "_WINDOWS;"
-            "_FINAL;"
-            "_MBCS"
-        ">"
-        "$<$<CONFIG:Final>:"
-            "WIN32;"
-            "NDEBUG;"
-            "_WINDOWS;"
-            "_FINAL;"
-            "_MBCS"
-        ">"
-        "$<$<CONFIG:Release>:"
-            "WIN32;"
-            "NDEBUG;"
-            "_WINDOWS;"
-            "_MBCS"
-        ">"
-    )
-elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
-    target_compile_definitions(${PROJECT_NAME} PRIVATE
-        "$<$<CONFIG:Debug MFC DLL>:"
-            "_DEBUG;"
-            "WIN32;"
-            "_WINDOWS;"
-            "_MBCS"
-        ">"
-        "$<$<CONFIG:Debug>:"
-            "_DEBUG;"
-            "WIN32;"
-            "_WINDOWS;"
-            "_MBCS"
-        ">"
-        "$<$<CONFIG:Final DE>:"
-            "WIN32;"
-            "NDEBUG;"
-            "_WINDOWS;"
-            "_FINAL;"
-            "_MBCS"
-        ">"
-        "$<$<CONFIG:Final ES>:"
-            "WIN32;"
-            "NDEBUG;"
-            "_WINDOWS;"
-            "_FINAL;"
-            "_MBCS"
-        ">"
-        "$<$<CONFIG:Final FR>:"
-            "WIN32;"
-            "NDEBUG;"
-            "_WINDOWS;"
-            "_FINAL;"
-            "_MBCS"
-        ">"
-        "$<$<CONFIG:Final IT>:"
-            "WIN32;"
-            "NDEBUG;"
-            "_WINDOWS;"
-            "_FINAL;"
-            "_MBCS"
-        ">"
-        "$<$<CONFIG:Final MFC DLL>:"
-            "WIN32;"
-            "NDEBUG;"
-            "_WINDOWS;"
-            "_FINAL;"
-            "_MBCS"
-        ">"
-        "$<$<CONFIG:Final>:"
-            "WIN32;"
-            "NDEBUG;"
-            "_WINDOWS;"
-            "_FINAL;"
-            "_MBCS"
-        ">"
-        "$<$<CONFIG:Release MFC DLL>:"
-            "WIN32;"
-            "NDEBUG;"
-            "_WINDOWS;"
-            "_MBCS"
-        ">"
-        "$<$<CONFIG:Release>:"
-            "WIN32;"
-            "NDEBUG;"
-            "_WINDOWS;"
-            "_MBCS"
-        ">"
-    )
-endif()
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+    "$<$<CONFIG:Debug MFC DLL>:"
+        "_DEBUG;"
+        "WIN32;"
+        "_WINDOWS;"
+        "_MBCS"
+    ">"
+    "$<$<CONFIG:Debug>:"
+        "_DEBUG;"
+        "WIN32;"
+        "_WINDOWS;"
+        "_MBCS"
+    ">"
+    "$<$<CONFIG:Final DE>:"
+        "WIN32;"
+        "NDEBUG;"
+        "_WINDOWS;"
+        "_FINAL;"
+        "_MBCS"
+    ">"
+    "$<$<CONFIG:Final ES>:"
+        "WIN32;"
+        "NDEBUG;"
+        "_WINDOWS;"
+        "_FINAL;"
+        "_MBCS"
+    ">"
+    "$<$<CONFIG:Final FR>:"
+        "WIN32;"
+        "NDEBUG;"
+        "_WINDOWS;"
+        "_FINAL;"
+        "_MBCS"
+    ">"
+    "$<$<CONFIG:Final IT>:"
+        "WIN32;"
+        "NDEBUG;"
+        "_WINDOWS;"
+        "_FINAL;"
+        "_MBCS"
+    ">"
+    "$<$<CONFIG:Final MFC DLL>:"
+        "WIN32;"
+        "NDEBUG;"
+        "_WINDOWS;"
+        "_FINAL;"
+        "_MBCS"
+    ">"
+    "$<$<CONFIG:Final>:"
+        "WIN32;"
+        "NDEBUG;"
+        "_WINDOWS;"
+        "_FINAL;"
+        "_MBCS"
+    ">"
+    "$<$<CONFIG:Release MFC DLL>:"
+        "WIN32;"
+        "NDEBUG;"
+        "_WINDOWS;"
+        "_MBCS"
+    ">"
+    "$<$<CONFIG:Release>:"
+        "WIN32;"
+        "NDEBUG;"
+        "_WINDOWS;"
+        "_MBCS"
+    ">"
+)
 
 ################################################################################
 # Compile and link options
 ################################################################################
 if(MSVC)
-    if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
-        target_compile_options(${PROJECT_NAME} PRIVATE
-            $<$<CONFIG:Debug MFC DLL>:
-                ${DEFAULT_CXX_RUNTIME_LIBRARY};
-                ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT}
-            >
-            $<$<CONFIG:Debug>:
-                /Gm;
-                /Od;
-                /MDd;
-                /Gy;
-                /W3;
-                /ZI;
-                /GR
-            >
-            $<$<CONFIG:Final DE>:
-                /O2;
-                /GF;
-                /MD;
-                /Gy;
-                /W3;
-                ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
-                /GR
-            >
-            $<$<CONFIG:Final ES>:
-                /O2;
-                /GF;
-                /MD;
-                /Gy;
-                /W3;
-                ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
-                /GR
-            >
-            $<$<CONFIG:Final FR>:
-                /O2;
-                /GF;
-                /MD;
-                /Gy;
-                /W3;
-                ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
-                /GR
-            >
-            $<$<CONFIG:Final IT>:
-                /O2;
-                /GF;
-                /MD;
-                /Gy;
-                /W3;
-                ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
-                /GR
-            >
-            $<$<CONFIG:Final MFC DLL>:
-                ${DEFAULT_CXX_RUNTIME_LIBRARY};
-                ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT}
-            >
-            $<$<CONFIG:Final>:
-                /O2;
-                /GF;
-                /MD;
-                /Gy;
-                /W3;
-                ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
-                /GR
-            >
-            $<$<CONFIG:Release MFC DLL>:
-                ${DEFAULT_CXX_RUNTIME_LIBRARY};
-                ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT}
-            >
-            $<$<CONFIG:Release>:
-                /O2;
-                /GF;
-                /MD;
-                /Gy;
-                /W3;
-                ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
-                /GR
-            >
-            $<$<CONFIG:Template>:
-                ${DEFAULT_CXX_RUNTIME_LIBRARY};
-                ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT}
-            >
-            ${DEFAULT_CXX_EXCEPTION_HANDLING}
-        )
-    elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
-        target_compile_options(${PROJECT_NAME} PRIVATE
-            $<$<CONFIG:Debug MFC DLL>:
-                /Gm;
-                /Od;
-                /MDd;
-                /Gy;
-                /W3;
-                /ZI;
-                /GR
-            >
-            $<$<CONFIG:Debug>:
-                /Gm;
-                /Od;
-                /MDd;
-                /Gy;
-                /W3;
-                /ZI;
-                /GR
-            >
-            $<$<CONFIG:Final DE>:
-                /O2;
-                /GF;
-                /MD;
-                /Gy;
-                /W3;
-                ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
-                /GR
-            >
-            $<$<CONFIG:Final ES>:
-                /O2;
-                /GF;
-                /MD;
-                /Gy;
-                /W3;
-                ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
-                /GR
-            >
-            $<$<CONFIG:Final FR>:
-                /O2;
-                /GF;
-                /MD;
-                /Gy;
-                /W3;
-                ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
-                /GR
-            >
-            $<$<CONFIG:Final IT>:
-                /O2;
-                /GF;
-                /MD;
-                /Gy;
-                /W3;
-                ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
-                /GR
-            >
-            $<$<CONFIG:Final MFC DLL>:
-                /O2;
-                /GF;
-                /MD;
-                /Gy;
-                /W3;
-                ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
-                /GR
-            >
-            $<$<CONFIG:Final>:
-                /O2;
-                /GF;
-                /MD;
-                /Gy;
-                /W3;
-                ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
-                /GR
-            >
-            $<$<CONFIG:Release MFC DLL>:
-                /O2;
-                /GF;
-                /MD;
-                /Gy;
-                /W3;
-                ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
-                /GR
-            >
-            $<$<CONFIG:Release>:
-                /O2;
-                /GF;
-                /MD;
-                /Gy;
-                /W3;
-                ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
-                /GR
-            >
-            $<$<CONFIG:Template>:
-                ${DEFAULT_CXX_RUNTIME_LIBRARY};
-                ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT}
-            >
-            ${DEFAULT_CXX_EXCEPTION_HANDLING}
-        )
-    endif()
-    if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
-        string(CONCAT FILE_CL_OPTIONS
-            "$<$<CONFIG:Debug>:"
-                "/Y-"
-            ">"
-            "$<$<CONFIG:Final DE>:"
-                "/Y-"
-            ">"
-            "$<$<CONFIG:Final ES>:"
-                "/Y-"
-            ">"
-            "$<$<CONFIG:Final FR>:"
-                "/Y-"
-            ">"
-            "$<$<CONFIG:Final IT>:"
-                "/Y-"
-            ">"
-            "$<$<CONFIG:Final>:"
-                "/Y-"
-            ">"
-            "$<$<CONFIG:Release>:"
-                "/Y-"
-            ">"
-        )
-    elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
-        string(CONCAT FILE_CL_OPTIONS
-            "$<$<CONFIG:Debug MFC DLL>:"
-                "/Y-"
-            ">"
-            "$<$<CONFIG:Debug>:"
-                "/Y-"
-            ">"
-            "$<$<CONFIG:Final DE>:"
-                "/Y-"
-            ">"
-            "$<$<CONFIG:Final ES>:"
-                "/Y-"
-            ">"
-            "$<$<CONFIG:Final FR>:"
-                "/Y-"
-            ">"
-            "$<$<CONFIG:Final IT>:"
-                "/Y-"
-            ">"
-            "$<$<CONFIG:Final MFC DLL>:"
-                "/Y-"
-            ">"
-            "$<$<CONFIG:Final>:"
-                "/Y-"
-            ">"
-            "$<$<CONFIG:Release MFC DLL>:"
-                "/Y-"
-            ">"
-            "$<$<CONFIG:Release>:"
-                "/Y-"
-            ">"
-        )
-    endif()
+    target_compile_options(${PROJECT_NAME} PRIVATE
+        $<$<CONFIG:Debug MFC DLL>:
+            /Gm;
+            /Od;
+            /MDd;
+            /Gy;
+            /W3;
+            /ZI;
+            /GR
+        >
+        $<$<CONFIG:Debug>:
+            /Gm;
+            /Od;
+            /MDd;
+            /Gy;
+            /W3;
+            /ZI;
+            /GR
+        >
+        $<$<CONFIG:Final DE>:
+            /O2;
+            /GF;
+            /MD;
+            /Gy;
+            /W3;
+            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
+            /GR
+        >
+        $<$<CONFIG:Final ES>:
+            /O2;
+            /GF;
+            /MD;
+            /Gy;
+            /W3;
+            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
+            /GR
+        >
+        $<$<CONFIG:Final FR>:
+            /O2;
+            /GF;
+            /MD;
+            /Gy;
+            /W3;
+            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
+            /GR
+        >
+        $<$<CONFIG:Final IT>:
+            /O2;
+            /GF;
+            /MD;
+            /Gy;
+            /W3;
+            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
+            /GR
+        >
+        $<$<CONFIG:Final MFC DLL>:
+            /O2;
+            /GF;
+            /MD;
+            /Gy;
+            /W3;
+            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
+            /GR
+        >
+        $<$<CONFIG:Final>:
+            /O2;
+            /GF;
+            /MD;
+            /Gy;
+            /W3;
+            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
+            /GR
+        >
+        $<$<CONFIG:Release MFC DLL>:
+            /O2;
+            /GF;
+            /MD;
+            /Gy;
+            /W3;
+            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
+            /GR
+        >
+        $<$<CONFIG:Release>:
+            /O2;
+            /GF;
+            /MD;
+            /Gy;
+            /W3;
+            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
+            /GR
+        >
+        $<$<CONFIG:Template>:
+            ${DEFAULT_CXX_RUNTIME_LIBRARY};
+            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT}
+        >
+        ${DEFAULT_CXX_EXCEPTION_HANDLING}
+    )
+    string(CONCAT FILE_CL_OPTIONS
+        "$<$<CONFIG:Debug MFC DLL>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:Debug>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:Final DE>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:Final ES>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:Final FR>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:Final IT>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:Final MFC DLL>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:Final>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:Release MFC DLL>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:Release>:"
+            "/Y-"
+        ">"
+    )
     source_file_compile_options(../../Engine/sdk/inc/ltmodule.cpp ${FILE_CL_OPTIONS})
-    if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
-        target_link_options(${PROJECT_NAME} PRIVATE
-            $<$<CONFIG:Debug MFC DLL>:
-                /DEBUG:FULL
-            >
-            $<$<CONFIG:Debug>:
-                /NOLOGO;
-                /DEBUG;
-                /SUBSYSTEM:WINDOWS;
-                /INCREMENTAL
-            >
-            $<$<CONFIG:Final DE>:
-                /NOLOGO;
-                /DEBUG:FULL;
-                /SUBSYSTEM:WINDOWS;
-                /INCREMENTAL:NO
-            >
-            $<$<CONFIG:Final ES>:
-                /NOLOGO;
-                /DEBUG:FULL;
-                /SUBSYSTEM:WINDOWS;
-                /INCREMENTAL:NO
-            >
-            $<$<CONFIG:Final FR>:
-                /NOLOGO;
-                /DEBUG:FULL;
-                /SUBSYSTEM:WINDOWS;
-                /INCREMENTAL:NO
-            >
-            $<$<CONFIG:Final IT>:
-                /NOLOGO;
-                /DEBUG:FULL;
-                /SUBSYSTEM:WINDOWS;
-                /INCREMENTAL:NO
-            >
-            $<$<CONFIG:Final MFC DLL>:
-                /DEBUG:FULL
-            >
-            $<$<CONFIG:Final>:
-                /NOLOGO;
-                /DEBUG:FULL;
-                /SUBSYSTEM:WINDOWS;
-                /INCREMENTAL:NO
-            >
-            $<$<CONFIG:Release MFC DLL>:
-                /DEBUG:FULL
-            >
-            $<$<CONFIG:Release>:
-                /NOLOGO;
-                /DEBUG:FULL;
-                /SUBSYSTEM:WINDOWS;
-                /INCREMENTAL:NO
-            >
-            $<$<CONFIG:Template>:
-                /DEBUG:FULL
-            >
-        )
-    elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
-        target_link_options(${PROJECT_NAME} PRIVATE
-            $<$<CONFIG:Debug MFC DLL>:
-                /NOLOGO;
-                /DEBUG;
-                /SUBSYSTEM:WINDOWS;
-                /INCREMENTAL
-            >
-            $<$<CONFIG:Debug>:
-                /NOLOGO;
-                /DEBUG;
-                /SUBSYSTEM:WINDOWS;
-                /INCREMENTAL
-            >
-            $<$<CONFIG:Final DE>:
-                /NOLOGO;
-                /DEBUG:FULL;
-                /SUBSYSTEM:WINDOWS;
-                /INCREMENTAL:NO
-            >
-            $<$<CONFIG:Final ES>:
-                /NOLOGO;
-                /DEBUG:FULL;
-                /SUBSYSTEM:WINDOWS;
-                /INCREMENTAL:NO
-            >
-            $<$<CONFIG:Final FR>:
-                /NOLOGO;
-                /DEBUG:FULL;
-                /SUBSYSTEM:WINDOWS;
-                /INCREMENTAL:NO
-            >
-            $<$<CONFIG:Final IT>:
-                /NOLOGO;
-                /DEBUG:FULL;
-                /SUBSYSTEM:WINDOWS;
-                /INCREMENTAL:NO
-            >
-            $<$<CONFIG:Final MFC DLL>:
-                /NOLOGO;
-                /DEBUG:FULL;
-                /SUBSYSTEM:WINDOWS;
-                /INCREMENTAL:NO
-            >
-            $<$<CONFIG:Final>:
-                /NOLOGO;
-                /DEBUG:FULL;
-                /SUBSYSTEM:WINDOWS;
-                /INCREMENTAL:NO
-            >
-            $<$<CONFIG:Release MFC DLL>:
-                /NOLOGO;
-                /DEBUG:FULL;
-                /SUBSYSTEM:WINDOWS;
-                /INCREMENTAL:NO
-            >
-            $<$<CONFIG:Release>:
-                /NOLOGO;
-                /DEBUG:FULL;
-                /SUBSYSTEM:WINDOWS;
-                /INCREMENTAL:NO
-            >
-            $<$<CONFIG:Template>:
-                /DEBUG:FULL
-            >
-        )
-    endif()
+    target_link_options(${PROJECT_NAME} PRIVATE
+        $<$<CONFIG:Debug MFC DLL>:
+            /NOLOGO;
+            /DEBUG;
+            /SUBSYSTEM:WINDOWS;
+            /INCREMENTAL
+        >
+        $<$<CONFIG:Debug>:
+            /NOLOGO;
+            /DEBUG;
+            /SUBSYSTEM:WINDOWS;
+            /INCREMENTAL
+        >
+        $<$<CONFIG:Final DE>:
+            /NOLOGO;
+            /DEBUG:FULL;
+            /SUBSYSTEM:WINDOWS;
+            /INCREMENTAL:NO
+        >
+        $<$<CONFIG:Final ES>:
+            /NOLOGO;
+            /DEBUG:FULL;
+            /SUBSYSTEM:WINDOWS;
+            /INCREMENTAL:NO
+        >
+        $<$<CONFIG:Final FR>:
+            /NOLOGO;
+            /DEBUG:FULL;
+            /SUBSYSTEM:WINDOWS;
+            /INCREMENTAL:NO
+        >
+        $<$<CONFIG:Final IT>:
+            /NOLOGO;
+            /DEBUG:FULL;
+            /SUBSYSTEM:WINDOWS;
+            /INCREMENTAL:NO
+        >
+        $<$<CONFIG:Final MFC DLL>:
+            /NOLOGO;
+            /DEBUG:FULL;
+            /SUBSYSTEM:WINDOWS;
+            /INCREMENTAL:NO
+        >
+        $<$<CONFIG:Final>:
+            /NOLOGO;
+            /DEBUG:FULL;
+            /SUBSYSTEM:WINDOWS;
+            /INCREMENTAL:NO
+        >
+        $<$<CONFIG:Release MFC DLL>:
+            /NOLOGO;
+            /DEBUG:FULL;
+            /SUBSYSTEM:WINDOWS;
+            /INCREMENTAL:NO
+        >
+        $<$<CONFIG:Release>:
+            /NOLOGO;
+            /DEBUG:FULL;
+            /SUBSYSTEM:WINDOWS;
+            /INCREMENTAL:NO
+        >
+        $<$<CONFIG:Template>:
+            /DEBUG:FULL
+        >
+    )
 endif()
 
 ################################################################################
@@ -860,343 +518,200 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
     Lib_StdLith
 )
 
-if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
-    set(ADDITIONAL_LIBRARY_DEPENDENCIES
-        "$<$<CONFIG:Debug>:"
-            "server;"
-            "regmgr32;"
-            "regmgr;"
-            "lib_lith;"
-            "ButeMgrMfcDll;"
-            "cryptmgrmfcdll;"
-            "lib_stdlith;"
-            "winmm"
-        ">"
-        "$<$<CONFIG:Final DE>:"
-            "server;"
-            "regmgr32;"
-            "regmgr;"
-            "lib_lith;"
-            "ButeMgrMfcDll;"
-            "cryptmgrMfcDll;"
-            "lib_stdlith;"
-            "winmm"
-        ">"
-        "$<$<CONFIG:Final ES>:"
-            "server;"
-            "regmgr32;"
-            "regmgr;"
-            "lib_lith;"
-            "ButeMgrMfcDll;"
-            "cryptmgrMfcDll;"
-            "lib_stdlith;"
-            "winmm"
-        ">"
-        "$<$<CONFIG:Final FR>:"
-            "server;"
-            "regmgr32;"
-            "regmgr;"
-            "lib_lith;"
-            "ButeMgrMfcDll;"
-            "cryptmgrMfcDll;"
-            "lib_stdlith;"
-            "winmm"
-        ">"
-        "$<$<CONFIG:Final IT>:"
-            "server;"
-            "regmgr32;"
-            "regmgr;"
-            "lib_lith;"
-            "ButeMgrMfcDll;"
-            "cryptmgrMfcDll;"
-            "lib_stdlith;"
-            "winmm"
-        ">"
-        "$<$<CONFIG:Final>:"
-            "server;"
-            "regmgr32;"
-            "regmgr;"
-            "lib_lith;"
-            "ButeMgrMfcDll;"
-            "cryptmgrMfcDll;"
-            "lib_stdlith;"
-            "winmm"
-        ">"
-        "$<$<CONFIG:Release>:"
-            "server;"
-            "regmgr32;"
-            "regmgr;"
-            "lib_lith;"
-            "ButeMgrMfcDll;"
-            "cryptmgrMfcDll;"
-            "lib_stdlith;"
-            "winmm"
-        ">"
-    )
-elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
-    set(ADDITIONAL_LIBRARY_DEPENDENCIES
-        "$<$<CONFIG:Debug MFC DLL>:"
-            "server;"
-            "regmgr32;"
-            "regmgr;"
-            "lib_lith;"
-            "ButeMgrMfcDll;"
-            "cryptmgrmfcdll;"
-            "lib_stdlith;"
-            "winmm"
-        ">"
-        "$<$<CONFIG:Debug>:"
-            "server;"
-            "regmgr32;"
-            "regmgr;"
-            "lib_lith;"
-            "ButeMgrMfcDll;"
-            "cryptmgrmfcdll;"
-            "lib_stdlith;"
-            "winmm"
-        ">"
-        "$<$<CONFIG:Final DE>:"
-            "server;"
-            "regmgr32;"
-            "regmgr;"
-            "lib_lith;"
-            "ButeMgrMfcDll;"
-            "cryptmgrMfcDll;"
-            "lib_stdlith;"
-            "winmm"
-        ">"
-        "$<$<CONFIG:Final ES>:"
-            "server;"
-            "regmgr32;"
-            "regmgr;"
-            "lib_lith;"
-            "ButeMgrMfcDll;"
-            "cryptmgrMfcDll;"
-            "lib_stdlith;"
-            "winmm"
-        ">"
-        "$<$<CONFIG:Final FR>:"
-            "server;"
-            "regmgr32;"
-            "regmgr;"
-            "lib_lith;"
-            "ButeMgrMfcDll;"
-            "cryptmgrMfcDll;"
-            "lib_stdlith;"
-            "winmm"
-        ">"
-        "$<$<CONFIG:Final IT>:"
-            "server;"
-            "regmgr32;"
-            "regmgr;"
-            "lib_lith;"
-            "ButeMgrMfcDll;"
-            "cryptmgrMfcDll;"
-            "lib_stdlith;"
-            "winmm"
-        ">"
-        "$<$<CONFIG:Final MFC DLL>:"
-            "server;"
-            "regmgr32;"
-            "regmgr;"
-            "lib_lith;"
-            "ButeMgrMfcDll;"
-            "cryptmgrMfcDll;"
-            "lib_stdlith;"
-            "winmm"
-        ">"
-        "$<$<CONFIG:Final>:"
-            "server;"
-            "regmgr32;"
-            "regmgr;"
-            "lib_lith;"
-            "ButeMgrMfcDll;"
-            "cryptmgrMfcDll;"
-            "lib_stdlith;"
-            "winmm"
-        ">"
-        "$<$<CONFIG:Release MFC DLL>:"
-            "server;"
-            "regmgr32;"
-            "regmgr;"
-            "lib_lith;"
-            "ButeMgrMfcDll;"
-            "cryptmgrMfcDll;"
-            "lib_stdlith;"
-            "winmm"
-        ">"
-        "$<$<CONFIG:Release>:"
-            "server;"
-            "regmgr32;"
-            "regmgr;"
-            "lib_lith;"
-            "ButeMgrMfcDll;"
-            "cryptmgrMfcDll;"
-            "lib_stdlith;"
-            "winmm"
-        ">"
-    )
-endif()
+set(ADDITIONAL_LIBRARY_DEPENDENCIES
+    "$<$<CONFIG:Debug MFC DLL>:"
+        "server;"
+        "regmgr32;"
+        "regmgr;"
+        "lib_lith;"
+        "ButeMgrMfcDll;"
+        "cryptmgrmfcdll;"
+        "lib_stdlith;"
+        "winmm"
+    ">"
+    "$<$<CONFIG:Debug>:"
+        "server;"
+        "regmgr32;"
+        "regmgr;"
+        "lib_lith;"
+        "ButeMgrMfcDll;"
+        "cryptmgrmfcdll;"
+        "lib_stdlith;"
+        "winmm"
+    ">"
+    "$<$<CONFIG:Final DE>:"
+        "server;"
+        "regmgr32;"
+        "regmgr;"
+        "lib_lith;"
+        "ButeMgrMfcDll;"
+        "cryptmgrMfcDll;"
+        "lib_stdlith;"
+        "winmm"
+    ">"
+    "$<$<CONFIG:Final ES>:"
+        "server;"
+        "regmgr32;"
+        "regmgr;"
+        "lib_lith;"
+        "ButeMgrMfcDll;"
+        "cryptmgrMfcDll;"
+        "lib_stdlith;"
+        "winmm"
+    ">"
+    "$<$<CONFIG:Final FR>:"
+        "server;"
+        "regmgr32;"
+        "regmgr;"
+        "lib_lith;"
+        "ButeMgrMfcDll;"
+        "cryptmgrMfcDll;"
+        "lib_stdlith;"
+        "winmm"
+    ">"
+    "$<$<CONFIG:Final IT>:"
+        "server;"
+        "regmgr32;"
+        "regmgr;"
+        "lib_lith;"
+        "ButeMgrMfcDll;"
+        "cryptmgrMfcDll;"
+        "lib_stdlith;"
+        "winmm"
+    ">"
+    "$<$<CONFIG:Final MFC DLL>:"
+        "server;"
+        "regmgr32;"
+        "regmgr;"
+        "lib_lith;"
+        "ButeMgrMfcDll;"
+        "cryptmgrMfcDll;"
+        "lib_stdlith;"
+        "winmm"
+    ">"
+    "$<$<CONFIG:Final>:"
+        "server;"
+        "regmgr32;"
+        "regmgr;"
+        "lib_lith;"
+        "ButeMgrMfcDll;"
+        "cryptmgrMfcDll;"
+        "lib_stdlith;"
+        "winmm"
+    ">"
+    "$<$<CONFIG:Release MFC DLL>:"
+        "server;"
+        "regmgr32;"
+        "regmgr;"
+        "lib_lith;"
+        "ButeMgrMfcDll;"
+        "cryptmgrMfcDll;"
+        "lib_stdlith;"
+        "winmm"
+    ">"
+    "$<$<CONFIG:Release>:"
+        "server;"
+        "regmgr32;"
+        "regmgr;"
+        "lib_lith;"
+        "ButeMgrMfcDll;"
+        "cryptmgrMfcDll;"
+        "lib_stdlith;"
+        "winmm"
+    ">"
+)
 target_link_libraries(${PROJECT_NAME} PUBLIC "${ADDITIONAL_LIBRARY_DEPENDENCIES}")
 
-if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
-    target_link_directories(${PROJECT_NAME} PUBLIC
-        "$<$<CONFIG:Debug>:"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../engine/sdk/lib;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/debug/regmgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/debug/regmgr32;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/debug/lib_lith;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/debug/ButeMgrMFCDll;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/debug/cryptmgrmfcdll;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/debug/lib_stdlith"
-        ">"
-        "$<$<CONFIG:Final DE>:"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../engine/built/Final/Runtime/DLL_Server;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/regmgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/regmgr32;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/lib_lith;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/ButeMgrMFCDll;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/cryptmgrmfcdll;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/lib_stdlith"
-        ">"
-        "$<$<CONFIG:Final ES>:"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../engine/built/Final/Runtime/DLL_Server;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/regmgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/regmgr32;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/lib_lith;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/ButeMgrMFCDll;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/cryptmgrmfcdll;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/lib_stdlith"
-        ">"
-        "$<$<CONFIG:Final FR>:"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../engine/built/Final/Runtime/DLL_Server;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/regmgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/regmgr32;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/lib_lith;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/ButeMgrMFCDll;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/cryptmgrmfcdll;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/lib_stdlith"
-        ">"
-        "$<$<CONFIG:Final IT>:"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../engine/built/Final/Runtime/DLL_Server;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/regmgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/regmgr32;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/lib_lith;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/ButeMgrMFCDll;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/cryptmgrmfcdll;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/lib_stdlith"
-        ">"
-        "$<$<CONFIG:Final>:"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../engine/sdk/lib;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/regmgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/regmgr32;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/lib_lith;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/ButeMgrMFCDll;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/cryptmgrmfcdll;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/lib_stdlith"
-        ">"
-        "$<$<CONFIG:Release>:"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../engine/sdk/lib;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/release/regmgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/release/regmgr32;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/release/lib_lith;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/release/ButeMgrMFCDll;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/release/cryptmgrmfcdll;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/release/lib_stdlith"
-        ">"
-    )
-elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
-    target_link_directories(${PROJECT_NAME} PUBLIC
-        "$<$<CONFIG:Debug MFC DLL>:"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../engine/sdk/lib;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/debug/regmgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/debug/regmgr32;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/debug/lib_lith;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/debug/ButeMgrMFCDll;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/debug/cryptmgrmfcdll;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/debug/lib_stdlith"
-        ">"
-        "$<$<CONFIG:Debug>:"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../engine/sdk/lib;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/debug/regmgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/debug/regmgr32;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/debug/lib_lith;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/debug/ButeMgrMFCDll;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/debug/cryptmgrmfcdll;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/debug/lib_stdlith"
-        ">"
-        "$<$<CONFIG:Final DE>:"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../engine/built/Final/Runtime/DLL_Server;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/regmgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/regmgr32;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/lib_lith;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/ButeMgrMFCDll;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/cryptmgrmfcdll;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/lib_stdlith"
-        ">"
-        "$<$<CONFIG:Final ES>:"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../engine/built/Final/Runtime/DLL_Server;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/regmgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/regmgr32;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/lib_lith;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/ButeMgrMFCDll;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/cryptmgrmfcdll;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/lib_stdlith"
-        ">"
-        "$<$<CONFIG:Final FR>:"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../engine/built/Final/Runtime/DLL_Server;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/regmgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/regmgr32;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/lib_lith;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/ButeMgrMFCDll;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/cryptmgrmfcdll;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/lib_stdlith"
-        ">"
-        "$<$<CONFIG:Final IT>:"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../engine/built/Final/Runtime/DLL_Server;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/regmgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/regmgr32;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/lib_lith;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/ButeMgrMFCDll;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/cryptmgrmfcdll;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/lib_stdlith"
-        ">"
-        "$<$<CONFIG:Final MFC DLL>:"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../engine/built/Final/Runtime/DLL_Server;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/regmgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/regmgr32;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/lib_lith;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/ButeMgrMFCDll;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/cryptmgrmfcdll;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/lib_stdlith"
-        ">"
-        "$<$<CONFIG:Final>:"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../engine/sdk/lib;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/regmgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/regmgr32;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/lib_lith;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/ButeMgrMFCDll;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/cryptmgrmfcdll;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/lib_stdlith"
-        ">"
-        "$<$<CONFIG:Release MFC DLL>:"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../engine/sdk/lib;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/release/regmgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/release/regmgr32;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/release/lib_lith;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/release/ButeMgrMFCDll;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/release/cryptmgrmfcdll;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/release/lib_stdlith"
-        ">"
-        "$<$<CONFIG:Release>:"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../engine/sdk/lib;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/release/regmgr;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/release/regmgr32;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/release/lib_lith;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/release/ButeMgrMFCDll;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/release/cryptmgrmfcdll;"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/release/lib_stdlith"
-        ">"
-    )
-endif()
+target_link_directories(${PROJECT_NAME} PUBLIC
+    "$<$<CONFIG:Debug MFC DLL>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../engine/sdk/lib;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/debug/regmgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/debug/regmgr32;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/debug/lib_lith;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/debug/ButeMgrMFCDll;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/debug/cryptmgrmfcdll;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/debug/lib_stdlith"
+    ">"
+    "$<$<CONFIG:Debug>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../engine/sdk/lib;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/debug/regmgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/debug/regmgr32;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/debug/lib_lith;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/debug/ButeMgrMFCDll;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/debug/cryptmgrmfcdll;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/debug/lib_stdlith"
+    ">"
+    "$<$<CONFIG:Final DE>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../engine/built/Final/Runtime/DLL_Server;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/regmgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/regmgr32;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/lib_lith;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/ButeMgrMFCDll;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/cryptmgrmfcdll;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/lib_stdlith"
+    ">"
+    "$<$<CONFIG:Final ES>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../engine/built/Final/Runtime/DLL_Server;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/regmgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/regmgr32;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/lib_lith;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/ButeMgrMFCDll;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/cryptmgrmfcdll;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/lib_stdlith"
+    ">"
+    "$<$<CONFIG:Final FR>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../engine/built/Final/Runtime/DLL_Server;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/regmgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/regmgr32;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/lib_lith;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/ButeMgrMFCDll;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/cryptmgrmfcdll;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/lib_stdlith"
+    ">"
+    "$<$<CONFIG:Final IT>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../engine/built/Final/Runtime/DLL_Server;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/regmgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/regmgr32;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/lib_lith;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/ButeMgrMFCDll;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/cryptmgrmfcdll;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/lib_stdlith"
+    ">"
+    "$<$<CONFIG:Final MFC DLL>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../engine/built/Final/Runtime/DLL_Server;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/regmgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/regmgr32;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/lib_lith;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/ButeMgrMFCDll;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/cryptmgrmfcdll;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/lib_stdlith"
+    ">"
+    "$<$<CONFIG:Final>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../engine/sdk/lib;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/regmgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/regmgr32;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/lib_lith;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/ButeMgrMFCDll;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/cryptmgrmfcdll;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/Final/lib_stdlith"
+    ">"
+    "$<$<CONFIG:Release MFC DLL>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../engine/sdk/lib;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/release/regmgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/release/regmgr32;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/release/lib_lith;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/release/ButeMgrMFCDll;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/release/cryptmgrmfcdll;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/release/lib_stdlith"
+    ">"
+    "$<$<CONFIG:Release>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../engine/sdk/lib;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/release/regmgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/release/regmgr32;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/release/lib_lith;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/release/ButeMgrMFCDll;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/release/cryptmgrmfcdll;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../libs/built/release/lib_stdlith"
+    ">"
+)
 
