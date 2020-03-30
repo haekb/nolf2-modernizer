@@ -767,51 +767,36 @@ use_props(${PROJECT_NAME} "${CMAKE_CONFIGURATION_TYPES}" "${DEFAULT_CXX_PROPS}")
 # Target name
 ################################################################################
 set_target_properties(${PROJECT_NAME} PROPERTIES
-    TARGET_NAME_DEBUG MFC DLL   "ObjectShared"
-    TARGET_NAME_DEBUG           "ObjectShared"
-    TARGET_NAME_FINAL DE        "ObjectShared"
-    TARGET_NAME_FINAL ES        "ObjectShared"
-    TARGET_NAME_FINAL FR        "ObjectShared"
-    TARGET_NAME_FINAL IT        "ObjectShared"
-    TARGET_NAME_FINAL MFC DLL   "ObjectShared"
-    TARGET_NAME_FINAL           "ObjectShared"
-    TARGET_NAME_RELEASE MFC DLL "ObjectShared"
-    TARGET_NAME_RELEASE         "ObjectShared"
+    TARGET_NAME_DEBUG         "ObjectShared"
+    TARGET_NAME_DEBUGMFCDLL   "ObjectShared"
+    TARGET_NAME_FINAL         "ObjectShared"
+    TARGET_NAME_FINALDE       "ObjectShared"
+    TARGET_NAME_FINALES       "ObjectShared"
+    TARGET_NAME_FINALFR       "ObjectShared"
+    TARGET_NAME_FINALIT       "ObjectShared"
+    TARGET_NAME_FINALMFCDLL   "ObjectShared"
+    TARGET_NAME_RELEASE       "ObjectShared"
+    TARGET_NAME_RELEASEMFCDLL "ObjectShared"
 )
 ################################################################################
 # Output directory
 ################################################################################
 set_target_properties(${PROJECT_NAME} PROPERTIES
-    OUTPUT_DIRECTORY_DEBUG MFC DLL   "${CMAKE_CURRENT_SOURCE_DIR}/./../../Built/Debug/ObjectDll/ObjectShared"
-    OUTPUT_DIRECTORY_DEBUG           "${CMAKE_CURRENT_SOURCE_DIR}/./../../Built/Debug/ObjectDll/ObjectShared"
-    OUTPUT_DIRECTORY_FINAL DE        "${CMAKE_CURRENT_SOURCE_DIR}/./../../Built/Final/ObjectDll/ObjectShared"
-    OUTPUT_DIRECTORY_FINAL ES        "${CMAKE_CURRENT_SOURCE_DIR}/./../../Built/Final/ObjectDll/ObjectShared"
-    OUTPUT_DIRECTORY_FINAL FR        "${CMAKE_CURRENT_SOURCE_DIR}/./../../Built/Final/ObjectDll/ObjectShared"
-    OUTPUT_DIRECTORY_FINAL IT        "${CMAKE_CURRENT_SOURCE_DIR}/./../../Built/Final/ObjectDll/ObjectShared"
-    OUTPUT_DIRECTORY_FINAL MFC DLL   "${CMAKE_CURRENT_SOURCE_DIR}/./../../Built/Final/ObjectDll/ObjectShared"
-    OUTPUT_DIRECTORY_FINAL           "${CMAKE_CURRENT_SOURCE_DIR}/./../../Built/Final/ObjectDll/ObjectShared"
-    OUTPUT_DIRECTORY_RELEASE MFC DLL "${CMAKE_CURRENT_SOURCE_DIR}/./../../Built/Release/ObjectDll/ObjectShared"
-    OUTPUT_DIRECTORY_RELEASE         "${CMAKE_CURRENT_SOURCE_DIR}/./../../Built/Release/ObjectDll/ObjectShared"
+    OUTPUT_DIRECTORY_DEBUG         "${CMAKE_CURRENT_SOURCE_DIR}/./../../Built/Debug/ObjectDll/ObjectShared"
+    OUTPUT_DIRECTORY_DEBUGMFCDLL   "${CMAKE_CURRENT_SOURCE_DIR}/./../../Built/Debug/ObjectDll/ObjectShared"
+    OUTPUT_DIRECTORY_FINAL         "${CMAKE_CURRENT_SOURCE_DIR}/./../../Built/Final/ObjectDll/ObjectShared"
+    OUTPUT_DIRECTORY_FINALDE       "${CMAKE_CURRENT_SOURCE_DIR}/./../../Built/Final/ObjectDll/ObjectShared"
+    OUTPUT_DIRECTORY_FINALES       "${CMAKE_CURRENT_SOURCE_DIR}/./../../Built/Final/ObjectDll/ObjectShared"
+    OUTPUT_DIRECTORY_FINALFR       "${CMAKE_CURRENT_SOURCE_DIR}/./../../Built/Final/ObjectDll/ObjectShared"
+    OUTPUT_DIRECTORY_FINALIT       "${CMAKE_CURRENT_SOURCE_DIR}/./../../Built/Final/ObjectDll/ObjectShared"
+    OUTPUT_DIRECTORY_FINALMFCDLL   "${CMAKE_CURRENT_SOURCE_DIR}/./../../Built/Final/ObjectDll/ObjectShared"
+    OUTPUT_DIRECTORY_RELEASE       "${CMAKE_CURRENT_SOURCE_DIR}/./../../Built/Release/ObjectDll/ObjectShared"
+    OUTPUT_DIRECTORY_RELEASEMFCDLL "${CMAKE_CURRENT_SOURCE_DIR}/./../../Built/Release/ObjectDll/ObjectShared"
 )
 ################################################################################
 # Include directories
 ################################################################################
 target_include_directories(${PROJECT_NAME} PUBLIC
-    "$<$<CONFIG:Debug MFC DLL>:"
-        "${CMAKE_CURRENT_SOURCE_DIR}/.;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPORT-4.0/STLPORT_NO;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../Shared;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/stdlith;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/ButeMgr;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/CryptMgr;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/lith;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/MFCStub;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/RegMgr;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs/ServerDir;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-STD"
-    ">"
     "$<$<CONFIG:Debug>:"
         "${CMAKE_CURRENT_SOURCE_DIR}/.;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPORT-4.0/STLPORT_NO;"
@@ -827,9 +812,9 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs/ServerDir;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-STD"
     ">"
-    "$<$<CONFIG:Final DE>:"
+    "$<$<CONFIG:DebugMFCDLL>:"
         "${CMAKE_CURRENT_SOURCE_DIR}/.;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-4.0/stlport;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPORT-4.0/STLPORT_NO;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../../Shared;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/stdlith;"
@@ -839,63 +824,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/MFCStub;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/RegMgr;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs/ServerDir"
-    ">"
-    "$<$<CONFIG:Final ES>:"
-        "${CMAKE_CURRENT_SOURCE_DIR}/.;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-4.0/stlport;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../Shared;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/stdlith;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/ButeMgr;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/CryptMgr;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/lith;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/MFCStub;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/RegMgr;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs/ServerDir"
-    ">"
-    "$<$<CONFIG:Final FR>:"
-        "${CMAKE_CURRENT_SOURCE_DIR}/.;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-4.0/stlport;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../Shared;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/stdlith;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/ButeMgr;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/CryptMgr;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/lith;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/MFCStub;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/RegMgr;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs/ServerDir"
-    ">"
-    "$<$<CONFIG:Final IT>:"
-        "${CMAKE_CURRENT_SOURCE_DIR}/.;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-4.0/stlport;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../Shared;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/stdlith;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/ButeMgr;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/CryptMgr;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/lith;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/MFCStub;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/RegMgr;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs/ServerDir"
-    ">"
-    "$<$<CONFIG:Final MFC DLL>:"
-        "${CMAKE_CURRENT_SOURCE_DIR}/.;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-4.0/stlport;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../Shared;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/stdlith;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/ButeMgr;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/CryptMgr;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/lith;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/MFCStub;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/RegMgr;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs/ServerDir"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs/ServerDir;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-STD"
     ">"
     "$<$<CONFIG:Final>:"
         "${CMAKE_CURRENT_SOURCE_DIR}/.;"
@@ -911,7 +841,77 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs/ServerDir"
     ">"
-    "$<$<CONFIG:Release MFC DLL>:"
+    "$<$<CONFIG:FinalDE>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/.;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-4.0/stlport;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../Shared;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/stdlith;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/ButeMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/CryptMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/lith;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/MFCStub;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/RegMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs/ServerDir"
+    ">"
+    "$<$<CONFIG:FinalES>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/.;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-4.0/stlport;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../Shared;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/stdlith;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/ButeMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/CryptMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/lith;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/MFCStub;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/RegMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs/ServerDir"
+    ">"
+    "$<$<CONFIG:FinalFR>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/.;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-4.0/stlport;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../Shared;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/stdlith;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/ButeMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/CryptMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/lith;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/MFCStub;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/RegMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs/ServerDir"
+    ">"
+    "$<$<CONFIG:FinalIT>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/.;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-4.0/stlport;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../Shared;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/stdlith;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/ButeMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/CryptMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/lith;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/MFCStub;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/RegMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs/ServerDir"
+    ">"
+    "$<$<CONFIG:FinalMFCDLL>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/.;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-4.0/stlport;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../Shared;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/stdlith;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/ButeMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/CryptMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/lith;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/MFCStub;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/RegMgr;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs/ServerDir"
+    ">"
+    "$<$<CONFIG:Release>:"
         "${CMAKE_CURRENT_SOURCE_DIR}/.;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPORT-4.0/STLPORT_NO;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../../Shared;"
@@ -926,7 +926,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         "${CMAKE_CURRENT_SOURCE_DIR}/../../Libs/ServerDir;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-STD"
     ">"
-    "$<$<CONFIG:Release>:"
+    "$<$<CONFIG:ReleaseMFCDLL>:"
         "${CMAKE_CURRENT_SOURCE_DIR}/.;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPORT-4.0/STLPORT_NO;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../../Shared;"
@@ -947,18 +947,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 # Compile definitions
 ################################################################################
 target_compile_definitions(${PROJECT_NAME} PRIVATE
-    "$<$<CONFIG:Debug MFC DLL>:"
-        "_DEBUG;"
-        "_LIB;"
-        "WIN32;"
-        "_WINDOWS;"
-        "NOPS2;"
-        "_SERVERBUILD;"
-        "_NO_AI_ASSERT;"
-        "MEMTRACK_SERVER;"
-        "_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;"
-        "_CRT_SECURE_NO_WARNINGS"
-    ">"
     "$<$<CONFIG:Debug>:"
         "_DEBUG;"
         "_LIB;"
@@ -971,70 +959,17 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
         "_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;"
         "_CRT_SECURE_NO_WARNINGS"
     ">"
-    "$<$<CONFIG:Final DE>:"
-        "NDEBUG;"
+    "$<$<CONFIG:DebugMFCDLL>:"
+        "_DEBUG;"
         "_LIB;"
-        "_NOLFBUILD;"
-        "USE_INTEL_COMPILER;"
         "WIN32;"
         "_WINDOWS;"
         "NOPS2;"
         "_SERVERBUILD;"
         "_NO_AI_ASSERT;"
-        "_FINAL;"
-        "MEMTRACK_SERVER"
-    ">"
-    "$<$<CONFIG:Final ES>:"
-        "NDEBUG;"
-        "_LIB;"
-        "_NOLFBUILD;"
-        "USE_INTEL_COMPILER;"
-        "WIN32;"
-        "_WINDOWS;"
-        "NOPS2;"
-        "_SERVERBUILD;"
-        "_NO_AI_ASSERT;"
-        "_FINAL;"
-        "MEMTRACK_SERVER"
-    ">"
-    "$<$<CONFIG:Final FR>:"
-        "NDEBUG;"
-        "_LIB;"
-        "_NOLFBUILD;"
-        "USE_INTEL_COMPILER;"
-        "WIN32;"
-        "_WINDOWS;"
-        "NOPS2;"
-        "_SERVERBUILD;"
-        "_NO_AI_ASSERT;"
-        "_FINAL;"
-        "MEMTRACK_SERVER"
-    ">"
-    "$<$<CONFIG:Final IT>:"
-        "NDEBUG;"
-        "_LIB;"
-        "_NOLFBUILD;"
-        "USE_INTEL_COMPILER;"
-        "WIN32;"
-        "_WINDOWS;"
-        "NOPS2;"
-        "_SERVERBUILD;"
-        "_NO_AI_ASSERT;"
-        "_FINAL;"
-        "MEMTRACK_SERVER"
-    ">"
-    "$<$<CONFIG:Final MFC DLL>:"
-        "NDEBUG;"
-        "_LIB;"
-        "_NOLFBUILD;"
-        "USE_INTEL_COMPILER;"
-        "WIN32;"
-        "_WINDOWS;"
-        "NOPS2;"
-        "_SERVERBUILD;"
-        "_NO_AI_ASSERT;"
-        "_FINAL;"
-        "MEMTRACK_SERVER"
+        "MEMTRACK_SERVER;"
+        "_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;"
+        "_CRT_SECURE_NO_WARNINGS"
     ">"
     "$<$<CONFIG:Final>:"
         "NDEBUG;"
@@ -1049,7 +984,72 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
         "_FINAL;"
         "MEMTRACK_SERVER"
     ">"
-    "$<$<CONFIG:Release MFC DLL>:"
+    "$<$<CONFIG:FinalDE>:"
+        "NDEBUG;"
+        "_LIB;"
+        "_NOLFBUILD;"
+        "USE_INTEL_COMPILER;"
+        "WIN32;"
+        "_WINDOWS;"
+        "NOPS2;"
+        "_SERVERBUILD;"
+        "_NO_AI_ASSERT;"
+        "_FINAL;"
+        "MEMTRACK_SERVER"
+    ">"
+    "$<$<CONFIG:FinalES>:"
+        "NDEBUG;"
+        "_LIB;"
+        "_NOLFBUILD;"
+        "USE_INTEL_COMPILER;"
+        "WIN32;"
+        "_WINDOWS;"
+        "NOPS2;"
+        "_SERVERBUILD;"
+        "_NO_AI_ASSERT;"
+        "_FINAL;"
+        "MEMTRACK_SERVER"
+    ">"
+    "$<$<CONFIG:FinalFR>:"
+        "NDEBUG;"
+        "_LIB;"
+        "_NOLFBUILD;"
+        "USE_INTEL_COMPILER;"
+        "WIN32;"
+        "_WINDOWS;"
+        "NOPS2;"
+        "_SERVERBUILD;"
+        "_NO_AI_ASSERT;"
+        "_FINAL;"
+        "MEMTRACK_SERVER"
+    ">"
+    "$<$<CONFIG:FinalIT>:"
+        "NDEBUG;"
+        "_LIB;"
+        "_NOLFBUILD;"
+        "USE_INTEL_COMPILER;"
+        "WIN32;"
+        "_WINDOWS;"
+        "NOPS2;"
+        "_SERVERBUILD;"
+        "_NO_AI_ASSERT;"
+        "_FINAL;"
+        "MEMTRACK_SERVER"
+    ">"
+    "$<$<CONFIG:FinalMFCDLL>:"
+        "NDEBUG;"
+        "_LIB;"
+        "_NOLFBUILD;"
+        "USE_INTEL_COMPILER;"
+        "WIN32;"
+        "_WINDOWS;"
+        "NOPS2;"
+        "_SERVERBUILD;"
+        "_NO_AI_ASSERT;"
+        "_FINAL;"
+        "MEMTRACK_SERVER"
+    ">"
+    "$<$<CONFIG:Release>:"
         "NDEBUG;"
         "_LIB;"
         "_NOLFBUILD;"
@@ -1063,7 +1063,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
         "_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;"
         "_CRT_SECURE_NO_WARNINGS"
     ">"
-    "$<$<CONFIG:Release>:"
+    "$<$<CONFIG:ReleaseMFCDLL>:"
         "NDEBUG;"
         "_LIB;"
         "_NOLFBUILD;"
@@ -1084,17 +1084,6 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
 ################################################################################
 if(MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE
-        $<$<CONFIG:Debug MFC DLL>:
-            /Gm;
-            /Od;
-            /RTC1;
-            /MDd;
-            /Gy;
-            /W3;
-            /GR;
-            /wd4996;
-            /Zc:forScope-
-        >
         $<$<CONFIG:Debug>:
             /Gm;
             /Od;
@@ -1106,45 +1095,16 @@ if(MSVC)
             /wd4996;
             /Zc:forScope-
         >
-        $<$<CONFIG:Final DE>:
-            /O2;
-            /GF;
-            /MD;
+        $<$<CONFIG:DebugMFCDLL>:
+            /Gm;
+            /Od;
+            /RTC1;
+            /MDd;
             /Gy;
             /W3;
-            /GR
-        >
-        $<$<CONFIG:Final ES>:
-            /O2;
-            /GF;
-            /MD;
-            /Gy;
-            /W3;
-            /GR
-        >
-        $<$<CONFIG:Final FR>:
-            /O2;
-            /GF;
-            /MD;
-            /Gy;
-            /W3;
-            /GR
-        >
-        $<$<CONFIG:Final IT>:
-            /O2;
-            /GF;
-            /MD;
-            /Gy;
-            /W3;
-            /GR
-        >
-        $<$<CONFIG:Final MFC DLL>:
-            /O2;
-            /GF;
-            /MD;
-            /Gy;
-            /W3;
-            /GR
+            /GR;
+            /wd4996;
+            /Zc:forScope-
         >
         $<$<CONFIG:Final>:
             /O2;
@@ -1154,7 +1114,47 @@ if(MSVC)
             /W3;
             /GR
         >
-        $<$<CONFIG:Release MFC DLL>:
+        $<$<CONFIG:FinalDE>:
+            /O2;
+            /GF;
+            /MD;
+            /Gy;
+            /W3;
+            /GR
+        >
+        $<$<CONFIG:FinalES>:
+            /O2;
+            /GF;
+            /MD;
+            /Gy;
+            /W3;
+            /GR
+        >
+        $<$<CONFIG:FinalFR>:
+            /O2;
+            /GF;
+            /MD;
+            /Gy;
+            /W3;
+            /GR
+        >
+        $<$<CONFIG:FinalIT>:
+            /O2;
+            /GF;
+            /MD;
+            /Gy;
+            /W3;
+            /GR
+        >
+        $<$<CONFIG:FinalMFCDLL>:
+            /O2;
+            /GF;
+            /MD;
+            /Gy;
+            /W3;
+            /GR
+        >
+        $<$<CONFIG:Release>:
             /O2;
             /GF;
             /MD;
@@ -1163,7 +1163,7 @@ if(MSVC)
             /GR;
             /Zc:forScope-
         >
-        $<$<CONFIG:Release>:
+        $<$<CONFIG:ReleaseMFCDLL>:
             /O2;
             /GF;
             /MD;
@@ -1179,265 +1179,265 @@ if(MSVC)
         ${DEFAULT_CXX_EXCEPTION_HANDLING}
     )
     string(CONCAT FILE_CL_OPTIONS
-        "$<$<CONFIG:Debug MFC DLL>:"
-            "/Y-"
-        ">"
         "$<$<CONFIG:Debug>:"
             "/Y-"
         ">"
-        "$<$<CONFIG:Final DE>:"
-            "/Y-"
-        ">"
-        "$<$<CONFIG:Final ES>:"
-            "/Y-"
-        ">"
-        "$<$<CONFIG:Final FR>:"
-            "/Y-"
-        ">"
-        "$<$<CONFIG:Final IT>:"
-            "/Y-"
-        ">"
-        "$<$<CONFIG:Final MFC DLL>:"
+        "$<$<CONFIG:DebugMFCDLL>:"
             "/Y-"
         ">"
         "$<$<CONFIG:Final>:"
             "/Y-"
         ">"
-        "$<$<CONFIG:Release MFC DLL>:"
+        "$<$<CONFIG:FinalDE>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:FinalES>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:FinalFR>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:FinalIT>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:FinalMFCDLL>:"
             "/Y-"
         ">"
         "$<$<CONFIG:Release>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:ReleaseMFCDLL>:"
             "/Y-"
         ">"
     )
     source_file_compile_options(../../../Engine/sdk/inc/iltbaseclass.cpp ${FILE_CL_OPTIONS})
     string(CONCAT FILE_CL_OPTIONS
-        "$<$<CONFIG:Debug MFC DLL>:"
-            "/Y-"
-        ">"
         "$<$<CONFIG:Debug>:"
             "/Y-"
         ">"
-        "$<$<CONFIG:Final DE>:"
-            "/Y-"
-        ">"
-        "$<$<CONFIG:Final ES>:"
-            "/Y-"
-        ">"
-        "$<$<CONFIG:Final FR>:"
-            "/Y-"
-        ">"
-        "$<$<CONFIG:Final IT>:"
-            "/Y-"
-        ">"
-        "$<$<CONFIG:Final MFC DLL>:"
+        "$<$<CONFIG:DebugMFCDLL>:"
             "/Y-"
         ">"
         "$<$<CONFIG:Final>:"
             "/Y-"
         ">"
-        "$<$<CONFIG:Release MFC DLL>:"
+        "$<$<CONFIG:FinalDE>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:FinalES>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:FinalFR>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:FinalIT>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:FinalMFCDLL>:"
             "/Y-"
         ">"
         "$<$<CONFIG:Release>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:ReleaseMFCDLL>:"
             "/Y-"
         ">"
     )
     source_file_compile_options(../../../Engine/sdk/inc/ltengineobjects.cpp ${FILE_CL_OPTIONS})
     string(CONCAT FILE_CL_OPTIONS
-        "$<$<CONFIG:Debug MFC DLL>:"
-            "/Y-"
-        ">"
         "$<$<CONFIG:Debug>:"
             "/Y-"
         ">"
-        "$<$<CONFIG:Final DE>:"
-            "/Y-"
-        ">"
-        "$<$<CONFIG:Final ES>:"
-            "/Y-"
-        ">"
-        "$<$<CONFIG:Final FR>:"
-            "/Y-"
-        ">"
-        "$<$<CONFIG:Final IT>:"
-            "/Y-"
-        ">"
-        "$<$<CONFIG:Final MFC DLL>:"
+        "$<$<CONFIG:DebugMFCDLL>:"
             "/Y-"
         ">"
         "$<$<CONFIG:Final>:"
             "/Y-"
         ">"
-        "$<$<CONFIG:Release MFC DLL>:"
+        "$<$<CONFIG:FinalDE>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:FinalES>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:FinalFR>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:FinalIT>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:FinalMFCDLL>:"
             "/Y-"
         ">"
         "$<$<CONFIG:Release>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:ReleaseMFCDLL>:"
             "/Y-"
         ">"
     )
     source_file_compile_options(../../../Engine/sdk/inc/ltmodule.cpp ${FILE_CL_OPTIONS})
     string(CONCAT FILE_CL_OPTIONS
-        "$<$<CONFIG:Debug MFC DLL>:"
-            "/Y-"
-        ">"
         "$<$<CONFIG:Debug>:"
             "/Y-"
         ">"
-        "$<$<CONFIG:Final DE>:"
-            "/Y-"
-        ">"
-        "$<$<CONFIG:Final ES>:"
-            "/Y-"
-        ">"
-        "$<$<CONFIG:Final FR>:"
-            "/Y-"
-        ">"
-        "$<$<CONFIG:Final IT>:"
-            "/Y-"
-        ">"
-        "$<$<CONFIG:Final MFC DLL>:"
+        "$<$<CONFIG:DebugMFCDLL>:"
             "/Y-"
         ">"
         "$<$<CONFIG:Final>:"
             "/Y-"
         ">"
-        "$<$<CONFIG:Release MFC DLL>:"
+        "$<$<CONFIG:FinalDE>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:FinalES>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:FinalFR>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:FinalIT>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:FinalMFCDLL>:"
             "/Y-"
         ">"
         "$<$<CONFIG:Release>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:ReleaseMFCDLL>:"
             "/Y-"
         ">"
     )
     source_file_compile_options(../../../Engine/sdk/inc/ltobjref.cpp ${FILE_CL_OPTIONS})
     string(CONCAT FILE_CL_OPTIONS
-        "$<$<CONFIG:Debug MFC DLL>:"
-            "/Y-"
-        ">"
         "$<$<CONFIG:Debug>:"
             "/Y-"
         ">"
-        "$<$<CONFIG:Final DE>:"
-            "/Y-"
-        ">"
-        "$<$<CONFIG:Final ES>:"
-            "/Y-"
-        ">"
-        "$<$<CONFIG:Final FR>:"
-            "/Y-"
-        ">"
-        "$<$<CONFIG:Final IT>:"
-            "/Y-"
-        ">"
-        "$<$<CONFIG:Final MFC DLL>:"
+        "$<$<CONFIG:DebugMFCDLL>:"
             "/Y-"
         ">"
         "$<$<CONFIG:Final>:"
             "/Y-"
         ">"
-        "$<$<CONFIG:Release MFC DLL>:"
+        "$<$<CONFIG:FinalDE>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:FinalES>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:FinalFR>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:FinalIT>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:FinalMFCDLL>:"
             "/Y-"
         ">"
         "$<$<CONFIG:Release>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:ReleaseMFCDLL>:"
             "/Y-"
         ">"
     )
     source_file_compile_options(../../../Engine/sdk/inc/ltquatbase.cpp ${FILE_CL_OPTIONS})
     string(CONCAT FILE_CL_OPTIONS
-        "$<$<CONFIG:Debug MFC DLL>:"
-            "/Y-"
-        ">"
         "$<$<CONFIG:Debug>:"
             "/Y-"
         ">"
-        "$<$<CONFIG:Final DE>:"
-            "/Y-"
-        ">"
-        "$<$<CONFIG:Final ES>:"
-            "/Y-"
-        ">"
-        "$<$<CONFIG:Final FR>:"
-            "/Y-"
-        ">"
-        "$<$<CONFIG:Final IT>:"
-            "/Y-"
-        ">"
-        "$<$<CONFIG:Final MFC DLL>:"
+        "$<$<CONFIG:DebugMFCDLL>:"
             "/Y-"
         ">"
         "$<$<CONFIG:Final>:"
             "/Y-"
         ">"
-        "$<$<CONFIG:Release MFC DLL>:"
+        "$<$<CONFIG:FinalDE>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:FinalES>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:FinalFR>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:FinalIT>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:FinalMFCDLL>:"
             "/Y-"
         ">"
         "$<$<CONFIG:Release>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:ReleaseMFCDLL>:"
             "/Y-"
         ">"
     )
     source_file_compile_options(AnimationLex.cpp ${FILE_CL_OPTIONS})
     string(CONCAT FILE_CL_OPTIONS
-        "$<$<CONFIG:Debug MFC DLL>:"
-            "/Y-"
-        ">"
         "$<$<CONFIG:Debug>:"
             "/Y-"
         ">"
-        "$<$<CONFIG:Final DE>:"
-            "/Y-"
-        ">"
-        "$<$<CONFIG:Final ES>:"
-            "/Y-"
-        ">"
-        "$<$<CONFIG:Final FR>:"
-            "/Y-"
-        ">"
-        "$<$<CONFIG:Final IT>:"
-            "/Y-"
-        ">"
-        "$<$<CONFIG:Final MFC DLL>:"
+        "$<$<CONFIG:DebugMFCDLL>:"
             "/Y-"
         ">"
         "$<$<CONFIG:Final>:"
             "/Y-"
         ">"
-        "$<$<CONFIG:Release MFC DLL>:"
+        "$<$<CONFIG:FinalDE>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:FinalES>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:FinalFR>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:FinalIT>:"
+            "/Y-"
+        ">"
+        "$<$<CONFIG:FinalMFCDLL>:"
             "/Y-"
         ">"
         "$<$<CONFIG:Release>:"
             "/Y-"
         ">"
+        "$<$<CONFIG:ReleaseMFCDLL>:"
+            "/Y-"
+        ">"
     )
     source_file_compile_options(AnimationParse.cpp ${FILE_CL_OPTIONS})
     target_link_options(${PROJECT_NAME} PRIVATE
-        $<$<CONFIG:Debug MFC DLL>:
-            /NOLOGO
-        >
         $<$<CONFIG:Debug>:
             /NOLOGO
         >
-        $<$<CONFIG:Final DE>:
-            /NOLOGO
-        >
-        $<$<CONFIG:Final ES>:
-            /NOLOGO
-        >
-        $<$<CONFIG:Final FR>:
-            /NOLOGO
-        >
-        $<$<CONFIG:Final IT>:
-            /NOLOGO
-        >
-        $<$<CONFIG:Final MFC DLL>:
+        $<$<CONFIG:DebugMFCDLL>:
             /NOLOGO
         >
         $<$<CONFIG:Final>:
             /NOLOGO
         >
-        $<$<CONFIG:Release MFC DLL>:
+        $<$<CONFIG:FinalDE>:
+            /NOLOGO
+        >
+        $<$<CONFIG:FinalES>:
+            /NOLOGO
+        >
+        $<$<CONFIG:FinalFR>:
+            /NOLOGO
+        >
+        $<$<CONFIG:FinalIT>:
+            /NOLOGO
+        >
+        $<$<CONFIG:FinalMFCDLL>:
             /NOLOGO
         >
         $<$<CONFIG:Release>:
+            /NOLOGO
+        >
+        $<$<CONFIG:ReleaseMFCDLL>:
             /NOLOGO
         >
         $<$<CONFIG:Template>:

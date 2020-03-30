@@ -45,15 +45,15 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     VS_GLOBAL_KEYWORD "Win32Proj"
 )
 set_target_properties(${PROJECT_NAME} PROPERTIES
-    INTERPROCEDURAL_OPTIMIZATION_FINAL DE        "TRUE"
-    INTERPROCEDURAL_OPTIMIZATION_FINAL ES        "TRUE"
-    INTERPROCEDURAL_OPTIMIZATION_FINAL FR        "TRUE"
-    INTERPROCEDURAL_OPTIMIZATION_FINAL IT        "TRUE"
-    INTERPROCEDURAL_OPTIMIZATION_FINAL MFC DLL   "TRUE"
-    INTERPROCEDURAL_OPTIMIZATION_FINAL           "TRUE"
-    INTERPROCEDURAL_OPTIMIZATION_RELEASE MFC DLL "TRUE"
-    INTERPROCEDURAL_OPTIMIZATION_RELEASE         "TRUE"
-    INTERPROCEDURAL_OPTIMIZATION_TEMPLATE        "TRUE"
+    INTERPROCEDURAL_OPTIMIZATION_FINAL         "TRUE"
+    INTERPROCEDURAL_OPTIMIZATION_FINALDE       "TRUE"
+    INTERPROCEDURAL_OPTIMIZATION_FINALES       "TRUE"
+    INTERPROCEDURAL_OPTIMIZATION_FINALFR       "TRUE"
+    INTERPROCEDURAL_OPTIMIZATION_FINALIT       "TRUE"
+    INTERPROCEDURAL_OPTIMIZATION_FINALMFCDLL   "TRUE"
+    INTERPROCEDURAL_OPTIMIZATION_RELEASE       "TRUE"
+    INTERPROCEDURAL_OPTIMIZATION_RELEASEMFCDLL "TRUE"
+    INTERPROCEDURAL_OPTIMIZATION_TEMPLATE      "TRUE"
 )
 ################################################################################
 # Include directories
@@ -71,34 +71,34 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 # Compile definitions
 ################################################################################
 target_compile_definitions(${PROJECT_NAME} PRIVATE
-    "$<$<CONFIG:Debug MFC DLL>:"
-        "_DEBUG"
-    ">"
     "$<$<CONFIG:Debug>:"
         "_DEBUG"
     ">"
-    "$<$<CONFIG:Final DE>:"
-        "NDEBUG"
-    ">"
-    "$<$<CONFIG:Final ES>:"
-        "NDEBUG"
-    ">"
-    "$<$<CONFIG:Final FR>:"
-        "NDEBUG"
-    ">"
-    "$<$<CONFIG:Final IT>:"
-        "NDEBUG"
-    ">"
-    "$<$<CONFIG:Final MFC DLL>:"
-        "NDEBUG"
+    "$<$<CONFIG:DebugMFCDLL>:"
+        "_DEBUG"
     ">"
     "$<$<CONFIG:Final>:"
         "NDEBUG"
     ">"
-    "$<$<CONFIG:Release MFC DLL>:"
+    "$<$<CONFIG:FinalDE>:"
+        "NDEBUG"
+    ">"
+    "$<$<CONFIG:FinalES>:"
+        "NDEBUG"
+    ">"
+    "$<$<CONFIG:FinalFR>:"
+        "NDEBUG"
+    ">"
+    "$<$<CONFIG:FinalIT>:"
+        "NDEBUG"
+    ">"
+    "$<$<CONFIG:FinalMFCDLL>:"
         "NDEBUG"
     ">"
     "$<$<CONFIG:Release>:"
+        "NDEBUG"
+    ">"
+    "$<$<CONFIG:ReleaseMFCDLL>:"
         "NDEBUG"
     ">"
     "$<$<CONFIG:Template>:"
@@ -120,43 +120,13 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
 ################################################################################
 if(MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE
-        $<$<CONFIG:Debug MFC DLL>:
-            /Od;
-            ${DEFAULT_CXX_DEBUG_RUNTIME_LIBRARY}
-        >
         $<$<CONFIG:Debug>:
             /Od;
             ${DEFAULT_CXX_DEBUG_RUNTIME_LIBRARY}
         >
-        $<$<CONFIG:Final DE>:
-            /O2;
-            /Oi;
-            ${DEFAULT_CXX_RUNTIME_LIBRARY};
-            /Gy
-        >
-        $<$<CONFIG:Final ES>:
-            /O2;
-            /Oi;
-            ${DEFAULT_CXX_RUNTIME_LIBRARY};
-            /Gy
-        >
-        $<$<CONFIG:Final FR>:
-            /O2;
-            /Oi;
-            ${DEFAULT_CXX_RUNTIME_LIBRARY};
-            /Gy
-        >
-        $<$<CONFIG:Final IT>:
-            /O2;
-            /Oi;
-            ${DEFAULT_CXX_RUNTIME_LIBRARY};
-            /Gy
-        >
-        $<$<CONFIG:Final MFC DLL>:
-            /O2;
-            /Oi;
-            ${DEFAULT_CXX_RUNTIME_LIBRARY};
-            /Gy
+        $<$<CONFIG:DebugMFCDLL>:
+            /Od;
+            ${DEFAULT_CXX_DEBUG_RUNTIME_LIBRARY}
         >
         $<$<CONFIG:Final>:
             /O2;
@@ -164,13 +134,43 @@ if(MSVC)
             ${DEFAULT_CXX_RUNTIME_LIBRARY};
             /Gy
         >
-        $<$<CONFIG:Release MFC DLL>:
+        $<$<CONFIG:FinalDE>:
+            /O2;
+            /Oi;
+            ${DEFAULT_CXX_RUNTIME_LIBRARY};
+            /Gy
+        >
+        $<$<CONFIG:FinalES>:
+            /O2;
+            /Oi;
+            ${DEFAULT_CXX_RUNTIME_LIBRARY};
+            /Gy
+        >
+        $<$<CONFIG:FinalFR>:
+            /O2;
+            /Oi;
+            ${DEFAULT_CXX_RUNTIME_LIBRARY};
+            /Gy
+        >
+        $<$<CONFIG:FinalIT>:
+            /O2;
+            /Oi;
+            ${DEFAULT_CXX_RUNTIME_LIBRARY};
+            /Gy
+        >
+        $<$<CONFIG:FinalMFCDLL>:
             /O2;
             /Oi;
             ${DEFAULT_CXX_RUNTIME_LIBRARY};
             /Gy
         >
         $<$<CONFIG:Release>:
+            /O2;
+            /Oi;
+            ${DEFAULT_CXX_RUNTIME_LIBRARY};
+            /Gy
+        >
+        $<$<CONFIG:ReleaseMFCDLL>:
             /O2;
             /Oi;
             ${DEFAULT_CXX_RUNTIME_LIBRARY};
@@ -188,48 +188,48 @@ if(MSVC)
         ${DEFAULT_CXX_EXCEPTION_HANDLING}
     )
     target_link_options(${PROJECT_NAME} PRIVATE
-        $<$<CONFIG:Debug MFC DLL>:
-            /INCREMENTAL
-        >
         $<$<CONFIG:Debug>:
             /INCREMENTAL
         >
-        $<$<CONFIG:Final DE>:
-            /OPT:REF;
-            /OPT:ICF;
-            /INCREMENTAL:NO
-        >
-        $<$<CONFIG:Final ES>:
-            /OPT:REF;
-            /OPT:ICF;
-            /INCREMENTAL:NO
-        >
-        $<$<CONFIG:Final FR>:
-            /OPT:REF;
-            /OPT:ICF;
-            /INCREMENTAL:NO
-        >
-        $<$<CONFIG:Final IT>:
-            /OPT:REF;
-            /OPT:ICF;
-            /INCREMENTAL:NO
-        >
-        $<$<CONFIG:Final MFC DLL>:
-            /OPT:REF;
-            /OPT:ICF;
-            /INCREMENTAL:NO
+        $<$<CONFIG:DebugMFCDLL>:
+            /INCREMENTAL
         >
         $<$<CONFIG:Final>:
             /OPT:REF;
             /OPT:ICF;
             /INCREMENTAL:NO
         >
-        $<$<CONFIG:Release MFC DLL>:
+        $<$<CONFIG:FinalDE>:
+            /OPT:REF;
+            /OPT:ICF;
+            /INCREMENTAL:NO
+        >
+        $<$<CONFIG:FinalES>:
+            /OPT:REF;
+            /OPT:ICF;
+            /INCREMENTAL:NO
+        >
+        $<$<CONFIG:FinalFR>:
+            /OPT:REF;
+            /OPT:ICF;
+            /INCREMENTAL:NO
+        >
+        $<$<CONFIG:FinalIT>:
+            /OPT:REF;
+            /OPT:ICF;
+            /INCREMENTAL:NO
+        >
+        $<$<CONFIG:FinalMFCDLL>:
             /OPT:REF;
             /OPT:ICF;
             /INCREMENTAL:NO
         >
         $<$<CONFIG:Release>:
+            /OPT:REF;
+            /OPT:ICF;
+            /INCREMENTAL:NO
+        >
+        $<$<CONFIG:ReleaseMFCDLL>:
             /OPT:REF;
             /OPT:ICF;
             /INCREMENTAL:NO
@@ -251,8 +251,8 @@ add_custom_command_if(
     TARGET ${PROJECT_NAME}
     POST_BUILD
     COMMANDS
-    COMMAND   $<CONFIG:Debug MFC DLL> call "D:\\GameDev\\nolf2-modernizer\\Game\\_server_dir_debug.bat"
-    COMMAND           $<CONFIG:Debug> call "D:\\GameDev\\nolf2-modernizer\\Game\\_server_dir_debug.bat"
+    COMMAND         $<CONFIG:Debug> call "D:\\GameDev\\nolf2-modernizer\\Game\\_server_dir_debug.bat"
+    COMMAND   $<CONFIG:DebugMFCDLL> call "D:\\GameDev\\nolf2-modernizer\\Game\\_server_dir_debug.bat"
 )
 
 ################################################################################
@@ -267,52 +267,52 @@ set(ADDITIONAL_LIBRARY_DEPENDENCIES
 target_link_libraries(${PROJECT_NAME} PUBLIC "${ADDITIONAL_LIBRARY_DEPENDENCIES}")
 
 target_link_directories(${PROJECT_NAME} PUBLIC
-    "$<$<CONFIG:Debug MFC DLL>:"
-        "${CMAKE_SOURCE_DIR}/../libs/built/Debug/Lib_Lith;"
-        "${CMAKE_SOURCE_DIR}/../libs/built/Debug/Lib_StdLith;"
-        "${CMAKE_SOURCE_DIR}//built/debug/ClientShellDLL/ClientShellShared"
-    ">"
     "$<$<CONFIG:Debug>:"
         "${CMAKE_SOURCE_DIR}/../libs/built/Debug/Lib_Lith;"
         "${CMAKE_SOURCE_DIR}/../libs/built/Debug/Lib_StdLith;"
         "${CMAKE_SOURCE_DIR}//built/debug/ClientShellDLL/ClientShellShared"
     ">"
-    "$<$<CONFIG:Final DE>:"
-        "${CMAKE_SOURCE_DIR}/../libs/built/Release/Lib_Lith;"
-        "${CMAKE_SOURCE_DIR}/../libs/built/Release/Lib_StdLith;"
-        "${CMAKE_SOURCE_DIR}//built/release/ClientShellDLL/ClientShellShared"
-    ">"
-    "$<$<CONFIG:Final ES>:"
-        "${CMAKE_SOURCE_DIR}/../libs/built/Release/Lib_Lith;"
-        "${CMAKE_SOURCE_DIR}/../libs/built/Release/Lib_StdLith;"
-        "${CMAKE_SOURCE_DIR}//built/release/ClientShellDLL/ClientShellShared"
-    ">"
-    "$<$<CONFIG:Final FR>:"
-        "${CMAKE_SOURCE_DIR}/../libs/built/Release/Lib_Lith;"
-        "${CMAKE_SOURCE_DIR}/../libs/built/Release/Lib_StdLith;"
-        "${CMAKE_SOURCE_DIR}//built/release/ClientShellDLL/ClientShellShared"
-    ">"
-    "$<$<CONFIG:Final IT>:"
-        "${CMAKE_SOURCE_DIR}/../libs/built/Release/Lib_Lith;"
-        "${CMAKE_SOURCE_DIR}/../libs/built/Release/Lib_StdLith;"
-        "${CMAKE_SOURCE_DIR}//built/release/ClientShellDLL/ClientShellShared"
-    ">"
-    "$<$<CONFIG:Final MFC DLL>:"
-        "${CMAKE_SOURCE_DIR}/../libs/built/Release/Lib_Lith;"
-        "${CMAKE_SOURCE_DIR}/../libs/built/Release/Lib_StdLith;"
-        "${CMAKE_SOURCE_DIR}//built/release/ClientShellDLL/ClientShellShared"
+    "$<$<CONFIG:DebugMFCDLL>:"
+        "${CMAKE_SOURCE_DIR}/../libs/built/Debug/Lib_Lith;"
+        "${CMAKE_SOURCE_DIR}/../libs/built/Debug/Lib_StdLith;"
+        "${CMAKE_SOURCE_DIR}//built/debug/ClientShellDLL/ClientShellShared"
     ">"
     "$<$<CONFIG:Final>:"
         "${CMAKE_SOURCE_DIR}/../libs/built/Release/Lib_Lith;"
         "${CMAKE_SOURCE_DIR}/../libs/built/Release/Lib_StdLith;"
         "${CMAKE_SOURCE_DIR}//built/release/ClientShellDLL/ClientShellShared"
     ">"
-    "$<$<CONFIG:Release MFC DLL>:"
+    "$<$<CONFIG:FinalDE>:"
+        "${CMAKE_SOURCE_DIR}/../libs/built/Release/Lib_Lith;"
+        "${CMAKE_SOURCE_DIR}/../libs/built/Release/Lib_StdLith;"
+        "${CMAKE_SOURCE_DIR}//built/release/ClientShellDLL/ClientShellShared"
+    ">"
+    "$<$<CONFIG:FinalES>:"
+        "${CMAKE_SOURCE_DIR}/../libs/built/Release/Lib_Lith;"
+        "${CMAKE_SOURCE_DIR}/../libs/built/Release/Lib_StdLith;"
+        "${CMAKE_SOURCE_DIR}//built/release/ClientShellDLL/ClientShellShared"
+    ">"
+    "$<$<CONFIG:FinalFR>:"
+        "${CMAKE_SOURCE_DIR}/../libs/built/Release/Lib_Lith;"
+        "${CMAKE_SOURCE_DIR}/../libs/built/Release/Lib_StdLith;"
+        "${CMAKE_SOURCE_DIR}//built/release/ClientShellDLL/ClientShellShared"
+    ">"
+    "$<$<CONFIG:FinalIT>:"
+        "${CMAKE_SOURCE_DIR}/../libs/built/Release/Lib_Lith;"
+        "${CMAKE_SOURCE_DIR}/../libs/built/Release/Lib_StdLith;"
+        "${CMAKE_SOURCE_DIR}//built/release/ClientShellDLL/ClientShellShared"
+    ">"
+    "$<$<CONFIG:FinalMFCDLL>:"
         "${CMAKE_SOURCE_DIR}/../libs/built/Release/Lib_Lith;"
         "${CMAKE_SOURCE_DIR}/../libs/built/Release/Lib_StdLith;"
         "${CMAKE_SOURCE_DIR}//built/release/ClientShellDLL/ClientShellShared"
     ">"
     "$<$<CONFIG:Release>:"
+        "${CMAKE_SOURCE_DIR}/../libs/built/Release/Lib_Lith;"
+        "${CMAKE_SOURCE_DIR}/../libs/built/Release/Lib_StdLith;"
+        "${CMAKE_SOURCE_DIR}//built/release/ClientShellDLL/ClientShellShared"
+    ">"
+    "$<$<CONFIG:ReleaseMFCDLL>:"
         "${CMAKE_SOURCE_DIR}/../libs/built/Release/Lib_Lith;"
         "${CMAKE_SOURCE_DIR}/../libs/built/Release/Lib_StdLith;"
         "${CMAKE_SOURCE_DIR}//built/release/ClientShellDLL/ClientShellShared"

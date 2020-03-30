@@ -60,85 +60,85 @@ use_props(${PROJECT_NAME} "${CMAKE_CONFIGURATION_TYPES}" "${DEFAULT_CXX_PROPS}")
 # Target name
 ################################################################################
 set_target_properties(${PROJECT_NAME} PROPERTIES
-    TARGET_NAME_DEBUG MFC DLL   "ltguimgr"
-    TARGET_NAME_DEBUG           "ltguimgr"
-    TARGET_NAME_FINAL DE        "ltguimgr"
-    TARGET_NAME_FINAL ES        "ltguimgr"
-    TARGET_NAME_FINAL FR        "ltguimgr"
-    TARGET_NAME_FINAL IT        "ltguimgr"
-    TARGET_NAME_FINAL MFC DLL   "ltguimgr"
-    TARGET_NAME_FINAL           "ltguimgr"
-    TARGET_NAME_RELEASE MFC DLL "ltguimgr"
-    TARGET_NAME_RELEASE         "ltguimgr"
+    TARGET_NAME_DEBUG         "ltguimgr"
+    TARGET_NAME_DEBUGMFCDLL   "ltguimgr"
+    TARGET_NAME_FINAL         "ltguimgr"
+    TARGET_NAME_FINALDE       "ltguimgr"
+    TARGET_NAME_FINALES       "ltguimgr"
+    TARGET_NAME_FINALFR       "ltguimgr"
+    TARGET_NAME_FINALIT       "ltguimgr"
+    TARGET_NAME_FINALMFCDLL   "ltguimgr"
+    TARGET_NAME_RELEASE       "ltguimgr"
+    TARGET_NAME_RELEASEMFCDLL "ltguimgr"
 )
 ################################################################################
 # Output directory
 ################################################################################
 set_target_properties(${PROJECT_NAME} PROPERTIES
-    OUTPUT_DIRECTORY_DEBUG MFC DLL   "${CMAKE_CURRENT_SOURCE_DIR}/../../built/Debug/libs/LTGuiMgr"
-    OUTPUT_DIRECTORY_DEBUG           "${CMAKE_CURRENT_SOURCE_DIR}/../../built/Debug/libs/LTGuiMgr"
-    OUTPUT_DIRECTORY_FINAL DE        "${CMAKE_CURRENT_SOURCE_DIR}/../../built/Final/libs/LTGuiMgr"
-    OUTPUT_DIRECTORY_FINAL ES        "${CMAKE_CURRENT_SOURCE_DIR}/../../built/Final/libs/LTGuiMgr"
-    OUTPUT_DIRECTORY_FINAL FR        "${CMAKE_CURRENT_SOURCE_DIR}/../../built/Final/libs/LTGuiMgr"
-    OUTPUT_DIRECTORY_FINAL IT        "${CMAKE_CURRENT_SOURCE_DIR}/../../built/Final/libs/LTGuiMgr"
-    OUTPUT_DIRECTORY_FINAL MFC DLL   "${CMAKE_CURRENT_SOURCE_DIR}/../../built/Final/libs/LTGuiMgr"
-    OUTPUT_DIRECTORY_FINAL           "${CMAKE_CURRENT_SOURCE_DIR}/../../built/Final/libs/LTGuiMgr"
-    OUTPUT_DIRECTORY_RELEASE MFC DLL "${CMAKE_CURRENT_SOURCE_DIR}/../../built/Release/libs/LTGuiMgr"
-    OUTPUT_DIRECTORY_RELEASE         "${CMAKE_CURRENT_SOURCE_DIR}/../../built/Release/libs/LTGuiMgr"
+    OUTPUT_DIRECTORY_DEBUG         "${CMAKE_CURRENT_SOURCE_DIR}/../../built/Debug/libs/LTGuiMgr"
+    OUTPUT_DIRECTORY_DEBUGMFCDLL   "${CMAKE_CURRENT_SOURCE_DIR}/../../built/Debug/libs/LTGuiMgr"
+    OUTPUT_DIRECTORY_FINAL         "${CMAKE_CURRENT_SOURCE_DIR}/../../built/Final/libs/LTGuiMgr"
+    OUTPUT_DIRECTORY_FINALDE       "${CMAKE_CURRENT_SOURCE_DIR}/../../built/Final/libs/LTGuiMgr"
+    OUTPUT_DIRECTORY_FINALES       "${CMAKE_CURRENT_SOURCE_DIR}/../../built/Final/libs/LTGuiMgr"
+    OUTPUT_DIRECTORY_FINALFR       "${CMAKE_CURRENT_SOURCE_DIR}/../../built/Final/libs/LTGuiMgr"
+    OUTPUT_DIRECTORY_FINALIT       "${CMAKE_CURRENT_SOURCE_DIR}/../../built/Final/libs/LTGuiMgr"
+    OUTPUT_DIRECTORY_FINALMFCDLL   "${CMAKE_CURRENT_SOURCE_DIR}/../../built/Final/libs/LTGuiMgr"
+    OUTPUT_DIRECTORY_RELEASE       "${CMAKE_CURRENT_SOURCE_DIR}/../../built/Release/libs/LTGuiMgr"
+    OUTPUT_DIRECTORY_RELEASEMFCDLL "${CMAKE_CURRENT_SOURCE_DIR}/../../built/Release/libs/LTGuiMgr"
 )
 ################################################################################
 # Include directories
 ################################################################################
 target_include_directories(${PROJECT_NAME} PUBLIC
-    "$<$<CONFIG:Debug MFC DLL>:"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPORT-4.0/STLPORT_no;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc/compat;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-STD"
-    ">"
     "$<$<CONFIG:Debug>:"
         "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPORT-4.0/STLPORT_no;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc/compat;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-STD"
     ">"
-    "$<$<CONFIG:Final DE>:"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-4.0/stlport;"
+    "$<$<CONFIG:DebugMFCDLL>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPORT-4.0/STLPORT_no;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc/compat"
-    ">"
-    "$<$<CONFIG:Final ES>:"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-4.0/stlport;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc/compat"
-    ">"
-    "$<$<CONFIG:Final FR>:"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-4.0/stlport;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc/compat"
-    ">"
-    "$<$<CONFIG:Final IT>:"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-4.0/stlport;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc/compat"
-    ">"
-    "$<$<CONFIG:Final MFC DLL>:"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-4.0/stlport;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc/compat"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc/compat;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-STD"
     ">"
     "$<$<CONFIG:Final>:"
         "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-4.0/stlport;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc/compat"
     ">"
-    "$<$<CONFIG:Release MFC DLL>:"
+    "$<$<CONFIG:FinalDE>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-4.0/stlport;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc/compat"
+    ">"
+    "$<$<CONFIG:FinalES>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-4.0/stlport;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc/compat"
+    ">"
+    "$<$<CONFIG:FinalFR>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-4.0/stlport;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc/compat"
+    ">"
+    "$<$<CONFIG:FinalIT>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-4.0/stlport;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc/compat"
+    ">"
+    "$<$<CONFIG:FinalMFCDLL>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-4.0/stlport;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc/compat"
+    ">"
+    "$<$<CONFIG:Release>:"
         "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPORT-4.0/STLPORT_no;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc/compat;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPort-STD"
     ">"
-    "$<$<CONFIG:Release>:"
+    "$<$<CONFIG:ReleaseMFCDLL>:"
         "${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/STLPORT-4.0/STLPORT_no;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../../../Engine/sdk/inc/compat;"
@@ -150,14 +150,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 # Compile definitions
 ################################################################################
 target_compile_definitions(${PROJECT_NAME} PRIVATE
-    "$<$<CONFIG:Debug MFC DLL>:"
-        "_DEBUG;"
-        "WIN32;"
-        "_WINDOWS;"
-        "_LITHTECH2;"
-        "LT15_COMPAT;"
-        "_MBCS"
-    ">"
     "$<$<CONFIG:Debug>:"
         "_DEBUG;"
         "WIN32;"
@@ -166,49 +158,12 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
         "LT15_COMPAT;"
         "_MBCS"
     ">"
-    "$<$<CONFIG:Final DE>:"
-        "NDEBUG;"
+    "$<$<CONFIG:DebugMFCDLL>:"
+        "_DEBUG;"
         "WIN32;"
         "_WINDOWS;"
         "_LITHTECH2;"
         "LT15_COMPAT;"
-        "_FINAL;"
-        "_MBCS"
-    ">"
-    "$<$<CONFIG:Final ES>:"
-        "NDEBUG;"
-        "WIN32;"
-        "_WINDOWS;"
-        "_LITHTECH2;"
-        "LT15_COMPAT;"
-        "_FINAL;"
-        "_MBCS"
-    ">"
-    "$<$<CONFIG:Final FR>:"
-        "NDEBUG;"
-        "WIN32;"
-        "_WINDOWS;"
-        "_LITHTECH2;"
-        "LT15_COMPAT;"
-        "_FINAL;"
-        "_MBCS"
-    ">"
-    "$<$<CONFIG:Final IT>:"
-        "NDEBUG;"
-        "WIN32;"
-        "_WINDOWS;"
-        "_LITHTECH2;"
-        "LT15_COMPAT;"
-        "_FINAL;"
-        "_MBCS"
-    ">"
-    "$<$<CONFIG:Final MFC DLL>:"
-        "NDEBUG;"
-        "WIN32;"
-        "_WINDOWS;"
-        "_LITHTECH2;"
-        "LT15_COMPAT;"
-        "_FINAL;"
         "_MBCS"
     ">"
     "$<$<CONFIG:Final>:"
@@ -220,7 +175,52 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
         "_FINAL;"
         "_MBCS"
     ">"
-    "$<$<CONFIG:Release MFC DLL>:"
+    "$<$<CONFIG:FinalDE>:"
+        "NDEBUG;"
+        "WIN32;"
+        "_WINDOWS;"
+        "_LITHTECH2;"
+        "LT15_COMPAT;"
+        "_FINAL;"
+        "_MBCS"
+    ">"
+    "$<$<CONFIG:FinalES>:"
+        "NDEBUG;"
+        "WIN32;"
+        "_WINDOWS;"
+        "_LITHTECH2;"
+        "LT15_COMPAT;"
+        "_FINAL;"
+        "_MBCS"
+    ">"
+    "$<$<CONFIG:FinalFR>:"
+        "NDEBUG;"
+        "WIN32;"
+        "_WINDOWS;"
+        "_LITHTECH2;"
+        "LT15_COMPAT;"
+        "_FINAL;"
+        "_MBCS"
+    ">"
+    "$<$<CONFIG:FinalIT>:"
+        "NDEBUG;"
+        "WIN32;"
+        "_WINDOWS;"
+        "_LITHTECH2;"
+        "LT15_COMPAT;"
+        "_FINAL;"
+        "_MBCS"
+    ">"
+    "$<$<CONFIG:FinalMFCDLL>:"
+        "NDEBUG;"
+        "WIN32;"
+        "_WINDOWS;"
+        "_LITHTECH2;"
+        "LT15_COMPAT;"
+        "_FINAL;"
+        "_MBCS"
+    ">"
+    "$<$<CONFIG:Release>:"
         "NDEBUG;"
         "WIN32;"
         "_WINDOWS;"
@@ -228,7 +228,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
         "LT15_COMPAT;"
         "_MBCS"
     ">"
-    "$<$<CONFIG:Release>:"
+    "$<$<CONFIG:ReleaseMFCDLL>:"
         "NDEBUG;"
         "WIN32;"
         "_WINDOWS;"
@@ -243,15 +243,6 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
 ################################################################################
 if(MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE
-        $<$<CONFIG:Debug MFC DLL>:
-            /Od;
-            /MDd;
-            /Gy;
-            /W3;
-            /ZI;
-            /Zc:forScope-;
-            /Y-
-        >
         $<$<CONFIG:Debug>:
             /Od;
             /MDd;
@@ -261,50 +252,14 @@ if(MSVC)
             /Zc:forScope-;
             /Y-
         >
-        $<$<CONFIG:Final DE>:
-            /O2;
-            /GF;
-            /MD;
+        $<$<CONFIG:DebugMFCDLL>:
+            /Od;
+            /MDd;
             /Gy;
             /W3;
-            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
-            /Zm1000
-        >
-        $<$<CONFIG:Final ES>:
-            /O2;
-            /GF;
-            /MD;
-            /Gy;
-            /W3;
-            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
-            /Zm1000
-        >
-        $<$<CONFIG:Final FR>:
-            /O2;
-            /GF;
-            /MD;
-            /Gy;
-            /W3;
-            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
-            /Zm1000
-        >
-        $<$<CONFIG:Final IT>:
-            /O2;
-            /GF;
-            /MD;
-            /Gy;
-            /W3;
-            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
-            /Zm1000
-        >
-        $<$<CONFIG:Final MFC DLL>:
-            /O2;
-            /GF;
-            /MD;
-            /Gy;
-            /W3;
-            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
-            /Zm1000
+            /ZI;
+            /Zc:forScope-;
+            /Y-
         >
         $<$<CONFIG:Final>:
             /O2;
@@ -315,7 +270,52 @@ if(MSVC)
             ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
             /Zm1000
         >
-        $<$<CONFIG:Release MFC DLL>:
+        $<$<CONFIG:FinalDE>:
+            /O2;
+            /GF;
+            /MD;
+            /Gy;
+            /W3;
+            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
+            /Zm1000
+        >
+        $<$<CONFIG:FinalES>:
+            /O2;
+            /GF;
+            /MD;
+            /Gy;
+            /W3;
+            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
+            /Zm1000
+        >
+        $<$<CONFIG:FinalFR>:
+            /O2;
+            /GF;
+            /MD;
+            /Gy;
+            /W3;
+            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
+            /Zm1000
+        >
+        $<$<CONFIG:FinalIT>:
+            /O2;
+            /GF;
+            /MD;
+            /Gy;
+            /W3;
+            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
+            /Zm1000
+        >
+        $<$<CONFIG:FinalMFCDLL>:
+            /O2;
+            /GF;
+            /MD;
+            /Gy;
+            /W3;
+            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
+            /Zm1000
+        >
+        $<$<CONFIG:Release>:
             /O2;
             /GF;
             /MD;
@@ -325,7 +325,7 @@ if(MSVC)
             /Zm1000;
             /Zc:forScope-
         >
-        $<$<CONFIG:Release>:
+        $<$<CONFIG:ReleaseMFCDLL>:
             /O2;
             /GF;
             /MD;
@@ -342,385 +342,385 @@ if(MSVC)
         ${DEFAULT_CXX_EXCEPTION_HANDLING}
     )
     string(CONCAT FILE_CL_OPTIONS
-        "$<$<CONFIG:Final DE>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final ES>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final FR>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final IT>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final MFC DLL>:"
-            "/Zm1000;/Zm1000"
-        ">"
         "$<$<CONFIG:Final>:"
             "/Zm1000;/Zm1000"
         ">"
-        "$<$<CONFIG:Release MFC DLL>:"
+        "$<$<CONFIG:FinalDE>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalES>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalFR>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalIT>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalMFCDLL>:"
             "/Zm1000;/Zm1000"
         ">"
         "$<$<CONFIG:Release>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:ReleaseMFCDLL>:"
             "/Zm1000;/Zm1000"
         ">"
     )
     source_file_compile_options(ltguibutton.cpp ${FILE_CL_OPTIONS})
     string(CONCAT FILE_CL_OPTIONS
-        "$<$<CONFIG:Final DE>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final ES>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final FR>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final IT>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final MFC DLL>:"
-            "/Zm1000;/Zm1000"
-        ">"
         "$<$<CONFIG:Final>:"
             "/Zm1000;/Zm1000"
         ">"
-        "$<$<CONFIG:Release MFC DLL>:"
+        "$<$<CONFIG:FinalDE>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalES>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalFR>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalIT>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalMFCDLL>:"
             "/Zm1000;/Zm1000"
         ">"
         "$<$<CONFIG:Release>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:ReleaseMFCDLL>:"
             "/Zm1000;/Zm1000"
         ">"
     )
     source_file_compile_options(ltguicolumnctrl.cpp ${FILE_CL_OPTIONS})
     string(CONCAT FILE_CL_OPTIONS
-        "$<$<CONFIG:Final DE>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final ES>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final FR>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final IT>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final MFC DLL>:"
-            "/Zm1000;/Zm1000"
-        ">"
         "$<$<CONFIG:Final>:"
             "/Zm1000;/Zm1000"
         ">"
-        "$<$<CONFIG:Release MFC DLL>:"
+        "$<$<CONFIG:FinalDE>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalES>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalFR>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalIT>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalMFCDLL>:"
             "/Zm1000;/Zm1000"
         ">"
         "$<$<CONFIG:Release>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:ReleaseMFCDLL>:"
             "/Zm1000;/Zm1000"
         ">"
     )
     source_file_compile_options(ltguicommandhandler.cpp ${FILE_CL_OPTIONS})
     string(CONCAT FILE_CL_OPTIONS
-        "$<$<CONFIG:Final DE>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final ES>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final FR>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final IT>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final MFC DLL>:"
-            "/Zm1000;/Zm1000"
-        ">"
         "$<$<CONFIG:Final>:"
             "/Zm1000;/Zm1000"
         ">"
-        "$<$<CONFIG:Release MFC DLL>:"
+        "$<$<CONFIG:FinalDE>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalES>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalFR>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalIT>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalMFCDLL>:"
             "/Zm1000;/Zm1000"
         ">"
         "$<$<CONFIG:Release>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:ReleaseMFCDLL>:"
             "/Zm1000;/Zm1000"
         ">"
     )
     source_file_compile_options(ltguictrl.cpp ${FILE_CL_OPTIONS})
     string(CONCAT FILE_CL_OPTIONS
-        "$<$<CONFIG:Final DE>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final ES>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final FR>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final IT>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final MFC DLL>:"
-            "/Zm1000;/Zm1000"
-        ">"
         "$<$<CONFIG:Final>:"
             "/Zm1000;/Zm1000"
         ">"
-        "$<$<CONFIG:Release MFC DLL>:"
+        "$<$<CONFIG:FinalDE>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalES>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalFR>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalIT>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalMFCDLL>:"
             "/Zm1000;/Zm1000"
         ">"
         "$<$<CONFIG:Release>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:ReleaseMFCDLL>:"
             "/Zm1000;/Zm1000"
         ">"
     )
     source_file_compile_options(ltguicyclectrl.cpp ${FILE_CL_OPTIONS})
     string(CONCAT FILE_CL_OPTIONS
-        "$<$<CONFIG:Final DE>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final ES>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final FR>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final IT>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final MFC DLL>:"
-            "/Zm1000;/Zm1000"
-        ">"
         "$<$<CONFIG:Final>:"
             "/Zm1000;/Zm1000"
         ">"
-        "$<$<CONFIG:Release MFC DLL>:"
+        "$<$<CONFIG:FinalDE>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalES>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalFR>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalIT>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalMFCDLL>:"
             "/Zm1000;/Zm1000"
         ">"
         "$<$<CONFIG:Release>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:ReleaseMFCDLL>:"
             "/Zm1000;/Zm1000"
         ">"
     )
     source_file_compile_options(ltguieditctrl.cpp ${FILE_CL_OPTIONS})
     string(CONCAT FILE_CL_OPTIONS
-        "$<$<CONFIG:Final DE>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final ES>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final FR>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final IT>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final MFC DLL>:"
-            "/Zm1000;/Zm1000"
-        ">"
         "$<$<CONFIG:Final>:"
             "/Zm1000;/Zm1000"
         ">"
-        "$<$<CONFIG:Release MFC DLL>:"
+        "$<$<CONFIG:FinalDE>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalES>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalFR>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalIT>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalMFCDLL>:"
             "/Zm1000;/Zm1000"
         ">"
         "$<$<CONFIG:Release>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:ReleaseMFCDLL>:"
             "/Zm1000;/Zm1000"
         ">"
     )
     source_file_compile_options(ltguiframe.cpp ${FILE_CL_OPTIONS})
     string(CONCAT FILE_CL_OPTIONS
-        "$<$<CONFIG:Final DE>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final ES>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final FR>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final IT>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final MFC DLL>:"
-            "/Zm1000;/Zm1000"
-        ">"
         "$<$<CONFIG:Final>:"
             "/Zm1000;/Zm1000"
         ">"
-        "$<$<CONFIG:Release MFC DLL>:"
+        "$<$<CONFIG:FinalDE>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalES>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalFR>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalIT>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalMFCDLL>:"
             "/Zm1000;/Zm1000"
         ">"
         "$<$<CONFIG:Release>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:ReleaseMFCDLL>:"
             "/Zm1000;/Zm1000"
         ">"
     )
     source_file_compile_options(ltguilargetext.cpp ${FILE_CL_OPTIONS})
     string(CONCAT FILE_CL_OPTIONS
-        "$<$<CONFIG:Final DE>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final ES>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final FR>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final IT>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final MFC DLL>:"
-            "/Zm1000;/Zm1000"
-        ">"
         "$<$<CONFIG:Final>:"
             "/Zm1000;/Zm1000"
         ">"
-        "$<$<CONFIG:Release MFC DLL>:"
+        "$<$<CONFIG:FinalDE>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalES>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalFR>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalIT>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalMFCDLL>:"
             "/Zm1000;/Zm1000"
         ">"
         "$<$<CONFIG:Release>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:ReleaseMFCDLL>:"
             "/Zm1000;/Zm1000"
         ">"
     )
     source_file_compile_options(ltguilistctrl.cpp ${FILE_CL_OPTIONS})
     string(CONCAT FILE_CL_OPTIONS
-        "$<$<CONFIG:Final DE>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final ES>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final FR>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final IT>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final MFC DLL>:"
-            "/Zm1000;/Zm1000"
-        ">"
         "$<$<CONFIG:Final>:"
             "/Zm1000;/Zm1000"
         ">"
-        "$<$<CONFIG:Release MFC DLL>:"
+        "$<$<CONFIG:FinalDE>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalES>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalFR>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalIT>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalMFCDLL>:"
             "/Zm1000;/Zm1000"
         ">"
         "$<$<CONFIG:Release>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:ReleaseMFCDLL>:"
             "/Zm1000;/Zm1000"
         ">"
     )
     source_file_compile_options(ltguislider.cpp ${FILE_CL_OPTIONS})
     string(CONCAT FILE_CL_OPTIONS
-        "$<$<CONFIG:Final DE>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final ES>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final FR>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final IT>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final MFC DLL>:"
-            "/Zm1000;/Zm1000"
-        ">"
         "$<$<CONFIG:Final>:"
             "/Zm1000;/Zm1000"
         ">"
-        "$<$<CONFIG:Release MFC DLL>:"
+        "$<$<CONFIG:FinalDE>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalES>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalFR>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalIT>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalMFCDLL>:"
             "/Zm1000;/Zm1000"
         ">"
         "$<$<CONFIG:Release>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:ReleaseMFCDLL>:"
             "/Zm1000;/Zm1000"
         ">"
     )
     source_file_compile_options(ltguitextitemctrl.cpp ${FILE_CL_OPTIONS})
     string(CONCAT FILE_CL_OPTIONS
-        "$<$<CONFIG:Final DE>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final ES>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final FR>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final IT>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final MFC DLL>:"
-            "/Zm1000;/Zm1000"
-        ">"
         "$<$<CONFIG:Final>:"
             "/Zm1000;/Zm1000"
         ">"
-        "$<$<CONFIG:Release MFC DLL>:"
+        "$<$<CONFIG:FinalDE>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalES>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalFR>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalIT>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalMFCDLL>:"
             "/Zm1000;/Zm1000"
         ">"
         "$<$<CONFIG:Release>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:ReleaseMFCDLL>:"
             "/Zm1000;/Zm1000"
         ">"
     )
     source_file_compile_options(ltguitoggle.cpp ${FILE_CL_OPTIONS})
     string(CONCAT FILE_CL_OPTIONS
-        "$<$<CONFIG:Final DE>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final ES>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final FR>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final IT>:"
-            "/Zm1000;/Zm1000"
-        ">"
-        "$<$<CONFIG:Final MFC DLL>:"
-            "/Zm1000;/Zm1000"
-        ">"
         "$<$<CONFIG:Final>:"
             "/Zm1000;/Zm1000"
         ">"
-        "$<$<CONFIG:Release MFC DLL>:"
+        "$<$<CONFIG:FinalDE>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalES>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalFR>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalIT>:"
+            "/Zm1000;/Zm1000"
+        ">"
+        "$<$<CONFIG:FinalMFCDLL>:"
             "/Zm1000;/Zm1000"
         ">"
         "$<$<CONFIG:Release>:"
             "/Zm1000;/Zm1000"
         ">"
+        "$<$<CONFIG:ReleaseMFCDLL>:"
+            "/Zm1000;/Zm1000"
+        ">"
     )
     source_file_compile_options(ltguiwindow.cpp ${FILE_CL_OPTIONS})
     target_link_options(${PROJECT_NAME} PRIVATE
-        $<$<CONFIG:Debug MFC DLL>:
-            /NOLOGO
-        >
         $<$<CONFIG:Debug>:
             /NOLOGO
         >
-        $<$<CONFIG:Final DE>:
-            /NOLOGO
-        >
-        $<$<CONFIG:Final ES>:
-            /NOLOGO
-        >
-        $<$<CONFIG:Final FR>:
-            /NOLOGO
-        >
-        $<$<CONFIG:Final IT>:
-            /NOLOGO
-        >
-        $<$<CONFIG:Final MFC DLL>:
+        $<$<CONFIG:DebugMFCDLL>:
             /NOLOGO
         >
         $<$<CONFIG:Final>:
             /NOLOGO
         >
-        $<$<CONFIG:Release MFC DLL>:
+        $<$<CONFIG:FinalDE>:
+            /NOLOGO
+        >
+        $<$<CONFIG:FinalES>:
+            /NOLOGO
+        >
+        $<$<CONFIG:FinalFR>:
+            /NOLOGO
+        >
+        $<$<CONFIG:FinalIT>:
+            /NOLOGO
+        >
+        $<$<CONFIG:FinalMFCDLL>:
             /NOLOGO
         >
         $<$<CONFIG:Release>:
+            /NOLOGO
+        >
+        $<$<CONFIG:ReleaseMFCDLL>:
             /NOLOGO
         >
         $<$<CONFIG:Template>:

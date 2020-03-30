@@ -35,69 +35,44 @@ use_props(${PROJECT_NAME} "${CMAKE_CONFIGURATION_TYPES}" "${DEFAULT_CXX_PROPS}")
 # Target name
 ################################################################################
 set_target_properties(${PROJECT_NAME} PROPERTIES
-    TARGET_NAME_DEBUG MFC DLL   "AutoRun2"
-    TARGET_NAME_DEBUG           "AutoRun2"
-    TARGET_NAME_FINAL DE        "AutoRun2"
-    TARGET_NAME_FINAL ES        "AutoRun2"
-    TARGET_NAME_FINAL FR        "AutoRun2"
-    TARGET_NAME_FINAL IT        "AutoRun2"
-    TARGET_NAME_FINAL MFC DLL   "AutoRun2"
-    TARGET_NAME_FINAL           "AutoRun2"
-    TARGET_NAME_RELEASE MFC DLL "AutoRun2"
-    TARGET_NAME_RELEASE         "AutoRun2"
+    TARGET_NAME_DEBUG         "AutoRun2"
+    TARGET_NAME_DEBUGMFCDLL   "AutoRun2"
+    TARGET_NAME_FINAL         "AutoRun2"
+    TARGET_NAME_FINALDE       "AutoRun2"
+    TARGET_NAME_FINALES       "AutoRun2"
+    TARGET_NAME_FINALFR       "AutoRun2"
+    TARGET_NAME_FINALIT       "AutoRun2"
+    TARGET_NAME_FINALMFCDLL   "AutoRun2"
+    TARGET_NAME_RELEASE       "AutoRun2"
+    TARGET_NAME_RELEASEMFCDLL "AutoRun2"
 )
 ################################################################################
 # Output directory
 ################################################################################
 set_target_properties(${PROJECT_NAME} PROPERTIES
-    OUTPUT_DIRECTORY_DEBUG MFC DLL   "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Debug/AutoRun2"
-    OUTPUT_DIRECTORY_DEBUG           "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Debug/AutoRun2"
-    OUTPUT_DIRECTORY_FINAL DE        "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Final/AutoRun2"
-    OUTPUT_DIRECTORY_FINAL ES        "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Final/AutoRun2"
-    OUTPUT_DIRECTORY_FINAL FR        "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Final/AutoRun2"
-    OUTPUT_DIRECTORY_FINAL IT        "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Final/AutoRun2"
-    OUTPUT_DIRECTORY_FINAL MFC DLL   "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Final/AutoRun2"
-    OUTPUT_DIRECTORY_FINAL           "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Final/AutoRun2"
-    OUTPUT_DIRECTORY_RELEASE MFC DLL "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Release/AutoRun2"
-    OUTPUT_DIRECTORY_RELEASE         "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Release/AutoRun2"
+    OUTPUT_DIRECTORY_DEBUG         "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Debug/AutoRun2"
+    OUTPUT_DIRECTORY_DEBUGMFCDLL   "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Debug/AutoRun2"
+    OUTPUT_DIRECTORY_FINAL         "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Final/AutoRun2"
+    OUTPUT_DIRECTORY_FINALDE       "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Final/AutoRun2"
+    OUTPUT_DIRECTORY_FINALES       "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Final/AutoRun2"
+    OUTPUT_DIRECTORY_FINALFR       "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Final/AutoRun2"
+    OUTPUT_DIRECTORY_FINALIT       "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Final/AutoRun2"
+    OUTPUT_DIRECTORY_FINALMFCDLL   "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Final/AutoRun2"
+    OUTPUT_DIRECTORY_RELEASE       "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Release/AutoRun2"
+    OUTPUT_DIRECTORY_RELEASEMFCDLL "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Release/AutoRun2"
 )
 ################################################################################
 # Compile definitions
 ################################################################################
 target_compile_definitions(${PROJECT_NAME} PRIVATE
-    "$<$<CONFIG:Debug MFC DLL>:"
-        "WIN32;"
-        "_DEBUG;"
-        "_WINDOWS"
-    ">"
     "$<$<CONFIG:Debug>:"
         "WIN32;"
         "_DEBUG;"
         "_WINDOWS"
     ">"
-    "$<$<CONFIG:Final DE>:"
+    "$<$<CONFIG:DebugMFCDLL>:"
         "WIN32;"
-        "NDEBUG;"
-        "_WINDOWS"
-    ">"
-    "$<$<CONFIG:Final ES>:"
-        "WIN32;"
-        "NDEBUG;"
-        "_WINDOWS"
-    ">"
-    "$<$<CONFIG:Final FR>:"
-        "WIN32;"
-        "NDEBUG;"
-        "_WINDOWS"
-    ">"
-    "$<$<CONFIG:Final IT>:"
-        "WIN32;"
-        "NDEBUG;"
-        "_WINDOWS"
-    ">"
-    "$<$<CONFIG:Final MFC DLL>:"
-        "WIN32;"
-        "NDEBUG;"
+        "_DEBUG;"
         "_WINDOWS"
     ">"
     "$<$<CONFIG:Final>:"
@@ -105,12 +80,37 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
         "NDEBUG;"
         "_WINDOWS"
     ">"
-    "$<$<CONFIG:Release MFC DLL>:"
+    "$<$<CONFIG:FinalDE>:"
+        "WIN32;"
+        "NDEBUG;"
+        "_WINDOWS"
+    ">"
+    "$<$<CONFIG:FinalES>:"
+        "WIN32;"
+        "NDEBUG;"
+        "_WINDOWS"
+    ">"
+    "$<$<CONFIG:FinalFR>:"
+        "WIN32;"
+        "NDEBUG;"
+        "_WINDOWS"
+    ">"
+    "$<$<CONFIG:FinalIT>:"
+        "WIN32;"
+        "NDEBUG;"
+        "_WINDOWS"
+    ">"
+    "$<$<CONFIG:FinalMFCDLL>:"
         "WIN32;"
         "NDEBUG;"
         "_WINDOWS"
     ">"
     "$<$<CONFIG:Release>:"
+        "WIN32;"
+        "NDEBUG;"
+        "_WINDOWS"
+    ">"
+    "$<$<CONFIG:ReleaseMFCDLL>:"
         "WIN32;"
         "NDEBUG;"
         "_WINDOWS"
@@ -122,15 +122,6 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
 ################################################################################
 if(MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE
-        $<$<CONFIG:Debug MFC DLL>:
-            /Gm;
-            /Od;
-            /RTC1;
-            /MTd;
-            /Gy;
-            /W3;
-            /ZI
-        >
         $<$<CONFIG:Debug>:
             /Gm;
             /Od;
@@ -140,45 +131,14 @@ if(MSVC)
             /W3;
             /ZI
         >
-        $<$<CONFIG:Final DE>:
-            /O2;
-            /GF;
-            /MT;
+        $<$<CONFIG:DebugMFCDLL>:
+            /Gm;
+            /Od;
+            /RTC1;
+            /MTd;
             /Gy;
             /W3;
-            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT}
-        >
-        $<$<CONFIG:Final ES>:
-            /O2;
-            /GF;
-            /MT;
-            /Gy;
-            /W3;
-            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT}
-        >
-        $<$<CONFIG:Final FR>:
-            /O2;
-            /GF;
-            /MT;
-            /Gy;
-            /W3;
-            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT}
-        >
-        $<$<CONFIG:Final IT>:
-            /O2;
-            /GF;
-            /MT;
-            /Gy;
-            /W3;
-            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT}
-        >
-        $<$<CONFIG:Final MFC DLL>:
-            /O2;
-            /GF;
-            /MT;
-            /Gy;
-            /W3;
-            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT}
+            /ZI
         >
         $<$<CONFIG:Final>:
             /O2;
@@ -188,7 +148,39 @@ if(MSVC)
             /W3;
             ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT}
         >
-        $<$<CONFIG:Release MFC DLL>:
+        $<$<CONFIG:FinalDE>:
+            /O2;
+            /GF;
+            /MT;
+            /Gy;
+            /W3;
+            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT}
+        >
+        $<$<CONFIG:FinalES>:
+            /O2;
+            /GF;
+            /MT;
+            /Gy;
+            /W3;
+            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT}
+        >
+        $<$<CONFIG:FinalFR>:
+            /O2;
+            /GF;
+            /MT;
+            /Gy;
+            /W3;
+            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT}
+        >
+        $<$<CONFIG:FinalIT>:
+            /O2;
+            /GF;
+            /MT;
+            /Gy;
+            /W3;
+            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT}
+        >
+        $<$<CONFIG:FinalMFCDLL>:
             /O2;
             /GF;
             /MT;
@@ -197,6 +189,14 @@ if(MSVC)
             ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT}
         >
         $<$<CONFIG:Release>:
+            /O2;
+            /GF;
+            /MT;
+            /Gy;
+            /W3;
+            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT}
+        >
+        $<$<CONFIG:ReleaseMFCDLL>:
             /O2;
             /GF;
             /MT;
@@ -211,47 +211,17 @@ if(MSVC)
         ${DEFAULT_CXX_EXCEPTION_HANDLING}
     )
     target_link_options(${PROJECT_NAME} PRIVATE
-        $<$<CONFIG:Debug MFC DLL>:
-            /NOLOGO;
-            /DEBUG;
-            /SUBSYSTEM:WINDOWS;
-            /INCREMENTAL
-        >
         $<$<CONFIG:Debug>:
             /NOLOGO;
             /DEBUG;
             /SUBSYSTEM:WINDOWS;
             /INCREMENTAL
         >
-        $<$<CONFIG:Final DE>:
+        $<$<CONFIG:DebugMFCDLL>:
             /NOLOGO;
-            /DEBUG:FULL;
+            /DEBUG;
             /SUBSYSTEM:WINDOWS;
-            /INCREMENTAL:NO
-        >
-        $<$<CONFIG:Final ES>:
-            /NOLOGO;
-            /DEBUG:FULL;
-            /SUBSYSTEM:WINDOWS;
-            /INCREMENTAL:NO
-        >
-        $<$<CONFIG:Final FR>:
-            /NOLOGO;
-            /DEBUG:FULL;
-            /SUBSYSTEM:WINDOWS;
-            /INCREMENTAL:NO
-        >
-        $<$<CONFIG:Final IT>:
-            /NOLOGO;
-            /DEBUG:FULL;
-            /SUBSYSTEM:WINDOWS;
-            /INCREMENTAL:NO
-        >
-        $<$<CONFIG:Final MFC DLL>:
-            /NOLOGO;
-            /DEBUG:FULL;
-            /SUBSYSTEM:WINDOWS;
-            /INCREMENTAL:NO
+            /INCREMENTAL
         >
         $<$<CONFIG:Final>:
             /NOLOGO;
@@ -259,13 +229,43 @@ if(MSVC)
             /SUBSYSTEM:WINDOWS;
             /INCREMENTAL:NO
         >
-        $<$<CONFIG:Release MFC DLL>:
+        $<$<CONFIG:FinalDE>:
+            /NOLOGO;
+            /DEBUG:FULL;
+            /SUBSYSTEM:WINDOWS;
+            /INCREMENTAL:NO
+        >
+        $<$<CONFIG:FinalES>:
+            /NOLOGO;
+            /DEBUG:FULL;
+            /SUBSYSTEM:WINDOWS;
+            /INCREMENTAL:NO
+        >
+        $<$<CONFIG:FinalFR>:
+            /NOLOGO;
+            /DEBUG:FULL;
+            /SUBSYSTEM:WINDOWS;
+            /INCREMENTAL:NO
+        >
+        $<$<CONFIG:FinalIT>:
+            /NOLOGO;
+            /DEBUG:FULL;
+            /SUBSYSTEM:WINDOWS;
+            /INCREMENTAL:NO
+        >
+        $<$<CONFIG:FinalMFCDLL>:
             /NOLOGO;
             /DEBUG:FULL;
             /SUBSYSTEM:WINDOWS;
             /INCREMENTAL:NO
         >
         $<$<CONFIG:Release>:
+            /NOLOGO;
+            /DEBUG:FULL;
+            /SUBSYSTEM:WINDOWS;
+            /INCREMENTAL:NO
+        >
+        $<$<CONFIG:ReleaseMFCDLL>:
             /NOLOGO;
             /DEBUG:FULL;
             /SUBSYSTEM:WINDOWS;
@@ -281,35 +281,35 @@ endif()
 # Dependencies
 ################################################################################
 set(ADDITIONAL_LIBRARY_DEPENDENCIES
-    "$<$<CONFIG:Final DE>:"
-        "odbc32;"
-        "odbccp32"
-    ">"
-    "$<$<CONFIG:Final ES>:"
-        "odbc32;"
-        "odbccp32"
-    ">"
-    "$<$<CONFIG:Final FR>:"
-        "odbc32;"
-        "odbccp32"
-    ">"
-    "$<$<CONFIG:Final IT>:"
-        "odbc32;"
-        "odbccp32"
-    ">"
-    "$<$<CONFIG:Final MFC DLL>:"
-        "odbc32;"
-        "odbccp32"
-    ">"
     "$<$<CONFIG:Final>:"
         "odbc32;"
         "odbccp32"
     ">"
-    "$<$<CONFIG:Release MFC DLL>:"
+    "$<$<CONFIG:FinalDE>:"
+        "odbc32;"
+        "odbccp32"
+    ">"
+    "$<$<CONFIG:FinalES>:"
+        "odbc32;"
+        "odbccp32"
+    ">"
+    "$<$<CONFIG:FinalFR>:"
+        "odbc32;"
+        "odbccp32"
+    ">"
+    "$<$<CONFIG:FinalIT>:"
+        "odbc32;"
+        "odbccp32"
+    ">"
+    "$<$<CONFIG:FinalMFCDLL>:"
         "odbc32;"
         "odbccp32"
     ">"
     "$<$<CONFIG:Release>:"
+        "odbc32;"
+        "odbccp32"
+    ">"
+    "$<$<CONFIG:ReleaseMFCDLL>:"
         "odbc32;"
         "odbccp32"
     ">"

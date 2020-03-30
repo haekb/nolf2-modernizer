@@ -63,69 +63,44 @@ use_props(${PROJECT_NAME} "${CMAKE_CONFIGURATION_TYPES}" "${DEFAULT_CXX_PROPS}")
 # Target name
 ################################################################################
 set_target_properties(${PROJECT_NAME} PROPERTIES
-    TARGET_NAME_DEBUG MFC DLL   "Lib_StdLith"
-    TARGET_NAME_DEBUG           "Lib_StdLith"
-    TARGET_NAME_FINAL DE        "Lib_StdLith"
-    TARGET_NAME_FINAL ES        "Lib_StdLith"
-    TARGET_NAME_FINAL FR        "Lib_StdLith"
-    TARGET_NAME_FINAL IT        "Lib_StdLith"
-    TARGET_NAME_FINAL MFC DLL   "Lib_StdLith"
-    TARGET_NAME_FINAL           "Lib_StdLith"
-    TARGET_NAME_RELEASE MFC DLL "Lib_StdLith"
-    TARGET_NAME_RELEASE         "Lib_StdLith"
+    TARGET_NAME_DEBUG         "Lib_StdLith"
+    TARGET_NAME_DEBUGMFCDLL   "Lib_StdLith"
+    TARGET_NAME_FINAL         "Lib_StdLith"
+    TARGET_NAME_FINALDE       "Lib_StdLith"
+    TARGET_NAME_FINALES       "Lib_StdLith"
+    TARGET_NAME_FINALFR       "Lib_StdLith"
+    TARGET_NAME_FINALIT       "Lib_StdLith"
+    TARGET_NAME_FINALMFCDLL   "Lib_StdLith"
+    TARGET_NAME_RELEASE       "Lib_StdLith"
+    TARGET_NAME_RELEASEMFCDLL "Lib_StdLith"
 )
 ################################################################################
 # Output directory
 ################################################################################
 set_target_properties(${PROJECT_NAME} PROPERTIES
-    OUTPUT_DIRECTORY_DEBUG MFC DLL   "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Debug/Lib_StdLith"
-    OUTPUT_DIRECTORY_DEBUG           "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Debug/Lib_StdLith"
-    OUTPUT_DIRECTORY_FINAL DE        "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Final/Lib_StdLith"
-    OUTPUT_DIRECTORY_FINAL ES        "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Final/Lib_StdLith"
-    OUTPUT_DIRECTORY_FINAL FR        "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Final/Lib_StdLith"
-    OUTPUT_DIRECTORY_FINAL IT        "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Final/Lib_StdLith"
-    OUTPUT_DIRECTORY_FINAL MFC DLL   "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Final/Lib_StdLith"
-    OUTPUT_DIRECTORY_FINAL           "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Final/Lib_StdLith"
-    OUTPUT_DIRECTORY_RELEASE MFC DLL "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Release/Lib_StdLith"
-    OUTPUT_DIRECTORY_RELEASE         "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Release/Lib_StdLith"
+    OUTPUT_DIRECTORY_DEBUG         "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Debug/Lib_StdLith"
+    OUTPUT_DIRECTORY_DEBUGMFCDLL   "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Debug/Lib_StdLith"
+    OUTPUT_DIRECTORY_FINAL         "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Final/Lib_StdLith"
+    OUTPUT_DIRECTORY_FINALDE       "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Final/Lib_StdLith"
+    OUTPUT_DIRECTORY_FINALES       "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Final/Lib_StdLith"
+    OUTPUT_DIRECTORY_FINALFR       "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Final/Lib_StdLith"
+    OUTPUT_DIRECTORY_FINALIT       "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Final/Lib_StdLith"
+    OUTPUT_DIRECTORY_FINALMFCDLL   "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Final/Lib_StdLith"
+    OUTPUT_DIRECTORY_RELEASE       "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Release/Lib_StdLith"
+    OUTPUT_DIRECTORY_RELEASEMFCDLL "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Release/Lib_StdLith"
 )
 ################################################################################
 # Include directories
 ################################################################################
 target_include_directories(${PROJECT_NAME} PUBLIC
-    "$<$<CONFIG:Debug MFC DLL>:"
-        "${CMAKE_CURRENT_SOURCE_DIR}/.;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../STLPORT-4.0/STLPORT_NO;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../zlib"
-    ">"
     "$<$<CONFIG:Debug>:"
         "${CMAKE_CURRENT_SOURCE_DIR}/.;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../STLPORT-4.0/STLPORT_NO;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../zlib"
     ">"
-    "$<$<CONFIG:Final DE>:"
+    "$<$<CONFIG:DebugMFCDLL>:"
         "${CMAKE_CURRENT_SOURCE_DIR}/.;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../STLPort-4.0/stlport;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../zlib"
-    ">"
-    "$<$<CONFIG:Final ES>:"
-        "${CMAKE_CURRENT_SOURCE_DIR}/.;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../STLPort-4.0/stlport;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../zlib"
-    ">"
-    "$<$<CONFIG:Final FR>:"
-        "${CMAKE_CURRENT_SOURCE_DIR}/.;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../STLPort-4.0/stlport;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../zlib"
-    ">"
-    "$<$<CONFIG:Final IT>:"
-        "${CMAKE_CURRENT_SOURCE_DIR}/.;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../STLPort-4.0/stlport;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../zlib"
-    ">"
-    "$<$<CONFIG:Final MFC DLL>:"
-        "${CMAKE_CURRENT_SOURCE_DIR}/.;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../STLPort-4.0/stlport;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../STLPORT-4.0/STLPORT_NO;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../zlib"
     ">"
     "$<$<CONFIG:Final>:"
@@ -133,12 +108,37 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         "${CMAKE_CURRENT_SOURCE_DIR}/../STLPort-4.0/stlport;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../zlib"
     ">"
-    "$<$<CONFIG:Release MFC DLL>:"
+    "$<$<CONFIG:FinalDE>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/.;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../STLPort-4.0/stlport;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../zlib"
+    ">"
+    "$<$<CONFIG:FinalES>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/.;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../STLPort-4.0/stlport;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../zlib"
+    ">"
+    "$<$<CONFIG:FinalFR>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/.;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../STLPort-4.0/stlport;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../zlib"
+    ">"
+    "$<$<CONFIG:FinalIT>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/.;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../STLPort-4.0/stlport;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../zlib"
+    ">"
+    "$<$<CONFIG:FinalMFCDLL>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/.;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../STLPort-4.0/stlport;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../zlib"
+    ">"
+    "$<$<CONFIG:Release>:"
         "${CMAKE_CURRENT_SOURCE_DIR}/.;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../STLPORT-4.0/STLPORT_NO;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../zlib"
     ">"
-    "$<$<CONFIG:Release>:"
+    "$<$<CONFIG:ReleaseMFCDLL>:"
         "${CMAKE_CURRENT_SOURCE_DIR}/.;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../STLPORT-4.0/STLPORT_NO;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../zlib"
@@ -149,45 +149,15 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 # Compile definitions
 ################################################################################
 target_compile_definitions(${PROJECT_NAME} PRIVATE
-    "$<$<CONFIG:Debug MFC DLL>:"
-        "WIN32;"
-        "_DEBUG;"
-        "_WINDOWS"
-    ">"
     "$<$<CONFIG:Debug>:"
         "WIN32;"
         "_DEBUG;"
         "_WINDOWS"
     ">"
-    "$<$<CONFIG:Final DE>:"
+    "$<$<CONFIG:DebugMFCDLL>:"
         "WIN32;"
-        "NDEBUG;"
-        "_WINDOWS;"
-        "_FINAL"
-    ">"
-    "$<$<CONFIG:Final ES>:"
-        "WIN32;"
-        "NDEBUG;"
-        "_WINDOWS;"
-        "_FINAL"
-    ">"
-    "$<$<CONFIG:Final FR>:"
-        "WIN32;"
-        "NDEBUG;"
-        "_WINDOWS;"
-        "_FINAL"
-    ">"
-    "$<$<CONFIG:Final IT>:"
-        "WIN32;"
-        "NDEBUG;"
-        "_WINDOWS;"
-        "_FINAL"
-    ">"
-    "$<$<CONFIG:Final MFC DLL>:"
-        "WIN32;"
-        "NDEBUG;"
-        "_WINDOWS;"
-        "_FINAL"
+        "_DEBUG;"
+        "_WINDOWS"
     ">"
     "$<$<CONFIG:Final>:"
         "WIN32;"
@@ -195,12 +165,42 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
         "_WINDOWS;"
         "_FINAL"
     ">"
-    "$<$<CONFIG:Release MFC DLL>:"
+    "$<$<CONFIG:FinalDE>:"
+        "WIN32;"
+        "NDEBUG;"
+        "_WINDOWS;"
+        "_FINAL"
+    ">"
+    "$<$<CONFIG:FinalES>:"
+        "WIN32;"
+        "NDEBUG;"
+        "_WINDOWS;"
+        "_FINAL"
+    ">"
+    "$<$<CONFIG:FinalFR>:"
+        "WIN32;"
+        "NDEBUG;"
+        "_WINDOWS;"
+        "_FINAL"
+    ">"
+    "$<$<CONFIG:FinalIT>:"
+        "WIN32;"
+        "NDEBUG;"
+        "_WINDOWS;"
+        "_FINAL"
+    ">"
+    "$<$<CONFIG:FinalMFCDLL>:"
+        "WIN32;"
+        "NDEBUG;"
+        "_WINDOWS;"
+        "_FINAL"
+    ">"
+    "$<$<CONFIG:Release>:"
         "WIN32;"
         "NDEBUG;"
         "_WINDOWS"
     ">"
-    "$<$<CONFIG:Release>:"
+    "$<$<CONFIG:ReleaseMFCDLL>:"
         "WIN32;"
         "NDEBUG;"
         "_WINDOWS"
@@ -212,13 +212,6 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
 ################################################################################
 if(MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE
-        $<$<CONFIG:Debug MFC DLL>:
-            /Od;
-            /RTC1;
-            /MDd;
-            /Gy;
-            /W3
-        >
         $<$<CONFIG:Debug>:
             /Od;
             /RTC1;
@@ -226,43 +219,10 @@ if(MSVC)
             /Gy;
             /W3
         >
-        $<$<CONFIG:Final DE>:
-            /O2;
-            /Ob2;
-            /GF;
-            /MD;
-            /Gy;
-            /W3
-        >
-        $<$<CONFIG:Final ES>:
-            /O2;
-            /Ob2;
-            /GF;
-            /MD;
-            /Gy;
-            /W3
-        >
-        $<$<CONFIG:Final FR>:
-            /O2;
-            /Ob2;
-            /GF;
-            /MD;
-            /Gy;
-            /W3
-        >
-        $<$<CONFIG:Final IT>:
-            /O2;
-            /Ob2;
-            /GF;
-            /MD;
-            /Gy;
-            /W3
-        >
-        $<$<CONFIG:Final MFC DLL>:
-            /O2;
-            /Ob2;
-            /GF;
-            /MD;
+        $<$<CONFIG:DebugMFCDLL>:
+            /Od;
+            /RTC1;
+            /MDd;
             /Gy;
             /W3
         >
@@ -274,7 +234,39 @@ if(MSVC)
             /Gy;
             /W3
         >
-        $<$<CONFIG:Release MFC DLL>:
+        $<$<CONFIG:FinalDE>:
+            /O2;
+            /Ob2;
+            /GF;
+            /MD;
+            /Gy;
+            /W3
+        >
+        $<$<CONFIG:FinalES>:
+            /O2;
+            /Ob2;
+            /GF;
+            /MD;
+            /Gy;
+            /W3
+        >
+        $<$<CONFIG:FinalFR>:
+            /O2;
+            /Ob2;
+            /GF;
+            /MD;
+            /Gy;
+            /W3
+        >
+        $<$<CONFIG:FinalIT>:
+            /O2;
+            /Ob2;
+            /GF;
+            /MD;
+            /Gy;
+            /W3
+        >
+        $<$<CONFIG:FinalMFCDLL>:
             /O2;
             /Ob2;
             /GF;
@@ -283,6 +275,14 @@ if(MSVC)
             /W3
         >
         $<$<CONFIG:Release>:
+            /O2;
+            /Ob2;
+            /GF;
+            /MD;
+            /Gy;
+            /W3
+        >
+        $<$<CONFIG:ReleaseMFCDLL>:
             /O2;
             /Ob2;
             /GF;
@@ -297,34 +297,34 @@ if(MSVC)
         ${DEFAULT_CXX_EXCEPTION_HANDLING}
     )
     target_link_options(${PROJECT_NAME} PRIVATE
-        $<$<CONFIG:Debug MFC DLL>:
-            /NOLOGO
-        >
         $<$<CONFIG:Debug>:
             /NOLOGO
         >
-        $<$<CONFIG:Final DE>:
-            /NOLOGO
-        >
-        $<$<CONFIG:Final ES>:
-            /NOLOGO
-        >
-        $<$<CONFIG:Final FR>:
-            /NOLOGO
-        >
-        $<$<CONFIG:Final IT>:
-            /NOLOGO
-        >
-        $<$<CONFIG:Final MFC DLL>:
+        $<$<CONFIG:DebugMFCDLL>:
             /NOLOGO
         >
         $<$<CONFIG:Final>:
             /NOLOGO
         >
-        $<$<CONFIG:Release MFC DLL>:
+        $<$<CONFIG:FinalDE>:
+            /NOLOGO
+        >
+        $<$<CONFIG:FinalES>:
+            /NOLOGO
+        >
+        $<$<CONFIG:FinalFR>:
+            /NOLOGO
+        >
+        $<$<CONFIG:FinalIT>:
+            /NOLOGO
+        >
+        $<$<CONFIG:FinalMFCDLL>:
             /NOLOGO
         >
         $<$<CONFIG:Release>:
+            /NOLOGO
+        >
+        $<$<CONFIG:ReleaseMFCDLL>:
             /NOLOGO
         >
         $<$<CONFIG:Template>:

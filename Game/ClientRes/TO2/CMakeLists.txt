@@ -60,107 +60,98 @@ use_props(${PROJECT_NAME} "${CMAKE_CONFIGURATION_TYPES}" "${DEFAULT_CXX_PROPS}")
 # Target name
 ################################################################################
 set_target_properties(${PROJECT_NAME} PROPERTIES
-    TARGET_NAME_DEBUG MFC DLL   "CRes"
-    TARGET_NAME_DEBUG           "CRes"
-    TARGET_NAME_FINAL DE        "CRes"
-    TARGET_NAME_FINAL ES        "CRes"
-    TARGET_NAME_FINAL FR        "CRes"
-    TARGET_NAME_FINAL IT        "CRes"
-    TARGET_NAME_FINAL MFC DLL   "CRes"
-    TARGET_NAME_FINAL           "CRes"
-    TARGET_NAME_RELEASE MFC DLL "CRes"
-    TARGET_NAME_RELEASE         "CRes"
+    TARGET_NAME_DEBUG         "CRes"
+    TARGET_NAME_DEBUGMFCDLL   "CRes"
+    TARGET_NAME_FINAL         "CRes"
+    TARGET_NAME_FINALDE       "CRes"
+    TARGET_NAME_FINALES       "CRes"
+    TARGET_NAME_FINALFR       "CRes"
+    TARGET_NAME_FINALIT       "CRes"
+    TARGET_NAME_RELEASE       "CRes"
+    TARGET_NAME_RELEASEMFCDLL "CRes"
 )
 ################################################################################
 # Output directory
 ################################################################################
 set_target_properties(${PROJECT_NAME} PROPERTIES
-    OUTPUT_DIRECTORY_DEBUG MFC DLL   "${CMAKE_CURRENT_SOURCE_DIR}/../../built/debug/ClientRes/TO2"
-    OUTPUT_DIRECTORY_DEBUG           "${CMAKE_CURRENT_SOURCE_DIR}/../../built/debug/ClientRes/TO2"
-    OUTPUT_DIRECTORY_FINAL DE        "${CMAKE_CURRENT_SOURCE_DIR}/../../built/FinalDE/ClientRes/TO2"
-    OUTPUT_DIRECTORY_FINAL ES        "${CMAKE_CURRENT_SOURCE_DIR}/../../built/FinalES/ClientRes/TO2"
-    OUTPUT_DIRECTORY_FINAL FR        "${CMAKE_CURRENT_SOURCE_DIR}/../../built/FinalFR/ClientRes/TO2"
-    OUTPUT_DIRECTORY_FINAL IT        "${CMAKE_CURRENT_SOURCE_DIR}/../../built/FinalIT/ClientRes/TO2"
-    OUTPUT_DIRECTORY_FINAL MFC DLL   "${CMAKE_CURRENT_SOURCE_DIR}/../../built/FinalES/ClientRes/TO2"
-    OUTPUT_DIRECTORY_FINAL           "${CMAKE_CURRENT_SOURCE_DIR}/../../built/Final/ClientRes/TO2"
-    OUTPUT_DIRECTORY_RELEASE MFC DLL "${CMAKE_CURRENT_SOURCE_DIR}/../../built/Release/ClientRes/TO2"
-    OUTPUT_DIRECTORY_RELEASE         "${CMAKE_CURRENT_SOURCE_DIR}/../../built/Release/ClientRes/TO2"
+    OUTPUT_DIRECTORY_DEBUG         "${CMAKE_CURRENT_SOURCE_DIR}/../../built/debug/ClientRes/TO2"
+    OUTPUT_DIRECTORY_DEBUGMFCDLL   "${CMAKE_CURRENT_SOURCE_DIR}/../../built/debug/ClientRes/TO2"
+    OUTPUT_DIRECTORY_FINAL         "${CMAKE_CURRENT_SOURCE_DIR}/../../built/Final/ClientRes/TO2"
+    OUTPUT_DIRECTORY_FINALDE       "${CMAKE_CURRENT_SOURCE_DIR}/../../built/FinalDE/ClientRes/TO2"
+    OUTPUT_DIRECTORY_FINALES       "${CMAKE_CURRENT_SOURCE_DIR}/../../built/FinalES/ClientRes/TO2"
+    OUTPUT_DIRECTORY_FINALFR       "${CMAKE_CURRENT_SOURCE_DIR}/../../built/FinalFR/ClientRes/TO2"
+    OUTPUT_DIRECTORY_FINALIT       "${CMAKE_CURRENT_SOURCE_DIR}/../../built/FinalIT/ClientRes/TO2"
+    OUTPUT_DIRECTORY_RELEASE       "${CMAKE_CURRENT_SOURCE_DIR}/../../built/Release/ClientRes/TO2"
+    OUTPUT_DIRECTORY_RELEASEMFCDLL "${CMAKE_CURRENT_SOURCE_DIR}/../../built/Release/ClientRes/TO2"
 )
 set_target_properties(${PROJECT_NAME} PROPERTIES
-    ARCHIVE_OUTPUT_DIRECTORY_DEBUG MFC DLL   "${CMAKE_CURRENT_SOURCE_DIR}/./../../built/debug/ClientRes/TO2"
-    ARCHIVE_OUTPUT_DIRECTORY_DEBUG           "${CMAKE_CURRENT_SOURCE_DIR}/./../../built/debug/ClientRes/TO2"
-    ARCHIVE_OUTPUT_DIRECTORY_FINAL DE        "${CMAKE_CURRENT_SOURCE_DIR}/./../../built/FinalDE/ClientRes/TO2"
-    ARCHIVE_OUTPUT_DIRECTORY_FINAL ES        "${CMAKE_CURRENT_SOURCE_DIR}/./../../built/FinalES/ClientRes/TO2"
-    ARCHIVE_OUTPUT_DIRECTORY_FINAL FR        "${CMAKE_CURRENT_SOURCE_DIR}/./../../built/FinalFR/ClientRes/TO2"
-    ARCHIVE_OUTPUT_DIRECTORY_FINAL IT        "${CMAKE_CURRENT_SOURCE_DIR}/./../../built/FinalIT/ClientRes/TO2"
-    ARCHIVE_OUTPUT_DIRECTORY_FINAL MFC DLL   "${CMAKE_CURRENT_SOURCE_DIR}/./../../built/FinalES/ClientRes/TO2"
-    ARCHIVE_OUTPUT_DIRECTORY_FINAL           "${CMAKE_CURRENT_SOURCE_DIR}/./../../built/Final/ClientRes/TO2"
-    ARCHIVE_OUTPUT_DIRECTORY_RELEASE MFC DLL "${CMAKE_CURRENT_SOURCE_DIR}/./../../built/Release/ClientRes/TO2"
-    ARCHIVE_OUTPUT_DIRECTORY_RELEASE         "${CMAKE_CURRENT_SOURCE_DIR}/./../../built/Release/ClientRes/TO2"
+    ARCHIVE_OUTPUT_DIRECTORY_DEBUG         "${CMAKE_CURRENT_SOURCE_DIR}/./../../built/debug/ClientRes/TO2"
+    ARCHIVE_OUTPUT_DIRECTORY_DEBUGMFCDLL   "${CMAKE_CURRENT_SOURCE_DIR}/./../../built/debug/ClientRes/TO2"
+    ARCHIVE_OUTPUT_DIRECTORY_FINAL         "${CMAKE_CURRENT_SOURCE_DIR}/./../../built/Final/ClientRes/TO2"
+    ARCHIVE_OUTPUT_DIRECTORY_FINALDE       "${CMAKE_CURRENT_SOURCE_DIR}/./../../built/FinalDE/ClientRes/TO2"
+    ARCHIVE_OUTPUT_DIRECTORY_FINALES       "${CMAKE_CURRENT_SOURCE_DIR}/./../../built/FinalES/ClientRes/TO2"
+    ARCHIVE_OUTPUT_DIRECTORY_FINALFR       "${CMAKE_CURRENT_SOURCE_DIR}/./../../built/FinalFR/ClientRes/TO2"
+    ARCHIVE_OUTPUT_DIRECTORY_FINALIT       "${CMAKE_CURRENT_SOURCE_DIR}/./../../built/FinalIT/ClientRes/TO2"
+    ARCHIVE_OUTPUT_DIRECTORY_RELEASE       "${CMAKE_CURRENT_SOURCE_DIR}/./../../built/Release/ClientRes/TO2"
+    ARCHIVE_OUTPUT_DIRECTORY_RELEASEMFCDLL "${CMAKE_CURRENT_SOURCE_DIR}/./../../built/Release/ClientRes/TO2"
 )
 set_target_properties(${PROJECT_NAME} PROPERTIES
-    ARCHIVE_OUTPUT_NAME_DEBUG MFC DLL   "CRes"
-    ARCHIVE_OUTPUT_NAME_DEBUG           "CRes"
-    ARCHIVE_OUTPUT_NAME_FINAL DE        "CRes"
-    ARCHIVE_OUTPUT_NAME_FINAL ES        "CRes"
-    ARCHIVE_OUTPUT_NAME_FINAL FR        "CRes"
-    ARCHIVE_OUTPUT_NAME_FINAL IT        "CRes"
-    ARCHIVE_OUTPUT_NAME_FINAL MFC DLL   "CRes"
-    ARCHIVE_OUTPUT_NAME_FINAL           "CRes"
-    ARCHIVE_OUTPUT_NAME_RELEASE MFC DLL "CRes"
-    ARCHIVE_OUTPUT_NAME_RELEASE         "CRes"
+    ARCHIVE_OUTPUT_NAME_DEBUG         "CRes"
+    ARCHIVE_OUTPUT_NAME_DEBUGMFCDLL   "CRes"
+    ARCHIVE_OUTPUT_NAME_FINAL         "CRes"
+    ARCHIVE_OUTPUT_NAME_FINALDE       "CRes"
+    ARCHIVE_OUTPUT_NAME_FINALES       "CRes"
+    ARCHIVE_OUTPUT_NAME_FINALFR       "CRes"
+    ARCHIVE_OUTPUT_NAME_FINALIT       "CRes"
+    ARCHIVE_OUTPUT_NAME_RELEASE       "CRes"
+    ARCHIVE_OUTPUT_NAME_RELEASEMFCDLL "CRes"
 )
 ################################################################################
 # Include directories
 ################################################################################
 target_include_directories(${PROJECT_NAME} PUBLIC
-    "$<$<CONFIG:Debug MFC DLL>:"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../STLPORT-4.0/STLPORT_NO;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/EN"
-    ">"
     "$<$<CONFIG:Debug>:"
         "${CMAKE_CURRENT_SOURCE_DIR}/../STLPORT-4.0/STLPORT_NO;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/EN"
     ">"
-    "$<$<CONFIG:Final DE>:"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../STLPORT-4.0/STLPORT;"
+    "$<$<CONFIG:DebugMFCDLL>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../STLPORT-4.0/STLPORT_NO;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/DE"
-    ">"
-    "$<$<CONFIG:Final ES>:"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../STLPORT-4.0/STLPORT;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/ES"
-    ">"
-    "$<$<CONFIG:Final FR>:"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../STLPORT-4.0/STLPORT;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/FR"
-    ">"
-    "$<$<CONFIG:Final IT>:"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../STLPORT-4.0/STLPORT;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/IT"
-    ">"
-    "$<$<CONFIG:Final MFC DLL>:"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../STLPORT-4.0/STLPORT;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/ES"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/EN"
     ">"
     "$<$<CONFIG:Final>:"
         "${CMAKE_CURRENT_SOURCE_DIR}/../STLPORT-4.0/STLPORT;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/EN"
     ">"
-    "$<$<CONFIG:Release MFC DLL>:"
+    "$<$<CONFIG:FinalDE>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../STLPORT-4.0/STLPORT;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/DE"
+    ">"
+    "$<$<CONFIG:FinalES>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../STLPORT-4.0/STLPORT;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/ES"
+    ">"
+    "$<$<CONFIG:FinalFR>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../STLPORT-4.0/STLPORT;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/FR"
+    ">"
+    "$<$<CONFIG:FinalIT>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../STLPORT-4.0/STLPORT;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/IT"
+    ">"
+    "$<$<CONFIG:Release>:"
         "${CMAKE_CURRENT_SOURCE_DIR}/.;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../STLPORT-4.0/STLPORT;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/EN"
     ">"
-    "$<$<CONFIG:Release>:"
+    "$<$<CONFIG:ReleaseMFCDLL>:"
         "${CMAKE_CURRENT_SOURCE_DIR}/.;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../STLPORT-4.0/STLPORT;"
         "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
@@ -172,45 +163,15 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 # Compile definitions
 ################################################################################
 target_compile_definitions(${PROJECT_NAME} PRIVATE
-    "$<$<CONFIG:Debug MFC DLL>:"
-        "WIN32;"
-        "_DEBUG;"
-        "_WINDOWS"
-    ">"
     "$<$<CONFIG:Debug>:"
         "WIN32;"
         "_DEBUG;"
         "_WINDOWS"
     ">"
-    "$<$<CONFIG:Final DE>:"
+    "$<$<CONFIG:DebugMFCDLL>:"
         "WIN32;"
-        "NDEBUG;"
-        "_WINDOWS;"
-        "_FINAL"
-    ">"
-    "$<$<CONFIG:Final ES>:"
-        "WIN32;"
-        "NDEBUG;"
-        "_WINDOWS;"
-        "_FINAL"
-    ">"
-    "$<$<CONFIG:Final FR>:"
-        "WIN32;"
-        "NDEBUG;"
-        "_WINDOWS;"
-        "_FINAL"
-    ">"
-    "$<$<CONFIG:Final IT>:"
-        "WIN32;"
-        "NDEBUG;"
-        "_WINDOWS;"
-        "_FINAL"
-    ">"
-    "$<$<CONFIG:Final MFC DLL>:"
-        "WIN32;"
-        "NDEBUG;"
-        "_WINDOWS;"
-        "_FINAL"
+        "_DEBUG;"
+        "_WINDOWS"
     ">"
     "$<$<CONFIG:Final>:"
         "WIN32;"
@@ -218,12 +179,36 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
         "_WINDOWS;"
         "_FINAL"
     ">"
-    "$<$<CONFIG:Release MFC DLL>:"
+    "$<$<CONFIG:FinalDE>:"
+        "WIN32;"
+        "NDEBUG;"
+        "_WINDOWS;"
+        "_FINAL"
+    ">"
+    "$<$<CONFIG:FinalES>:"
+        "WIN32;"
+        "NDEBUG;"
+        "_WINDOWS;"
+        "_FINAL"
+    ">"
+    "$<$<CONFIG:FinalFR>:"
+        "WIN32;"
+        "NDEBUG;"
+        "_WINDOWS;"
+        "_FINAL"
+    ">"
+    "$<$<CONFIG:FinalIT>:"
+        "WIN32;"
+        "NDEBUG;"
+        "_WINDOWS;"
+        "_FINAL"
+    ">"
+    "$<$<CONFIG:Release>:"
         "WIN32;"
         "NDEBUG;"
         "_WINDOWS"
     ">"
-    "$<$<CONFIG:Release>:"
+    "$<$<CONFIG:ReleaseMFCDLL>:"
         "WIN32;"
         "NDEBUG;"
         "_WINDOWS"
@@ -235,13 +220,6 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
 ################################################################################
 if(MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE
-        $<$<CONFIG:Debug MFC DLL>:
-            /Gm;
-            /Od;
-            /MDd;
-            /Gy;
-            /W3
-        >
         $<$<CONFIG:Debug>:
             /Gm;
             /Od;
@@ -249,38 +227,10 @@ if(MSVC)
             /Gy;
             /W3
         >
-        $<$<CONFIG:Final DE>:
-            /O2;
-            /GF;
-            /MT;
-            /Gy;
-            /W3
-        >
-        $<$<CONFIG:Final ES>:
-            /O2;
-            /GF;
-            /MT;
-            /Gy;
-            /W3
-        >
-        $<$<CONFIG:Final FR>:
-            /O2;
-            /GF;
-            /MT;
-            /Gy;
-            /W3
-        >
-        $<$<CONFIG:Final IT>:
-            /O2;
-            /GF;
-            /MT;
-            /Gy;
-            /W3
-        >
-        $<$<CONFIG:Final MFC DLL>:
-            /O2;
-            /GF;
-            /MT;
+        $<$<CONFIG:DebugMFCDLL>:
+            /Gm;
+            /Od;
+            /MDd;
             /Gy;
             /W3
         >
@@ -291,14 +241,45 @@ if(MSVC)
             /Gy;
             /W3
         >
-        $<$<CONFIG:Release MFC DLL>:
+        $<$<CONFIG:FinalDE>:
+            /O2;
+            /GF;
+            /MT;
+            /Gy;
+            /W3
+        >
+        $<$<CONFIG:FinalES>:
+            /O2;
+            /GF;
+            /MT;
+            /Gy;
+            /W3
+        >
+        $<$<CONFIG:FinalFR>:
+            /O2;
+            /GF;
+            /MT;
+            /Gy;
+            /W3
+        >
+        $<$<CONFIG:FinalIT>:
+            /O2;
+            /GF;
+            /MT;
+            /Gy;
+            /W3
+        >
+        $<$<CONFIG:FinalMFCDLL>:
+            ${DEFAULT_CXX_RUNTIME_LIBRARY}
+        >
+        $<$<CONFIG:Release>:
             /O2;
             /GF;
             /MD;
             /Gy;
             /W3
         >
-        $<$<CONFIG:Release>:
+        $<$<CONFIG:ReleaseMFCDLL>:
             /O2;
             /GF;
             /MD;
@@ -312,47 +293,17 @@ if(MSVC)
         ${DEFAULT_CXX_EXCEPTION_HANDLING}
     )
     target_link_options(${PROJECT_NAME} PRIVATE
-        $<$<CONFIG:Debug MFC DLL>:
-            /NOLOGO;
-            /DEBUG;
-            /SUBSYSTEM:WINDOWS;
-            /INCREMENTAL
-        >
         $<$<CONFIG:Debug>:
             /NOLOGO;
             /DEBUG;
             /SUBSYSTEM:WINDOWS;
             /INCREMENTAL
         >
-        $<$<CONFIG:Final DE>:
+        $<$<CONFIG:DebugMFCDLL>:
             /NOLOGO;
-            /DEBUG:FULL;
+            /DEBUG;
             /SUBSYSTEM:WINDOWS;
-            /INCREMENTAL:NO
-        >
-        $<$<CONFIG:Final ES>:
-            /NOLOGO;
-            /DEBUG:FULL;
-            /SUBSYSTEM:WINDOWS;
-            /INCREMENTAL:NO
-        >
-        $<$<CONFIG:Final FR>:
-            /NOLOGO;
-            /DEBUG:FULL;
-            /SUBSYSTEM:WINDOWS;
-            /INCREMENTAL:NO
-        >
-        $<$<CONFIG:Final IT>:
-            /NOLOGO;
-            /DEBUG:FULL;
-            /SUBSYSTEM:WINDOWS;
-            /INCREMENTAL:NO
-        >
-        $<$<CONFIG:Final MFC DLL>:
-            /NOLOGO;
-            /DEBUG:FULL;
-            /SUBSYSTEM:WINDOWS;
-            /INCREMENTAL:NO
+            /INCREMENTAL
         >
         $<$<CONFIG:Final>:
             /NOLOGO;
@@ -360,13 +311,40 @@ if(MSVC)
             /SUBSYSTEM:WINDOWS;
             /INCREMENTAL:NO
         >
-        $<$<CONFIG:Release MFC DLL>:
+        $<$<CONFIG:FinalDE>:
             /NOLOGO;
             /DEBUG:FULL;
             /SUBSYSTEM:WINDOWS;
             /INCREMENTAL:NO
         >
+        $<$<CONFIG:FinalES>:
+            /NOLOGO;
+            /DEBUG:FULL;
+            /SUBSYSTEM:WINDOWS;
+            /INCREMENTAL:NO
+        >
+        $<$<CONFIG:FinalFR>:
+            /NOLOGO;
+            /DEBUG:FULL;
+            /SUBSYSTEM:WINDOWS;
+            /INCREMENTAL:NO
+        >
+        $<$<CONFIG:FinalIT>:
+            /NOLOGO;
+            /DEBUG:FULL;
+            /SUBSYSTEM:WINDOWS;
+            /INCREMENTAL:NO
+        >
+        $<$<CONFIG:FinalMFCDLL>:
+            /DEBUG:FULL
+        >
         $<$<CONFIG:Release>:
+            /NOLOGO;
+            /DEBUG:FULL;
+            /SUBSYSTEM:WINDOWS;
+            /INCREMENTAL:NO
+        >
+        $<$<CONFIG:ReleaseMFCDLL>:
             /NOLOGO;
             /DEBUG:FULL;
             /SUBSYSTEM:WINDOWS;
@@ -385,39 +363,19 @@ add_custom_command_if(
     TARGET ${PROJECT_NAME}
     POST_BUILD
     COMMANDS
-    COMMAND   $<CONFIG:Debug MFC DLL> call "D:\\GameDev\\nolf2-modernizer\\Game\\_after_build_debug.bat"
-    COMMAND           $<CONFIG:Debug> call "D:\\GameDev\\nolf2-modernizer\\Game\\_after_build_debug.bat"
+    COMMAND         $<CONFIG:Debug> call "D:\\GameDev\\nolf2-modernizer\\Game\\_after_build_debug.bat"
+    COMMAND   $<CONFIG:DebugMFCDLL> call "D:\\GameDev\\nolf2-modernizer\\Game\\_after_build_debug.bat"
 )
 
 ################################################################################
 # Dependencies
 ################################################################################
 set(ADDITIONAL_LIBRARY_DEPENDENCIES
-    "$<$<CONFIG:Debug MFC DLL>:"
-        "odbc32;"
-        "odbccp32"
-    ">"
     "$<$<CONFIG:Debug>:"
         "odbc32;"
         "odbccp32"
     ">"
-    "$<$<CONFIG:Final DE>:"
-        "odbc32;"
-        "odbccp32"
-    ">"
-    "$<$<CONFIG:Final ES>:"
-        "odbc32;"
-        "odbccp32"
-    ">"
-    "$<$<CONFIG:Final FR>:"
-        "odbc32;"
-        "odbccp32"
-    ">"
-    "$<$<CONFIG:Final IT>:"
-        "odbc32;"
-        "odbccp32"
-    ">"
-    "$<$<CONFIG:Final MFC DLL>:"
+    "$<$<CONFIG:DebugMFCDLL>:"
         "odbc32;"
         "odbccp32"
     ">"
@@ -425,11 +383,27 @@ set(ADDITIONAL_LIBRARY_DEPENDENCIES
         "odbc32;"
         "odbccp32"
     ">"
-    "$<$<CONFIG:Release MFC DLL>:"
+    "$<$<CONFIG:FinalDE>:"
+        "odbc32;"
+        "odbccp32"
+    ">"
+    "$<$<CONFIG:FinalES>:"
+        "odbc32;"
+        "odbccp32"
+    ">"
+    "$<$<CONFIG:FinalFR>:"
+        "odbc32;"
+        "odbccp32"
+    ">"
+    "$<$<CONFIG:FinalIT>:"
         "odbc32;"
         "odbccp32"
     ">"
     "$<$<CONFIG:Release>:"
+        "odbc32;"
+        "odbccp32"
+    ">"
+    "$<$<CONFIG:ReleaseMFCDLL>:"
         "odbc32;"
         "odbccp32"
     ">"

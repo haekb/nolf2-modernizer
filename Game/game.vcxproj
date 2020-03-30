@@ -5,20 +5,20 @@
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Final DE|Win32">
-      <Configuration>Final DE</Configuration>
+    <ProjectConfiguration Include="FinalDE|Win32">
+      <Configuration>FinalDE</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Final ES|Win32">
-      <Configuration>Final ES</Configuration>
+    <ProjectConfiguration Include="FinalES|Win32">
+      <Configuration>FinalES</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Final FR|Win32">
-      <Configuration>Final FR</Configuration>
+    <ProjectConfiguration Include="FinalFR|Win32">
+      <Configuration>FinalFR</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Final IT|Win32">
-      <Configuration>Final IT</Configuration>
+    <ProjectConfiguration Include="FinalIT|Win32">
+      <Configuration>FinalIT</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Final|Win32">
@@ -53,22 +53,22 @@
     <ConfigurationType>Application</ConfigurationType>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Final DE|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='FinalDE|Win32'" Label="Configuration">
     <ConfigurationType>Makefile</ConfigurationType>
     <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Final ES|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='FinalES|Win32'" Label="Configuration">
     <ConfigurationType>Makefile</ConfigurationType>
     <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Final FR|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='FinalFR|Win32'" Label="Configuration">
     <ConfigurationType>Makefile</ConfigurationType>
     <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Final IT|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='FinalIT|Win32'" Label="Configuration">
     <ConfigurationType>Makefile</ConfigurationType>
     <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
@@ -95,19 +95,19 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Final DE|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='FinalDE|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Final ES|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='FinalES|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Final FR|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='FinalFR|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Final IT|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='FinalIT|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
   </ImportGroup>
@@ -145,28 +145,28 @@
     <NMakeReBuildCommandLine>nmake /f "Game.mak" /a</NMakeReBuildCommandLine>
     <NMakeOutput>Game.exe</NMakeOutput>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Final IT|Win32'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='FinalIT|Win32'">
     <OutDir>.\Game___Win32_Final_IT\</OutDir>
     <IntDir>.\Game___Win32_Final_IT\</IntDir>
     <NMakeBuildCommandLine>NMAKE /f Game.mak</NMakeBuildCommandLine>
     <NMakeReBuildCommandLine>NMAKE /f Game.mak /a</NMakeReBuildCommandLine>
     <NMakeOutput>Game.exe</NMakeOutput>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Final FR|Win32'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='FinalFR|Win32'">
     <OutDir>.\Game___Win32_Final_FR\</OutDir>
     <IntDir>.\Game___Win32_Final_FR\</IntDir>
     <NMakeBuildCommandLine>NMAKE /f Game.mak</NMakeBuildCommandLine>
     <NMakeReBuildCommandLine>NMAKE /f Game.mak /a</NMakeReBuildCommandLine>
     <NMakeOutput>Game.exe</NMakeOutput>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Final ES|Win32'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='FinalES|Win32'">
     <OutDir>.\Game___Win32_Final_ES\</OutDir>
     <IntDir>.\Game___Win32_Final_ES\</IntDir>
     <NMakeBuildCommandLine>NMAKE /f Game.mak</NMakeBuildCommandLine>
     <NMakeReBuildCommandLine>NMAKE /f Game.mak /a</NMakeReBuildCommandLine>
     <NMakeOutput>Game.exe</NMakeOutput>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Final DE|Win32'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='FinalDE|Win32'">
     <OutDir>.\Game___Win32_Final_DE\</OutDir>
     <IntDir>.\Game___Win32_Final_DE\</IntDir>
     <NMakeBuildCommandLine>NMAKE /f Game.mak</NMakeBuildCommandLine>

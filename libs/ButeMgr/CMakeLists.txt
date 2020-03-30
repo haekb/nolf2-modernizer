@@ -39,67 +39,67 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 # Target name
 ################################################################################
 set_target_properties(${PROJECT_NAME} PROPERTIES
-    TARGET_NAME_DEBUG MFC DLL   "ButeMgrMfcDll"
-    TARGET_NAME_DEBUG           "ButeMgr"
-    TARGET_NAME_FINAL DE        "ButeMgrMfcDll"
-    TARGET_NAME_FINAL ES        "ButeMgrMfcDll"
-    TARGET_NAME_FINAL FR        "ButeMgrMfcDll"
-    TARGET_NAME_FINAL IT        "ButeMgrMfcDll"
-    TARGET_NAME_FINAL MFC DLL   "ButeMgrMfcDll"
-    TARGET_NAME_FINAL           "ButeMgr"
-    TARGET_NAME_RELEASE MFC DLL "ButeMgrMfcDll"
-    TARGET_NAME_RELEASE         "ButeMgr"
-    TARGET_NAME_TEMPLATE        "ButeMgrMfcDll"
+    TARGET_NAME_DEBUG         "ButeMgr"
+    TARGET_NAME_DEBUGMFCDLL   "ButeMgrMfcDll"
+    TARGET_NAME_FINAL         "ButeMgr"
+    TARGET_NAME_FINALDE       "ButeMgrMfcDll"
+    TARGET_NAME_FINALES       "ButeMgrMfcDll"
+    TARGET_NAME_FINALFR       "ButeMgrMfcDll"
+    TARGET_NAME_FINALIT       "ButeMgrMfcDll"
+    TARGET_NAME_FINALMFCDLL   "ButeMgrMfcDll"
+    TARGET_NAME_RELEASE       "ButeMgr"
+    TARGET_NAME_RELEASEMFCDLL "ButeMgrMfcDll"
+    TARGET_NAME_TEMPLATE      "ButeMgrMfcDll"
 )
 ################################################################################
 # Output directory
 ################################################################################
 set_target_properties(${PROJECT_NAME} PROPERTIES
-    OUTPUT_DIRECTORY_DEBUG MFC DLL   "${CMAKE_CURRENT_SOURCE_DIR}/../built/Debug/ButeMgrMFCDll"
-    OUTPUT_DIRECTORY_DEBUG           "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Debug/ButeMgr"
-    OUTPUT_DIRECTORY_FINAL DE        "${CMAKE_CURRENT_SOURCE_DIR}/../built/Final/ButeMgrMFCDll"
-    OUTPUT_DIRECTORY_FINAL ES        "${CMAKE_CURRENT_SOURCE_DIR}/../built/Final/ButeMgrMFCDll"
-    OUTPUT_DIRECTORY_FINAL FR        "${CMAKE_CURRENT_SOURCE_DIR}/../built/Final/ButeMgrMFCDll"
-    OUTPUT_DIRECTORY_FINAL IT        "${CMAKE_CURRENT_SOURCE_DIR}/../built/Final/ButeMgrMFCDll"
-    OUTPUT_DIRECTORY_FINAL MFC DLL   "${CMAKE_CURRENT_SOURCE_DIR}/../built/Final/ButeMgrMFCDll"
-    OUTPUT_DIRECTORY_FINAL           "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Final/ButeMgr"
-    OUTPUT_DIRECTORY_RELEASE MFC DLL "${CMAKE_CURRENT_SOURCE_DIR}/../built/Release/ButeMgrMFCDll"
-    OUTPUT_DIRECTORY_RELEASE         "${CMAKE_CURRENT_SOURCE_DIR}/./../built/release/ButeMgr"
-    OUTPUT_DIRECTORY_TEMPLATE        "${CMAKE_CURRENT_SOURCE_DIR}/../built/Release/ButeMgrMFCDll"
+    OUTPUT_DIRECTORY_DEBUG         "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Debug/ButeMgr"
+    OUTPUT_DIRECTORY_DEBUGMFCDLL   "${CMAKE_CURRENT_SOURCE_DIR}/../built/Debug/ButeMgrMFCDll"
+    OUTPUT_DIRECTORY_FINAL         "${CMAKE_CURRENT_SOURCE_DIR}/./../built/Final/ButeMgr"
+    OUTPUT_DIRECTORY_FINALDE       "${CMAKE_CURRENT_SOURCE_DIR}/../built/Final/ButeMgrMFCDll"
+    OUTPUT_DIRECTORY_FINALES       "${CMAKE_CURRENT_SOURCE_DIR}/../built/Final/ButeMgrMFCDll"
+    OUTPUT_DIRECTORY_FINALFR       "${CMAKE_CURRENT_SOURCE_DIR}/../built/Final/ButeMgrMFCDll"
+    OUTPUT_DIRECTORY_FINALIT       "${CMAKE_CURRENT_SOURCE_DIR}/../built/Final/ButeMgrMFCDll"
+    OUTPUT_DIRECTORY_FINALMFCDLL   "${CMAKE_CURRENT_SOURCE_DIR}/../built/Release/ButeMgrMFCDll"
+    OUTPUT_DIRECTORY_RELEASE       "${CMAKE_CURRENT_SOURCE_DIR}/./../built/release/ButeMgr"
+    OUTPUT_DIRECTORY_RELEASEMFCDLL "${CMAKE_CURRENT_SOURCE_DIR}/../built/Release/ButeMgrMFCDll"
+    OUTPUT_DIRECTORY_TEMPLATE      "${CMAKE_CURRENT_SOURCE_DIR}/../built/Release/ButeMgrMFCDll"
 )
 ################################################################################
 # Include directories
 ################################################################################
 target_include_directories(${PROJECT_NAME} PUBLIC
-    "$<$<CONFIG:Debug MFC DLL>:"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../STLPort-4.0/stlport"
-    ">"
     "$<$<CONFIG:Debug>:"
         "${CMAKE_CURRENT_SOURCE_DIR}/../STLPORT-4.0/STLPORT_NO"
     ">"
-    "$<$<CONFIG:Final DE>:"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../STLPort-4.0/stlport"
-    ">"
-    "$<$<CONFIG:Final ES>:"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../STLPort-4.0/stlport"
-    ">"
-    "$<$<CONFIG:Final FR>:"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../STLPort-4.0/stlport"
-    ">"
-    "$<$<CONFIG:Final IT>:"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../STLPort-4.0/stlport"
-    ">"
-    "$<$<CONFIG:Final MFC DLL>:"
+    "$<$<CONFIG:DebugMFCDLL>:"
         "${CMAKE_CURRENT_SOURCE_DIR}/../STLPort-4.0/stlport"
     ">"
     "$<$<CONFIG:Final>:"
         "${CMAKE_CURRENT_SOURCE_DIR}/../STLPort-4.0/stlport"
     ">"
-    "$<$<CONFIG:Release MFC DLL>:"
+    "$<$<CONFIG:FinalDE>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../STLPort-4.0/stlport"
+    ">"
+    "$<$<CONFIG:FinalES>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../STLPort-4.0/stlport"
+    ">"
+    "$<$<CONFIG:FinalFR>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../STLPort-4.0/stlport"
+    ">"
+    "$<$<CONFIG:FinalIT>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../STLPort-4.0/stlport"
+    ">"
+    "$<$<CONFIG:FinalMFCDLL>:"
         "${CMAKE_CURRENT_SOURCE_DIR}/../STLPort-4.0/stlport"
     ">"
     "$<$<CONFIG:Release>:"
         "${CMAKE_CURRENT_SOURCE_DIR}/../STLPORT-4.0/STLPORT_NO"
+    ">"
+    "$<$<CONFIG:ReleaseMFCDLL>:"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../STLPort-4.0/stlport"
     ">"
     "$<$<CONFIG:Template>:"
         "${CMAKE_CURRENT_SOURCE_DIR}/../STLPort-4.0/stlport"
@@ -114,9 +114,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 # Compile definitions
 ################################################################################
 target_compile_definitions(${PROJECT_NAME} PRIVATE
-    "$<$<CONFIG:Debug MFC DLL>:"
-        "_DEBUG"
-    ">"
     "$<$<CONFIG:Debug>:"
         "_DEBUG;"
         "_NOMFC;"
@@ -124,27 +121,27 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
         "NO_PRAGMA_LIBS;"
         "_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS"
     ">"
-    "$<$<CONFIG:Final DE>:"
-        "NDEBUG"
-    ">"
-    "$<$<CONFIG:Final ES>:"
-        "NDEBUG"
-    ">"
-    "$<$<CONFIG:Final FR>:"
-        "NDEBUG"
-    ">"
-    "$<$<CONFIG:Final IT>:"
-        "NDEBUG"
-    ">"
-    "$<$<CONFIG:Final MFC DLL>:"
-        "NDEBUG"
+    "$<$<CONFIG:DebugMFCDLL>:"
+        "_DEBUG"
     ">"
     "$<$<CONFIG:Final>:"
         "NDEBUG;"
         "_NOMFC;"
         "_FINAL"
     ">"
-    "$<$<CONFIG:Release MFC DLL>:"
+    "$<$<CONFIG:FinalDE>:"
+        "NDEBUG"
+    ">"
+    "$<$<CONFIG:FinalES>:"
+        "NDEBUG"
+    ">"
+    "$<$<CONFIG:FinalFR>:"
+        "NDEBUG"
+    ">"
+    "$<$<CONFIG:FinalIT>:"
+        "NDEBUG"
+    ">"
+    "$<$<CONFIG:FinalMFCDLL>:"
         "NDEBUG"
     ">"
     "$<$<CONFIG:Release>:"
@@ -155,6 +152,9 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
         "_FINAL;"
         "_NOLFBUILD;"
         "_CRT_SECURE_NO_WARNINGS"
+    ">"
+    "$<$<CONFIG:ReleaseMFCDLL>:"
+        "NDEBUG"
     ">"
     "$<$<CONFIG:Template>:"
         "NDEBUG"
@@ -168,52 +168,17 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
 ################################################################################
 if(MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE
-        $<$<CONFIG:Debug MFC DLL>:
-            /Od;
-            /MDd;
-            /Gy-;
-            /ZI
-        >
         $<$<CONFIG:Debug>:
             /Od;
             /MDd;
             /Gy;
             /ZI
         >
-        $<$<CONFIG:Final DE>:
-            /O2;
-            /GF;
-            /MD;
-            /Gy;
-            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT}
-        >
-        $<$<CONFIG:Final ES>:
-            /O2;
-            /GF;
-            /MD;
-            /Gy;
-            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT}
-        >
-        $<$<CONFIG:Final FR>:
-            /O2;
-            /GF;
-            /MD;
-            /Gy;
-            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT}
-        >
-        $<$<CONFIG:Final IT>:
-            /O2;
-            /GF;
-            /MD;
-            /Gy;
-            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT}
-        >
-        $<$<CONFIG:Final MFC DLL>:
-            /O2;
-            /GF;
-            /MD;
-            /Gy;
-            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT}
+        $<$<CONFIG:DebugMFCDLL>:
+            /Od;
+            /MDd;
+            /Gy-;
+            /ZI
         >
         $<$<CONFIG:Final>:
             /O2;
@@ -222,7 +187,35 @@ if(MSVC)
             /Gy;
             ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT}
         >
-        $<$<CONFIG:Release MFC DLL>:
+        $<$<CONFIG:FinalDE>:
+            /O2;
+            /GF;
+            /MD;
+            /Gy;
+            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT}
+        >
+        $<$<CONFIG:FinalES>:
+            /O2;
+            /GF;
+            /MD;
+            /Gy;
+            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT}
+        >
+        $<$<CONFIG:FinalFR>:
+            /O2;
+            /GF;
+            /MD;
+            /Gy;
+            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT}
+        >
+        $<$<CONFIG:FinalIT>:
+            /O2;
+            /GF;
+            /MD;
+            /Gy;
+            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT}
+        >
+        $<$<CONFIG:FinalMFCDLL>:
             /O2;
             /GF;
             /MD;
@@ -230,6 +223,13 @@ if(MSVC)
             ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT}
         >
         $<$<CONFIG:Release>:
+            /O2;
+            /GF;
+            /MD;
+            /Gy;
+            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT}
+        >
+        $<$<CONFIG:ReleaseMFCDLL>:
             /O2;
             /GF;
             /MD;
