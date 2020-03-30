@@ -7,37 +7,42 @@ set(no_group_source_files
     "../Shared/ClientResShared.h"
     "ClientRes.h"
     "main.cpp"
-    "resource.h"
+    #"resource.h"
 )
 source_group("" FILES ${no_group_source_files})
 
 set(Localized_Files__DE
-#    "Lang/DE/credits.txt"
-#    "Lang/DE/intro.txt"
+    "Lang/DE/credits.txt"
+    "Lang/DE/intro.txt"
+    "Lang/DE/ClientRes.rc"
 )
 source_group("Localized Files\\DE" FILES ${Localized_Files__DE})
 
 set(Localized_Files__EN
-#    "Lang/EN/credits.txt"
-#    "Lang/EN/intro.txt"
+    "Lang/EN/credits.txt"
+    "Lang/EN/intro.txt"
+    "Lang/EN/ClientRes.rc"
 )
 source_group("Localized Files\\EN" FILES ${Localized_Files__EN})
 
 set(Localized_Files__ES
-#    "Lang/ES/credits.txt"
-#    "Lang/ES/intro.txt"
+    "Lang/ES/credits.txt"
+    "Lang/ES/intro.txt"
+    "Lang/ES/ClientRes.rc"
 )
 source_group("Localized Files\\ES" FILES ${Localized_Files__ES})
 
 set(Localized_Files__FR
-#    "Lang/FR/credits.txt"
-#    "Lang/FR/intro.txt"
+    "Lang/FR/credits.txt"
+    "Lang/FR/intro.txt"
+    "Lang/FR/ClientRes.rc"
 )
 source_group("Localized Files\\FR" FILES ${Localized_Files__FR})
 
 set(Localized_Files__IT
-#    "Lang/IT/credits.txt"
-#    "Lang/IT/intro.txt"
+    "Lang/IT/credits.txt"
+    "Lang/IT/intro.txt"
+    "Lang/IT/ClientRes.rc"
 )
 source_group("Localized Files\\IT" FILES ${Localized_Files__IT})
 
