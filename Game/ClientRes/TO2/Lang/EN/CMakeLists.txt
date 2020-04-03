@@ -1,85 +1,47 @@
-project(ClientRes CXX)
+project(TO2EN CXX)
 
-################################################################################
-# Source groups
-################################################################################
+# Make MSVC detect this project as a C++, so that additional include directories work correctly.
 set(no_group_source_files
-    "../Shared/ClientResShared.h"
-    "ClientRes.h"
-    "main.cpp"
-    #"resource.h"
+    "../IgnoreMe.cpp"
 )
 source_group("" FILES ${no_group_source_files})
 
-set(Localized_Files__DE
-    "Lang/DE/credits.txt"
-    "Lang/DE/intro.txt"
-    "Lang/DE/ClientRes.rc"
-    "../Shared/Lang/DE/ClientResShared.rc"
-)
-source_group("Localized Files\\DE" FILES ${Localized_Files__DE})
-
 set(Localized_Files__EN
-    "Lang/EN/credits.txt"
-    "Lang/EN/intro.txt"
-    "Lang/EN/ClientRes.rc"
-    "../Shared/Lang/EN/ClientResShared.rc"
+    "credits.txt"
+    "intro.txt"
+    "ClientRes.rc"
+    "../../../Shared/Lang/EN/ClientResShared.rc"
 )
 source_group("Localized Files\\EN" FILES ${Localized_Files__EN})
-
-set(Localized_Files__ES
-    "Lang/ES/credits.txt"
-    "Lang/ES/intro.txt"
-    "Lang/ES/ClientRes.rc"
-    "../Shared/Lang/ES/ClientResShared.rc"
-)
-source_group("Localized Files\\ES" FILES ${Localized_Files__ES})
-
-set(Localized_Files__FR
-    "Lang/FR/credits.txt"
-    "Lang/FR/intro.txt"
-    "Lang/FR/ClientRes.rc"
-    "../Shared/Lang/FR/ClientResShared.rc"
-)
-source_group("Localized Files\\FR" FILES ${Localized_Files__FR})
-
-set(Localized_Files__IT
-    "Lang/IT/credits.txt"
-    "Lang/IT/intro.txt"
-    "Lang/IT/ClientRes.rc"
-    "../Shared/Lang/IT/ClientResShared.rc"
-)
-source_group("Localized Files\\IT" FILES ${Localized_Files__IT})
 
 set(ALL_FILES
     ${no_group_source_files}
     # ${Localized_Files__DE}
-    # ${Localized_Files__EN}
+    ${Localized_Files__EN}
     # ${Localized_Files__ES}
     # ${Localized_Files__FR}
     # ${Localized_Files__IT}
 )
 
-
 ################################################################################
 # Target
 ################################################################################
-add_library(${PROJECT_NAME} SHARED ${ALL_FILES})
+add_library(${PROJECT_NAME} STATIC ${ALL_FILES})
 
 use_props(${PROJECT_NAME} "${CMAKE_CONFIGURATION_TYPES}" "${DEFAULT_CXX_PROPS}")
 ################################################################################
 # Target name
 ################################################################################
 set_target_properties(${PROJECT_NAME} PROPERTIES
-    TARGET_NAME_DEBUG         "CRes"
-    TARGET_NAME_DEBUGMFCDLL   "CRes"
-    TARGET_NAME_FINAL         "CRes"
-    TARGET_NAME_FINALDE       "CRes"
-    TARGET_NAME_FINALES       "CRes"
-    TARGET_NAME_FINALFR       "CRes"
-    TARGET_NAME_FINALIT       "CRes"
-    TARGET_NAME_RELEASE       "CRes"
-    TARGET_NAME_RELEASEMFCDLL "CRes"
+    TARGET_NAME_DEBUG         "TO2EN"
+    TARGET_NAME_DEBUGMFCDLL   "TO2EN"
+    TARGET_NAME_FINAL         "TO2EN"
+    TARGET_NAME_FINALDE       "TO2EN"
+    TARGET_NAME_FINALES       "TO2EN"
+    TARGET_NAME_FINALFR       "TO2EN"
+    TARGET_NAME_FINALIT       "TO2EN"
+    TARGET_NAME_RELEASE       "TO2EN"
+    TARGET_NAME_RELEASEMFCDLL "TO2EN"
 )
 ################################################################################
 # Output directory
@@ -107,25 +69,25 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY_RELEASEMFCDLL "${CMAKE_CURRENT_SOURCE_DIR}/./../../built/Release/ClientRes/TO2"
 )
 set_target_properties(${PROJECT_NAME} PROPERTIES
-    ARCHIVE_OUTPUT_NAME_DEBUG         "CRes"
-    ARCHIVE_OUTPUT_NAME_DEBUGMFCDLL   "CRes"
-    ARCHIVE_OUTPUT_NAME_FINAL         "CRes"
-    ARCHIVE_OUTPUT_NAME_FINALDE       "CRes"
-    ARCHIVE_OUTPUT_NAME_FINALES       "CRes"
-    ARCHIVE_OUTPUT_NAME_FINALFR       "CRes"
-    ARCHIVE_OUTPUT_NAME_FINALIT       "CRes"
-    ARCHIVE_OUTPUT_NAME_RELEASE       "CRes"
-    ARCHIVE_OUTPUT_NAME_RELEASEMFCDLL "CRes"
+    ARCHIVE_OUTPUT_NAME_DEBUG         "TO2EN"
+    ARCHIVE_OUTPUT_NAME_DEBUGMFCDLL   "TO2EN"
+    ARCHIVE_OUTPUT_NAME_FINAL         "TO2EN"
+    ARCHIVE_OUTPUT_NAME_FINALDE       "TO2EN"
+    ARCHIVE_OUTPUT_NAME_FINALES       "TO2EN"
+    ARCHIVE_OUTPUT_NAME_FINALFR       "TO2EN"
+    ARCHIVE_OUTPUT_NAME_FINALIT       "TO2EN"
+    ARCHIVE_OUTPUT_NAME_RELEASE       "TO2EN"
+    ARCHIVE_OUTPUT_NAME_RELEASEMFCDLL "TO2EN"
 )
 ################################################################################
 # Include directories
 ################################################################################
 target_include_directories(${PROJECT_NAME} PUBLIC
     "$<$<CONFIG:Debug>:"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../STLPORT-4.0/STLPORT_NO;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../Shared/Lang/EN"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../Shared/Lang/EN"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../Shared;"
+        # These are two different directories actually...
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../Shared/Lang/EN"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../../../../Shared/Lang/EN"
     ">"
     "$<$<CONFIG:DebugMFCDLL>:"
         "${CMAKE_CURRENT_SOURCE_DIR}/../STLPORT-4.0/STLPORT_NO;"
@@ -226,6 +188,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
         "_WINDOWS"
     ">"
 )
+
 
 ################################################################################
 # Compile and link options
@@ -369,63 +332,6 @@ if(MSVC)
 endif()
 
 ################################################################################
-# Post build events
-################################################################################
-add_custom_command_if(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMANDS
-    COMMAND         $<CONFIG:Debug> call "D:\\GameDev\\nolf2-modernizer\\Game\\_after_build_debug.bat"
-    COMMAND   $<CONFIG:DebugMFCDLL> call "D:\\GameDev\\nolf2-modernizer\\Game\\_after_build_debug.bat"
-)
-
-################################################################################
 # Dependencies
 ################################################################################
-set(ADDITIONAL_LIBRARY_DEPENDENCIES
-    "$<$<CONFIG:Debug>:"
-        "odbc32;"
-        "odbccp32"
-        "TO2EN"
-    ">"
-    "$<$<CONFIG:DebugMFCDLL>:"
-        "odbc32;"
-        "odbccp32"
-    ">"
-    "$<$<CONFIG:Final>:"
-        "odbc32;"
-        "odbccp32"
-    ">"
-    "$<$<CONFIG:FinalDE>:"
-        "odbc32;"
-        "odbccp32"
-    ">"
-    "$<$<CONFIG:FinalES>:"
-        "odbc32;"
-        "odbccp32"
-    ">"
-    "$<$<CONFIG:FinalFR>:"
-        "odbc32;"
-        "odbccp32"
-    ">"
-    "$<$<CONFIG:FinalIT>:"
-        "odbc32;"
-        "odbccp32"
-    ">"
-    "$<$<CONFIG:Release>:"
-        "odbc32;"
-        "odbccp32"
-    ">"
-    "$<$<CONFIG:ReleaseMFCDLL>:"
-        "odbc32;"
-        "odbccp32"
-    ">"
-)
-target_link_libraries(${PROJECT_NAME} PUBLIC "${ADDITIONAL_LIBRARY_DEPENDENCIES}")
-
-
-# Add the language files based on config
-add_subdirectory(Lang/EN)
-# add_dependencies(${PROJECT_NAME}
-#     TO2EN
-# )
+# target_link_libraries(${PROJECT_NAME} PUBLIC "${ADDITIONAL_LIBRARY_DEPENDENCIES}")

@@ -135,6 +135,8 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 ################################################################################
 # Sub-projects
+# 
+# The commented out projects are not needed for modernizer.
 ################################################################################
 add_subdirectory(../libs/ButeMgr ${CMAKE_BINARY_DIR}/ButeMgr)
 add_subdirectory(../libs/CryptMgr ${CMAKE_BINARY_DIR}/CryptMgr)
@@ -142,7 +144,7 @@ add_subdirectory(../libs/JServerDir ${CMAKE_BINARY_DIR}/JServerDir)
 add_subdirectory(../libs/lith ${CMAKE_BINARY_DIR}/Lib_Lith)
 add_subdirectory(../libs/MFCStub ${CMAKE_BINARY_DIR}/MFCStub)
 add_subdirectory(../libs/RegMgr ${CMAKE_BINARY_DIR}/RegMgr)
-add_subdirectory(../libs/RegMgr32 ${CMAKE_BINARY_DIR}/regmgr32)
+#add_subdirectory(../libs/RegMgr32 ${CMAKE_BINARY_DIR}/regmgr32)
 add_subdirectory(../libs/stdlith ${CMAKE_BINARY_DIR}/Lib_StdLith)
 #add_subdirectory(Autorun)
 #add_subdirectory(AutoRun2)
@@ -150,7 +152,7 @@ add_subdirectory(ClientFxDLL)
 add_subdirectory(ClientRes/TO2)
 add_subdirectory(CLIENTSHELLDLL/ClientShellShared)
 add_subdirectory(ClientShellDLL/TO2)
-add_subdirectory(Launcher/TO2)
+#add_subdirectory(Launcher/TO2)
 add_subdirectory(Libs/LTGUIMgr)
 add_subdirectory(ObjectDLL/ObjectShared)
 add_subdirectory(ObjectDLL/TO2)
