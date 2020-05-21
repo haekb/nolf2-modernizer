@@ -192,12 +192,11 @@ FX0					= "MainBackFX"
 LoopFX0			= "MainLoopFX"
 
 [ScreenJukebox]
-SongListRect		= (400, 176, 636, 366)
+SongListRect		= (240,148,505,365)
 PageRect			= (76,160,585,385)
 FontSize			= 16
 ColumnWidth			= 280
 SliderWidth			= 200
-FrameRect			= (340,176,581,396)
 FrameTexture		= "interface\menu\sprtex\menuframe2.dtx"
 ScaleName0			= "mainASIHWtext"
 Light0				= "MainLeft"
