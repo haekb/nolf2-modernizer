@@ -110,6 +110,8 @@ VarTrack			g_vtApplyWorldOffset;
 VarTrack			g_vtPTestMinFPS;
 VarTrack			g_vtPTestMaxFPS;
 
+VarTrack			g_vtRunInBackground;
+
 // SDL Logging
 std::fstream 		g_SDLLogFile;
 SDL_Window*			g_SDLWindow = NULL;
@@ -996,6 +998,9 @@ uint32 CGameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
         g_pLTClient->RunConsoleString("+UpdateRateInitted 1");
         g_pLTClient->RunConsoleString("+UpdateRate 60");
 	}
+
+	// If true, we ignore ACTIVATE_APP messages
+	g_vtRunInBackground.Init(g_pLTClient, "RunInBackground", NULL, 0.0f);
 
 	m_cheatMgr.Init();
 	m_LightScaleMgr.Init();
@@ -4539,6 +4544,14 @@ LRESULT CALLBACK HookedWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lP
 		HANDLE_MSG(hWnd, WM_CHAR, CGameClientShell::OnChar);
 		HANDLE_MSG(hWnd, WM_SETCURSOR, OnSetCursor);
 	}
+
+	// Special case, we just want to ignore this message if the user wants the game to run in background.
+	// So just return 0;
+	if (uMsg == WM_ACTIVATEAPP && g_vtRunInBackground.GetFloat() == 1.0f)
+	{
+		return 0;
+	}
+
 	_ASSERT(g_pfnMainWndProc);
 	return(CallWindowProc(g_pfnMainWndProc,hWnd,uMsg,wParam,lParam));
 }

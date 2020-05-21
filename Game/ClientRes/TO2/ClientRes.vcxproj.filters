@@ -36,6 +36,9 @@
     <ResourceCompile Include="Lang\FR\ClientRes.rc">
       <Filter>Localized Files\FR</Filter>
     </ResourceCompile>
+    <ResourceCompile Include="..\Shared\Lang\EN\ClientResShared.rc">
+      <Filter>Localized Files\EN</Filter>
+    </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Lang\DE\credits.txt">

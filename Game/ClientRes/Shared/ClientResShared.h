@@ -1015,6 +1015,10 @@
 #define IDS_APP_UNABLE_TO_CREATE_HW_TNL_DEVICE 2203
 #define IDS_JUKEBOX                     2204
 #define IDS_HELP_JUKEBOX                2205
+#define IDS_FOV                         2206
+#define IDS_HELP_FOV                    2207
+#define IDS_RUN_IN_BACKGROUND           2208
+#define IDS_HELP_RUN_IN_BACKGROUND      2209
 
 // Next default values for new objects
 // 
