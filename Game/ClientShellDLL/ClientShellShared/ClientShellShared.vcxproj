@@ -127,7 +127,7 @@
       <Optimization>Disabled</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
-      <MinimalRebuild>true</MinimalRebuild>
+      <MinimalRebuild>false</MinimalRebuild>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <AdditionalIncludeDirectories>.\;..\..\..\libs\STLPort-4.0\stlport_no;..\..\clientres\shared;..\..\shared;..\..\..\Engine\sdk\inc;..\..\..\libs\stdlith;..\..\..\libs\butemgr;..\..\..\libs\cryptmgr;..\..\..\libs\lith;..\..\..\libs\mfcstub;..\..\libs\ltguimgr;..\..\..\libs\regmgr;..\;..\..\libs\serverdir;..\..\..\libs\STLPort-STD;$(SolutionDir)\..\libs\SDL2-2.0.10\include;$(SolutionDir)\..\config\;$(SolutionDir)\..\libs\discord_game_sdk\cpp\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -879,6 +879,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Final|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
     </ClCompile>
+    <ClCompile Include="JukeboxButeMgr.cpp" />
     <ClCompile Include="JumpVolumeFX.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
@@ -1456,6 +1457,7 @@
     <ClInclude Include="InterfaceSurfMgr.h" />
     <ClInclude Include="InterfaceTimer.h" />
     <ClInclude Include="IpMgr.h" />
+    <ClInclude Include="JukeboxButeMgr.h" />
     <ClInclude Include="JumpVolumeFX.h" />
     <ClInclude Include="LaserBeam.h" />
     <ClInclude Include="LaserTriggerFX.h" />

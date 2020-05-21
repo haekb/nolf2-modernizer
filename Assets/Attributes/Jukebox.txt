@@ -1,0 +1,231 @@
+
+/*
+** Jukebox Attribute File
+** Created by Jake Breen for NOLF Modernizer
+** Fun fact: I made up all these song names.
+*/
+
+
+/*
+** [Theme0-9] - Sections for the individual songs
+** Name - Localize this!
+** Directory - What directory (under Music/) 
+** ControlFile - What control file is to be used
+** RequiresGOTY - Since not every copy contains these files, gate it off.
+**
+**
+*/
+
+[Theme0]
+Name            = "Main Theme"
+Directory       = "ISLAND"
+ControlFile     = "ISLAND.txt"
+RequiresGOTY    = FALSE
+
+[Theme1]
+Name            = "India"
+Directory       = "INDIA"
+ControlFile     = "INDIA.txt"
+RequiresGOTY    = FALSE
+
+[Theme2]
+Name            = "Island"
+Directory       = "ISLAND"
+ControlFile     = "ISLANDL.txt"
+RequiresGOTY    = FALSE
+
+[Theme3]
+Name            = "Japan"
+Directory       = "JAPAN"
+ControlFile     = "JAPAN.txt"
+RequiresGOTY    = FALSE
+
+[Theme4]
+Name            = "Ohio"
+Directory       = "JAPAN"
+ControlFile     = "OHIO.txt"
+RequiresGOTY    = FALSE
+
+[Theme5]
+Name            = "Siberia"
+Directory       = "SIBERIA"
+ControlFile     = "SIBERIA.txt"
+RequiresGOTY    = FALSE
+
+[Theme6]
+Name            = "Antarctica"
+Directory       = "UNDERWATER"
+ControlFile     = "ANTARCTICA.txt"
+RequiresGOTY    = FALSE
+
+[Theme7]
+Name            = "Underwater"
+Directory       = "UNDERWATER"
+ControlFile     = "UNDERWATER.txt"
+RequiresGOTY    = FALSE
+
+[Theme8]
+Name            = "Unity"
+Directory       = "UNITY"
+ControlFile     = "UNITY.txt"
+RequiresGOTY    = FALSE
+
+/*
+** [Song0-9] - Section for all the individual songs
+** Name - Localize this!
+** IntensityLevel - The intensity required to play this song
+** Theme - Categorizes the song. Use the numbers from above! (Ex/ Theme=0 is an Ambush song.)
+**
+*/
+
+/*
+** MAIN THEME SONGS
+*/
+[Song0]
+Name="Main Theme"
+IntensityLevel=2
+Theme=0
+
+/*
+** INDIA SONGS
+*/
+[Song1]
+Name="Exploration"
+IntensityLevel=2
+Theme=1
+
+[Song2]
+Name="Warning"
+IntensityLevel=5
+Theme=1
+
+[Song3]
+Name="Combat"
+IntensityLevel=17
+Theme=1
+
+/*
+** ISLANDL SONGS
+*/
+[Song4]
+Name="Exploration"
+IntensityLevel=2
+Theme=2
+
+[Song5]
+Name="Warning"
+IntensityLevel=21
+Theme=2
+
+[Song6]
+Name="Combat"
+IntensityLevel=31
+Theme=2
+
+/*
+** JAPAN SONGS
+*/
+[Song7]
+Name="Exploration"
+IntensityLevel=2
+Theme=3
+
+[Song8]
+Name="Warning"
+IntensityLevel=13
+Theme=3
+
+[Song9]
+Name="Combat"
+IntensityLevel=23
+Theme=3
+
+/*
+** OHIO SONGS
+*/
+[Song10]
+Name="Exploration"
+IntensityLevel=41
+Theme=4
+
+[Song11]
+Name="Warning"
+IntensityLevel=13
+Theme=4
+
+[Song12]
+Name="Combat"
+IntensityLevel=23
+Theme=4
+
+/*
+** SIBERIA SONGS
+*/
+[Song13]
+Name="Exploration"
+IntensityLevel=2
+Theme=5
+
+[Song14]
+Name="Warning"
+IntensityLevel=31
+Theme=5
+
+[Song15]
+Name="Combat"
+IntensityLevel=51
+Theme=5
+
+/*
+** ANTARCTICA SONGS
+*/
+[Song16]
+Name="Exploration"
+IntensityLevel=51
+Theme=6
+
+[Song17]
+Name="Warning"
+IntensityLevel=10
+Theme=6
+
+[Song18]
+Name="Combat"
+IntensityLevel=31
+Theme=6
+
+/*
+** UNDERWATER SONGS
+*/
+[Song19]
+Name="Exploration"
+IntensityLevel=2
+Theme=7
+
+[Song20]
+Name="Warning"
+IntensityLevel=10
+Theme=7
+
+[Song21]
+Name="Combat"
+IntensityLevel=31
+Theme=7
+
+/*
+** UNITY SONGS
+*/
+[Song22]
+Name="Exploration"
+IntensityLevel=2
+Theme=8
+
+[Song23]
+Name="Warning"
+IntensityLevel=21
+Theme=8
+
+[Song24]
+Name="Combat"
+IntensityLevel=41
+Theme=8

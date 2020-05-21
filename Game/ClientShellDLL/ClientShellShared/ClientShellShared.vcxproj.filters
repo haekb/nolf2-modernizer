@@ -716,6 +716,9 @@
     <ClCompile Include="HUDConsoleLines.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="JukeboxButeMgr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ActivateObjectFX.h">
@@ -1400,6 +1403,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HUDConsoleLines.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="JukeboxButeMgr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

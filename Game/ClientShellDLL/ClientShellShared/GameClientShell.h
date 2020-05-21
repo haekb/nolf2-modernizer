@@ -32,6 +32,7 @@
 #include "VersionMgr.h"
 #include "ClientSoundMgr.h"
 #include "MsgIds.h"
+#include "JukeboxButeMgr.h"
 
 class CSpecialFX;
 class CCameraFX;
@@ -386,6 +387,9 @@ private :
 	CPerformanceTest	*m_pPerformanceTest;
 
 	LTFLOAT m_fInputAxis[3];
+
+	// Just shoving this here..
+	CJukeboxButeMgr* m_pJukeboxButeMgr;
 };
 
 void DefaultModelHook(ModelHookData *pData, void *pUser);

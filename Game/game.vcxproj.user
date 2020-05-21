@@ -2,7 +2,7 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LocalDebuggerCommand>D:\Games\No One Lives Forever 2 - Dev\lithtech.exe</LocalDebuggerCommand>
-    <LocalDebuggerCommandArguments>windowtitle "No One Lives Forever 2" -rez GAME.rez -rez sound.rez -rez GAME2.rez -rez GAMEdll.rez -rez Sound.rez -rez GAMEl.rez -rez custom -rez GAMEp.rez -rez GAMEp2.rez -rez MapPack001.rez -rez MapPack002.rez -rez Update_v1x3.rez +multiplayer 0   +DisableSound 0 +DisableMovies 1 +DisableTripBuf 0 +DisableHardwareCursor 0 +DisableHardwareSound 0 +DisableSoundFilters 0  +windowed 1 +DisableMusic 1 -rez NewGame</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>windowtitle "No One Lives Forever 2" -rez GAME.rez -rez sound.rez -rez GAME2.rez -rez GAMEdll.rez -rez Sound.rez -rez GAMEl.rez -rez custom -rez GAMEp.rez -rez GAMEp2.rez -rez MapPack001.rez -rez MapPack002.rez -rez Update_v1x3.rez +multiplayer 0   +DisableSound 0 +DisableMovies 1 +DisableTripBuf 0 +DisableHardwareCursor 0 +DisableHardwareSound 0 +DisableSoundFilters 0  +windowed 1 +DisableMusic 0 -rez NewGame</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>D:\Games\No One Lives Forever 2 - Dev</LocalDebuggerWorkingDirectory>
   </PropertyGroup>

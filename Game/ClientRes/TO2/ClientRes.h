@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Developer Studio generated include file.
-// Used by C:\Proj\TO2\Source\Game\ClientRes\TO2\Lang\EN\ClientRes.rc
+// Microsoft Visual C++ generated include file.
+// Used by D:\GameDev\nolf2-modernizer\Game\ClientRes\TO2\Lang\EN\ClientRes.rc
 //
 #define IDS_MISSION_00_NAME             2500
 #define IDS_MISSION_01_NAME             2501
@@ -8694,6 +8694,10 @@
 #define IDS_DIALOGUE_33590              33590
 #define IDS_DIALOGUE_33593              33593
 #define IDS_DIALOGUE_33596              33596
+#define IDS_TITLE_JUKEBOX               33597
+#define IDS_UNUSED_33598                33598
+#define IDS_JUKEBOX_THEMES              33599
+#define IDS_JUKEBOX_NOW_PLAYING         33600
 
 // Next default values for new objects
 // 
