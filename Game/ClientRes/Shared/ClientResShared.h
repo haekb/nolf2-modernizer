@@ -1019,6 +1019,10 @@
 #define IDS_HELP_FOV                    2207
 #define IDS_RUN_IN_BACKGROUND           2208
 #define IDS_HELP_RUN_IN_BACKGROUND      2209
+#define IDS_SETTING_2X                  2210
+#define IDS_SETTING_4X                  2211
+#define IDS_SETTING_8X                  2212
+#define IDS_SETTING_16X                 2213
 
 // Next default values for new objects
 // 

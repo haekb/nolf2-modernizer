@@ -1058,7 +1058,7 @@ uint32 CGameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
 	rMode.m_BitDepth	= 32;
 	rMode.m_bHWTnL		= true;
 	rMode.m_pNext		= NULL;
-
+	
 	sprintf(rMode.m_InternalName, "%s", pMode->m_InternalName);
 	sprintf(rMode.m_Description, "%s", pMode->m_Description);
 
@@ -1066,56 +1066,67 @@ uint32 CGameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
     LTRESULT hResult = g_pLTClient->SetRenderMode(&rMode);
 	if (hResult != LT_OK)
 	{
-		// If an error occurred, try 640x480x32...
-		rMode.m_Width		= 640;
-		rMode.m_Height		= 480;
-
 		g_pLTClient->DebugOut("%s Error: Couldn't set render mode!\n", GAME_NAME);
-        g_pLTClient->DebugOut("Setting render mode to 640x480x32...\n");
+		g_pLTClient->DebugOut("Disabling Anti-aliasing...\n");
 
-        if (g_pLTClient->SetRenderMode(&rMode) != LT_OK)
+		// First let's just disable anti-aliasing.
+		g_pLTClient->RunConsoleString("+AntiAliasFSOverSample 0");
+
+		hResult = g_pLTClient->SetRenderMode(&rMode);
+		if (hResult != LT_OK)
 		{
-			//alright, both of the above failed, so now we need to inform the user that we are unable
-			//to create a HWTnL device. This can be caused by them not having a TnL device, or by
-			//them not having DX8.1. We will let them choose if they want to exit or attempt to 
-			//create a SWTnL device
-			char pszNoTnLWarningBuff[512];
-			FormatString(IDS_APP_UNABLE_TO_CREATE_HW_TNL_DEVICE, pszNoTnLWarningBuff, sizeof(pszNoTnLWarningBuff), GAME_NAME);
 
-			if(MessageBox(g_hMainWnd, pszNoTnLWarningBuff, GAME_NAME, MB_OKCANCEL) == IDCANCEL)
-			{
-				//alright, they canceled, so we need to just exit
-				g_pLTClient->DebugOut("User chose to not create software TnL device. Exiting.");
-				g_pLTClient->Shutdown();
-				return LT_ERROR;
-			}
+			// If an error occurred, try 640x480x32...
+			rMode.m_Width = 640;
+			rMode.m_Height = 480;
 
-			g_pLTClient->DebugOut("Attempting to create software TnL device.");
-
-			//they want to continue, so create a software version
-			rMode.m_Width	= pMode->m_Width;
-			rMode.m_Height	= pMode->m_Height;
-			rMode.m_bHWTnL	= false;
+			g_pLTClient->DebugOut("%s Error: Couldn't set render mode!\n", GAME_NAME);
+			g_pLTClient->DebugOut("Setting render mode to 640x480x32...\n");
 
 			if (g_pLTClient->SetRenderMode(&rMode) != LT_OK)
 			{
-				g_pLTClient->DebugOut("Failed to create default resoltution software TnL, falling back to 640x480");
+				//alright, both of the above failed, so now we need to inform the user that we are unable
+				//to create a HWTnL device. This can be caused by them not having a TnL device, or by
+				//them not having DX8.1. We will let them choose if they want to exit or attempt to 
+				//create a SWTnL device
+				char pszNoTnLWarningBuff[512];
+				FormatString(IDS_APP_UNABLE_TO_CREATE_HW_TNL_DEVICE, pszNoTnLWarningBuff, sizeof(pszNoTnLWarningBuff), GAME_NAME);
 
-				rMode.m_Width	= 640;
-				rMode.m_Height	= 480;
+				if (MessageBox(g_hMainWnd, pszNoTnLWarningBuff, GAME_NAME, MB_OKCANCEL) == IDCANCEL)
+				{
+					//alright, they canceled, so we need to just exit
+					g_pLTClient->DebugOut("User chose to not create software TnL device. Exiting.");
+					g_pLTClient->Shutdown();
+					return LT_ERROR;
+				}
+
+				g_pLTClient->DebugOut("Attempting to create software TnL device.");
+
+				//they want to continue, so create a software version
+				rMode.m_Width = pMode->m_Width;
+				rMode.m_Height = pMode->m_Height;
+				rMode.m_bHWTnL = false;
 
 				if (g_pLTClient->SetRenderMode(&rMode) != LT_OK)
 				{
-					char pszErrorBuffer[256];
-					FormatString(IDS_APP_SHUTDOWN_1, pszErrorBuffer, sizeof(pszErrorBuffer), GAME_NAME);
+					g_pLTClient->DebugOut("Failed to create default resoltution software TnL, falling back to 640x480");
 
-					// Okay, that didn't work, looks like we're stuck with software...
-					g_pLTClient->DebugOut(pszErrorBuffer);
-					g_pLTClient->ShutdownWithMessage(pszErrorBuffer);
-					return LT_ERROR;
+					rMode.m_Width = 640;
+					rMode.m_Height = 480;
+
+					if (g_pLTClient->SetRenderMode(&rMode) != LT_OK)
+					{
+						char pszErrorBuffer[256];
+						FormatString(IDS_APP_SHUTDOWN_1, pszErrorBuffer, sizeof(pszErrorBuffer), GAME_NAME);
+
+						// Okay, that didn't work, looks like we're stuck with software...
+						g_pLTClient->DebugOut(pszErrorBuffer);
+						g_pLTClient->ShutdownWithMessage(pszErrorBuffer);
+						return LT_ERROR;
+					}
 				}
+				WriteConsoleInt("HWTnLDisabled", 1);
 			}
-			WriteConsoleInt("HWTnLDisabled",1);
 		}
 	}
 

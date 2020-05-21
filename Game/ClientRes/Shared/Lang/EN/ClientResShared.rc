@@ -322,7 +322,7 @@ BEGIN
     IDS_HELP_CONTROLS       "Set controller configurations."
     IDS_HELP_RENDERER       "Choose renderer."
     IDS_HELP_RESOLUTION     "Set screen resolution and bit depth."
-    IDS_HELP_ANTIALIAS      "Toggle full screen anti-aliasing."
+    IDS_HELP_ANTIALIAS      "Toggle anti-aliasing (There may be small visual bugs!)"
     IDS_HELP_DETAILLEVEL    "Set preset texture detail settings."
     IDS_HELP_ADVDISPLAY     "Set display options that may affect performance."
     IDS_HELP_LOOKSPRING     "Automatically center view when you move."
@@ -1339,6 +1339,10 @@ STRINGTABLE
 BEGIN
     IDS_RUN_IN_BACKGROUND   "Run in Background"
     IDS_HELP_RUN_IN_BACKGROUND "Keep the game running when it's minimized."
+    IDS_SETTING_2X          "2x"
+    IDS_SETTING_4X          "4x"
+    IDS_SETTING_8X          "8x"
+    IDS_SETTING_16X         "16x"
 END
 
 #endif    // English (United States) resources
