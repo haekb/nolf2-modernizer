@@ -134,7 +134,7 @@ const int g_kNumCommands = sizeof(g_CommandArray) / sizeof(g_CommandArray[0]) - 
 void SaveDisplaySettings()
 {
 	//save out the display configuration
-	const char* pszValsToSave[] = {	"ScreenWidth",
+	const char* pszValsToSave[] = { "ScreenWidth",
 									"ScreenHeight",
 									"BitDepth",
 									"HardwareCursor",
@@ -142,7 +142,8 @@ void SaveDisplaySettings()
 									"GammaR",
 									"GammaG",
 									"GammaB",
-									"FOV"
+									"FOV",
+									"RunInBackground"
 								};
 
 	uint32 nNumVals = sizeof(pszValsToSave) / sizeof(pszValsToSave[0]);
