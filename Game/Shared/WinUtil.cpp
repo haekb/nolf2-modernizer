@@ -6,6 +6,7 @@
 #include <direct.h>
 #include <IO.h>
 #include "ltbasedefs.h"
+#include <SDL.h>
 
 BOOL CWinUtil::GetMoviesPath (char* strPath)
 {
@@ -229,7 +230,7 @@ void CWinUtil::DebugBreak()
 
 float CWinUtil::GetTime()
 {
-	return (float)GetTickCount() / 1000.0f;
+	return (float)SDL_GetTicks() / 1000.0f;
 }
 
 char* CWinUtil::GetFocusWindow()

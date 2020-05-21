@@ -92,6 +92,7 @@ private:
 	int								m_nGamma;
 	int								m_nFOV;
 	LTBOOL							m_bRunInBackground;
+	int								m_nAntiAliasing;
 
 	CLTGUICycleCtrl					*m_pResolutionCtrl;		// The resolution control
 
@@ -102,6 +103,7 @@ private:
 	CLTGUICycleCtrl					*m_pHardwareCursor;
 
 	CLTGUIToggle					*m_pRunInBackground;
+	CLTGUICycleCtrl					*m_pAntiAliasing;
 
 
 };

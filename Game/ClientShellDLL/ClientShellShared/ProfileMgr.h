@@ -274,6 +274,7 @@ public:
 	float	m_fGamma;
 	uint32  m_nFOV;
 	LTBOOL	m_bRunInBackground;
+	uint32	m_nAntiAliasing;
 
 	//****************** display
 	sPerformCfg m_sPerformance;

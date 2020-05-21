@@ -143,7 +143,8 @@ void SaveDisplaySettings()
 									"GammaG",
 									"GammaB",
 									"FOV",
-									"RunInBackground"
+									"RunInBackground",
+									"AntiAliasFSOverSample"
 								};
 
 	uint32 nNumVals = sizeof(pszValsToSave) / sizeof(pszValsToSave[0]);
@@ -1035,7 +1036,7 @@ void CUserProfile::ImplementMusicVolume()
 
 void CUserProfile::ApplyDisplay()
 {
-
+	int previousAA = GetConsoleInt("AntiAliasFSOverSample", 0);
 	LTBOOL initVS = (LTBOOL)GetConsoleInt("VSyncOnFlip",1);
 	WriteConsoleInt("HardwareCursor",m_bHardwareCursor);
 	WriteConsoleInt("VSyncOnFlip",m_bVSync);
@@ -1043,12 +1044,13 @@ void CUserProfile::ApplyDisplay()
 	WriteConsoleInt("FOV", m_nFOV);
 
 	WriteConsoleInt("RunInBackground", m_bRunInBackground);
+	WriteConsoleInt("AntiAliasFSOverSample", m_nAntiAliasing);
 
 	WriteConsoleFloat("GammaR",m_fGamma);
 	WriteConsoleFloat("GammaG",m_fGamma);
 	WriteConsoleFloat("GammaB",m_fGamma);
 
-	bool bRestart = (initVS != m_bVSync);
+	bool bRestart = (initVS != m_bVSync) || (previousAA != m_nAntiAliasing);
 //	if (bRestart)
 //	{
 //		g_pLTClient->CPrint("CUserProfile::ApplyDisplay() : restart because of VSync change");
@@ -1527,6 +1529,7 @@ void CUserProfile::SetDisplay()
 	SDL_Log("Got FOV %d", m_nFOV);
 
 	m_bRunInBackground = GetConsoleInt("RunInBackground", 0);
+	m_nAntiAliasing = GetConsoleInt("AntiAliasFSOverSample", 0);
 
 	// The current render mode
 	RMode currentMode;

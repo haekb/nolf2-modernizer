@@ -20,6 +20,27 @@ extern CGameClientShell* g_pGameClientShell;
 
 namespace
 {
+	int nAntiAliasLevels[5] = { 0, 2, 4, 8, 16 };
+
+	// Easier then doing an array lookup!
+	int GetAntiAliasIndex(int level)
+	{
+		switch (level) {
+		case 0:
+			return 0;
+		case 2:
+			return 1;
+		case 4:
+			return 2;
+		case 8:
+			return 3;
+		case 16:
+			return 16;
+		}
+
+		return 0;
+	}
+
 	int kGap = 0;
 	int kWidth = 100;
 	void AreYouSureCallBack(LTBOOL bReturn, void *pData)
@@ -142,8 +163,10 @@ CScreenDisplay::CScreenDisplay()
 	m_pGamma = LTNULL;
 	m_pFOV = LTNULL;
 	m_pRunInBackground = LTNULL;
+	m_pAntiAliasing = LTNULL;
 
 	m_bRunInBackground = LTFALSE;
+	m_nAntiAliasing = 0;
 }
 
 CScreenDisplay::~CScreenDisplay()
@@ -215,6 +238,17 @@ LTBOOL CScreenDisplay::Build()
 	m_pFOV->SetNumericDisplay(LTTRUE);
 
 	m_pRunInBackground = AddToggle(IDS_RUN_IN_BACKGROUND, IDS_HELP_RUN_IN_BACKGROUND, kGap, &m_bRunInBackground);
+
+	char szOff[32] = "";
+	LoadString(IDS_OFF, szOff, sizeof(szOff));
+
+
+	m_pAntiAliasing = AddCycle(IDS_ANTIALIAS, IDS_HELP_ANTIALIAS, kGap);
+	m_pAntiAliasing->AddString(szOff);
+	m_pAntiAliasing->AddString(LoadTempString(IDS_SETTING_2X));
+	m_pAntiAliasing->AddString(LoadTempString(IDS_SETTING_4X));
+	m_pAntiAliasing->AddString(LoadTempString(IDS_SETTING_8X));
+	m_pAntiAliasing->AddString(LoadTempString(IDS_SETTING_16X));
 
  	// Make sure to call the base class
 	if (!CBaseScreen::Build()) return LTFALSE;
@@ -453,6 +487,10 @@ void CScreenDisplay::OnFocus(LTBOOL bFocus)
 
 		m_pHardwareCursor->Enable(GetConsoleInt("DisableHardwareCursor",0) == 0);
 
+		m_nAntiAliasing = pProfile->m_nAntiAliasing;
+
+		m_pAntiAliasing->SetSelIndex(GetAntiAliasIndex(m_nAntiAliasing));
+
 		// The current render mode
 		RMode currentMode;
 		g_pLTClient->GetRenderMode(&currentMode);
@@ -484,6 +522,11 @@ void CScreenDisplay::OnFocus(LTBOOL bFocus)
 
 		if (m_bEscape)
 		{
+
+			// Grab the actual variable value from our AA levels list.
+			m_nAntiAliasing = nAntiAliasLevels[m_pAntiAliasing->GetSelIndex()];
+
+			pProfile->m_nAntiAliasing = m_nAntiAliasing;
 			pProfile->m_bRunInBackground = m_bRunInBackground;
 			pProfile->m_nFOV = m_nFOV;
 			pProfile->m_bHardwareCursor = m_bHardwareCursor;

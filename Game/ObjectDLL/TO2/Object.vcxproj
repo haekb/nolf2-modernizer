@@ -145,7 +145,7 @@
       <WarningLevel>Level3</WarningLevel>
       <MinimalRebuild>true</MinimalRebuild>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\Shared\TO2;.\;..\objectshared;..\..\..\libs\STLPORT-4.0\STLPORT_NO;..\..\shared;..\..\..\Engine\sdk\inc;..\..\..\libs\stdlith;..\..\..\libs\butemgr;..\..\..\libs\cryptmgr;..\..\..\libs\lith;..\..\..\libs\mfcstub;..\..\..\libs\regmgr;..\..\libs;..\..\libs\serverdir;..\..\..\libs\STLPORT-STD;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Shared\TO2;.\;..\objectshared;..\..\..\libs\STLPORT-4.0\STLPORT_NO;..\..\shared;..\..\..\Engine\sdk\inc;..\..\..\libs\stdlith;..\..\..\libs\butemgr;..\..\..\libs\cryptmgr;..\..\..\libs\lith;..\..\..\libs\mfcstub;..\..\..\libs\regmgr;..\..\libs;..\..\libs\serverdir;..\..\..\libs\STLPORT-STD;$(SolutionDir)\..\libs\SDL2-2.0.10\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WIN32;_WINDOWS;NOPS2;_SERVERBUILD;MEMTRACK_SERVER;_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\..\Built\Debug\ObjectDLL\TO2\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -181,8 +181,8 @@
       <SubSystem>Windows</SubSystem>
       <OutputFile>..\..\Built\Debug\ObjectDLL\TO2\Object.lto</OutputFile>
       <ImportLibrary>.\..\..\Built\Debug\ObjectDLL\TO2\Object.lib</ImportLibrary>
-      <AdditionalDependencies>odbc32.lib;odbccp32.lib;ButeMgr.lib;ObjectShared.lib;cryptmgr.lib;Lib_Lith.lib;Lib_StdLith.lib;MFCStub.lib;regmgr.lib;ServerDir.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\libs\built\Debug\ButeMgr;$(SolutionDir)..\libs\built\Debug\cryptmgr;$(SolutionDir)..\libs\built\Debug\Lib_Lith;$(SolutionDir)..\libs\built\Debug\Lib_StdLith;$(SolutionDir)..\libs\built\Debug\MFCStub;$(SolutionDir)..\libs\built\Debug\regmgr;$(SolutionDir)\built\debug\ObjectDLL\ObjectShared;$(SolutionDir)\libs\ServerDir\debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;ButeMgr.lib;ObjectShared.lib;cryptmgr.lib;Lib_Lith.lib;Lib_StdLith.lib;MFCStub.lib;regmgr.lib;ServerDir.lib;SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\libs\built\Debug\ButeMgr;$(SolutionDir)..\libs\built\Debug\cryptmgr;$(SolutionDir)..\libs\built\Debug\Lib_Lith;$(SolutionDir)..\libs\built\Debug\Lib_StdLith;$(SolutionDir)..\libs\built\Debug\MFCStub;$(SolutionDir)..\libs\built\Debug\regmgr;$(SolutionDir)\built\debug\ObjectDLL\ObjectShared;$(SolutionDir)\libs\ServerDir\debug;$(SolutionDir)\..\libs\SDL2-2.0.10\lib\x86</AdditionalLibraryDirectories>
     </Link>
     <CustomBuildStep>
       <Command>
