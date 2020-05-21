@@ -50,6 +50,7 @@ ADD_SCREEN(AUDIO,ScreenAudio)
 ADD_SCREEN(GAME,ScreenGame)
 ADD_SCREEN(PERFORMANCE,ScreenPerformance)
 ADD_SCREEN(CONTROLS,ScreenControls)
+ADD_SCREEN(JUKEBOX,ScreenJukebox)
 
 //multi - host
 ADD_SCREEN(HOST_OPTIONS,ScreenHostOptions)

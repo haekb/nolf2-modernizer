@@ -46,6 +46,7 @@ LTBOOL CScreenOptions::Build()
 	CLTGUITextCtrl* pControls = AddTextItem(IDS_CONTROLS, CMD_CONTROLS, IDS_HELP_CONTROLS);
 	CLTGUITextCtrl* pGame = AddTextItem(IDS_GAME_OPTIONS, CMD_GAME, IDS_HELP_GAME_OPTIONS);
 	CLTGUITextCtrl* pPerf = AddTextItem(IDS_PERFORMANCE, CMD_PERFORMANCE, IDS_HELP_PERFORMANCE);
+	CLTGUITextCtrl* pJukebox = AddTextItem("JukeBox", CMD_JUKEBOX, 0);
 
 	// Make sure to call the base class
 	if (! CBaseScreen::Build()) return LTFALSE;
@@ -81,6 +82,11 @@ uint32 CScreenOptions::OnCommand(uint32 dwCommand, uint32 dwParam1, uint32 dwPar
 	case CMD_CONTROLS:
 		{
 			m_pScreenMgr->SetCurrentScreen(SCREEN_ID_CONTROLS);
+			break;
+		}
+	case CMD_JUKEBOX:
+		{
+			m_pScreenMgr->SetCurrentScreen(SCREEN_ID_JUKEBOX);
 			break;
 		}
 	default:

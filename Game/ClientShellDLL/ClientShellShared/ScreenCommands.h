@@ -96,6 +96,7 @@ enum eScreenCmds
 	CMD_CONTROLS,	
 	CMD_GAME,		
 	CMD_PERFORMANCE,
+	CMD_JUKEBOX,
 
 //	options-controls
 	CMD_CONFIGURE,

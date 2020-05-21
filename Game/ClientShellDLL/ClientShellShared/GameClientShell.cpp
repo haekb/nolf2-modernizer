@@ -55,7 +55,10 @@
 #include "ScmdConsole.h"
 #include "ScmdConsoleDriver_CShell.h"
 #include "mmsystem.h"
+#include "JukeboxButeMgr.h"
+
 #include <SDL.h>
+
 
 #include "ConsoleMgr.h"
 
@@ -1352,7 +1355,9 @@ uint32 CGameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
 		return LT_ERROR;
 	}
 
-
+	// Boot up Jukebox Manager.
+	m_pJukeboxButeMgr = debug_new(CJukeboxButeMgr);
+	m_pJukeboxButeMgr->Init();
 	
 
 	return LT_OK;

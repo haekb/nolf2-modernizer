@@ -1,0 +1,2674 @@
+/************************************************************************
+**
+** Basic Screen Layout
+**
+** The BasicLayout definition specifies positions and sizes for common
+** screen components.
+**
+**	HelpRect (Rect)
+**
+**		The space allocated to display the rollover help
+**
+**	HelpFont (int)
+**
+**		Index of the font to use rollover help.
+**
+**	BackPos (Point)
+**
+**		The upper-left corner of the "back" item.
+**
+**	ContinuePos (Point)
+**
+**		The upper-left corner of the "continue" item.
+**
+**	BackColor	(Vector)
+**
+**		The color to use for background fills.
+**		<r, g, b>
+**
+**	BossRect (Rect)
+**
+**		The space allocated to display the boss meter
+**
+**
+*/
+
+[BasicLayout]
+HelpRect			= (150, 432, 550, 460)
+HelpFont			= 1
+HelpSize			= 20
+HUDFont				= 0
+BackFont			= 0
+BackSize			= 16
+BackPos				= (32,436)
+NextPos				= (569,436)
+MainPos				= (128,390)
+BackColor			= <185.0, 205.0, 95.0>
+SliderTex			= "interface\menu\sprtex\slider.dtx"
+ArrowBackTex		= "interface\menu\sprtex\arrowback.dtx"
+ArrowBackTexH		= "interface\menu\sprtex\arrowback_h.dtx"
+ArrowBackPos		= (20,420)
+BossRect			= (160,24,480,40)
+
+
+/************************************************************************
+**
+** Screen Layout
+**
+** The Screen Layout definitions specifies positions and sizes for screen
+** components. The GenericScreen section defines default values which will
+** be used if the specific screen doesn't override them.
+**
+** Individual screens may also have custom values specified in their section
+** that are used in addition to these common definitions:
+**
+**	TitlePos (Point)
+**
+**		The upper-left corner of the title string.
+**
+**	TitleFont (Integer)
+**
+**		Specifices which font to use for the title.
+**
+**	TitleSize (Integer)
+**
+**		Specifices the size to use for the title.
+**
+**	PageRect (Rect)
+**
+**		The rectangle used by the screen items.
+**		(left,top,right,bottom)
+**
+**	ItemSpace (Integer)
+**
+**		The vertical space between menu items.
+**
+**	FontFace
+**
+**		Specifices which font to use by default for items.
+**
+**	FontSize
+**
+**		Specifices default size at which to render text.
+**
+**	MusicIntensity
+**
+**		Specifies what the menu intensity should be for this
+**		screen (1-7, with 1=silence, 7=high action)
+**
+*/
+
+[GenericScreen]
+TitlePos			= (250,18)
+TitleFont			= 1
+TitleSize			= 24
+PageRect			= (76,180,585,385)
+FontFace			= 0
+FontSize			= 22
+ItemSpace			= 6
+MusicIntensity		= 2
+SelectedColor		= <222.0,8.0,0.0>
+NonSelectedColor	= <9.0,0.0,62.0>
+DisabledColor		= <95.0, 95.0, 95.0>
+MouseFX				= "MouseFX"
+//SelectFX			= "SelectFX"
+SelectFXCenter		= 1
+
+
+[ScreenMain]
+TitlePos			= (32,32)
+VersionPos			= (610,464) 
+ItemSpace			= 6
+ScaleName0			= "mainASIHWtext"
+Light0				= "Back"
+Light1				= "MainLeft"
+Light2				= "MainRight"
+Light3				= "Floor"
+SelectFXCenter		= 1
+FX0					= "MainBackFX"
+IntroFX1			= "MainIntroFX"
+//ShortIntroFX1		= "MainLoopFX"
+LoopFX1				= "MainLoopFX"
+IntroFX0			= "CateInterfaceFX"
+GameTypeRect		= (320,208,585,306)
+FrameTexture		= "interface\menu\sprtex\menuframe2.dtx"
+
+[ScreenSingle]
+DiffRect			= (320,148,585,248)
+CustomRect			= (240,148,585,385)
+ChapterRect			= (240,148,505,365)
+ListFontSize		= 14
+FrameTexture		= "interface\menu\sprtex\menuframe2.dtx"
+ScaleName0			= "mainASIHWtext"
+Light0				= "MainLeft"
+SelectFXCenter		= 1
+FX0					= "MainBackFX"
+LoopFX0			= "MainLoopFX"
+
+[ScreenMulti]
+//FontSize			= 18
+MessageFontSize		= 14
+FrameTexture		= "interface\menu\sprtex\menuframe2.dtx"
+PageRect			= (76,160,585,385)
+SystemMOTDRect		= (76,320,284,390)
+GameMOTDRect		= (324,320,553,390)
+StatusPos			= (40,396)
+ScaleName0			= "mainASIHWtext"
+Light0				= "MainLeft"
+SelectFXCenter		= 1
+FX0					= "MainBackFX"
+IntroFX			= "MainBackFX"
+ShortIntroFX0		= "MainBackFX"
+LoopFX0			= "MainLoopFX"
+
+[ScreenLoad]
+ItemSpace			= 3
+PageRect			= (100,115,560,335)
+FontSize			= 18
+SmallFontSize		= 14
+Indent				= 20
+NameWidth			= 300
+TimeWidth			= 125
+FX0					= "MainBackFX"
+LoopFX0				= "CateBkgrndFX"
+
+[ScreenSave]
+ItemSpace			= 3
+PageRect			= (100,115,585,335)
+FontSize			= 18
+SmallFontSize		= 14
+Indent				= 20
+NameWidth			= 340
+TimeWidth			= 125
+FX0					= "MainBackFX"
+LoopFX0				= "CateBkgrndFX"
+
+
+[ScreenOptions]
+ScaleName0			= "mainASIHWtext"
+Light0				= "MainLeft"
+SelectFXCenter		= 1
+FX0					= "MainBackFX"
+LoopFX0			= "MainLoopFX"
+
+[ScreenJukebox]
+SongListRect		= (400, 176, 636, 366)
+PageRect			= (76,160,585,385)
+FontSize			= 16
+ColumnWidth			= 280
+SliderWidth			= 200
+FrameRect			= (340,176,581,396)
+FrameTexture		= "interface\menu\sprtex\menuframe2.dtx"
+ScaleName0			= "mainASIHWtext"
+Light0				= "MainLeft"
+SelectFXCenter		= 1
+FX0					= "MainBackFX"
+LoopFX0				= "MainLoopFX"
+
+[ScreenDisplay]
+ColumnWidth			= 200
+SliderWidth			= 240
+FrameRect			= (273,176,563,324)
+FrameTexture		= "interface\menu\sprtex\menuframe2.dtx"
+ScaleName0			= "mainASIHWtext"
+Light0				= "MainLeft"
+SelectFXCenter		= 1
+FX0					= "MainBackFX"
+LoopFX0			= "MainLoopFX"
+
+[ScreenAudio]
+ItemSpace			= 10
+ColumnWidth			= 240
+SliderWidth			= 240
+FrameRect			= (312,176,563,324)
+FrameTexture		= "interface\menu\sprtex\menuframe2.dtx"
+ScaleName0			= "mainASIHWtext"
+Light0				= "MainLeft"
+SelectFXCenter		= 1
+FX0					= "MainBackFX"
+LoopFX0			= "MainLoopFX"
+
+[ScreenGame]
+PageRect			= (76,160,585,385)
+FontSize			= 16
+ColumnWidth			= 280
+SliderWidth			= 200
+FrameRect			= (340,176,581,396)
+FrameTexture		= "interface\menu\sprtex\menuframe2.dtx"
+ScaleName0			= "mainASIHWtext"
+Light0				= "MainLeft"
+SelectFXCenter		= 1
+FX0					= "MainBackFX"
+LoopFX0				= "MainLoopFX"
+
+[ScreenPerformance]
+PageRect			= (76,156,585,385)
+ResolutionPos		= (415,159)
+DialogPos			= (200,170)
+DialogSize			= (240,140)
+DialogFrame			= "interface\menu\sprtex\frame.dtx"
+//DialogFrame		= "interface\menu\sprtex\frame_solid.dtx"
+FontSize			= 20
+ListFontSize		= 14
+ListSpacing			= 2
+ColumnWidth			= 210
+SliderWidth			= 200
+MainRect			= (286,156,610,222)
+DisplayRect			= (286,251,610,425)
+DisplayColumn		= 200
+SFXRect				= (286,251,610,365)
+SFXColumn			= 200
+FrameTexture		= "interface\menu\sprtex\menuframe2.dtx"
+ScaleName0			= "mainASIHWtext"
+Light0				= "MainLeft"
+SelectFXCenter		= 1
+FX0					= "MainBackFX"
+LoopFX0				= "MainLoopFX"
+
+[ScreenCrosshair]
+ColumnWidth			= 240
+SliderWidth			= 240
+FrameRect			= (305,176,565,340)
+FrameTexture		= "interface\menu\sprtex\menuframe2.dtx"
+ScaleName0			= "mainASIHWtext"
+Light0				= "MainLeft"
+SelectFXCenter		= 1
+FX0					= "MainBackFX"
+LoopFX0			= "MainLoopFX"
+
+[ScreenControls]
+PageRect			= (76,180,585,385)
+ColumnWidth			= 250
+SliderWidth			= 240
+ScaleName0			= "mainASIHWtext"
+Light0				= "MainLeft"
+SelectFXCenter		= 1
+FX0					= "MainBackFX"
+LoopFX0			= "MainLoopFX"
+
+[ScreenMouse]
+PageRect			= (76,180,585,385)
+ItemSpace			= 6
+ColumnWidth			= 250
+SliderWidth			= 240
+FrameRect			= (318,176,574,316)
+FrameTexture		= "interface\menu\sprtex\menuframe2.dtx"
+ScaleName0			= "mainASIHWtext"
+Light0				= "MainLeft"
+SelectFXCenter		= 1
+FX0					= "MainBackFX"
+LoopFX0			= "MainLoopFX"
+
+[ScreenKeyboard]
+PageRect			= (76,180,585,385)
+ItemSpace			= 6
+ColumnWidth			= 250
+SliderWidth			= 240
+FrameRect			= (318,176,574,316)
+FrameTexture		= "interface\menu\sprtex\menuframe2.dtx"
+ScaleName0			= "mainASIHWtext"
+Light0				= "MainLeft"
+SelectFXCenter		= 1
+FX0					= "MainBackFX"
+LoopFX0			= "MainLoopFX"
+
+[ScreenJoystick]
+PageRect			= (76,180,585,385)
+HeaderFontSize		= 18
+FontSize			= 14
+ColumnWidth			= 250
+ScaleName0			= "mainASIHWtext"
+Light0				= "MainLeft"
+SelectFXCenter		= 1
+FX0					= "MainBackFX"
+LoopFX0			= "MainLoopFX"
+
+[ScreenConfigure]
+PageRect			= (34,148,200,385)
+ItemSpace			= 6
+ListRect			= (245,165,585,385)
+ListFontSize		= 14
+ActionWidth			= 115
+EqualsWidth			= 45
+CommandWidth		= 180
+MoveControlPos		= (76,180)
+FrameTexture		= "interface\menu\sprtex\menuframe2.dtx"
+ScaleName0			= "mainASIHWtext"
+Light0				= "MainLeft"
+SelectFXCenter		= 0
+FX0					= "MainBackFX"
+LoopFX0			= "MainLoopFX"
+
+[ScreenTeam]
+ColumnWidth			= 240
+ArrowWidth			= 200
+ScaleName0			= "mainASIHWtext"
+Light0				= "Back"
+Light1				= "MainLeft"
+Light2				= "MainRight"
+Light3				= "Floor"
+SelectFXCenter		= 1
+FX0					= "MainBackFX"
+LoopFX0				= "MainLoopFX"
+Character			= "MPBase"
+
+
+[ScreenPlayer]
+ColumnWidth			= 240
+ArrowWidth			= 200
+ScaleName0			= "mainASIHWtext"
+Light0				= "Back"
+Light1				= "MainLeft"
+Light2				= "MainRight"
+Light3				= "Floor"
+SelectFXCenter		= 1
+FX0					= "MainBackFX"
+LoopFX0				= "MainLoopFX"
+Character			= "MPBase"
+
+
+[ScreenPlayerTeam]
+PageRect			= (76,45,555,419)
+Team0Rect			= (76,45,555,215)
+Team1Rect			= (76,225,555,395)
+FontSize			= 20
+ListFontSize		= 14
+ListWidth			= 300
+ItemSpace			= 3
+Light0				= "Back"
+Light1				= "MainLeft"
+Light2				= "MainRight"
+Light3				= "Floor"
+SelectFXCenter		= 1
+FX0					= "MainBackFX"
+Team0Model			= "MPBaseTeam0"
+Team1Model			= "MPBaseTeam1"
+
+
+[ScreenPlayerSkills]
+PageRect			= (76,145,585,385)
+FontSize			= 14
+ColumnWidth			= 100
+SliderWidth			= 150
+ScaleName0			= "mainASIHWtext"
+Light0				= "MainLeft"
+SelectFXCenter		= 0
+FX0					= "MainBackFX"
+
+[ScreenHost]
+FontSize			= 14
+PageRect			= (76,145,585,385)
+LaunchFontSize		= 20
+LaunchPos			= (569,436)
+ColumnWidth			= 200
+ScaleName0			= "mainASIHWtext"
+Light0				= "MainLeft"
+SelectFXCenter		= 1
+FX0					= "MainBackFX"
+LoopFX0				= "CateBkgrndFX"
+
+
+[ScreenHostOptions]
+ColumnWidth			= 200
+SliderWidth			= 200
+ScaleName0			= "mainASIHWtext"
+Light0				= "MainLeft"
+FX0					= "MainBackFX"
+LoopFX0				= "CateBkgrndFX"
+
+[ScreenHostDMOptions]
+ColumnWidth			= 200
+SliderWidth			= 200
+ScaleName0			= "mainASIHWtext"
+Light0				= "MainLeft"
+FX0					= "MainBackFX"
+LoopFX0				= "CateBkgrndFX"
+
+[ScreenHostTDMOptions]
+ColumnWidth			= 200
+SliderWidth			= 200
+PageRect			= (76,145,585,385)
+FontSize			= 16
+ScaleName0			= "mainASIHWtext"
+Light0				= "MainLeft"
+FX0					= "MainBackFX"
+LoopFX0				= "CateBkgrndFX"
+
+[ScreenHostDDOptions]
+PageRect			= (76,135,585,385)
+ItemSpace			= 4
+FontSize			= 14
+ColumnWidth			= 200
+SliderWidth			= 200
+ScaleName0			= "mainASIHWtext"
+Light0				= "MainLeft"
+FX0					= "MainBackFX"
+LoopFX0				= "CateBkgrndFX"
+
+[ScreenHostLevels]
+FontSize			= 16
+ListFontSize		= 14
+AddPos				= (54,148)
+AvailRect			= (54,168,234,385)
+CommandPos			= (268,168)
+RemovePos			= (405,148)
+SelectRect			= (405,168,585,385)
+ScaleName0			= "mainASIHWtext"
+Light0				= "MainLeft"
+SelectFXCenter		= 1
+FX0					= "MainBackFX"
+LoopFX0				= "CateBkgrndFX"
+
+[ScreenHostMission]
+DialogFrame			= "interface\menu\sprtex\frame.dtx"
+DialogFontFace		= 0
+DialogFontSize		= 18
+ListFontFace		= 1
+ListFontSize		= 14
+DialogPos			= (320,180)
+DialogSize			= (240,240)
+ScaleName0			= "mainASIHWtext"
+ItemSpace			= 4
+MissionNamePos		= (76, 180)
+PageRect			= (50,220,200,310)
+Light0				= "MainLeft"
+FX0					= "MainBackFX"
+LoopFX0				= "CateBkgrndFX"
+
+[ScreenHostWeapons]
+FontSize			= 16
+ListFontSize		= 14
+AddPos				= (54,148)
+AvailRect			= (54,168,234,385)
+CommandPos			= (268,168)
+RemovePos			= (405,148)
+SelectRect			= (405,168,585,385)
+ScaleName0			= "mainASIHWtext"
+Light0				= "MainLeft"
+SelectFXCenter		= 1
+FX0					= "MainBackFX"
+LoopFX0				= "CateBkgrndFX"
+
+
+[ScreenJoin]
+Light0				= "MainLeft"
+SelectFXCenter		= 0
+FX0					= "MainBackFX"
+PageRect			= (40,80,600,400)
+FindPos				= (40,80)
+ServerRect			= (40,100,600,290)
+NameWidth			= 165
+ModWidth			= 60
+PingWidth			= 60
+PlayerWidth			= 60
+LockWidth			= 40
+FilterItemSpacing		= 2
+
+BaseFilterPos		= (40,310)
+FilterNameWidth		= 50
+DetailsRect			= (200,120,500,320)
+OptionsFontSize		= 14
+OptionsHeight		= 36
+DetailsFrame		= "interface\menu\sprtex\frame.dtx"
+
+StatusPos			= (40,400)
+
+HeaderFontSize		= 18
+FontSize			= 14
+
+
+[ScreenJoinLAN]
+LockWidth			= 50
+ColumnWidth			= 200
+AddressWidth		= 150
+FontSize			= 18
+ListFontSize		= 14
+ListPos				= (76,238)
+ScaleName0			= "mainASIHWtext"
+Light0				= "MainLeft"
+SelectFXCenter		= 1
+FX0					= "MainBackFX"
+
+[ScreenProfile]
+DialogFrame			= "interface\menu\sprtex\frame.dtx"
+DialogFontFace		= 0
+DialogFontSize		= 18
+ListFontFace		= 1
+ListFontSize		= 14
+DialogPos			= (320,180)
+DialogSize			= (240,240)
+ItemSpace			= 6
+ProfileNamePos		= (76, 180)
+PageRect			= (50,140,200,310)
+ScaleName0			= "mainASIHWtext"
+Light0				= "MainLeft"
+SelectFXCenter		= 1
+FX0					= "MainBackFX"
+LoopFX0			= "MainLoopFX"
+
+[ScreenFailure]
+ScaleName0			= "mainASIHWtext"
+FX0					= "MainBackFX"
+LoopFX0				= "CateBkgrndFX"
+MouseFX				= ""
+Delay				= 10.0
+FailStringRect		= (20,240,620,400)
+FailStringSize		= 24
+HelpStringPos		= (160,440)
+HelpStringSize		= 12
+
+[ScreenEndMission]
+StatSize			= 14
+ScaleName0			= "mainASIHWtext"
+FX0					= "MainBackFX"
+LoopFX0				= "CateBkgrndFX"
+
+[ScreenEndDMMission]
+FX0					= "MainBackFX"
+LoopFX0				= "CateBkgrndFX"
+
+[ScreenEndCoopMission]
+StatSize			= 14
+NameWidth			= 150
+AccuracyWidth		= 100
+KillsWidth			= 75
+DeathsWidth			= 75
+ScaleName0			= "mainASIHWtext"
+FX0					= "MainBackFX"
+LoopFX0				= "CateBkgrndFX"
+
+
+/************************************************************************
+**
+** Load Screen Layout
+**
+** The Load Screen Layout definitions specifies positions and sizes for screen
+** components. 
+**
+*/
+
+
+[LoadScreenDefault]
+TitleFont			= 0
+TitleSize			= 22
+TitlePos			= (50,30)
+TitleColor			= <0.0, 0.0, 0.0>
+LevelFont			= 0
+LevelSize			= 18
+LevelPos			= (50,55)
+LevelColor			= <0.0, 0.0, 0.0>
+BriefingFont		= 2
+BriefingSize		= 14
+BriefingRect		= (50,110,310,300)
+BriefingColor		= <0.0, 0.0, 0.0>
+ContinueFont		= 0
+ContinueSize		= 18
+ContinuePos			= (210,380)
+ContinueColor		= <0.0, 0.0, 0.0>
+HelpRect			= (60, 415, 460, 460)
+HelpFont			= 2
+HelpSize			= 14
+HelpColor			= <0.0, 32.0, 96.0>
+PhotoRect			= (20,120,300,330)
+PreFX0				= "MainBackFX"
+PreIntroFX0			= "LoadingIntroFX"
+PreLoopFX0			= "LoadLoopFX"
+LoadScale0		    = "LoadScreenBack"
+LoadScale1			= "LoadScreenText"
+PostScale0		    = "LoadScreenBack"
+
+[LoadScreenNoBrief]
+PreFX0				= "MainBackFX"
+LoadScale0		    = "LoadScreenBack"
+LoadScale1			= "LoadScreenText"
+PostScale0		    = "LoadScreenBack"
+
+[LoadScreenC01]
+//TitleColor			= <0.0, 32.0, 96.0>
+//BriefingColor		= <0.0, 0.0, 0.0>
+PreFX0				= "MainBackFX"
+PreIntroFX0			= "LoadingIntroC1FX"
+PreLoopFX0			= "LoadingLoopC1FX"
+LoadScale0		    = "LoadScreenBackC1"
+LoadScale1			= "LoadScreenText"
+PostScale0		    = "LoadScreenBackC1"
+
+[LoadScreenC01x]
+//TitleColor			= <0.0, 32.0, 96.0>
+//BriefingColor		= <0.0, 0.0, 0.0>
+PreFX0				= "MainBackFX"
+PreIntroFX0			= "LoadingIntroC1xFX"
+PreLoopFX0			= "LoadingLoopC1xFX"
+LoadScale0		    = "LoadScreenBackC1x"
+LoadScale1			= "LoadScreenText"
+PostScale0		    = "LoadScreenBackC1x"
+
+[LoadScreenC02]
+PreFX0				= "MainBackFX"
+PreIntroFX0			= "LoadingIntroC2FX"
+PreLoopFX0			= "LoadingLoopC2FX"
+LoadScale0		    = "LoadScreenBackC2"
+LoadScale1			= "LoadScreenText"
+PostScale0		    = "LoadScreenBackC2"
+
+[LoadScreenC02x]
+PreFX0				= "MainBackFX"
+PreIntroFX0			= "LoadingIntroC2xFX"
+PreLoopFX0			= "LoadingLoopC2xFX"
+LoadScale0		    = "LoadScreenBackC2x"
+LoadScale1			= "LoadScreenText"
+PostScale0		    = "LoadScreenBackC2x"
+
+[LoadScreenC03]
+PreFX0				= "MainBackFX"
+PreIntroFX0			= "LoadingIntroC3FX"
+PreLoopFX0			= "LoadingLoopC3FX"
+LoadScale0		    = "LoadScreenBackC3"
+LoadScale1			= "LoadScreenText"
+PostScale0		    = "LoadScreenBackC3"
+
+[LoadScreenC03x]
+PreFX0				= "MainBackFX"
+PreIntroFX0			= "LoadingIntroC3xFX"
+PreLoopFX0			= "LoadingLoopC3xFX"
+LoadScale0		    = "LoadScreenBackC3x"
+LoadScale1			= "LoadScreenText"
+PostScale0		    = "LoadScreenBackC3x"
+
+[LoadScreenC04]
+PreFX0				= "MainBackFX"
+PreIntroFX0			= "LoadingIntroC4FX"
+PreLoopFX0			= "LoadingLoopC4FX"
+LoadScale0		    = "LoadScreenBackC4"
+LoadScale1			= "LoadScreenText"
+PostScale0		    = "LoadScreenBackC4"
+
+[LoadScreenC04x]
+PreFX0				= "MainBackFX"
+PreIntroFX0			= "LoadingIntroC4xFX"
+PreLoopFX0			= "LoadingLoopC4xFX"
+LoadScale0		    = "LoadScreenBackC4x"
+LoadScale1			= "LoadScreenText"
+PostScale0		    = "LoadScreenBackC4x"
+
+[LoadScreenC05]
+PreFX0				= "MainBackFX"
+PreIntroFX0			= "LoadingIntroC5FX"
+PreLoopFX0			= "LoadingLoopC5FX"
+LoadScale0		    = "LoadScreenBackC5"
+LoadScale1			= "LoadScreenText"
+PostScale0		    = "LoadScreenBackC5"
+
+[LoadScreenC05x]
+PreFX0				= "MainBackFX"
+PreIntroFX0			= "LoadingIntroC5xFX"
+PreLoopFX0			= "LoadingLoopC5xFX"
+LoadScale0		    = "LoadScreenBackC5x"
+LoadScale1			= "LoadScreenText"
+PostScale0		    = "LoadScreenBackC5x"
+
+
+[LoadScreenC06]
+PreFX0				= "MainBackFX"
+PreIntroFX0			= "LoadingIntroC6FX"
+PreLoopFX0			= "LoadingLoopC6FX"
+LoadScale0		    = "LoadScreenBackC6"
+LoadScale1			= "LoadScreenText"
+PostScale0		    = "LoadScreenBackC6"
+
+[LoadScreenC06x]
+PreFX0				= "MainBackFX"
+PreIntroFX0			= "LoadingIntroC6xFX"
+PreLoopFX0			= "LoadingLoopC6xFX"
+LoadScale0		    = "LoadScreenBackC6x"
+LoadScale1			= "LoadScreenText"
+PostScale0		    = "LoadScreenBackC6x"
+
+[LoadScreenC07]
+PreFX0				= "MainBackFX"
+PreIntroFX0			= "LoadingIntroC7FX"
+PreLoopFX0			= "LoadingLoopC7FX"
+LoadScale0		    = "LoadScreenBackC7"
+LoadScale1			= "LoadScreenText"
+PostScale0		    = "LoadScreenBackC7"
+
+[LoadScreenC07x]
+PreFX0				= "MainBackFX"
+PreIntroFX0			= "LoadingIntroC7xFX"
+PreLoopFX0			= "LoadingLoopC7xFX"
+LoadScale0		    = "LoadScreenBackC7x"
+LoadScale1			= "LoadScreenText"
+PostScale0		    = "LoadScreenBackC7x"
+
+[LoadScreenC08]
+PreFX0				= "MainBackFX"
+PreIntroFX0			= "LoadingIntroC8FX"
+PreLoopFX0			= "LoadingLoopC8FX"
+LoadScale0		    = "LoadScreenBackC8"
+LoadScale1			= "LoadScreenText"
+PostScale0		    = "LoadScreenBackC8"
+
+[LoadScreenC08x]
+PreFX0				= "MainBackFX"
+PreIntroFX0			= "LoadingIntroC8xFX"
+PreLoopFX0			= "LoadingLoopC8xFX"
+LoadScale0		    = "LoadScreenBackC8x"
+LoadScale1			= "LoadScreenText"
+PostScale0		    = "LoadScreenBackC8x"
+
+[LoadScreenC09]
+PreFX0				= "MainBackFX"
+PreIntroFX0			= "LoadingIntroC9FX"
+PreLoopFX0			= "LoadingLoopC9FX"
+LoadScale0		    = "LoadScreenBackC9"
+LoadScale1			= "LoadScreenText"
+PostScale0		    = "LoadScreenBackC9"
+
+[LoadScreenC09x]
+PreFX0				= "MainBackFX"
+PreIntroFX0			= "LoadingIntroC9xFX"
+PreLoopFX0			= "LoadingLoopC9xFX"
+LoadScale0		    = "LoadScreenBackC9x"
+LoadScale1			= "LoadScreenText"
+PostScale0		    = "LoadScreenBackC9x"
+
+[LoadScreenC10]
+PreFX0				= "MainBackFX"
+PreIntroFX0			= "LoadingIntroC10FX"
+PreLoopFX0			= "LoadingLoopC10FX"
+LoadScale0		    = "LoadScreenBackC10"
+LoadScale1			= "LoadScreenText"
+PostScale0		    = "LoadScreenBackC10"
+
+[LoadScreenC10x]
+PreFX0				= "MainBackFX"
+PreIntroFX0			= "LoadingIntroC10xFX"
+PreLoopFX0			= "LoadingLoopC10xFX"
+LoadScale0		    = "LoadScreenBackC10x"
+LoadScale1			= "LoadScreenText"
+PostScale0		    = "LoadScreenBackC10x"
+
+[LoadScreenC11]
+PreFX0				= "MainBackFX"
+PreIntroFX0			= "LoadingIntroC11FX"
+PreLoopFX0			= "LoadingLoopC11FX"
+LoadScale0		    = "LoadScreenBackC11"
+LoadScale1			= "LoadScreenText"
+PostScale0		    = "LoadScreenBackC11"
+
+[LoadScreenC12]
+PreFX0				= "MainBackFX"
+PreIntroFX0			= "LoadingIntroC12FX"
+PreLoopFX0			= "LoadingLoopC12FX"
+LoadScale0		    = "LoadScreenBackC12"
+LoadScale1			= "LoadScreenText"
+PostScale0		    = "LoadScreenBackC12"
+
+[LoadScreenC12x]
+PreFX0				= "MainBackFX"
+PreIntroFX0			= "LoadingIntroC12xFX"
+PreLoopFX0			= "LoadingLoopC12xFX"
+LoadScale0		    = "LoadScreenBackC12x"
+LoadScale1			= "LoadScreenText"
+PostScale0		    = "LoadScreenBackC12x"
+
+[LoadScreenC13]
+PreFX0				= "MainBackFX"
+PreIntroFX0			= "LoadingIntroC13FX"
+PreLoopFX0			= "LoadingLoopC13FX"
+LoadScale0		    = "LoadScreenBackC13"
+LoadScale1			= "LoadScreenText"
+PostScale0		    = "LoadScreenBackC13"
+
+[LoadScreenC13x]
+PreFX0				= "MainBackFX"
+PreIntroFX0			= "LoadingIntroC13xFX"
+PreLoopFX0			= "LoadingLoopC13xFX"
+LoadScale0		    = "LoadScreenBackC13x"
+LoadScale1			= "LoadScreenText"
+PostScale0		    = "LoadScreenBackC13x"
+
+[LoadScreenC14]
+PreFX0				= "MainBackFX"
+PreIntroFX0			= "LoadingIntroC14FX"
+PreLoopFX0			= "LoadingLoopC14FX"
+LoadScale0		    = "LoadScreenBackC14"
+LoadScale1			= "LoadScreenText"
+PostScale0		    = "LoadScreenBackC14"
+
+[LoadScreenC14x]
+PreFX0				= "MainBackFX"
+PreIntroFX0			= "LoadingIntroC14xFX"
+PreLoopFX0			= "LoadingLoopC14xFX"
+LoadScale0		    = "LoadScreenBackC14x"
+LoadScale1			= "LoadScreenText"
+PostScale0		    = "LoadScreenBackC14x"
+
+[LoadScreenC15]
+PreFX0				= "MainBackFX"
+PreIntroFX0			= "LoadingIntroC15FX"
+PreLoopFX0			= "LoadingLoopC15FX"
+LoadScale0		    = "LoadScreenBackC15"
+LoadScale1			= "LoadScreenText"
+PostScale0		    = "LoadScreenBackC15"
+
+/************************************************************************
+**
+**  Font Layout
+**
+**
+**  Font<N>  (string)
+**
+**		Path to the TrueType font to use for font N
+**
+**	FontSize<N> (int)
+**
+**		Point size to use when creating the font texture for font N. The 
+**	higher the value used, the larger the font texture will be (creating
+**	cleaner text at the expense of memory. If unspecified a default value
+**	of 24 is used.
+**
+*/
+[Fonts]
+FontFace0			= "Square 721 Blk"
+FontFile0			= "Interface\Fonts\SQR721KN.TTF"
+FontSize0			= 80
+FontFace1			= "Expo"
+FontFile1			= "Interface\Fonts\EXPON.TTF"
+FontSize1			= 60
+FontFace2			= "Typist"
+FontFile2			= "Interface\Fonts\TYPIST.TTF"
+FontSize2			= 60
+FontFace3			= "BethHand"
+FontFile3			= "Interface\Fonts\BETHHAND.TTF"
+FontSize3			= 60
+FontFace4           = "FiraCode"
+FontFile4           = "Interface\Fonts\FiraCode-Regular.ttf"
+FontSize4           = 24
+
+
+
+/************************************************************************
+**
+**	HUD Layout
+**
+** The HUDLayout definitions specify positions and sizes for in-game
+** interface components. If an attribute isn't listed for a particular
+** layout, the base value defined in the default layout [HUDLayout0] will
+** be used.
+** 
+** Note:
+**		Positions (AmmoBasePos, etc.) are relative to a 640x480 resolution
+**			and will be scaled for other resolutions. 
+**		Offsets are absolute distances and are not scaled for different
+**			resolutions.
+**
+**
+**	LayoutName (Integer)
+**
+**		The string id used to identify the layout configuration.
+**
+**	BarHeight (Integer)
+**
+**		The height used for the HUD bars.
+**
+**	BarScale (Float)
+**
+**		The number of pixels per point in the various HUD bars. 
+**
+**
+**	AmmoBasePos (Point)
+**
+**		Relative position of the Ammo display.
+**
+**	UseAmmoBar (Integer)
+**
+**		0 - hides ammo bar, 1 - shows ammo bar 
+**
+**	AmmoClipOffset (Point)
+**
+**		Offset to the upper-RIGHT corner of the ammo-in-clip bar. 
+**
+**	AmmoBarOffset (Point)
+**
+**		Offset to the upper-left corner of the total ammo bar.
+**
+**	UseAmmoText (Integer)
+**
+**		0 - hides ammo text, 1 - shows ammo text 
+**
+**	AmmoTextOffset (Point)
+**
+**		Offset to the upper-left corner of the ammo text. 
+**
+**	AmmoIconOffset (Point)
+**
+**		Offset to the upper-left corner of the ammo type icon. 
+**
+**
+**	HealthBasePos (Point)
+**
+**		Relative position of the Health and Armor display.
+**
+**	UseHealthBar (Integer)
+**
+**		0 - hides health bar, 1 - shows health bar 
+**
+**	HealthBarOffset (Point)
+**
+**		Offset to the upper-left corner of the health bar.
+**
+**	ArmorBarOffset (Point)
+**
+**		Offset to the  upper-left corner of the armor bar.
+**
+**	UseHealthText (Integer)
+**
+**		0 - hides health/armor text, 1 - shows health/armor text 
+**
+**	HealthTextOffset (Point)
+**
+**		Offset to the upper-left corner of the health text. 
+**
+**
+**	ArmorTextOffset (Point)
+**
+**		Offset to the upper-left corner of the armor text. 
+**
+**	UseHealthIcon (Integer)
+**
+**		0 - hides health/armor icons, 1 - shows health/armor icons 
+**
+**	HealthIconOffset (Point)
+**
+**		Offset to the upper-left corner of the health icon. 
+**
+**	ArmorIconOffset (Point)
+**
+**		Offset to the upper-left corner of the armor icon. 
+**
+**
+**
+**	AirBasePos (Point)
+**
+**		Relative position of the Air display.
+**
+**	UseAirIcon (Integer)
+**
+**		0 - hides air icon, 1 - shows air icon
+**
+**	AirIconOffset (Point)
+**
+**		Offset to the upper-left corner of the air icon. 
+**
+**	UseAirText (Integer)
+**
+**		0 - hides air text, 1 - shows air text 
+**
+**	AirTextOffset (Point)
+**
+**		Offset to the upper-left corner of the air text. 
+**
+**	UseAirBar (Integer)
+**
+**		0 - hides air bar, 1 - shows air bar 
+**
+**	AirBarOffset (Point)
+**
+**		Offset to the upper-left corner of the air bar.
+**
+**	ModeTextPos (Point)
+**
+**		Relative position of the sunglass mode text display.
+**
+**
+**
+**	DamageBasePos (Point)
+**
+**		Relative position (upper-left corner) of the damage display.
+**
+**	DamageIconSize (int)
+**		
+**		Height and Width of the icons displaying while taking damage.
+**
+**	ActivationTextPos (Point)
+**
+**		Position of activation text
+**
+**	ActivationTextSize (int)
+**
+**		Font size of activation text
+**
+**	ActivationTextJustify (int)
+**
+**		Justification of activation text:
+**			0 = Left, 1 = Center, 2 = Right
+**
+**	ActivationTextAlpha	(float)
+**
+**		Alpha of activation text (when activation is allowed)
+**
+**	ActivationTextColor (vector)
+**
+**		Color of activation text (when activation is allowed)
+**
+**	ActivationTextDisAlpha (float)
+**
+**		Alpha of activation text (when activation is not allowed)
+**
+**	ActivationTextDisColor (vector)
+**
+**		Alpha of activation text (when activation is not allowed)
+**
+*/
+
+/*
+** 	Hud#0 (Default) is Health=baronly; Armor=baronly; Ammo=icon,text,nobar;
+*/
+
+[HUDLayout0]
+LayoutName			= 385
+BarHeight			= 12
+TextHeight			= 20
+BarScale			= 1
+
+UseAmmoBar			= 0
+AmmoBasePos			= (624,450)
+AmmoClipOffset		= (-8,8)
+AmmoClipUnitSize	= (6,12)
+AmmoBarOffset		= (0,0)
+UseAmmoText			= 1
+AmmoTextOffset		= (-72,-16)
+AmmoTextColor		= <160.0, 128.0, 32.0>
+AmmoTextAlpha		= 0.8
+AmmoIconOffset		= (-104,-16)
+AmmoIconSize		= 24
+
+UseHealthBar		= 1
+HealthBasePos		= (16,430)
+HealthBarOffset		= (0,16)
+ArmorBarOffset		= (6,22)
+UseHealthText		= 0
+HealthTextOffset	= (24,-20)
+ArmorTextOffset		= (88,-20)
+HealthColor			= <192.0, 0.0, 0.0>
+ArmorColor			= <0.0, 0.0, 192.0>
+HealthAlpha			= 0.8
+UseHealthIcon		= 0
+HealthIconOffset		= (0,-20)
+ArmorIconOffset		= (64,-20)
+HealthIconSize		= 20
+
+UseAirIcon			= 1
+AirBasePos			= (24,400)
+UseAirText			= 0
+AirTextOffset		= (24,-26)
+UseAirBar			= 1
+AirBarOffset		= (12,0)
+AirIconOffset		= (-20,-8)
+AirColor			= <0.0, 202.0, 158.0>
+AirAlpha			= 0.8
+AirIconSize			= 32
+
+ModeTextPos			= (80,40)
+
+DamageBasePos		= (24,240)
+DamageIconSize		= 24
+
+CompassPos			= (528,16)
+CompassSize			= 96
+
+RadarObjectSize			= 12
+RadarMaxDistance		= 4000
+RadarLivePlayerColor	= <255.0, 190.0, 18.0>
+RadarDeadPlayerColor	= <32.0, 64.0, 96.0>
+RadarTalkPlayerColor	= <255.0, 255.0, 255.0>
+RadarFlashTime			= 2.0
+
+DamageSize			= 32
+
+CarryPos			= (20,390)
+CarrySize			= 32
+
+ObjectivePos		= (20,36)
+ObjectiveSize		= (24,24)
+ObjectiveBlinkDuration	= 6.0
+ObjectiveBlinkSpeed		= 5.0
+
+
+HideIconPos			= (308,300)
+HideIconSize		= (24,24)
+HideIconBlinkSpeed	= 3.0
+HideIconAlpha		= 0.6
+HidingBarBasePosY	= 335
+HidingBarOffset		= (0,0)
+HidingBarHeight		= 8
+HidingBarScale		= 1.2
+HidingBarTexture	= "Interface\hud\hidebar.dtx"
+
+ActivationTextPos       = (320,260)
+ActivationTextSize		= 16
+ActivationTextJustify   = 1
+ActivationTextAlpha		= 1.0
+ActivationTextColor		= <255.0, 190.0, 18.0>
+ActivationTextDisAlpha  = 0.7
+ActivationTextDisColor  = <128.0, 128.0, 128.0>
+
+DebugTextPos       = (360,200)
+DebugTextSize		= 8
+DebugTextJustify   = 0
+DebugTextAlpha		= 1.0
+DebugTextColor		= <255.0, 255.0, 255.0>
+
+ChooserTextSize			= 20
+ChooserColumnWidth		= 48
+ChooserIconHeight		= 48
+ChooserTextAlpha		= 1.0
+ChooserTextColor		= <255.0, 255.0, 255.0>
+ChooserTextureScale		= 0.75
+ChooserPosition			= 120
+
+DistanceIconPos			= (288,336)
+DistanceIconBlinkSpeed		= 6.0
+DistanceIconAlpha		= 0.8
+DistanceIconFadeOutSpeed	= 1.0
+
+ProgressBarBasePosY		= 280
+ProgressBarOffset		= (0,0)
+ProgressBarHeight		= 8
+ProgressBarScale		= 1.2
+ProgressBarTexture		= "Interface\hud\searchbar.dtx"
+
+DisplayMeterBasePosY		= 20
+DisplayMeterOffset		= (0,0)
+DisplayMeterHeight		= 10
+DisplayMeterScale		= 2
+DisplayMeterTexture		= "Interface\hud\bossbar.dtx"
+
+[HUDLayout1]
+LayoutName			= 386
+
+UseAmmoBar			= 0
+AmmoBasePos			= (624,450)
+AmmoClipOffset		= (-8,8)
+AmmoBarOffset		= (0,0)
+UseAmmoText			= 1
+AmmoTextOffset		= (-72,-16)
+AmmoIconOffset		= (-104,-16)
+
+UseHealthBar		= 0
+HealthBasePos		= (16,450)
+UseHealthText		= 1
+HealthTextOffset		= (24,-16)
+ArmorTextOffset		= (84,-16)
+UseHealthIcon		= 1
+HealthIconOffset		= (0,-16)
+ArmorIconOffset		= (64,-16)
+
+
+UseAirIcon			= 1
+AirBasePos			= (24,400)
+UseAirText			= 0
+AirTextOffset		= (24,-26)
+UseAirBar			= 1
+AirBarOffset		= (12,0)
+AirIconOffset		= (-20,-8)
+
+
+[HUDLayout2]
+LayoutName			= 387
+
+BarHeight			= 12
+BarScale			= 1
+
+UseAmmoBar			= 1
+AmmoBasePos			= (624,450)
+AmmoClipOffset		= (-72,0)
+AmmoBarOffset		= (-164,-8)
+AmmoIconOffset		= (-32,-16)
+UseAmmoText			= 0
+
+UseHealthBar		= 1
+HealthBasePos		= (16,430)
+HealthBarOffset		= (0,16)
+ArmorBarOffset		= (6,22)
+UseHealthText		= 0
+HealthTextOffset		= (24,-20)
+ArmorTextOffset		= (88,-20)
+UseHealthIcon		= 0
+HealthIconOffset		= (0,-20)
+ArmorIconOffset		= (64,-20)
+
+UseAirIcon			= 1
+AirBasePos			= (24,400)
+UseAirText			= 0
+AirTextOffset		= (24,-26)
+UseAirBar			= 1
+AirBarOffset		= (12,0)
+AirIconOffset		= (-20,-8)
+
+
+
+
+/************************************************************************
+**
+**	Menu Layout
+**
+**		These values are shared by all in-game menus, and cannot be 
+**		overridden by a specific menu.
+*/
+[Menu]
+Position			= 320
+Size				= (280,240)
+SlideInTime			= 0.5
+SlideOutTime		= 0.5
+Frame				= "interface\menu\menudown.dtx"
+FrameTip			= "interface\menu\menudown_tip.dtx"
+Bar					= "interface\menu\menubar.dtx"
+BarTip				= "interface\menu\menubar_tip.dtx"
+UpArrow				= "interface\menu\sprtex\arrowup.dtx"
+UpArrowH			= "interface\menu\sprtex\arrowup_h.dtx"
+DownArrow			= "interface\menu\sprtex\arrowdn.dtx"
+DownArrowH			= "interface\menu\sprtex\arrowdn_h.dtx"
+BarSize				= (512,25)
+BarFont				= 0
+BarFontSize			= 10
+BarPosition			= 4
+BarSpacing			= 16
+BarSelectColor		= <192.0, 192.0, 0.0>
+SlideInSound		= "interface\snd\menuopen.wav"
+SlideOutSound		= "interface\snd\menuclose.wav"
+
+
+
+/************************************************************************
+**
+**	Generic Menu Layout
+**
+**		These defualt values are shared by in-game menus, but may be 
+**		overridden by a specific menu.
+*/
+[GenericMenu]
+Indent				= (12,40)
+SelectedColor		= <255.0, 255.0, 255.0>
+NonSelectedColor	= <0.0, 0.0, 0.0>
+DisabledColor		= <95.0, 95.0, 95.0>
+Font				= 1
+FontSize			= 16
+TitleFont			= 1
+TitleSize			= 18
+
+
+/************************************************************************
+**
+**	Custom Menu Layouts
+**
+**		These values apply to specific menus and in some cases override 
+**		defaults set under [GenericMenu]
+**		
+*/
+[MenuPlayer]
+NameWidth			= 90
+LevelWidth			= 70
+PopupSize			= (200,200)
+PopupPos			= 160
+FontSize			= 14
+SmallerFontSize		= 14
+HelpOffset			= (40,220)
+HelpFontSize		= 16
+HighlightColor		= <228.0, 228.0, 48.0>
+
+[MenuMission]
+MissionFontSize		= 18
+LevelFontSize		= 16
+ObjectiveFontSize	= 14
+CompletedColor		= <198.0, 201.0, 175.0>
+
+[MenuInventory]
+FontSize			= 16
+DescFontSize		= 16
+DescriptionOffset	= 48
+AmmoOffset			= 64
+PopupSize			= (290,210)
+PopupPos			= 170
+HelpOffset			= (40,230)
+HelpFontSize		= 16
+
+
+[MenuKeys]
+PopupSize			= (260,200)
+PopupPos			= 165
+
+[MenuIntel]
+FontSize			= 16
+SmallerFontSize		= 14
+
+
+/************************************************************************
+**
+**	Miscellaneous Layout
+**
+** The Miscellaneous definition specifies data for interface components
+** not covered under other definitions.
+**
+**	MessageBoxTexture (String)
+**
+**		The name of the DTX to use for background art on the Message Box.
+**
+**	DeathDelay (Float)
+**
+**		How long (in seconds) to wait after player dies before showing the Mission Failure screen.
+**
+**	SpyVisionModelColor (Vector)
+**
+**		Color to add to models while using spy vision <r, g, b>
+**
+**	SpyVisionScreenTint (Vector)
+**
+**		Color to tint the screen while using spy vision <r, g, b>
+**
+**	WeaponPickupColor (Vector)
+**
+**		Color to tint the screen when a weapon is picked up <r, g, b>
+**
+**	AmmoPickupColor (Vector)
+**
+**		Color to tint the screen when a weapon is picked up <r, g, b>
+**
+**	TintTime (Float)
+**
+**		Duration in seconds of screen tint when weapons or ammo are picked up
+**
+**	TimerFont (int)
+**
+**		Index of the font to use on screen timers.
+**
+**	TimerSize (int)
+**
+**		Size of the font to use on screen timers.
+**
+**	TimerPos (point)
+**
+**		Position at which to display the timer.
+**
+**	TimerColor (point)
+**
+**		Color of timer.
+**
+**	Team1TimerFont (int)
+**
+**		Index of the font to use on Team1 team screen timers.
+**
+**	Team1TimerSize (int)
+**
+**		Size of the font to use on Team1 team screen timers.
+**
+**	Team1TimerPos (point)
+**
+**		Position at which to display the Team1 team timer.
+**
+**	Team1TimerColor (point)
+**
+**		Color of team1 timer.
+**
+**	Team2TimerFont (int)
+**
+**		Index of the font to use on Team2 team screen timers.
+**
+**	Team2TimerSize (int)
+**
+**		Size of the font to use on Team2 team screen timers.
+**
+**	Team2TimerPos (point)
+**
+**		Position at which to display the Team2 team timer.
+**
+**	Team2TimerColor (point)
+**
+**		Color of team2 timer.
+**
+*/
+
+[Miscellaneous]
+DialogFrame				= "interface\menu\sprtex\frame.dtx"
+DialogFontFace			= 1
+DialogFontSize			= 16
+DeathDelay				= 5.0
+SpyVisionModelColor		= <0.0, 0.0, 96.0>
+SpyVisionLightScale		= <0.0, 0.0, 255.0>
+WeaponPickupColor		= <80.0, 40.0, 128.0>
+AmmoPickupColor			= <80.0, 40.0, 128.0>
+TintTime				= 2.000000
+HUDChoserHColor			= <255.0, 255.0, 255.0>
+CrosshairGapMin			= 5
+CrosshairGapMax			= 25
+CrosshairBarMin			= 8
+CrosshairBarMax			= 32
+PerturbRotationEffect	= 2
+PerturbIncreaseSpeed	= 3
+PerturbDecreaseSpeed	= 0.35
+PerturbWalkPercent		= 0.5
+MessageMinimumTime		= 1
+MessageMinimumFade		= 0.25
+PopupTextRect			= (20,80,620,340)
+ObjectiveRect			= (80,80,560,340)
+SubtitleTint			= <255.0, 255.0, 128.0>
+HealthTint				= <255.0, 128.0, 128.0>
+ArmorTint				= <128.0, 128.0, 255.0>
+AmmoTint				= <240.0, 240.0, 128.0>
+PopupTint				= <255.0, 255.0, 255.0>
+Team1Color				= <64.0, 64.0, 255.0>
+Team2Color				= <255.0, 64.0, 64.0>
+TimerFont				= 1
+TimerSize				= 24
+TimerPos				= (320,60)
+TimerColor				= <255.0, 255.0, 255.0>
+Team1TimerFont			= 1
+Team1TimerSize			= 18
+Team1TimerPos			= (540,4)
+Team1TimerColor			= <0.0, 0.0, 255.0>
+Team2TimerFont			= 1
+Team2TimerSize			= 18
+Team2TimerPos			= (612,4)
+Team2TimerColor			= <255.0, 0.0, 0.0>
+
+
+/************************************************************************
+**
+**	MessageQueue
+**
+** The MessageQueue definitions specifies data for various message queues
+** in the game.
+**
+**	MessageTime (Float)
+**
+**		How long in seconds that messages are displayed.
+**		(not including fade out time)
+**
+**	MessageFade (Float)
+**
+**		How long in seconds that messages are it takes for a message to fade.
+**		(after normal message time)
+**
+**	MaxMessages (int)
+**
+**		How many messages may appear on screen at one time.
+**
+**	MaxHistory (int)
+**
+**		How many old messages are stored.
+**
+**
+*/
+
+[ChatMessageQueue]
+Font		= 1
+FontSize	= 16
+TextColor	= <240.0, 180.0, 0.0>
+ChatColor	= <255.0, 255.0, 0.0>
+TeamColor	= <0.0, 220.0, 0.0>
+CheatColor	= <255.0, 0.0, 255.0>
+ScmdColor	= <0.0, 255.0, 0.0>
+RedTeamColor	= <255.0, 0.0, 0.0>
+BlueTeamColor	= <0.0, 0.0, 255.0>
+BasePos		= (20,75)
+Width		= 600
+MessageTime	= 7.5
+MessageFade	= 1.5
+MaxMessages	= 5
+MaxHistory	= 10
+
+[PickupMessageQueue]
+Font		= 2
+FontSize	= 14
+IconSize	= 24
+TextColor	= <240.0, 180.0, 0.0>
+BasePos		= (170,200)
+Width		= 300
+MessageTime	= 5
+MessageFade	= 1
+MaxMessages	= 5
+
+[SearchMessageQueue]
+Font		= 1
+FontSize	= 16
+IconSize	= 24
+TextColor	= <240.0, 180.0, 0.0>
+BasePos		= (320,45)
+Width		= 320
+MessageTime	= 2
+MessageFade	= 1
+MaxMessages	= 5
+
+[Transmission]
+Font		= 1
+FontSize	= 16
+TextColor	= <240.0, 180.0, 0.0>
+BasePos		= (320,220)
+Width		= 400
+Time		= 3.0
+FadeTime	= 1
+
+[PausedText]
+Font		= 1
+FontSize	= 20
+TextColor	= <255.0, 255.0, 255.0>
+BasePos		= (320,450)
+
+[ChatInput]
+Font		= 1
+FontSize	= 16
+Color		= <255.0, 255.0, 255.0>
+BasePos		= (95,400)
+
+[RewardMessageQueue]
+Font		= 2
+FontSize	= 16
+TextColor	= <255.0, 255.0, 255.0>
+BasePos		= (170,60)
+Width		= 300
+MessageTime	= 7.5
+MessageFade	= 1.5
+MaxMessages	= 5
+MaxHistory	= 10
+
+[Scores]
+Font			= 1
+FontSize		= 14
+BasePos			= (64,64)
+PlayerTextColor	= <255.0, 240.0, 0.0>
+TextColor		= <160.0, 120.0, 0.0>
+ScreenPlayerTextColor	= <255.0, 255.0, 255.0>
+ScreenTextColor		= <0.0,0.0,0.0>
+FrameColor		= <255.0, 240.0, 0.0>
+FrameAlpha		= 0.3
+Team1Color		= <0.0, 0.0, 240.0>
+Team2Color		= <240.0, 0.0, 0.0>
+NameColumn		=  188
+ScoreColumn		=  56
+KillColumn		=  48
+TagColumn		=  48
+PingColumn		=  48
+
+[Doomsday]
+BasePos			= (496,24)
+IconSize		= 24
+Team1Color		= <96.0, 96.0, 255.0>
+Team2Color		= <255.0, 96.0, 96.0>
+
+
+
+
+/***********************************************************
+**
+**	MissionText Layout
+**
+** The MissionText definition specifies data for "typing"
+** mission related text (e.g. "Somewhere in Berlin, 9:43 AM")
+** to the screen.
+**
+**	Width (Int)
+**
+**		Specifies how wide the area used for the text should be
+**
+**	NumLines (Int)
+**
+**		Specifies how many of lines of text may be displayed at before
+**		scrolling
+**
+**	LetterDelay	(Float)
+**
+**		How long (in seconds) to wait after adding each letter
+**
+**	LineDelay	(Float)
+**
+**		How long (in seconds) to wait after finishing each line
+**
+**	LineScrollTime	(Float)
+**
+**		How long (in seconds) to scroll up one line
+**
+**	FadeDelay	(Float)
+**
+**		How long (in seconds) to wait after adding the last line
+**			before starting the fade.
+**
+**	FadeTime	(Float)
+**
+**		How long (in seconds) to fade out the text
+**
+**	Pos		(Point)
+**
+**		Position (relative to a 640x480 screen) of the text
+**
+**	TypeSound	(String)
+**
+**		Sound file to play (looping) while typing text
+**
+**	ScrollSound	(String)
+**
+**		Sound file to play (once) when a line starts scrolling
+**
+**/
+[MissionText]
+Font					= 2
+FontSize				= 14
+TextColor				= <128.0, 200.0, 255.0>
+NumLines				= 1
+LetterDelay				= 0.05
+LineDelay				= 0.25
+LineScrollTime			= 0.5
+FadeDelay				= 1.0
+FadeTime				= 2.0
+Pos						= (32,360)
+TypeSound				= "interface\snd\type.wav"
+ScrollSound				= "interface\snd\enter.wav"
+
+
+/***********************************************************
+**
+**	Subtitle Layout
+**
+**
+**	NumLines (Int)
+**
+**		Specifies how many of lines of text may be displayed at once
+**
+**	LineScrollTime	(Float)
+**
+**		How long (in seconds) to scroll up one line
+**
+**	Width (Int)
+**
+**		Specifies how wide the area used for the text should be
+**		when playing cinematics.
+**		(scaled for resolutions greater than 640x480)
+**
+**	Pos		(Point)
+**
+**		Position (relative to a 640x480 screen) of the text
+**		when playing cinematics.
+**
+**	FullScreenWidth (Int)
+**
+**		Specifies how wide the area used for the text should be
+**		when not in cinematics.
+**		(scaled for resolutions greater than 640x480)
+**
+**	FullScreenPos		(Point)
+**
+**		Position (relative to a 640x480 screen) of the text
+**		when not in cinematics.
+**
+**/
+[Subtitle]
+Font					= 2
+FontSize				= 14
+TextColor				= <255.0, 255.0, 128.0>
+NumLines				= 3
+LineScrollTime			= 0.5
+Width					= 500
+Pos						= (70,400)
+FullScreenWidth			= 500
+FullScreenPos			= (70,340)
+
+
+/***********************************************************
+**
+**	DecisionWindow Layout
+**
+** The DecisionWindow definition specifies data for displaying
+** gameplay choices to the player.
+**
+**	Pos		(Point)
+**
+**		Position (relative to a 640x480 screen) of the window
+**
+**	Width (Int)
+**
+**		Specifies how wide the window should be
+**
+**	TextOffset	(Point)
+**
+**		How much the text is indented from the window edges
+**
+**	TextColor	(Vector)
+**
+**		The color to use for the text.
+**		<r, g, b>
+**
+**	Frame	(String)
+**
+**		Name of the texture to use for the window frame
+**
+**/
+[DecisionWindow]
+Pos						= (400,120)
+Font					= 1
+FontSize				= 16
+Width					= 240
+TextOffset				= (8,4)
+TextColor				= <16.0, 16.0, 64.0>
+Frame					= "interface\menu\sprtex\frame.dtx"
+
+
+/***********************************************************
+**
+**	RadioWindow Layout
+**
+** The RadioWindow definition specifies data for displaying
+** multiplayer communication choices to the player.
+**
+**	Pos		(Point)
+**
+**		Position (relative to a 640x480 screen) of the window
+**
+**	Width (Int)
+**
+**		Specifies how wide the window should be
+**
+**	TextOffset	(Point)
+**
+**		How much the text is indented from the window edges
+**
+**	TextColor	(Vector)
+**
+**		The color to use for the text.
+**		<r, g, b>
+**
+**	Frame	(String)
+**
+**		Name of the texture to use for the window frame
+**
+**/
+[RadioWindow]
+Pos						= (400,175)
+Font					= 1
+FontSize				= 16
+Width					= 240
+TextOffset				= (8,4)
+TextColor				= <9.0, 0.0, 62.0>
+Frame					= "interface\menu\sprtex\frame.dtx"
+
+
+
+
+/************************************************************************
+**
+**	Overlay Layout
+**
+**	Sprite<N> (String)
+**
+**		Path to the sprite resource used as a mask for the overlay
+**
+**	Scale<N> (Float)
+**
+**		Amount to scale the overlay
+**
+**
+*/
+[Overlay]
+Sprite0		= "Interface\hud\Spr\Scope.spr"
+Scale0		= 0.08
+Sprite1		= "Interface\hud\Spr\Binocs.spr"
+Scale1		= 0.3
+Sprite2		= "Interface\hud\Spr\ssmask.spr"
+Scale2		= 0.23
+Sprite3		= "Interface\hud\Spr\static.spr"
+Scale3		= 0.1
+Sprite4		= "Interface\hud\Spr\Camera1.spr"
+Scale4		= 0.05
+Sprite5		= "Interface\hud\Spr\Camera2.spr"
+Scale5		= 0.05
+Sprite6		= "Interface\hud\Spr\zoomin.spr"
+Scale6		= 0.5
+Sprite7		= "Interface\hud\Spr\zoomout.spr"
+Scale7		= 0.5
+Sprite8		= "Interface\hud\Spr\target.spr"
+Scale8		= 0.07
+Sprite9		= "Interface\hud\Spr\overload.spr"
+Scale9		= 0.05
+Sprite10		= "Interface\hud\Spr\warning.spr"
+Scale10		= 0.05
+Sprite11		= "Interface\hud\Spr\ssdead.spr"
+Scale11		= 0.18
+Sprite12		= "Interface\hud\Spr\rogue.spr"
+Scale12		= 0.18
+Sprite13		= "Interface\hud\Spr\SSMaskX.spr"
+Scale13		= 0.23
+
+/************************************************************************
+**
+**  Character Layout
+**
+*/
+[Character0]
+Name			= "Cate1"
+Model			= "Props\Models\CInterface.ltb"
+Skin0			= "chars\skins\CateInterface.dtx"
+Skin1			= "chars\skins\CateInterfaceHead.dtx"
+Skin2			= "chars\skins\CateInterfaceHair.dtx"
+Skin3			= "chars\skins\CateInterfaceLash.dtx"
+Pos				= <75.0,-5.0,170.0>
+Scale			= 2.0
+Rotation		= 40.0
+RenderStyle0	= "RS\default.ltb"
+
+[Character1]
+Name			= "Cate2"
+Model			= "chars\models\hero_action.ltb"
+Skin0			= "chars\skins\CateAction.dtx"
+Skin1			= "chars\skins\CateActionHead.dtx"
+Skin2			= "chars\skins\CateActionHair.dtx"
+Skin3			= "chars\skins\CateActionLash.dtx"
+Pos				= <40.0,-45.0,80.0>
+Scale			= 2.0
+Rotation		= 40.0
+RenderStyle0	= "RS\default.ltb"
+
+[Character2]
+/* Note that this one is used for MP char selection 
+**	so the model and skin are just place holders
+*/
+Name			= "MPBase"
+Model			= "chars\models\hero_action.ltb"
+Skin0			= "chars\skins\CateAction.dtx"
+Pos				= <36.0,-19.0,80.0>
+Scale			= 0.6
+Rotation		= 40.0
+RenderStyle0	= "RS\default.ltb"
+MenuLayer		= 100	// Make this really high to ensure it gets rendered last.
+
+[Character3]
+/* Note that this one is used for MP char selection 
+**	so the model and skin are just place holders
+*/
+Name			= "MPBaseTeam0"
+Model			= "chars\models\hero_action.ltb"
+Skin0			= "chars\skins\CateAction.dtx"
+Pos				= <39.0,28.0,80.0>
+Scale			= 0.38
+Rotation		= 40.0
+RenderStyle0	= "RS\default.ltb"
+MenuLayer		= 100	// Make this really high to ensure it gets rendered last.
+
+[Character4]
+/* Note that this one is used for MP char selection 
+**	so the model and skin are just place holders
+*/
+Name			= "MPBaseTeam1"
+Model			= "chars\models\hero_action.ltb"
+Skin0			= "chars\skins\CateAction.dtx"
+Pos				= <39.0,-16.0,80.0>
+Scale			= 0.38
+Rotation		= 40.0
+RenderStyle0	= "RS\default.ltb"
+MenuLayer		= 100	// Make this really high to ensure it gets rendered last.
+
+
+
+
+
+/************************************************************************
+**
+**  Interface Lights Layout
+**
+*/
+
+[Light0]
+Name			= "Back"
+Pos				= <0.0,20.0,180.0>
+Color			= <130.0,130.0,175.0>
+Radius			= 1500.0
+
+[Light1]
+Name			= "MainLeft"
+Pos				= <-50.0,30.0,-30.0>
+Color			= <90.0,90.0,100.0>
+Radius			= 1000.0
+
+[Light2]
+Name			= "MainRight"
+Pos				= < 50.0,30.0,-30.0>
+Color			= <100.0,90.0,70.0>
+Radius			= 800.0
+
+[Light3]
+Name			= "Floor"
+Pos				= <0.0,-50.0,-50.0>
+Color			= <60.0,60.0,70.0>
+Radius			= 1200.0
+
+/************************************************************************
+**
+**  Interface FX Layout
+**
+*/
+[FX0]
+Name			= "MainBackFX"
+FXName			= "MainBackFX"
+Pos			= <0.0,0.0,250.0> 
+Loop			= 1
+
+[FX1]
+Name			= "MainIntroFX"
+FXName			= "MainIntroFX"
+Pos			= <0.0,-15.0,100.0>
+Loop			= 0
+
+[FX2]
+Name			= "MainLoopFX"
+FXName			= "MainLoopFX"
+Pos			= <0.0,-15.0,100.0>
+Loop			= 1
+
+[FX3]
+Name			= "CateInterfaceFX"
+FXName			= "CateInterfaceFX"
+Pos			= <50.0,-10.0,75.0> 
+Loop			= 0
+
+[FX4]
+Name			= "CateLoopFX"
+FXName			= "CateLoopFX"
+Pos			= <0.0,0.0,75.0> 
+Loop			= 1
+
+[FX5]
+Name			= "LoadingIntroFX"
+FXName			= "LoadingIntroFX"
+Pos			= <0.0,0.0,10.0>
+Loop			= 0
+
+[FX6]
+Name			= "LoadLoopFX"
+FXName			= "LoadLoopFX"
+Pos			= <0.0,0.0,10.0>
+Loop			= 1
+
+[FX7]
+Name			= "LoadingLoopFX"
+FXName			= "LoadingLoopFX"
+Pos			= <-1.0,-4.0,9.0>
+Loop			= 1
+
+[FX8]
+Name			= "ScopeOutFX"
+FXName			= "ScopeOutFX"
+Pos			= <0.0,-15.0,100.0>
+Loop			= 0
+
+[FX9]
+Name			= "LoadingIntroC1FX"
+FXName			= "LoadingIntroC1FX"
+Pos			= <0.0,0.0,10.0>
+Loop			= 1
+
+[FX10]
+Name			= "LoadingLoopC1FX"
+FXName			= "LoadingLoopC1FX"
+Pos			= <-1.0,-4.0,9.0>
+Loop			= 1
+
+[FX11]
+Name			= "LoadingIntroC3FX"
+FXName			= "LoadingIntroC3FX"
+Pos			= <0.0,0.0,10.0>
+Loop			= 1
+
+[FX12]
+Name			= "LoadingLoopC3FX"
+FXName			= "LoadingLoopC3FX"
+Pos			= <-1.0,-4.0,9.0>
+Loop			= 1
+
+[FX13]
+Name			= "LoadingIntroC6FX"
+FXName			= "LoadingIntroC6FX"
+Pos			= <0.0,0.0,10.0>
+Loop			= 1
+
+[FX14]
+Name			= "LoadingLoopC6FX"
+FXName			= "LoadingLoopC6FX"
+Pos			= <-1.0,-4.0,9.0>
+Loop			= 1
+
+[FX15]
+Name			= "LoadingIntroC11FX"
+FXName			= "LoadingIntroC11FX"
+Pos			= <0.0,0.0,10.0>
+Loop			= 1
+
+[FX16]
+Name			= "LoadingLoopC11FX"
+FXName			= "LoadingLoopC11FX"
+Pos			= <-1.0,-4.0,9.0>
+Loop			= 1
+
+[FX17]
+Name			= "LoadingIntroC2FX"
+FXName			= "LoadingIntroC2FX"
+Pos			= <0.0,0.0,10.0>
+Loop			= 1
+
+[FX18]
+Name			= "LoadingLoopC2FX"
+FXName			= "LoadingLoopC2FX"
+Pos			= <-1.0,-4.0,9.0>
+Loop			= 1
+
+[FX19]
+Name			= "LoadingIntroC4FX"
+FXName			= "LoadingIntroC4FX"
+Pos			= <0.0,0.0,10.0>
+Loop			= 1
+
+[FX20]
+Name			= "LoadingLoopC4FX"
+FXName			= "LoadingLoopC4FX"
+Pos			= <-1.0,-4.0,9.0>
+Loop			= 1
+
+[FX21]
+Name			= "LoadingIntroC5FX"
+FXName			= "LoadingIntroC5FX"
+Pos			= <0.0,0.0,10.0>
+Loop			= 1
+
+[FX22]
+Name			= "LoadingLoopC5FX"
+FXName			= "LoadingLoopC5FX"
+Pos			= <-1.0,-4.0,9.0>
+Loop			= 1
+
+[FX23]
+Name			= "LoadingIntroC7FX"
+FXName			= "LoadingIntroC7FX"
+Pos			= <0.0,0.0,10.0>
+Loop			= 1
+
+[FX24]
+Name			= "LoadingLoopC7FX"
+FXName			= "LoadingLoopC7FX"
+Pos			= <-1.0,-4.0,9.0>
+Loop			= 1
+
+[FX25]
+Name			= "LoadingIntroC8FX"
+FXName			= "LoadingIntroC8FX"
+Pos			= <0.0,0.0,10.0>
+Loop			= 1
+
+[FX26]
+Name			= "LoadingLoopC8FX"
+FXName			= "LoadingLoopC8FX"
+Pos			= <-1.0,-4.0,9.0>
+Loop			= 1
+
+[FX27]
+Name			= "LoadingIntroC9FX"
+FXName			= "LoadingIntroC9FX"
+Pos			= <0.0,0.0,10.0>
+Loop			= 1
+
+[FX28]
+Name			= "LoadingLoopC9FX"
+FXName			= "LoadingLoopC9FX"
+Pos			= <-1.0,-4.0,9.0>
+Loop			= 1
+
+[FX29]
+Name			= "LoadingIntroC10FX"
+FXName			= "LoadingIntroC10FX"
+Pos			= <0.0,0.0,10.0>
+Loop			= 1
+
+[FX30]
+Name			= "LoadingLoopC10FX"
+FXName			= "LoadingLoopC10FX"
+Pos			= <-1.0,-4.0,9.0>
+Loop			= 1
+
+[FX31]
+Name			= "LoadingIntroC12FX"
+FXName			= "LoadingIntroC12FX"
+Pos			= <0.0,0.0,10.0>
+Loop			= 1
+
+[FX32]
+Name			= "LoadingLoopC12FX"
+FXName			= "LoadingLoopC12FX"
+Pos			= <-1.0,-4.0,9.0>
+Loop			= 1
+
+[FX33]
+Name			= "LoadingIntroC13FX"
+FXName			= "LoadingIntroC13FX"
+Pos			= <0.0,0.0,10.0>
+Loop			= 1
+
+[FX34]
+Name			= "LoadingLoopC13FX"
+FXName			= "LoadingLoopC13FX"
+Pos			= <-1.0,-4.0,9.0>
+Loop			= 1
+
+[FX35]
+Name			= "LoadingIntroC14FX"
+FXName			= "LoadingIntroC14FX"
+Pos			= <0.0,0.0,10.0>
+Loop			= 1
+
+[FX36]
+Name			= "LoadingLoopC14FX"
+FXName			= "LoadingLoopC14FX"
+Pos			= <-1.0,-4.0,9.0>
+Loop			= 1
+
+[FX37]
+Name			= "LoadingIntroC15FX"
+FXName			= "LoadingIntroC15FX"
+Pos			= <0.0,0.0,10.0>
+Loop			= 1
+
+[FX38]
+Name			= "LoadingLoopC15FX"
+FXName			= "LoadingLoopC15FX"
+Pos			= <-1.0,-4.0,9.0>
+Loop			= 1
+
+[FX39]
+Name			= "LoadingIntroC1xFX"
+FXName			= "LoadingIntroC1xFX"
+Pos			= <0.0,0.0,10.0>
+Loop			= 1
+
+[FX40]
+Name			= "LoadingLoopC1xFX"
+FXName			= "LoadingLoopC1xFX"
+Pos			= <-1.0,-4.0,9.0>
+Loop			= 1
+
+[FX41]
+Name			= "LoadingIntroC2xFX"
+FXName			= "LoadingIntroC2xFX"
+Pos			= <0.0,0.0,10.0>
+Loop			= 1
+
+[FX42]
+Name			= "LoadingLoopC2xFX"
+FXName			= "LoadingLoopC2xFX"
+Pos			= <-1.0,-4.0,9.0>
+Loop			= 1
+
+[FX43]
+Name			= "LoadingIntroC3xFX"
+FXName			= "LoadingIntroC3xFX"
+Pos			= <0.0,0.0,10.0>
+Loop			= 1
+
+[FX44]
+Name			= "LoadingLoopC3xFX"
+FXName			= "LoadingLoopC3xFX"
+Pos			= <-1.0,-4.0,9.0>
+Loop			= 1
+
+[FX45]
+Name			= "LoadingIntroC4xFX"
+FXName			= "LoadingIntroC4xFX"
+Pos			= <0.0,0.0,10.0>
+Loop			= 1
+
+[FX46]
+Name			= "LoadingLoopC4xFX"
+FXName			= "LoadingLoopC4xFX"
+Pos			= <-1.0,-4.0,9.0>
+Loop			= 1
+
+[FX47]
+Name			= "LoadingIntroC5xFX"
+FXName			= "LoadingIntroC5xFX"
+Pos			= <0.0,0.0,10.0>
+Loop			= 1
+
+[FX48]
+Name			= "LoadingLoopC5xFX"
+FXName			= "LoadingLoopC5xFX"
+Pos			= <-1.0,-4.0,9.0>
+Loop			= 1
+
+[FX49]
+Name			= "LoadingIntroC6xFX"
+FXName			= "LoadingIntroC6xFX"
+Pos			= <0.0,0.0,10.0>
+Loop			= 1
+
+[FX50]
+Name			= "LoadingLoopC6xFX"
+FXName			= "LoadingLoopC6xFX"
+Pos			= <-1.0,-4.0,9.0>
+Loop			= 1
+
+[FX51]
+Name			= "LoadingIntroC7xFX"
+FXName			= "LoadingIntroC7xFX"
+Pos			= <0.0,0.0,10.0>
+Loop			= 1
+
+[FX52]
+Name			= "LoadingLoopC7xFX"
+FXName			= "LoadingLoopC7xFX"
+Pos			= <-1.0,-4.0,9.0>
+Loop			= 1
+
+[FX53]
+Name			= "LoadingIntroC8xFX"
+FXName			= "LoadingIntroC8xFX"
+Pos			= <0.0,0.0,10.0>
+Loop			= 1
+
+[FX54]
+Name			= "LoadingLoopC8xFX"
+FXName			= "LoadingLoopC8xFX"
+Pos			= <-1.0,-4.0,9.0>
+Loop			= 1
+
+[FX55]
+Name			= "LoadingIntroC9xFX"
+FXName			= "LoadingIntroC9xFX"
+Pos			= <0.0,0.0,10.0>
+Loop			= 1
+
+[FX56]
+Name			= "LoadingLoopC9xFX"
+FXName			= "LoadingLoopC9xFX"
+Pos			= <-1.0,-4.0,9.0>
+Loop			= 1
+
+[FX57]
+Name			= "LoadingIntroC10xFX"
+FXName			= "LoadingIntroC10xFX"
+Pos			= <0.0,0.0,10.0>
+Loop			= 1
+
+[FX58]
+Name			= "LoadingLoopC10xFX"
+FXName			= "LoadingLoopC10xFX"
+Pos			= <-1.0,-4.0,9.0>
+Loop			= 1
+
+[FX59]
+Name			= "LoadingIntroC12xFX"
+FXName			= "LoadingIntroC12xFX"
+Pos			= <0.0,0.0,10.0>
+Loop			= 1
+
+[FX60]
+Name			= "LoadingLoopC12xFX"
+FXName			= "LoadingLoopC12xFX"
+Pos			= <-1.0,-4.0,9.0>
+Loop			= 1
+
+[FX61]
+Name			= "LoadingIntroC13xFX"
+FXName			= "LoadingIntroC13xFX"
+Pos			= <0.0,0.0,10.0>
+Loop			= 1
+
+[FX62]
+Name			= "LoadingLoopC13xFX"
+FXName			= "LoadingLoopC13xFX"
+Pos			= <-1.0,-4.0,9.0>
+Loop			= 1
+
+[FX63]
+Name			= "LoadingIntroC14xFX"
+FXName			= "LoadingIntroC14xFX"
+Pos			= <0.0,0.0,10.0>
+Loop			= 1
+
+[FX64]
+Name			= "LoadingLoopC14xFX"
+FXName			= "LoadingLoopC14xFX"
+Pos			= <-1.0,-4.0,9.0>
+Loop			= 1
+
+[FX65]
+Name			= "ScopeOutCateInFX"
+FXName			= "ScopeOutCateInFX"
+Pos			= <0.0,-15.0,100.0>
+Loop			= 0
+
+[FX66]
+Name			= "CateBkgrndFX"
+FXName			= "CateBkgrndFX"
+Pos			= <0.0,-15.0,100.0> 
+Loop			= 1
+
+[FX67]
+Name			= "ScopeInCateOutFX"
+FXName			= "ScopeInCateOutFX"
+Pos			= <0.0,-15.0,100.0>
+Loop			= 0
+
+/************************************************************************
+** 
+**  Credits Layout
+**
+**	These sections specify data related to the Credits display
+**
+**	FadeInTime (float)
+**
+**		Number of seconds for text to fade in
+**
+**	HoldTime (float)
+**
+**		Number of seconds for text to stay visible
+**
+**	FadeOutTime (float)
+**
+**		Number of seconds for text to fade out
+**
+**	DelayTime (float)
+**
+**		Number of seconds for text to pause before next credit
+**
+**	PositionUL (point)
+**
+**		The position to use for credits displayed in the upper left.
+**		(This specifies the upper left corner and is relative to a 640x480 screen.)
+**
+**	PositionUR (point)
+**
+**		The position to use for credits displayed in the upper right.
+**		(This specifies the upper right corner and is relative to a 640x480 screen.)
+**
+**	PositionLR (point)
+**
+**		The position to use for credits displayed in the lower right.
+**		(This specifies the lower right corner and is relative to a 640x480 screen.)
+**
+**	PositionLL (point)
+**
+**		The position to use for credits displayed in the lower left.
+**		(This specifies the lower left corner and is relative to a 640x480 screen.)
+**
+*/
+
+[Credits]
+FadeInTime	= 0.5
+HoldTime	= 1.5 
+FadeOutTime = 0.5
+DelayTime	= 0.5
+PositionUL	= (80,90)
+PositionUR	= (560,90)
+PositionLR	= (560,390)
+PositionLL	= (80,390)
+
+
+
+[HUDCrosshair]
+Crosshair0	= "interface\hud\crosshair\Crosshair0"
+Crosshair1	= "interface\hud\crosshair\Crosshair1"
+Crosshair2	= "interface\hud\crosshair\Crosshair2"
+
+[HUDRespawn]
+BarPosY			= 344
+BarHeight		= 12
+BarScale		= 1.5
+BarTexture		= "Interface\hud\searchbar.dtx"
+TextPosY		= 320
+TextSize		= 18
+TextAlpha		= 1.0
+TextColor		= <255.0, 190.0, 18.0>
+TextDisAlpha	= 0.5
+TextDisColor	= <128.0, 128.0, 128.0>
+
+
+
+
+
+/************************************************************************
+**
+**	Screen Transition Declarations
+**
+**	A Transition will override the FX associated with a single menu screen.
+**	So when a screen gains focus, it will first inquire of the
+**	TransitionFXMgr if it has a special set of FX for the intro. If there
+**	is one, then BaseScreen will use that one.	If not, then BaseScreen
+**	will use the Intro/ShortIntro/LoopFX combo --if any-- for that screen.
+**
+**	In a similar vein, if a Transition has a "From" field but no "To" field,
+**	then this transition will always be used when leaving the "From" screen.
+**	If a Transition has a "To" field but no "From field, then it will be the
+**	equivilant to the IntroFX baked into that particular screen.  The rules
+**	of precedence will be that Transitions will always override something
+**	baked into a  screen's layout, and a Transition with both a "From" and a
+**	"To" field will always have precedence over a Transitions with just one
+**	of these two fields.
+**
+**	notes:
+**	*LoopFX will be played after the IntroFX with the corresponding number
+**	has ended.	For example when IntroFX1 finishes LoopFX1 should launch if
+**	indeed there actually was one.
+**	*If there are any duplicate Transitions only the first one will be used.
+**	*The FX being called must first be defined in the FX Layout area of this
+**	file.
+**
+**	[Transition0]
+**	TransitionFrom			= "ScreenSingle"
+**	TransitionTo			= "ScreenMain"
+**	IntroFX0				= "Menu_Main_Intro"
+**	ShortIntroFX0			= "Menu_Main_Introsh"
+**	LoopFX0 				= "Menu_Main_Loop"
+**	IntroFX1				= "AuxiliaryFX1"
+**
+**/
+
+
+[Transition0]	//----------------------------	Main
+TransitionTo			= "ScreenMain"
+IntroFX0			= "CateInterfaceFX"
+IntroFX1			= "MainIntroFX"
+LoopFX1				= "MainLoopFX"
+
+[Transition1]	//----------------------------	Single to Load
+TransitionFrom			= "ScreenSingle"
+TransitionTo			= "ScreenLoad"
+IntroFX0				= "ScopeOutCateInFX"
+ShortIntroFX0			= "ScopeOutCateInFX"
+LoopFX0					= "CateBkgrndFX"
+
+[Transition2]	//----------------------------	Load back to single
+TransitionFrom			= "ScreenLoad"
+TransitionTo			= "ScreenSingle"
+IntroFX0				= "ScopeInCateOutFX"
+ShortIntroFX0			= "ScopeInCateOutFX"
+LoopFX0					= "MainLoopFX"
+
+[Transition3]	//----------------------------	Multi to Host
+TransitionFrom			= "ScreenMulti"
+TransitionTo			= "ScreenHost"
+IntroFX0				= "ScopeOutCateInFX"
+ShortIntroFX0			= "ScopeOutCateInFX"
+LoopFX0					= "CateBkgrndFX"
+
+[Transition4]	//----------------------------	Host back to Multi
+TransitionFrom			= "ScreenHost"
+TransitionTo			= "ScreenMulti"
+IntroFX0				= "ScopeInCateOutFX"
+ShortIntroFX0			= "ScopeInCateOutFX"
+LoopFX0					= "MainLoopFX"
+
+[Transition5]	//----------------------------	Player to PlayerSkills
+TransitionFrom			= "ScreenPlayer"
+TransitionTo			= "ScreenPlayerSkills"
+IntroFX0				= "ScopeOutCateInFX"
+ShortIntroFX0			= "ScopeOutCateInFX"
+LoopFX0					= "CateBkgrndFX"
+
+[Transition6]	//----------------------------	PlayerSkills back to Player
+TransitionFrom			= "ScreenPlayerSkills"
+TransitionTo			= "ScreenPlayer"
+IntroFX0				= "ScopeInCateOutFX"
+ShortIntroFX0			= "ScopeInCateOutFX"
+LoopFX0					= "MainLoopFX"
+
+[Transition7]	//----------------------------	Multi to JoinGame
+TransitionFrom			= "ScreenMulti"
+TransitionTo			= "ScreenJoinGame"
+IntroFX0				= "ScopeOutCateInFX"
+ShortIntroFX0			= "ScopeOutCateInFX"
+LoopFX0					= "CateBkgrndFX"
+
+[Transition8]	//----------------------------	JoinGame back to Multi
+TransitionFrom			= "ScreenJoinGame"
+TransitionTo			= "ScreenMulti"
+IntroFX0				= "ScopeInCateOutFX"
+ShortIntroFX0			= "ScopeInCateOutFX"
+LoopFX0					= "MainLoopFX"
+
+[Transition9]	//----------------------------	Multi to JoinLan
+TransitionFrom			= "ScreenMulti"
+TransitionTo			= "ScreenJoinLan"
+IntroFX0				= "ScopeOutCateInFX"
+ShortIntroFX0			= "ScopeOutCateInFX"
+LoopFX0					= "CateBkgrndFX"
+
+[Transition10]	//----------------------------	JoinLan back to Multi
+TransitionFrom			= "ScreenJoinLan"
+TransitionTo			= "ScreenMulti"
+IntroFX0				= "ScopeInCateOutFX"
+ShortIntroFX0			= "ScopeInCateOutFX"
+LoopFX0					= "MainLoopFX"
+
+[Transition11]	//----------------------------	Host to Load
+TransitionFrom			= "ScreenHost"
+TransitionTo			= "ScreenLoad"
+LoopFX0				= "CateBkgrndFX"
+
+[Transition12]	//----------------------------	Load back to Host
+TransitionFrom			= "ScreenLoad"
+TransitionTo			= "ScreenHost"
+LoopFX0				= "CateBkgrndFX"
+
+[Transition13]	//----------------------------	Main to Multi
+TransitionFrom			= "ScreenMain"
+TransitionTo			= "ScreenMulti"
+IntroFX0				= "MainLoopFX"
+ShortIntroFX0			= "MainLoopFX"
+LoopFX0				= "CateBkgrndFX"
+
+[Transition14]	//----------------------------	Multi back to Main
+TransitionFrom			= "ScreenMulti"
+TransitionTo			= "ScreenMain"
+//IntroFX0				= "ScopeInCateOutFX"
+//ShortIntroFX0			= "ScopeInCateOutFX"
+LoopFX0					= "MainLoopFX"
+
+[Transition15]	//----------------------------	Multi to Player
+TransitionFrom			= "ScreenMulti"
+TransitionTo			= "ScreenPlayer"
+LoopFX0				= "MainLoopFX"
+
+[Transition16]	//----------------------------	Player back to Multi
+TransitionFrom			= "ScreenPlayer"
+TransitionTo			= "ScreenMulti"
+LoopFX0				= "MainLoopFX"
+
+[Transition17]	//----------------------------	Host to HostOptions
+TransitionFrom			= "ScreenHost"
+TransitionTo			= "ScreenHostOptions"
+IntroFX0				= "CateBkgrndFX"
+ShortIntroFX0			= "CateBkgrndFX"
+LoopFX0				= "CateBkgrndFX"
+
+[Transition18]	//----------------------------	HostOptions back to Host
+TransitionFrom			= "ScreenHostOptions"
+TransitionTo			= "ScreenHost"
+IntroFX0				= "CateBkgrndFX"
+ShortIntroFX0			= "CateBkgrndFX"
+LoopFX0				= "CateBkgrndFX"
+
+[Transition19]	//----------------------------	Host to HostMission
+TransitionFrom			= "ScreenHost"
+TransitionTo			= "ScreenHostMission"
+IntroFX0				= "CateBkgrndFX"
+ShortIntroFX0			= "CateBkgrndFX"
+LoopFX0				= "CateBkgrndFX"
+
+[Transition20]	//----------------------------	HostMission back to Host
+TransitionFrom			= "ScreenHostMission"
+TransitionTo			= "ScreenHost"
+IntroFX0				= "CateBkgrndFX"
+ShortIntroFX0			= "CateBkgrndFX"
+LoopFX0				= "CateBkgrndFX"
+
+[Transition21]	//----------------------------	Main back to PreLoad
+TransitionFrom			= "ScreenMain"
+TransitionTo			= "ScreenPreLoad"
+IntroFX0				= "ScopeOutFX"
+ShortIntroFX0			= "ScopeOutFX"
+
+[Transition22]	//----------------------------	Host to HostOptions
+TransitionFrom			= "ScreenHost"
+TransitionTo			= "ScreenHostDMOptions"
+IntroFX0				= "CateBkgrndFX"
+ShortIntroFX0			= "CateBkgrndFX"
+LoopFX0				= "CateBkgrndFX"
+
+[Transition23]	//----------------------------	HostOptions back to Host
+TransitionFrom			= "ScreenHostDMOptions"
+TransitionTo			= "ScreenHost"
+IntroFX0				= "CateBkgrndFX"
+ShortIntroFX0			= "CateBkgrndFX"
+LoopFX0				= "CateBkgrndFX"
+
+[Transition24]	//----------------------------	Host to HostOptions
+TransitionFrom			= "ScreenHost"
+TransitionTo			= "ScreenHostTDMOptions"
+IntroFX0				= "CateBkgrndFX"
+ShortIntroFX0			= "CateBkgrndFX"
+LoopFX0				= "CateBkgrndFX"
+
+[Transition25]	//----------------------------	HostOptions back to Host
+TransitionFrom			= "ScreenHostTDMOptions"
+TransitionTo			= "ScreenHost"
+IntroFX0				= "CateBkgrndFX"
+ShortIntroFX0			= "CateBkgrndFX"
+LoopFX0				= "CateBkgrndFX"
+
+
+[Transition26]	//----------------------------	Host to HostOptions
+TransitionFrom			= "ScreenHost"
+TransitionTo			= "ScreenHostDDOptions"
+IntroFX0				= "CateBkgrndFX"
+ShortIntroFX0			= "CateBkgrndFX"
+LoopFX0				= "CateBkgrndFX"
+
+[Transition27]	//----------------------------	HostOptions back to Host
+TransitionFrom			= "ScreenHostDDOptions"
+TransitionTo			= "ScreenHost"
+IntroFX0				= "CateBkgrndFX"
+ShortIntroFX0			= "CateBkgrndFX"
+LoopFX0				= "CateBkgrndFX"
+
+[Transition28]	//----------------------------	Host to HostOptions
+TransitionFrom			= "ScreenHost"
+TransitionTo			= "ScreenHostWeapons"
+IntroFX0				= "CateBkgrndFX"
+ShortIntroFX0			= "CateBkgrndFX"
+LoopFX0				= "CateBkgrndFX"
+
+[Transition29]	//----------------------------	Player to PlayerTeam
+TransitionTo			= "ScreenPlayerTeam"
+IntroFX0				= "ScopeOutCateInFX"
+ShortIntroFX0			= "ScopeOutCateInFX"
+LoopFX0					= "CateBkgrndFX"
+
+[Transition30]	//----------------------------	PlayerTeam back to Player
+TransitionFrom			= "ScreenPlayerTeam"
+IntroFX0				= "ScopeInCateOutFX"
+ShortIntroFX0			= "ScopeInCateOutFX"
+LoopFX0					= "MainLoopFX"

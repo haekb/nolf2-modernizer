@@ -254,6 +254,9 @@
     <ClCompile Include="HUDFramerate.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="ScreenJukebox.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TO2ClientWeaponAllocator.h">
@@ -503,6 +506,9 @@
       <Filter>Discord</Filter>
     </ClInclude>
     <ClInclude Include="HUDFramerate.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ScreenJukebox.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
