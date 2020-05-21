@@ -1298,6 +1298,8 @@ BEGIN
                             "A hardware TnL device was unable to be created. This could be due to either not having DirectX 8.1 installed or not having a hardware TnL capable video card. Both of these are required to play %1!s! and although you can continue to play the game by pressing OK, please note that it is not officially supported and may result in crashes, lockups, and poor performance."
     IDS_JUKEBOX             "Jukebox"
     IDS_HELP_JUKEBOX        "Play a tune or two!"
+    IDS_FOV                 "Field of View"
+    IDS_HELP_FOV            "Horizontal Field of View (Equivalent to %1!s! when corrected for aspect ratio.)"
 END
 
 STRINGTABLE
@@ -1331,6 +1333,12 @@ BEGIN
     IDS_HELP_ADD_WEAPONS    "Add items to the restricted list."
     IDS_HELP_REM_WEAPONS    "Remove items from the restricted list."
     IDS_MISSING_WORLD       "Unable to load world resources."
+END
+
+STRINGTABLE
+BEGIN
+    IDS_RUN_IN_BACKGROUND   "Run in Background"
+    IDS_HELP_RUN_IN_BACKGROUND "Keep the game running when it's minimized."
 END
 
 #endif    // English (United States) resources

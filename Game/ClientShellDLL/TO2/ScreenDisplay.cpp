@@ -138,6 +138,12 @@ CScreenDisplay::CScreenDisplay()
 
     m_pResolutionCtrl   = LTNULL;
 	m_pHardwareCursor	= LTNULL;
+
+	m_pGamma = LTNULL;
+	m_pFOV = LTNULL;
+	m_pRunInBackground = LTNULL;
+
+	m_bRunInBackground = LTFALSE;
 }
 
 CScreenDisplay::~CScreenDisplay()
@@ -202,12 +208,13 @@ LTBOOL CScreenDisplay::Build()
 	pBar->SetScale(g_pInterfaceResMgr->GetYRatio());
 	AddControl(pBar);
 
-
-	m_pFOV = AddSlider("Field of View", 0, kGap, kWidth, -1, &m_nFOV);
+	// Help is dynamically set! Check our UpdateHelpText()
+	m_pFOV = AddSlider(IDS_FOV, 0, kGap, kWidth, -1, &m_nFOV);
 	m_pFOV->SetSliderRange(70, 150);
 	m_pFOV->SetSliderIncrement(1);
 	m_pFOV->SetNumericDisplay(LTTRUE);
 
+	m_pRunInBackground = AddToggle(IDS_RUN_IN_BACKGROUND, IDS_HELP_RUN_IN_BACKGROUND, kGap, &m_bRunInBackground);
 
  	// Make sure to call the base class
 	if (!CBaseScreen::Build()) return LTFALSE;
@@ -436,12 +443,13 @@ void CScreenDisplay::OnFocus(LTBOOL bFocus)
 		m_bHardwareCursor = pProfile->m_bHardwareCursor;
 		m_bVSync = pProfile->m_bVSync;
 
-
 		float gamma = pProfile->m_fGamma;
 
 		m_nGamma = ConvertToSlider(gamma);
 
 		m_nFOV = pProfile->m_nFOV;
+
+		m_bRunInBackground = pProfile->m_bRunInBackground;
 
 		m_pHardwareCursor->Enable(GetConsoleInt("DisableHardwareCursor",0) == 0);
 
@@ -476,6 +484,7 @@ void CScreenDisplay::OnFocus(LTBOOL bFocus)
 
 		if (m_bEscape)
 		{
+			pProfile->m_bRunInBackground = m_bRunInBackground;
 			pProfile->m_nFOV = m_nFOV;
 			pProfile->m_bHardwareCursor = m_bHardwareCursor;
 			pProfile->m_bVSync = m_bVSync;
@@ -722,10 +731,10 @@ void CScreenDisplay::UpdateHelpText()
 		LTFLOAT verticalFOV = g_pInterfaceResMgr->GetVerticalFOV(m_nFOV);
 		LTFLOAT squareFOV = g_pInterfaceResMgr->Get4x3HorizontalFOV(verticalFOV);
 
-		// TODO: Better explain that this is basically the fov you'd set in a source engine game.
-		std::string helpText = "Horizontal Field of View (Equivalent to " + std::to_string( (int)std::floor(squareFOV) ) + " when corrected for aspect ratio.)";
-
+		HSTRING hHelpTxt = g_pLTClient->FormatString(IDS_HELP_FOV, std::to_string((int)std::floor(squareFOV)).c_str());
+		std::string helpText = g_pLTClient->GetStringData(hHelpTxt);	
 		s_pHelpStr->SetText(helpText.c_str());
+		g_pLTClient->FreeString(hHelpTxt);
 		m_dwCurrHelpID = 0;
 		return;
 	}

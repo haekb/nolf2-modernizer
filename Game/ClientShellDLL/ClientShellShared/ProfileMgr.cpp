@@ -1041,6 +1041,8 @@ void CUserProfile::ApplyDisplay()
 
 	WriteConsoleInt("FOV", m_nFOV);
 
+	WriteConsoleInt("RunInBackground", m_bRunInBackground);
+
 	WriteConsoleFloat("GammaR",m_fGamma);
 	WriteConsoleFloat("GammaG",m_fGamma);
 	WriteConsoleFloat("GammaB",m_fGamma);
@@ -1522,6 +1524,8 @@ void CUserProfile::SetDisplay()
 	m_nFOV = GetConsoleInt("FOV", 75);
 
 	SDL_Log("Got FOV %d", m_nFOV);
+
+	m_bRunInBackground = GetConsoleInt("RunInBackground", 0);
 
 	// The current render mode
 	RMode currentMode;

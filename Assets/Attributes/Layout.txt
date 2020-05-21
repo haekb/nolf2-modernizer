@@ -207,7 +207,7 @@ LoopFX0				= "MainLoopFX"
 [ScreenDisplay]
 ColumnWidth			= 200
 SliderWidth			= 240
-FrameRect			= (273,176,563,324)
+FrameRect			= (273,176,563,385)
 FrameTexture		= "interface\menu\sprtex\menuframe2.dtx"
 ScaleName0			= "mainASIHWtext"
 Light0				= "MainLeft"

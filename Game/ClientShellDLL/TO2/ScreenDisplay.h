@@ -91,6 +91,7 @@ private:
 	LTBOOL							m_bVSync;
 	int								m_nGamma;
 	int								m_nFOV;
+	LTBOOL							m_bRunInBackground;
 
 	CLTGUICycleCtrl					*m_pResolutionCtrl;		// The resolution control
 
@@ -100,6 +101,7 @@ private:
 	CLTGUISlider					*m_pGamma;
 	CLTGUICycleCtrl					*m_pHardwareCursor;
 
+	CLTGUIToggle					*m_pRunInBackground;
 
 
 };

@@ -499,6 +499,9 @@ copy $(TargetPath) $(GAME_REZ_DIR) </Command>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ResourceCompile Include="..\Shared\Lang\EN\ClientResShared.rc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ResourceCompile>
     <ResourceCompile Include="Lang\DE\ClientRes.rc">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Lang\DE;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
