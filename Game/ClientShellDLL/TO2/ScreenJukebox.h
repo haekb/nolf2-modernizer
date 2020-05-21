@@ -24,7 +24,10 @@ protected:
 
 	CMusicState m_PreviousMusicState;
 
-	CLTGUIListCtrl* m_SongListCtrl;
+	CLTGUIListCtrl* m_pSongListCtrl;
+	CLTGUIFrame* m_pSongFrame;
+
+	int m_nWidth;
 
 	std::string m_sCurrentSong;
 	std::map<std::string, int>* m_CurrentSongList;

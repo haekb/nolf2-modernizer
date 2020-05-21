@@ -24,11 +24,11 @@ namespace
 	int nArrowWidth = 0;
 	int nIndent = 0;
 
-	// FOLDER_CMD_CUSTOM ... FOLDER_CMD_CUSTOM + 500
+	// CMD_CUSTOM ... CMD_CUSTOM + 500
 	// are dedicated for themes
 
 	// Just bump this up to not conflict with the attribute file
-	const int PLAY_SONG = CMD_CUSTOM + 500;// (FOLDER_CMD_CUSTOM + 500);
+	const int PLAY_SONG = CMD_CUSTOM + 500;
 }
 
 
@@ -38,6 +38,8 @@ CScreenJukebox::CScreenJukebox()
 
 	m_CurrentSongList = nullptr;
 	m_PreviousMusicState.Clear();
+
+	m_nWidth = 0;
 }
 
 CScreenJukebox::~CScreenJukebox()
@@ -107,21 +109,34 @@ LTBOOL CScreenJukebox::Build()
 		m_Songs[nThemeID].insert(std::pair<std::string, int>(szName, nIntensityLevel));
 	}
 
+	// Create our beautiful frame
 	LTIntPt pos;
-	int nBarHeight = g_pLayoutMgr->GetScreenFontSize(SCREEN_ID_JUKEBOX);//GetMediumFont()->GetHeight();
+	char szFrame[128];
+	g_pLayoutMgr->GetScreenCustomString(SCREEN_ID_SINGLE, "FrameTexture", szFrame, sizeof(szFrame));
+	HTEXTURE hFrame = g_pInterfaceResMgr->GetTexture(szFrame);
 
-	//Add PlayerList Here
-	pos.x = rcSongListRect.left + nIndent;
-	pos.y = rcSongListRect.top + nBarHeight;
-	nListHeight = (rcSongListRect.bottom - rcSongListRect.top) - nBarHeight;
-	nListHeight += 24;	// [blg] tweak
-	nListWidth = (rcSongListRect.right - rcSongListRect.left) - nArrowWidth;
+	auto rect = g_pLayoutMgr->GetScreenCustomRect((eScreenID)m_nScreenID, "SongListRect");
+	auto nHeight = (rect.bottom - rect.top);
+	auto nWidth = (rect.right - rect.left);
+	pos = LTIntPt(rect.left, rect.top);
 
-	int nListHeight = 400;
-	int nListWidth = 200;
+	m_pSongFrame = debug_new(CLTGUIFrame);
+	m_pSongFrame->Create(hFrame, nWidth, nHeight, LTTRUE);
+	m_pSongFrame->SetBasePos(pos);
+	m_pSongFrame->Show(LTFALSE);
+	AddControl(m_pSongFrame);
 
-	m_SongListCtrl = CreateList(pos, nListHeight, LTTRUE);
-	AddControl(m_SongListCtrl);
+	nWidth -= 16;
+
+	// This is used for our text items in the list.
+	m_nWidth = nWidth;
+
+	// Okay create the actual list.
+	m_pSongListCtrl = CreateList(pos, nHeight, LTTRUE);
+	m_pSongListCtrl->SetIndent(LTIntPt(8, 8));
+	m_pSongListCtrl->SetFrameWidth(2);
+	m_pSongListCtrl->Show(LTFALSE);
+	AddControl(m_pSongListCtrl);
 
 	// Make sure to call the base class
 	if (!CBaseScreen::Build()) return LTFALSE;
@@ -141,7 +156,7 @@ uint32 CScreenJukebox::OnCommand(uint32 dwCommand, uint32 dwParam1, uint32 dwPar
 	{
 		UpdateData(LTTRUE);
 
-		auto pCtrl = (CLTGUITextCtrl*)m_SongListCtrl->GetSelectedControl();
+		auto pCtrl = (CLTGUITextCtrl*)m_pSongListCtrl->GetSelectedControl();
 		std::string key = pCtrl->GetString()->GetText();
 
 		m_sCurrentSong = key;
@@ -169,7 +184,7 @@ void CScreenJukebox::OnFocus(LTBOOL bFocus)
 		m_PreviousMusicState = *g_pGameClientShell->GetMusic()->GetMusicState();
 
 		// Clear the list, in case they're coming in for the second time.
-		m_SongListCtrl->RemoveAll();
+		m_pSongListCtrl->RemoveAll();
 
 		CBaseScreen::OnFocus(bFocus);
 		return;
@@ -183,12 +198,17 @@ void CScreenJukebox::OnFocus(LTBOOL bFocus)
 	// Restore the intensity!
 	g_pGameClientShell->GetMusic()->ChangeIntensity(m_PreviousMusicState.nIntensity);
 
+	// Hide the controls
+	m_pSongFrame->Show(LTFALSE);
+	m_pSongListCtrl->Show(LTFALSE);
 
 	CBaseScreen::OnFocus(bFocus);
 }
 
 LTBOOL CScreenJukebox::PlayScore(int scoreId)
 {
+	// NOLF2 likes to crash a lot with its DirectMusic implementation, 
+	// so let's make sure we're stopped before it unloads the "level" and loads our new "level" theme.
 	g_pGameClientShell->GetMusic()->Stop();
 
 	// excuse my mixed naming convetion here...
@@ -224,7 +244,7 @@ LTBOOL CScreenJukebox::PlayScore(int scoreId)
 	UpdateData(LTTRUE);
 
 	// Update the song list based on the newly selected theme!
-	m_SongListCtrl->RemoveAll();
+	m_pSongListCtrl->RemoveAll();
 	std::map<std::string, int>::iterator it = (*m_CurrentSongList).begin();
 	while (it != (*m_CurrentSongList).end()) {
 
@@ -232,13 +252,18 @@ LTBOOL CScreenJukebox::PlayScore(int scoreId)
 		HSTRING hTemp = g_pLTClient->CreateString((char*)it->first.c_str());
 
 		CLTGUITextCtrl* pCtrl = CreateTextItem((char*)(LPCTSTR)(it->first.c_str()), PLAY_SONG, 0);
+		pCtrl->SetFixedWidth(m_nWidth);
 
-		m_SongListCtrl->AddControl(pCtrl);
+		m_pSongListCtrl->AddControl(pCtrl);
 
 		// Free the strings
 		g_pLTClient->FreeString(hTemp);
 		it++;
 	}
+
+	// Display the frame and list controls.
+	m_pSongFrame->Show(LTTRUE);
+	m_pSongListCtrl->Show(LTTRUE);
 
 	return LTTRUE;
 }
