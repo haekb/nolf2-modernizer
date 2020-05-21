@@ -46,7 +46,7 @@ LTBOOL CScreenOptions::Build()
 	CLTGUITextCtrl* pControls = AddTextItem(IDS_CONTROLS, CMD_CONTROLS, IDS_HELP_CONTROLS);
 	CLTGUITextCtrl* pGame = AddTextItem(IDS_GAME_OPTIONS, CMD_GAME, IDS_HELP_GAME_OPTIONS);
 	CLTGUITextCtrl* pPerf = AddTextItem(IDS_PERFORMANCE, CMD_PERFORMANCE, IDS_HELP_PERFORMANCE);
-	CLTGUITextCtrl* pJukebox = AddTextItem("JukeBox", CMD_JUKEBOX, 0);
+	CLTGUITextCtrl* pJukebox = AddTextItem(IDS_JUKEBOX, CMD_JUKEBOX, 0);
 
 	// Make sure to call the base class
 	if (! CBaseScreen::Build()) return LTFALSE;

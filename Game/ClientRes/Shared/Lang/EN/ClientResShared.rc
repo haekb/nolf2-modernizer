@@ -1,4 +1,4 @@
-//Microsoft Developer Studio generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
 #include "..\..\ClientResShared.h"
 
@@ -7,21 +7,18 @@
 //
 // Generated from the TEXTINCLUDE 2 resource.
 //
-//#include "afxres.h"
-#include <windows.h>
+#include "afxres.h"
 #include "..\..\..\..\shared\resshared.h"
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// English (U.S.) resources
+// English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-#ifdef _WIN32
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
-#endif //_WIN32
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -29,19 +26,19 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE DISCARDABLE 
+1 TEXTINCLUDE 
 BEGIN
     "..\\..\\ClientResShared.h\0"
 END
 
-2 TEXTINCLUDE DISCARDABLE 
+2 TEXTINCLUDE 
 BEGIN
     "#include ""afxres.h""\r\n"
     "#include ""..\\..\\..\\..\\shared\\resshared.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE DISCARDABLE 
+3 TEXTINCLUDE 
 BEGIN
     "#include ""ResShared.rc""\0"
 END
@@ -54,14 +51,15 @@ END
 // Cursor
 //
 
-IDC_POINTER             CURSOR  DISCARDABLE     "..\\..\\arrow.cur"
+IDC_POINTER             CURSOR                  "..\\..\\arrow.cur"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // String Table
 //
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_TITLE_GAME          "SINGLE PLAYER"
     IDS_TITLE_DIFFICULTY    "DIFFICULTY"
@@ -75,7 +73,7 @@ BEGIN
     IDS_TITLE_PERFORMANCE   "PERFORMANCE"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_TITLE_SOUND         "SOUND"
     IDS_TITLE_KEYBOARD      "KEYBOARD"
@@ -95,7 +93,7 @@ BEGIN
     IDS_TITLE_OBJECTIVES    "MISSION OBJECTIVES"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_TITLE_GAME_OPTIONS  "GAME OPTIONS"
     IDS_TITLE_INVENTORY     "EQUIPMENT"
@@ -115,7 +113,7 @@ BEGIN
     IDS_MULTIPLAYER_LAN     "Multiplayer (LAN)"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_HOST_NAME_DD_DEFAULT "NOLF2 Doomsday"
     IDS_HELP_MULTIPLAYER_LAN 
@@ -136,7 +134,7 @@ BEGIN
     IDS_NONE                "None"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_YES_VK_CODE         "89"
     IDS_NO_VK_CODE          "78"
@@ -156,7 +154,7 @@ BEGIN
     IDS_NOJOYSTICKDETECTED  "No joystick or gamepad detected.  Please check your controller configuration and connection."
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_FEW                 "Few"
     IDS_SOME                "Some"
@@ -176,7 +174,7 @@ BEGIN
     IDS_WHEEL_UP            "Wheel Up"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_WHEEL_DOWN          "Wheel Down"
     IDS_RANK                "Rank:"
@@ -196,7 +194,7 @@ BEGIN
     IDS_MOUSE               "Mouse"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_ACTIONSTRING_KEYS   "ViewKeys"
     IDS_ACTIONSTRING_INTEL  "ViewIntel"
@@ -216,7 +214,7 @@ BEGIN
     IDS_ACTIONSTRING_LASTWEAPON "LastWeapon"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_ABORT               "Leave game"
     IDS_DECODEMSG_CHARSET   "AaBbCcDdFfGgHhJjKkLlMmNnPpQqRrSsTtVvWwXxYyZz"
@@ -236,7 +234,7 @@ BEGIN
     IDS_SCORE_KILLS         "Kills:"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_JOYSTICK            "Configure joystick/gamepad"
     IDS_RESTOREDEFAULTS     "Restore defaults"
@@ -256,7 +254,7 @@ BEGIN
     IDS_CH_CROSSBAR         "Crossbar"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_CH_DOTCROSS         "Dot-cross"
     IDS_CH_POST             "Post"
@@ -276,7 +274,7 @@ BEGIN
     IDS_HELP_BANDWIDTH_CYCLE "Cycle bandwidth setting"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_SCORE               "Score:"
     IDS_HELP_BANDWIDTH_EDIT "Specify a custom bandwidth"
@@ -296,7 +294,7 @@ BEGIN
     IDS_HELP_IGNORE_TAUNTS  "Toggle the use of audio taunts."
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_ALLOW_TAUNTS        "Audio taunts"
     IDS_HELP_ALLOW_TAUNTS   "Toggle the use of audio taunts."
@@ -316,7 +314,7 @@ BEGIN
     IDS_HELP_BACK           "Return to the previous screen."
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_HELP_DIFFICULTY     "Set the game difficulty."
     IDS_HELP_DISPLAY        "Set display options."
@@ -336,7 +334,7 @@ BEGIN
     IDS_HOST_CAMPAIGN       "Campaign"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_WON_VAL_FAIL        "Error validating client"
     IDS_WON_SERV_VAL        "Server validation initialized"
@@ -356,7 +354,7 @@ BEGIN
     IDS_CONTROL_JUMP        "Jump"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_CONTROL_RELOAD      "Reload"
     IDS_CONTROL_DUCK        "Crouch"
@@ -376,7 +374,7 @@ BEGIN
     IDS_CONTROL_INTEL       "Intelligence"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_CONTROL_RUNLOCKTOGGLE "Toggle Sneak"
     IDS_CONTROL_WEAPON1     "Weapon 1"
@@ -396,7 +394,7 @@ BEGIN
     IDS_CONTROL_COMPASS     "Compass"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_CONTROL_LEANLEFT    "Lean left"
     IDS_CONTROL_LEANRIGHT   "Lean right"
@@ -416,7 +414,7 @@ BEGIN
     IDS_ACTIONSTRING_RUN    "Speed"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_ACTIONSTRING_FIRE   "Fire"
     IDS_ACTIONSTRING_ACTIVATE "Activate"
@@ -436,7 +434,7 @@ BEGIN
     IDS_ACTIONSTRING_ALT_FIRING "Alt-Fire"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_COMPILE             "Compile()"
     IDS_GAME_OPTIONS        "Game"
@@ -456,7 +454,7 @@ BEGIN
     IDS_HELP_TEAM_2         "Set options for the Red team"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_DEDICATED           "Dedicated server"
     IDS_HELP_DEDICATED      "Toggle whether to launch as a dedicated server or not."
@@ -476,7 +474,7 @@ BEGIN
     IDS_POLYGRIDBUMP        "PolyGrid bumpmapping"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_HELP_POLYGRIDBUMP   "Toggle use of bump mapping on polygrids."
     IDS_POLYGRIDFRES        "PolyGrid fresnel"
@@ -496,7 +494,7 @@ BEGIN
     IDS_OBJECTIVES_OPTIONAL " (optional)"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_HELP_PLAYER_SKILLS  "Adjust distribution of skill points."
     IDS_OBJECTIVES_CHANGED  "Mission objectives updated"
@@ -516,7 +514,7 @@ BEGIN
     IDS_VEHICLETURN         "Vehicle turn speed"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_HELP_VEHICLETURN    "Set the turn speed for vehicles."
     IDS_HELP_RETURN         "Return to game."
@@ -537,7 +535,7 @@ BEGIN
     IDS_HELP_ENV_DETAIL     "Set the amount of detail used in the environment including snow and grass effects."
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_RESPAWN             "Respawn"
     IDS_SOUND_MUSICENABLED  "Music"
@@ -557,7 +555,7 @@ BEGIN
     IDS_MOUSE_SENSITIVITY   "Mouse sensitivity"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_TARGET_SEARCHING    "searching"
     IDS_SKILL_SEARCH        "Search"
@@ -577,7 +575,7 @@ BEGIN
     IDS_TARGET_HACKINGKEYPAD "decoding"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_SCORE_TAGS          "Tags:"
     IDS_CONTROL_TEAM_SAY    "Team Say"
@@ -597,7 +595,7 @@ BEGIN
     IDS_FILTER_ALLMODS      "All Mods"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_TARGET_WELDING      "welding"
     IDS_TARGET_DECODING     "decoding"
@@ -617,7 +615,7 @@ BEGIN
     IDS_HELP_FILTER_PING    "Filters servers based on their ping."
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_MOUSE_INPUTRATE     "Mouse smoothing"
     IDS_MOUSE_LEFTBUTTON    "Left mouse button"
@@ -637,7 +635,7 @@ BEGIN
     IDS_POV_LOOK            "Look"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_JOYSTICK_AXISNONE   "None"
     IDS_HELP_AXIS           "Set the action associated with this joystick/gamepad axis."
@@ -657,7 +655,7 @@ BEGIN
     IDS_SERVER_NAME         "Server name"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_SERVER_PLAYERS      "Players"
     IDS_SERVER_PING         "Ping"
@@ -677,7 +675,7 @@ BEGIN
     IDS_FILTER_NOTEMPTY     "Not empty"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_FILTER_NOT_BOTH     "Not empty and not full"
     IDS_SERVER_LOCKED       "Lock"
@@ -697,7 +695,7 @@ BEGIN
     IDS_CAMERA_SCOPE        "Adjustable magnifaction lenses."
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_KILLEDMYSELF        "You killed yourself!"
     IDS_HEKILLEDME          "You were killed by %1!s!"
@@ -718,7 +716,7 @@ BEGIN
     IDS_SKILL_WEAPON        "Weapons"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_SKILL_WEAPON_DESC   "Affects how effective you are with your weapons as well as how quickly you can draw and reload them."
     IDS_SKILL_GADGET        "Gadgets"
@@ -738,7 +736,7 @@ BEGIN
     IDS_PASSWORD_DEFAULT    "password"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_TARGET_SEARCH       "search"
     IDS_TARGET_MOVE         "move body"
@@ -758,7 +756,7 @@ BEGIN
     IDS_TARGET_INNOCENT     "friend"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_CDKEY_ENTER         "Enter CD Key"
     IDS_CDKEY_INVALID       "Invalid CD Key"
@@ -778,7 +776,7 @@ BEGIN
     IDS_HELP_SERVER_NAME    "Sort servers by name."
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_ALLOW_SCMD_COMMANDS "Allow SCMD"
     IDS_TARGET_OPEN_2177    "open"
@@ -786,7 +784,7 @@ BEGIN
     IDS_TARGET_TIPOVER_2179 "tip over"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_HELP_SERVER_PLAYERS "Sort servers by number of players."
     IDS_HELP_SERVER_PING    "Sort servers by ping."
@@ -806,7 +804,7 @@ BEGIN
     IDS_HELP_SESSION_NAME   "Set the name of the session to host."
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_TARGET_DEFUSE       "defuse"
     IDS_DISARMED            "Disarmed!"
@@ -827,7 +825,7 @@ BEGIN
     IDS_DISCONNECT          "Disconnect from Server"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_HELP_SHELLCASINGS   "Toggles the rendering of weapon shell casings."
     IDS_SHUTDOWN            "End game"
@@ -849,7 +847,7 @@ BEGIN
     IDS_PERFORMANCE_FPS_MAX "Max Frame Rate: %1!d!"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_HELP_GAME_TYPE      "Set the type of game to host."
     IDS_HELP_HOST_OPTIONS   "Set multiplayer gameplay options."
@@ -869,7 +867,7 @@ BEGIN
     IDS_LOW_VIOLENCE        "Low Violence"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_JOYSTICK_UNBOUND    "Your joystick or gamepad is not currently configured. Do you want to configure it now?"
     IDS_FX_DETAIL           "Effects"
@@ -889,7 +887,7 @@ BEGIN
     IDS_NEW_VERSION         "An updated version of the game is available."
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_INTERNET            "Setting up Internet connection..."
     IDS_NO_CDKEY            "You must enter a valid CD Key to Join or Host games on the internet."
@@ -909,7 +907,7 @@ BEGIN
     IDS_LOOKING_FOR_SERVERS "Detecting servers..."
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_CONNECTING_TO_SERVER "Connecting to server"
     IDS_UNKNOWN_PLAYER      "a player"
@@ -929,7 +927,7 @@ BEGIN
     IDS_LOAD_TIPS           "Load screen tips"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_HELP_LOAD_TIPS      "Toggle display of tips on the loading screen."
     IDS_HELP_UPGRADE        "Click here to upgrade your skill to the next level."
@@ -952,7 +950,7 @@ BEGIN
     IDS_BUMPER_LOADING      "Loading..."
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_INTEL_ITEMS         "Intelligence Items:"
     IDS_UP                  "up"
@@ -973,7 +971,7 @@ BEGIN
     IDS_SERVER_PORT         "Port"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_NOQUICKSAVEGAME     "No quick-save game exists."
     IDS_LOADGAMEFAILED      "Error loading game."
@@ -993,7 +991,7 @@ BEGIN
     IDS_REBINDING_LIGHTMAPS "Rebinding lightmaps."
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_SHUTDOWNSERVER      "This will shutdown the server and disconnect all clients.  Continue?"
     IDS_NETERR_GENERIC      "ERROR - Unable to set up the network game."
@@ -1014,7 +1012,7 @@ BEGIN
     IDS_SERVER_WRONGVERSION "Unable to join because the game server is a different version. Visit www.the-operative.com for the latest product update."
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_JOINEDGAME          "%1!s! joined the game"
     IDS_LEFTGAME            "%1!s! left the game"
@@ -1035,7 +1033,7 @@ BEGIN
     IDS_WON_CDKEY_SUCCESS   "Successfully verified CD key"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_FIND_SERVERS        "Find servers"
     IDS_HELP_FIND_SERVERS   "Search for servers."
@@ -1056,7 +1054,7 @@ BEGIN
     IDS_EXIT_PLAYER_WAITING_1 "You are waiting for 1 player."
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_EXIT_PLAYER_WAITING_NAME "You are waiting for %1!s!."
     IDS_NET_GAME_END        "Level ending conditions"
@@ -1077,7 +1075,7 @@ BEGIN
                             "Set how much the game's difficulty is affected by additional players."
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_WON_CDKEY_FAIL      "Error verifying CD key"
     IDS_WON_PUB_STATUS      "Publishing server"
@@ -1097,7 +1095,7 @@ BEGIN
     IDS_WON_VAL_SUCCESS     "Client successfully validated"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_TEAM_1              "Blue team"
     IDS_HELP_CAMPAIGN_NAME  "Choose the multiplayer campaign to host."
@@ -1117,7 +1115,7 @@ BEGIN
     IDS_HELP_RESTORE        "Restore controls to default values."
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_HELP_SOUNDFX        "Toggle playing of sound effects."
     IDS_HELP_SOUNDVOL       "Set volume of sound effects."
@@ -1137,7 +1135,7 @@ BEGIN
     IDS_HELP_MOUSE_INPUT    "Set how much the mouse movement is smoothed."
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_HELP_MOUSE_BUTTON   "Set the action assigned to this button."
     IDS_HELP_NORMALTURN     "Set the normal turning speed for keyboard controls."
@@ -1157,7 +1155,7 @@ BEGIN
     IDS_HELP_CONTINUE_GAME  "Continue most recently saved game."
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_HELP_JOIN           "Join a multiplayer game."
     IDS_HELP_HOST           "Host a new multiplayer game."
@@ -1177,7 +1175,7 @@ BEGIN
     IDS_HELP_KEYBOARD       "Set keyboard configuration options."
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_HELP_CH_ALPHA       "Opacity of the crosshair."
     IDS_HELP_CH_R           "Red component of the crosshair color."
@@ -1197,7 +1195,7 @@ BEGIN
     IDS_HELP_PLAYER         "Set up your player options."
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_WEAPONS_STAY        "Weapons stay"
     IDS_WEAPONS_STAY_HELP   "Toggle whether weapons immediately respawn."
@@ -1217,13 +1215,13 @@ BEGIN
     IDS_HOST_ADD_WEAPON     "> Add restriction"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_SKILL_2110          "Sneaking"
     IDS_SKILL_2111          "Hiding"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_SKILL_2112          "Evasion"
     IDS_SKILL_2113          "Health"
@@ -1243,7 +1241,7 @@ BEGIN
     IDS_SKILL_2127          "Proficiency"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_SKILL_2128          "Efficiency"
     IDS_SKILL_2129          "Speed"
@@ -1255,7 +1253,7 @@ BEGIN
     IDS_SKILL_2135          "<unused>"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_SKILL_HELP_2150     "Reduces the amount of noise you make when running."
     IDS_SKILL_HELP_2151     "Reduces the time it takes for you to hide."
@@ -1269,7 +1267,7 @@ BEGIN
     IDS_SKILL_HELP_2159     "Improves your ability to hold a weapon steady while using a scope."
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_SKILL_HELP_2160     "Decreases the time needed to correct your aim after moving or firing."
     IDS_SKILL_HELP_2161     "Increases the amount of ammunition you can carry."
@@ -1289,7 +1287,7 @@ BEGIN
     IDS_SKILL_HELP_2175     "<unused>"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_APP_SHUTDOWN_1      "Error initializing the renderer. In order to play %1!s! you must have DirectX 8.1 installed."
     IDS_PROFILE_ALREADY_EXISTS 
@@ -1298,9 +1296,11 @@ BEGIN
                             "Are you sure that you want to delete this profile along with the settings and saved games associated with it?"
     IDS_APP_UNABLE_TO_CREATE_HW_TNL_DEVICE 
                             "A hardware TnL device was unable to be created. This could be due to either not having DirectX 8.1 installed or not having a hardware TnL capable video card. Both of these are required to play %1!s! and although you can continue to play the game by pressing OK, please note that it is not officially supported and may result in crashes, lockups, and poor performance."
+    IDS_JUKEBOX             "Jukebox"
+    IDS_HELP_JUKEBOX        "Play a tune or two!"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_RETAIL              "Retail"
     IDS_FILTER_CURRENTMOD   "Current Mod"
@@ -1320,7 +1320,7 @@ BEGIN
     IDS_DD_HVY_SCORE_HELP   "Points recevived for placing a heavy piece of the device."
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE
 BEGIN
     IDS_DD_LGT_SCORE        "Light piece score"
     IDS_DD_LGT_SCORE_HELP   "Points recevived for placing a light piece of the device."
@@ -1333,7 +1333,7 @@ BEGIN
     IDS_MISSING_WORLD       "Unable to load world resources."
 END
 
-#endif    // English (U.S.) resources
+#endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

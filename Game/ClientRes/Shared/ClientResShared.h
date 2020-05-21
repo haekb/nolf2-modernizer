@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Developer Studio generated include file.
-// Used by C:\Proj\TO2\Source\Game\ClientRes\Shared\Lang\EN\ClientResShared.rc
+// Microsoft Visual C++ generated include file.
+// Used by D:\GameDev\nolf2-modernizer\Game\ClientRes\Shared\Lang\EN\ClientResShared.rc
 //
 #define IDS_VERSION                     500
 #define IDS_TITLE_GAME                  502
@@ -1013,6 +1013,8 @@
 #define IDS_PROFILE_ALREADY_EXISTS      2201
 #define IDS_CONFIRM_DELETE_PROFILE      2202
 #define IDS_APP_UNABLE_TO_CREATE_HW_TNL_DEVICE 2203
+#define IDS_JUKEBOX                     2204
+#define IDS_HELP_JUKEBOX                2205
 
 // Next default values for new objects
 // 
