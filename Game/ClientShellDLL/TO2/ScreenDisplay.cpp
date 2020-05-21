@@ -35,7 +35,7 @@ namespace
 		case 8:
 			return 3;
 		case 16:
-			return 16;
+			return 4;
 		}
 
 		return 0;
@@ -164,9 +164,11 @@ CScreenDisplay::CScreenDisplay()
 	m_pFOV = LTNULL;
 	m_pRunInBackground = LTNULL;
 	m_pAntiAliasing = LTNULL;
+	m_pWindowed = LTNULL;
 
 	m_bRunInBackground = LTFALSE;
 	m_nAntiAliasing = 0;
+	m_bWindowed = LTFALSE;
 }
 
 CScreenDisplay::~CScreenDisplay()
@@ -206,6 +208,8 @@ LTBOOL CScreenDisplay::Build()
 
 	// Setup the resolution control based on the current renderer
 	SetupResolutionCtrl();
+
+	m_pWindowed = AddToggle(IDS_WINDOWED_MODE, IDS_HELP_WINDOWED_MODE, kGap, &m_bWindowed);
 
 	m_pHardwareCursor = AddToggle(IDS_HARDWARE_CURSOR,IDS_HELP_HARDWARE_CURSOR,kGap,&m_bHardwareCursor);
 
@@ -491,6 +495,8 @@ void CScreenDisplay::OnFocus(LTBOOL bFocus)
 
 		m_pAntiAliasing->SetSelIndex(GetAntiAliasIndex(m_nAntiAliasing));
 
+		m_bWindowed = pProfile->m_bWindowed;
+
 		// The current render mode
 		RMode currentMode;
 		g_pLTClient->GetRenderMode(&currentMode);
@@ -526,6 +532,7 @@ void CScreenDisplay::OnFocus(LTBOOL bFocus)
 			// Grab the actual variable value from our AA levels list.
 			m_nAntiAliasing = nAntiAliasLevels[m_pAntiAliasing->GetSelIndex()];
 
+			pProfile->m_bWindowed = m_bWindowed;
 			pProfile->m_nAntiAliasing = m_nAntiAliasing;
 			pProfile->m_bRunInBackground = m_bRunInBackground;
 			pProfile->m_nFOV = m_nFOV;

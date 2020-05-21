@@ -1023,6 +1023,8 @@
 #define IDS_SETTING_4X                  2211
 #define IDS_SETTING_8X                  2212
 #define IDS_SETTING_16X                 2213
+#define IDS_WINDOWED_MODE               2214
+#define IDS_HELP_WINDOWED_MODE          2215
 
 // Next default values for new objects
 // 

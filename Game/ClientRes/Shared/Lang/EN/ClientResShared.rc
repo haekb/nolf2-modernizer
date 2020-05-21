@@ -1343,6 +1343,8 @@ BEGIN
     IDS_SETTING_4X          "4x"
     IDS_SETTING_8X          "8x"
     IDS_SETTING_16X         "16x"
+    IDS_WINDOWED_MODE       "Windowed Mode"
+    IDS_HELP_WINDOWED_MODE  "Enable or disable windowed mode."
 END
 
 #endif    // English (United States) resources

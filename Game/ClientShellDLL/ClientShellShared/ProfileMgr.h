@@ -275,6 +275,7 @@ public:
 	uint32  m_nFOV;
 	LTBOOL	m_bRunInBackground;
 	uint32	m_nAntiAliasing;
+	LTBOOL  m_bWindowed;
 
 	//****************** display
 	sPerformCfg m_sPerformance;
