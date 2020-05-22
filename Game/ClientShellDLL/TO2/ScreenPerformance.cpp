@@ -36,6 +36,26 @@ namespace
 
 	LTBOOL g_bSettingOverall = LTFALSE;
 
+	int nAnisotropicLevels[5] = { 0, 2, 4, 8, 16 };
+
+	// Easier then doing an array lookup!
+	int GetAnisotropicIndex(int level)
+	{
+		switch (level) {
+		case 0:
+			return 0;
+		case 2:
+			return 1;
+		case 4:
+			return 2;
+		case 8:
+			return 3;
+		case 16:
+			return 4;
+		}
+
+		return 0;
+	}
 }
 
 	int nInitTB;
@@ -195,7 +215,7 @@ LTBOOL CScreenPerformance::Build()
 		pCtrl->SetFont(NULL,nListFontSize);
 		m_pDisplay->AddControl(pCtrl);	
 
-		pCtrl = CreateCycle(IDS_ANISOTROPIC, IDS_HELP_ANISOTROPIC,listGap,&m_sCfg.nSettings[kPerform_AnisotropicFiltering]);
+		pCtrl = CreateCycle(IDS_ANISOTROPIC, IDS_HELP_ANISOTROPIC,listGap,&m_nAnisotropic);
 		pCtrl->AddString(szOff);
 		pCtrl->AddString(LoadTempString(IDS_SETTING_2X));
 		pCtrl->AddString(LoadTempString(IDS_SETTING_4X));
@@ -847,6 +867,8 @@ void CScreenPerformance::UpdateData(LTBOOL bSaveAndValidate)
 	{
 		//the TripleBuffering setting will be 1 or 2, whereas the control needs it to be 0 or 1
 		m_nTripleBuffer = m_sCfg.nSettings[kPerform_TripleBuffering]-1;
+
+		m_nAnisotropic = GetAnisotropicIndex(m_sCfg.nSettings[kPerform_AnisotropicFiltering]);
 	}
 
 	CBaseScreen::UpdateData(bSaveAndValidate);
@@ -855,6 +877,9 @@ void CScreenPerformance::UpdateData(LTBOOL bSaveAndValidate)
 	{
 		//the TripleBuffering setting will be 1 or 2, whereas the control needs it to be 0 or 1
 		m_sCfg.nSettings[kPerform_TripleBuffering] = m_nTripleBuffer+1;
+
+		m_nAnisotropic = nAnisotropicLevels[m_nAnisotropic];
+		m_sCfg.nSettings[kPerform_AnisotropicFiltering] = m_nAnisotropic;
 	}
 
 }

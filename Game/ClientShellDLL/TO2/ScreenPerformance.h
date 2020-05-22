@@ -81,7 +81,7 @@ protected:
 	sPerformCfg	m_sCfg;
 	uint8	m_nOverall;
 	uint8	m_nTripleBuffer;
-
+	uint8  m_nAnisotropic;
 
 };
 
