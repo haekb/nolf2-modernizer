@@ -144,7 +144,8 @@ void SaveDisplaySettings()
 									"GammaB",
 									"FOV",
 									"RunInBackground",
-									"AntiAliasFSOverSample"
+									"AntiAliasFSOverSample",
+									"Windowed"
 								};
 
 	uint32 nNumVals = sizeof(pszValsToSave) / sizeof(pszValsToSave[0]);
@@ -1036,6 +1037,7 @@ void CUserProfile::ImplementMusicVolume()
 
 void CUserProfile::ApplyDisplay()
 {
+	LTBOOL previousWindowed = GetConsoleInt("Windowed", 0);
 	int previousAA = GetConsoleInt("AntiAliasFSOverSample", 0);
 	LTBOOL initVS = (LTBOOL)GetConsoleInt("VSyncOnFlip",1);
 	WriteConsoleInt("HardwareCursor",m_bHardwareCursor);
@@ -1050,6 +1052,9 @@ void CUserProfile::ApplyDisplay()
 	WriteConsoleFloat("GammaG",m_fGamma);
 	WriteConsoleFloat("GammaB",m_fGamma);
 
+	WriteConsoleInt("Windowed", m_bWindowed);
+
+	bool bWindowedModeChanged = previousWindowed != m_bWindowed;
 	bool bRestart = (initVS != m_bVSync) || (previousAA != m_nAntiAliasing);
 //	if (bRestart)
 //	{
@@ -1074,7 +1079,7 @@ void CUserProfile::ApplyDisplay()
 		}
 
 
-		if (pMode && !IsRendererEqual(pMode,&currentMode))
+		if ((pMode && bWindowedModeChanged) || (pMode && !IsRendererEqual(pMode,&currentMode)))
 		{
 			//switch renderers
 			g_pInterfaceResMgr->DrawMessage(IDS_REINITIALIZING_RENDERER);
@@ -1530,6 +1535,8 @@ void CUserProfile::SetDisplay()
 
 	m_bRunInBackground = GetConsoleInt("RunInBackground", 0);
 	m_nAntiAliasing = GetConsoleInt("AntiAliasFSOverSample", 0);
+
+	m_bWindowed = GetConsoleInt("Windowed", 0);
 
 	// The current render mode
 	RMode currentMode;

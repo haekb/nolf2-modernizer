@@ -20,6 +20,27 @@
 
 namespace
 {
+	int nAnisotropicLevels[5] = { 0, 2, 4, 8, 16 };
+
+	// Easier then doing an array lookup!
+	int GetAnisotropicIndex(int level)
+	{
+		switch (level) {
+		case 0:
+			return 0;
+		case 2:
+			return 1;
+		case 4:
+			return 2;
+		case 8:
+			return 3;
+		case 16:
+			return 4;
+		}
+
+		return 0;
+	}
+
 }
 	const std::string CONFIG_DIR("Config\\");
 	const std::string CONFIG_EXT(".txt");
@@ -317,6 +338,12 @@ void CPerformanceMgr::SetDetailLevels(int nLevel, int* pOffsetArray)
 //sets current options from given cfg
 void CPerformanceMgr::SetPerformanceOptions(sPerformCfg *pCfg, int nCfg)
 {
+	// Hack! Actually not sure how this system works, so we'll just do this..
+	auto anisotropic = nAnisotropicLevels[pCfg->nSettings[kPerform_AnisotropicFiltering]];
+	WriteConsoleInt("Anisotropic", anisotropic);
+	g_pLTClient->WriteConfigFile("autoexec.cfg");
+
+
 	for (int i = 0; i < kNumDetailSettings; i++)
 	{
 		WriteConsoleInt(sSettings[i].szVar,pCfg->nSettings[i]);
@@ -396,8 +423,7 @@ void CPerformanceMgr::SetPerformanceOptions(sPerformCfg *pCfg, int nCfg)
 		WriteConsoleFloat("SnowDensityScale",  1.0f );
 		break;
 	}
-	
-	
+
 
 	nDetail = pCfg->nSettings[kPerform_DetailLevel];
 	if ( nDetail >= 0 && nDetail < kNumDetailLevels)
@@ -428,6 +454,8 @@ void CPerformanceMgr::SetPerformanceOptions(sPerformCfg *pCfg, int nCfg)
 		WriteConsoleString("PerformanceConfig",pPresetCfg->szName);
 	}
 
+
+
 //	g_pLTClient->WriteConfigFile("autoexec.cfg");
 
 }
@@ -454,6 +482,9 @@ void CPerformanceMgr::LoadPerformanceOptions(CButeMgr &buteMgr,sPerformCfg *pCfg
 	{
 		pCfg->nSettings[i] = buteMgr.GetInt("Settings",sSettings[i].szName, 0);
 	}
+
+	// Apply the proper anisotropic index!
+	pCfg->nSettings[kPerform_AnisotropicFiltering] = GetAnisotropicIndex(GetConsoleInt("Anisotropic", 0));
 
 	int nDetail = pCfg->nSettings[kPerform_DetailLevel];
 	if ( nDetail >= 0 && nDetail < kNumDetailLevels)

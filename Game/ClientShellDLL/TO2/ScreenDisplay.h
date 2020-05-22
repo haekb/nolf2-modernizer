@@ -93,6 +93,7 @@ private:
 	int								m_nFOV;
 	LTBOOL							m_bRunInBackground;
 	int								m_nAntiAliasing;
+	LTBOOL							m_bWindowed;
 
 	CLTGUICycleCtrl					*m_pResolutionCtrl;		// The resolution control
 
@@ -104,6 +105,7 @@ private:
 
 	CLTGUIToggle					*m_pRunInBackground;
 	CLTGUICycleCtrl					*m_pAntiAliasing;
+	CLTGUIToggle					*m_pWindowed;
 
 
 };

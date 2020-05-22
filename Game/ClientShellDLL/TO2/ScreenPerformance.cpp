@@ -197,7 +197,10 @@ LTBOOL CScreenPerformance::Build()
 
 		pCtrl = CreateCycle(IDS_ANISOTROPIC, IDS_HELP_ANISOTROPIC,listGap,&m_sCfg.nSettings[kPerform_AnisotropicFiltering]);
 		pCtrl->AddString(szOff);
-		pCtrl->AddString(szOn);
+		pCtrl->AddString(LoadTempString(IDS_SETTING_2X));
+		pCtrl->AddString(LoadTempString(IDS_SETTING_4X));
+		pCtrl->AddString(LoadTempString(IDS_SETTING_8X));
+		pCtrl->AddString(LoadTempString(IDS_SETTING_16X));
 		pCtrl->SetFont(NULL,nListFontSize);
 		m_pDisplay->AddControl(pCtrl);	
 		
