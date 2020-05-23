@@ -57,7 +57,7 @@ void CHUDMissionText::Update()
 	if (!IsVisible() || m_bPause) return;
 
 	if (m_fScale != g_pInterfaceResMgr->GetYRatio()) {
-		ApplyPosition(g_pInterfaceResMgr->GetXRatio(), g_pInterfaceResMgr->Get4x3Offset());
+		ApplyPosition(g_pInterfaceResMgr->GetYRatio(), g_pInterfaceResMgr->Get4x3Offset());
 
 	}
 	m_Text.Update();
@@ -77,7 +77,7 @@ void CHUDMissionText::Start(char *pszString)
 	m_bVisible = LTTRUE;
 	m_bPause = LTFALSE;
 
-	ApplyPosition(g_pInterfaceResMgr->GetXRatio(), g_pInterfaceResMgr->Get4x3Offset());
+	ApplyPosition(g_pInterfaceResMgr->GetYRatio(), g_pInterfaceResMgr->Get4x3Offset());
 
 	// Set up the timed text and start it off
 	m_Text.Init( m_Format );
