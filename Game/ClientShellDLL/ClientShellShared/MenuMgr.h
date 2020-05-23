@@ -131,6 +131,8 @@ public:
 	void	SlideIn();
 	void	SlideOut();
 
+	void	AdjustControls();
+
 private:
 
 	void	SwitchToMenu(CBaseMenu *pNewMenu);
@@ -167,6 +169,9 @@ private:
 	std::string		m_sSlideInSound;
 	std::string		m_sSlideOutSound;
 
+	LTIntPt			m_nBarSize;
+	int				m_nBarSpacing;
+	int				m_nFontSize;
 };
 
 #endif // _MENU_MGR_H_
