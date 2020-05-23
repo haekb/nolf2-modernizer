@@ -21,6 +21,7 @@ CHUDMissionText::CHUDMissionText()
 	m_bVisible = LTFALSE;
 	m_bPause = LTFALSE;
 	m_fScale = 1.0f;
+	m_nOffset = 0;
 }
 	
 
@@ -55,9 +56,10 @@ void CHUDMissionText::Update()
 	// Sanity checks...
 	if (!IsVisible() || m_bPause) return;
 
-	if (m_fScale != g_pInterfaceResMgr->GetYRatio())
-		SetScale(g_pInterfaceResMgr->GetYRatio());
+	if (m_fScale != g_pInterfaceResMgr->GetYRatio()) {
+		ApplyPosition(g_pInterfaceResMgr->GetXRatio(), g_pInterfaceResMgr->Get4x3Offset());
 
+	}
 	m_Text.Update();
 
 }
@@ -75,7 +77,7 @@ void CHUDMissionText::Start(char *pszString)
 	m_bVisible = LTTRUE;
 	m_bPause = LTFALSE;
 
-	SetScale(g_pInterfaceResMgr->GetYRatio());
+	ApplyPosition(g_pInterfaceResMgr->GetXRatio(), g_pInterfaceResMgr->Get4x3Offset());
 
 	// Set up the timed text and start it off
 	m_Text.Init( m_Format );
@@ -93,19 +95,22 @@ void CHUDMissionText::Clear()
 void CHUDMissionText::Pause(LTBOOL bPause)
 {
 	m_bPause = bPause;
-	if (bPause)
+	if (bPause) {
 		m_Text.Pause();
-	else
+	}
+	else {
 		m_Text.Resume();
+	}
 }
 
-void CHUDMissionText::SetScale(float fScale)
+void CHUDMissionText::ApplyPosition(float fScale, int nOffset)
 {
+	m_nOffset = nOffset;
 	m_fScale = fScale;
 	m_nFontSize = (uint8)(m_fScale * (float)m_nBaseFontSize);
 	if (m_pText)
 	{
-		float x = m_fScale * (float)m_BasePos.x;
+		float x = (m_fScale * (float)m_BasePos.x) + nOffset;
 		float y = m_fScale * (float)m_BasePos.y;
 		m_pText->SetCharScreenHeight(m_nFontSize);
 		m_pText->SetPosition(x,y);
@@ -127,7 +132,7 @@ void CHUDMissionText::UpdateLayout()
 	m_pFont = g_pInterfaceResMgr->GetFont(nFont);
 	m_nFontSize = m_nBaseFontSize = (uint8)g_pLayoutMgr->GetInt(pTag,"FontSize");
 
-	float x = m_fScale * (float)m_BasePos.x;
+	float x = (m_fScale * (float)m_BasePos.x) + m_nOffset;
 	float y = m_fScale * (float)m_BasePos.y;
 	m_pText = g_pFontManager->CreateFormattedPolyString(m_pFont," ",x,y);
 	if (!m_pText)

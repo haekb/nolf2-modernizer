@@ -57,8 +57,9 @@ void CHUDDecision::Update()
 	// Sanity checks...
 	if (!IsVisible()) return;
 
-	if (m_fScale != g_pInterfaceResMgr->GetYRatio())
-		SetScale(g_pInterfaceResMgr->GetYRatio());
+	if (m_fScale != g_pInterfaceResMgr->GetYRatio()) {
+		ApplyPosition(g_pInterfaceResMgr->GetYRatio(), g_pInterfaceResMgr->Get4x3Offset());
+	}
 
 	LTVector vPos;
 	g_pLTClient->GetObjectPos(g_pPlayerMgr->GetMoveMgr()->GetObject(), &vPos);
@@ -164,7 +165,7 @@ void CHUDDecision::Show(ILTMessage_Read *pMsg)
 		}
 
 		m_Dlg.SetSize(m_nWidth,(offset.y+m_Offset.y));
-		m_Dlg.SetScale(m_fScale);
+		m_Dlg.ApplyPosition(m_fScale, g_pInterfaceResMgr->Get4x3Offset());
 
 		if (!m_bVisible)
 			g_pClientSoundMgr->PlayInterfaceSound(szOpenSound);
@@ -209,9 +210,9 @@ void CHUDDecision::Choose(uint8 nChoice)
 	m_hObject = LTNULL;
 }
 
-void CHUDDecision::SetScale(float fScale)
+void CHUDDecision::ApplyPosition(float fScale, int nOffset)
 {
-	m_Dlg.SetScale(fScale);
+	m_Dlg.ApplyPosition(fScale, nOffset);
 	m_fScale = fScale;
 }
 
