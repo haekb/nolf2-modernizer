@@ -62,7 +62,7 @@ LTBOOL CHUDChatInput::Init()
 	m_EditCtrl.EnableCaret(LTTRUE);
 
 	m_EditCtrl.SetBasePos(m_BasePos);
-	m_EditCtrl.ApplyPosition(g_pInterfaceResMgr->GetXRatio(), g_pInterfaceResMgr->Get4x3Offset());
+	m_EditCtrl.ApplyPosition(g_pInterfaceResMgr->GetYRatio(), g_pInterfaceResMgr->Get4x3Offset());
 
 	UpdateLayout();
 
