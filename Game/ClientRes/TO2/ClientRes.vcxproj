@@ -446,9 +446,10 @@ copy $(TargetPath) $(GAME_REZ_DIR) </Command>
       <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
-      <Command>echo copy $(TargetPath) $(GAME_REZ_DIR) 
-copy $(TargetPath) $(GAME_REZ_DIR) </Command>
-      <Outputs>$(GAME_REZ_DIR)\cres.dll;%(Outputs)</Outputs>
+      <Command>
+      </Command>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -501,6 +502,7 @@ copy $(TargetPath) $(GAME_REZ_DIR) </Command>
   <ItemGroup>
     <ResourceCompile Include="..\Shared\Lang\EN\ClientResShared.rc">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">true</ExcludedFromBuild>
     </ResourceCompile>
     <ResourceCompile Include="Lang\DE\ClientRes.rc">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>

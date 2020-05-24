@@ -18,11 +18,6 @@
 #include "clientmultiplayermgr.h"
 #include "iserverdir.h"
 
-#ifdef _DISCORDBUILD
-#include "DiscordMgr.h"
-extern DiscordMgr* g_pDiscordMgr;
-#endif
-
 VarTrack			g_vtMaxFPS;						// MaxFramerate				<0...>
 VarTrack			g_vtLockFPS;					// FramerateLock			<0-1>
 VarTrack			g_vtShowFPS;					// ShowFramerate			<0-1>
@@ -74,11 +69,6 @@ uint32 CTO2GameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
 
 
 	uint32 nResult = CGameClientShell::OnEngineInitialized(pMode, pAppGuid);
-
-#ifdef _DISCORDBUILD
-	g_pDiscordMgr = new DiscordMgr();
-	g_pDiscordMgr->Init();
-#endif
 
 	m_VersionMgr.Update();
 
@@ -189,10 +179,6 @@ void CTO2GameClientShell::Update()
 	pPlayerStats->UpdateFramerate(1 / GetFrameTime());
 
 	LimitFramerate();
-
-#ifdef _DISCORDBUILD
-	g_pDiscordMgr->Update();
-#endif
 }
 
 

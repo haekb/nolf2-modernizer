@@ -137,12 +137,14 @@
       <Optimization>MaxSpeed</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>..\STLPORT-4.0\STLPORT;..\stdlith;..\mfcstub;..\cryptmgr;..\lith;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;_NOMFC;WIN32;_WINDOWS;_FINAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\STLPORT-4.0\STLPORT_NO;..\stdlith;..\mfcstub;..\cryptmgr;..\lith</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;_NOMFC;WIN32;_WINDOWS;_FINAL;_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;NDISCORDBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\built\Final\ButeMgr\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\..\built\Final\ButeMgr\ButeMgr.pch</PrecompiledHeaderOutputFile>
       <ObjectFileName>.\..\built\Final\ButeMgr\</ObjectFileName>
       <ProgramDataBaseFileName>.\..\built\Final\ButeMgr\</ProgramDataBaseFileName>
+      <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <ResourceCompile>
       <Culture>0x0409</Culture>

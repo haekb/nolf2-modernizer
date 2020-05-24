@@ -219,10 +219,10 @@ call "D:\GameDev\nolf2-modernizer\Game\_after_build_debug.bat"</Command>
       <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
-      <Command>Rem IncrediBuild_OutputFile $(TargetPath) 
-echo copy $(TargetPath) $(GAME_REZ_DIR) 
-copy $(TargetPath) $(GAME_REZ_DIR) </Command>
-      <Outputs>$(GAME_REZ_DIR)\sres.dll;%(Outputs)</Outputs>
+      <Command>
+      </Command>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
