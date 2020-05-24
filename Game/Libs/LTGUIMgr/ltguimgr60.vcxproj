@@ -94,13 +94,15 @@
       <Optimization>MaxSpeed</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>..\..\..\libs\STLPORT-4.0\STLPORT;..\..\..\Engine\sdk\inc;..\..\..\Engine\sdk\inc\compat;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\libs\STLPORT-4.0\STLPORT_no;..\..\..\Engine\sdk\inc;..\..\..\Engine\sdk\inc\compat;..\..\..\libs\STLPORT-STD;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;WIN32;_WINDOWS;_LITHTECH2;LT15_COMPAT;_FINAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\..\built\Final\libs\LTGuiMgr\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\..\..\built\Final\libs\LTGuiMgr\ltguimgr60.pch</PrecompiledHeaderOutputFile>
       <ObjectFileName>.\..\..\built\Final\libs\LTGuiMgr\</ObjectFileName>
       <ProgramDataBaseFileName>.\..\..\built\Final\libs\LTGuiMgr\</ProgramDataBaseFileName>
       <AdditionalOptions> /Zm1000 </AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
     </ClCompile>
     <ResourceCompile>
       <Culture>0x0409</Culture>

@@ -141,7 +141,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\libs\built\Release\Lib_Lith;$(SolutionDir)..\libs\built\Release\Lib_StdLith;$(SolutionDir)\built\release\ClientShellDLL\ClientShellShared;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\libs\built\Final\Lib_Lith;$(SolutionDir)..\libs\built\Final\Lib_StdLith;$(SolutionDir)\built\Final\ClientShellDLL\ClientShellShared;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Lib_Lith.lib;Lib_StdLith.lib;ClientShellShared.lib;Ws2_32.lib;%(AdditionalDependencies)%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

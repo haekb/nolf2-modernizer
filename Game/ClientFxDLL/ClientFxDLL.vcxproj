@@ -90,8 +90,8 @@
       <Optimization>MaxSpeed</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>..\..\libs\STLPORT-4.0\STLPORT;..\shared;..\..\Engine\sdk\inc;..\..\libs\mfcstub;..\..\libs\stdlith;..\..\libs\butemgr;..\..\libs\cryptmgr;..\..\libs\lith;..\libs\ltguimgr;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;WIN32;_WINDOWS;NOPS2;_FINAL;MEMTRACK_CLIENTFX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\libs\STLPORT-4.0\STLPORT_NO;..\shared;..\..\Engine\sdk\inc;..\..\libs\mfcstub;..\..\libs\stdlith;..\..\libs\butemgr;..\..\libs\cryptmgr;..\..\libs\lith;..\libs\ltguimgr;..\..\libs\STLPORT-STD\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;WIN32;_WINDOWS;NOPS2;_FINAL;MEMTRACK_CLIENTFX;_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;NDISCORDBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\built\Final\ClientFxDll\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\..\built\Final\ClientFxDll\ClientFxDLL.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -99,6 +99,8 @@
       <ObjectFileName>.\..\built\Final\ClientFxDll\</ObjectFileName>
       <ProgramDataBaseFileName>.\..\built\Final\ClientFxDll\</ProgramDataBaseFileName>
       <AdditionalOptions> /Zm1000 </AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
     </ClCompile>
     <Midl>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -122,12 +124,13 @@
       <OutputFile>..\built\Final\ClientFxDll\ClientFx.fxd</OutputFile>
       <ImportLibrary>.\..\built\Final\ClientFxDll\ClientFx.lib</ImportLibrary>
       <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\libs\built\Final\ButeMgr;$(SolutionDir)..\libs\built\Final\cryptmgr;$(SolutionDir)..\libs\built\Final\Lib_Lith;$(SolutionDir)..\libs\built\Final\Lib_StdLith;$(SolutionDir)..\libs\built\Final\MFCStub;$(SolutionDir)\built\Final\libs\ltguimgr</AdditionalLibraryDirectories>
     </Link>
     <CustomBuildStep>
-      <Command>Rem IncrediBuild_OutputFile $(TargetPath) 
-echo copy $(TargetPath) $(GAME_REZ_DIR) 
-copy $(TargetPath) $(GAME_REZ_DIR) </Command>
-      <Outputs>$(GAME_REZ_DIR)\ClientFx.fxd;%(Outputs)</Outputs>
+      <Command>
+      </Command>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

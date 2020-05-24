@@ -62,11 +62,6 @@
 
 #include "ConsoleMgr.h"
 
-// TEMP DISCORD
-#include <discord.h>
-#include <discord-secret.h>
-
-
 #ifdef STRICT
 	WNDPROC g_pfnMainWndProc = NULL;
 #else

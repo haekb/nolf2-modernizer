@@ -90,8 +90,8 @@
       <Optimization>MaxSpeed</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>..\..\Shared\TO2;.\;..\..\..\libs\STLPORT-4.0\STLPORT;..\ClientShellShared;..\..\clientres\shared;..\..\clientres\TO2;..\..\shared;..\..\..\Engine\sdk\inc;..\..\..\libs\stdlith;..\..\..\libs\butemgr;..\..\..\libs\cryptmgr;..\..\..\libs\lith;..\..\..\libs\mfcstub;..\..\libs\ltguimgr;..\..\..\libs\regmgr;..\..\libs\wonapi;..\..\libs\serverdir;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;_CLIENTBUILD;WIN32;_WINDOWS;_NOLFBUILD;NO_PRAGMA_LIBS;NOPS2;_FINAL;MEMTRACK_CLIENT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\Shared\TO2;.\;..\..\..\libs\STLPORT-4.0\STLPORT_NO;..\ClientShellShared;..\..\clientres\shared;..\..\clientres\TO2;..\..\shared;..\..\..\Engine\sdk\inc;..\..\..\libs\stdlith;..\..\..\libs\butemgr;..\..\..\libs\cryptmgr;..\..\..\libs\lith;..\..\..\libs\mfcstub;..\..\libs\ltguimgr;..\..\..\libs\regmgr;..\..\libs\wonapi;..\..\libs\serverdir;..\..\..\libs\STLPORT-STD\;$(SolutionDir)\..\libs\SDL2-2.0.12\include;$(SolutionDir)\..\config\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;_CLIENTBUILD;WIN32;_WINDOWS;_NOLFBUILD;NO_PRAGMA_LIBS;NOPS2;_FINAL;MEMTRACK_CLIENT;_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;NDISCORDBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\..\Built\Final\ClientShellDll\TO2\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\..\..\Built\Final\ClientShellDll\TO2\ClientShellDLL.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -99,6 +99,8 @@
       <ObjectFileName>.\..\..\Built\Final\ClientShellDll\TO2\</ObjectFileName>
       <ProgramDataBaseFileName>.\..\..\Built\Final\ClientShellDll\TO2\</ProgramDataBaseFileName>
       <AdditionalOptions> /Zm1000 </AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
     </ClCompile>
     <Midl>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -120,16 +122,19 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <LinkDLL>true</LinkDLL>
       <SubSystem>Windows</SubSystem>
-      <IgnoreSpecificDefaultLibraries>LIBCMTD;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
       <OutputFile>..\..\Built\Final\ClientShellDll\TO2\CShell.dll</OutputFile>
       <ImportLibrary>.\..\..\Built\Final\ClientShellDll\TO2\CShell.lib</ImportLibrary>
-      <AdditionalDependencies>winmm.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>winmm.lib;odbc32.lib;odbccp32.lib;wsock32.lib;ButeMgr.lib;ClientShellShared.lib;cryptmgr.lib;Lib_Lith.lib;Lib_StdLith.lib;ltguimgr.lib;MFCStub.lib;regmgr.lib;ServerDir.lib;SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\..\libs\SDL2-2.0.12\lib\x86;$(SolutionDir)..\libs\built\Final\ButeMgr;$(SolutionDir)..\libs\built\Final\cryptmgr;$(SolutionDir)..\libs\built\Final\Lib_Lith;$(SolutionDir)..\libs\built\Final\Lib_StdLith;$(SolutionDir)..\libs\built\Final\MFCStub;$(SolutionDir)..\libs\built\Final\regmgr;$(SolutionDir)\built\Final\libs\ltguimgr;$(SolutionDir)\built\Final\ClientShellDLL\ClientShellShared;$(SolutionDir)\libs\ServerDir\Final</AdditionalLibraryDirectories>
     </Link>
     <CustomBuildStep>
-      <Command>Rem IncrediBuild_OutputFile $(TargetPath) 
-echo copy $(TargetPath) $(GAME_REZ_DIR) 
-copy $(TargetPath) $(GAME_REZ_DIR) </Command>
-      <Outputs>$(GAME_REZ_DIR)\cshell.dll;%(Outputs)</Outputs>
+      <Command>
+      </Command>
+      <Outputs>
+      </Outputs>
+      <Message />
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -295,20 +300,6 @@ copy $(TargetPath) $(GAME_REZ_DIR) </Command>
       </PrecompiledHeader>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
     </ClCompile>
-    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\achievement_manager.cpp" />
-    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\activity_manager.cpp" />
-    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\application_manager.cpp" />
-    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\core.cpp" />
-    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\image_manager.cpp" />
-    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\lobby_manager.cpp" />
-    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\network_manager.cpp" />
-    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\overlay_manager.cpp" />
-    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\relationship_manager.cpp" />
-    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\storage_manager.cpp" />
-    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\store_manager.cpp" />
-    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\types.cpp" />
-    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\user_manager.cpp" />
-    <ClCompile Include="..\..\..\libs\discord_game_sdk\cpp\voice_manager.cpp" />
     <ClCompile Include="..\..\Shared\TO2\TO2MissionButeMgr.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Final|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
@@ -627,23 +618,6 @@ copy $(TargetPath) $(GAME_REZ_DIR) </Command>
     <ClInclude Include="..\..\..\Engine\sdk\inc\iltbaseclass.h" />
     <ClInclude Include="..\..\..\Engine\sdk\inc\ltmodule.h" />
     <ClInclude Include="..\..\..\engine\sdk\inc\ltobjref.h" />
-    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\achievement_manager.h" />
-    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\activity_manager.h" />
-    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\application_manager.h" />
-    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\core.h" />
-    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\discord.h" />
-    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\event.h" />
-    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\ffi.h" />
-    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\image_manager.h" />
-    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\lobby_manager.h" />
-    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\network_manager.h" />
-    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\overlay_manager.h" />
-    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\relationship_manager.h" />
-    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\storage_manager.h" />
-    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\store_manager.h" />
-    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\types.h" />
-    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\user_manager.h" />
-    <ClInclude Include="..\..\..\libs\discord_game_sdk\cpp\voice_manager.h" />
     <ClInclude Include="..\..\Libs\ServerDir\IServerDir.h" />
     <ClInclude Include="..\..\Shared\LTPoly.h" />
     <ClInclude Include="..\..\Shared\TO2\TO2MissionButeMgr.h" />

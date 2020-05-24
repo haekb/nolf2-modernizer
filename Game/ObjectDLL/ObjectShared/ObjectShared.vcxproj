@@ -165,14 +165,16 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <AdditionalIncludeDirectories>.\;..\..\..\libs\STLPORT-4.0\STLPORT;..\..\shared;..\..\..\Engine\sdk\inc;..\..\..\libs\stdlith;..\..\..\libs\butemgr;..\..\..\libs\cryptmgr;..\..\..\libs\lith;..\..\..\libs\mfcstub;..\..\..\libs\regmgr;..\..\libs;..\..\libs\serverdir;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;_LIB;_NOLFBUILD;USE_INTEL_COMPILER;WIN32;_WINDOWS;NOPS2;_SERVERBUILD;_NO_AI_ASSERT;_FINAL;MEMTRACK_SERVER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\;..\..\..\libs\STLPORT-4.0\STLPORT_NO;..\..\shared;..\..\..\Engine\sdk\inc;..\..\..\libs\stdlith;..\..\..\libs\butemgr;..\..\..\libs\cryptmgr;..\..\..\libs\lith;..\..\..\libs\mfcstub;..\..\..\libs\regmgr;..\..\libs;..\..\libs\serverdir;..\..\..\libs\STLPORT-STD;$(SolutionDir)\..\libs\SDL2-2.0.12\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;_LIB;_NOLFBUILD;USE_INTEL_COMPILER;WIN32;_WINDOWS;NOPS2;_SERVERBUILD;_NO_AI_ASSERT;_FINAL;MEMTRACK_SERVER;_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;NDISCORDBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\..\Built\Final\ObjectDll\ObjectShared\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\..\..\Built\Final\ObjectDll\ObjectShared\ObjectShared.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <ObjectFileName>.\..\..\Built\Final\ObjectDll\ObjectShared\</ObjectFileName>
       <ProgramDataBaseFileName>.\..\..\Built\Final\ObjectDll\ObjectShared\</ProgramDataBaseFileName>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
     </ClCompile>
     <ResourceCompile>
       <Culture>0x0409</Culture>
@@ -186,6 +188,13 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\..\..\Built\Final\ObjectDll\ObjectShared\ObjectShared.lib</OutputFile>
     </Lib>
+    <CustomBuildStep>
+      <Message />
+    </CustomBuildStep>
+    <CustomBuild>
+      <LinkObjects>false</LinkObjects>
+      <Message>Running lexxers</Message>
+    </CustomBuild>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\Engine\sdk\inc\iltbaseclass.cpp">
@@ -578,7 +587,7 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\flex -T -d -Pyyanimation -oAnimationLex.o AnimationLex.l</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AnimationLex.o;%(Outputs)</Outputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AnimationParse.y;AnimationLexSymbols.h;%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">..\..\flex -Pyyanimation -oAnimationLex.o AnimationLex.l</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">..\..\flex -T -d -Pyyanimation -oAnimationLex.o AnimationLex.l</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">AnimationLex.o;%(Outputs)</Outputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">AnimationParse.y;AnimationLexSymbols.h;%(AdditionalInputs)</AdditionalInputs>
     </CustomBuild>
@@ -608,7 +617,8 @@ del AnimationParse.o.output</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GAME_TOOLS_DIR)\ClassHlp.but;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">copy %(FullPath) $(GAME_TOOLS_DIR)</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">
+      </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Final|Win32'">$(GAME_TOOLS_DIR)\ClassHlp.but;%(Outputs)</Outputs>
     </CustomBuild>
   </ItemGroup>
