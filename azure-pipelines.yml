@@ -12,7 +12,7 @@ pool:
 variables:
   solution: 'Game/TO2-Game.sln'
   buildPlatform: 'x86'
-  buildConfiguration: 'Release'
+  buildConfiguration: 'Final'
 
 steps:
 - task: VSBuild@1
@@ -27,18 +27,18 @@ steps:
     SourceFolder: '.\\'
     flattenFolders: true
     Contents: |
-      Game\\built\\Release\\ClientFxDLL\\ClientFx.fxd
-      Game\\built\\Release\\ClientRes\\TO2\\CRes.dll
-      Game\\built\\Release\\ClientShellDLL\\TO2\\CShell.dll
-      Game\\built\\Release\\ObjectDll\\TO2\\Object.lto
-      Game\\built\\Release\\ServerRes\\TO2\\SRes.dll
+      Game\\built\\Final\\ClientFxDLL\\ClientFx.fxd
+      Game\\built\\Final\\ClientRes\\TO2\\CRes.dll
+      Game\\built\\Final\\ClientShellDLL\\TO2\\CShell.dll
+      Game\\built\\Final\\ObjectDll\\TO2\\Object.lto
+      Game\\built\\Final\\ServerRes\\TO2\\SRes.dll
     TargetFolder: '$(Pipeline.Workspace)\\Artifacts\\Modernizer'
     
-#- task: CopyFiles@2
-#  inputs:
-#    SourceFolder: 'ASSETS'
-#    Contents: '**'
-#    TargetFolder: '$(Pipeline.Workspace)\\Artifacts\\Modernizer'
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: 'ASSETS'
+    Contents: '**'
+    TargetFolder: '$(Pipeline.Workspace)\\Artifacts\\Modernizer'
 
 - task: CopyFiles@2
   inputs:
@@ -50,9 +50,9 @@ steps:
   inputs:
     script: 'mkdir $(Pipeline.Workspace)\\Artifacts\\Custom'
 
-#- task: CmdLine@2
-#  inputs:
-#    script: 'TOOLS\\lithrez.exe c $(Pipeline.Workspace)\\Artifacts\\Custom\\Modernizer.rez $(Pipeline.Workspace)\\Artifacts\\Modernizer'
+- task: CmdLine@2
+  inputs:
+    script: 'Tools\\lithrez.exe c $(Pipeline.Workspace)\\Artifacts\\Custom\\Modernizer.rez $(Pipeline.Workspace)\\Artifacts\\Modernizer'
 
 - task: PublishPipelineArtifact@1
   inputs:
