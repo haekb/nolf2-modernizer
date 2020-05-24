@@ -208,7 +208,11 @@ void CCursorMgr::UseCursor(LTBOOL bUseCursor, LTBOOL bLockCursorToCenter)
 			g_pLTClient->RunConsoleString("CursorCenter 1");
 		}
 		else {
-			ASSERT(SDL_SetRelativeMouseMode(SDL_TRUE) == 0);
+			auto nSupported = SDL_SetRelativeMouseMode(SDL_TRUE);
+			if (nSupported != 0)
+			{
+				g_pLTClient->CPrint("!! WARNING !! Relative Mouse Mode isn't supported!");
+			}
 		}
 	}
 	else

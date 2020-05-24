@@ -4734,10 +4734,15 @@ BOOL HookWindow()
 	g_SDLWindow = SDL_CreateWindowFrom(g_hMainWnd);
 	
 	if (g_SDLWindow) {
-		SDL_Log("Hooked window!");
+		g_pLTClient->CPrint("SDL2 found and hooked window!");
 
 		// NOLF2 seems to dislike us using raw input, so just use mouse warping.
-		SDL_SetHint(SDL_HINT_MOUSE_RELATIVE_MODE_WARP, "1");
+		auto bSet = SDL_SetHint(SDL_HINT_MOUSE_RELATIVE_MODE_WARP, "1");
+
+		if (bSet == SDL_FALSE)
+		{
+			g_pLTClient->CPrint("!! WARNING !! Mouse Relative Mode = Warp is not supported on this system!");
+		}
 	}
 	else {
 		SDL_Log("Error hooking window: %s", SDL_GetError());
