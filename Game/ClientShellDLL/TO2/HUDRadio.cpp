@@ -154,9 +154,9 @@ void CHUDRadio::Choose(uint8 nChoice)
 
 }
 
-void CHUDRadio::SetScale(float fScale)
+void CHUDRadio::ApplyPosition(float fScale, int nOffset)
 {
-	m_Dlg.SetScale(fScale);
+	m_Dlg.ApplyPosition(fScale, nOffset);
 	m_fScale = fScale;
 }
 
