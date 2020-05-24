@@ -91,7 +91,7 @@ void CHUDRadio::Update()
 	if (!IsVisible()) return;
 
 	if (m_fScale != g_pInterfaceResMgr->GetYRatio())
-		SetScale(g_pInterfaceResMgr->GetYRatio());
+		ApplyPosition(g_pInterfaceResMgr->GetYRatio(), g_pInterfaceResMgr->Get4x3Offset());
 
 }
 
