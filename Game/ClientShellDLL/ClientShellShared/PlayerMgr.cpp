@@ -3682,6 +3682,17 @@ void CPlayerMgr::UpdateRotationAxis()
 	}
 
 
+
+
+
+	int x = 0, y = 0;
+
+	SDL_GetMouseState(&x, &y);
+
+	if (x != 0 && y != 0) {
+		//g_pLTClient->CPrint("State: %d/%d", x,y);
+	}
+
 	SDL_GetRelativeMouseState(&deltaX, &deltaY);
 
 	m_iCurrentMouseX += deltaX;

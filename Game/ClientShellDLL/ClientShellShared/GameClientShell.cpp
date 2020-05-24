@@ -107,6 +107,8 @@ VarTrack			g_vtPTestMaxFPS;
 
 VarTrack			g_vtRunInBackground;
 
+VarTrack			g_vtShowSDLMouse;
+
 // SDL Logging
 std::fstream 		g_SDLLogFile;
 SDL_Window*			g_SDLWindow = NULL;
@@ -167,6 +169,10 @@ void proxyGetAxisOffsets(LTFLOAT* offsets)
 
 void SDLLog(void* userdata, int category, SDL_LogPriority priority, const char* message)
 {
+	if (g_pLTClient && g_pConsoleMgr)
+	{
+		g_pLTClient->CPrint("<SDL_LOG>: %s", message);
+	}
 	// Open up SDL Log File
 	g_SDLLogFile.open("Debug.log", std::ios::out | std::ios::app);
 
@@ -968,7 +974,7 @@ uint32 CGameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
 
 	// Initialize global console variables...
 
-
+	g_vtShowSDLMouse.Init(g_pLTClient, "ShowSDLMouse", NULL, 0.0f);
 
     g_vtShowTimingTrack.Init(g_pLTClient, "ShowTiming", NULL, 0.0f);
 
@@ -1369,7 +1375,6 @@ uint32 CGameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
 	// Boot up Jukebox Manager.
 	m_pJukeboxButeMgr = debug_new(CJukeboxButeMgr);
 	m_pJukeboxButeMgr->Init();
-	
 
 	return LT_OK;
 }
@@ -4534,9 +4539,17 @@ void DefaultModelHook (ModelHookData *pData, void *pUser)
 //	PURPOSE:	Hook it real good
 //
 // --------------------------------------------------------------------------- //
-
+#ifndef WM_INPUT
+#define WM_INPUT 0x00ff
+#endif
 LRESULT CALLBACK HookedWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+	if (uMsg == WM_INPUT)
+	{
+		//g_pLTClient->CPrint("Got raw input event!");
+		return DefWindowProc(hWnd, uMsg, wParam, lParam);
+	}
+
 	switch(uMsg)
 	{
 		HANDLE_MSG(hWnd, WM_LBUTTONUP, CGameClientShell::OnLButtonUp);
@@ -4555,7 +4568,7 @@ LRESULT CALLBACK HookedWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lP
 	// So just return 0;
 	if (uMsg == WM_ACTIVATEAPP && g_vtRunInBackground.GetFloat() == 1.0f)
 	{
-		return 0;
+		return DefWindowProc(hWnd, uMsg, wParam, lParam);
 	}
 
 	_ASSERT(g_pfnMainWndProc);
@@ -4620,6 +4633,12 @@ void CGameClientShell::OnMouseWheel(HWND hwnd, int x, int y, int zDelta, UINT fw
 void CGameClientShell::OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags)
 {
 	//g_mouseMgr.SetMousePos(x,y);
+
+	SDL_GetMouseState(&x, &y);
+
+	if (g_vtShowSDLMouse.GetFloat() == 1.0f && x != 0 && y != 0) {
+		g_pLTClient->CPrint("State: %d/%d", x,y);
+	}
 
 	g_pInterfaceMgr->OnMouseMove(x,y);
 }
@@ -4736,8 +4755,13 @@ BOOL HookWindow()
 	if (g_SDLWindow) {
 		g_pLTClient->CPrint("SDL2 found and hooked window!");
 
+		
+
 		// NOLF2 seems to dislike us using raw input, so just use mouse warping.
-		auto bSet = SDL_SetHint(SDL_HINT_MOUSE_RELATIVE_MODE_WARP, "1");
+		//auto bSet = SDL_SetHint(SDL_HINT_MOUSE_RELATIVE_MODE_WARP, "0");
+		auto bSet = SDL_SetHintWithPriority(SDL_HINT_MOUSE_RELATIVE_MODE_WARP, "1", SDL_HINT_OVERRIDE);
+
+		g_pLTClient->CPrint("SDL_HINT_MOUSE_RELATIVE_MODE_WARP is set, and the return value is %d", bSet);
 
 		if (bSet == SDL_FALSE)
 		{
