@@ -146,6 +146,7 @@ LTBOOL CScreenHostMission::Build()
 
 
 	m_pDlg->SetBasePos(dlgPos);
+	m_pDlg->ApplyPosition(g_pInterfaceResMgr->GetYRatio(), g_pInterfaceResMgr->Get4x3Offset());
 	m_pDlg->SetScale(g_pInterfaceResMgr->GetYRatio());
 	m_pDlg->Show(LTFALSE);
 

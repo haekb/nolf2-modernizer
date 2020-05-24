@@ -34,6 +34,8 @@ CHUDPopup::CHUDPopup()
 	m_UpdateFlags	= kHUDFrame;
 	m_bVisible		= LTFALSE;	
 	m_bColorOverride = LTFALSE;
+	m_nOffset = 0;
+	m_fScale = 1.0f;
 }
 
 
@@ -111,9 +113,10 @@ void CHUDPopup::Update()
 	// Sanity checks...
 	if( !IsVisible() ) return;
 
-	if( m_fScale != g_pInterfaceResMgr->GetXRatio() )
-		SetScale( g_pInterfaceResMgr->GetXRatio() );
-
+	if (m_fScale != g_pInterfaceResMgr->GetYRatio())
+	{
+		ApplyPosition(g_pInterfaceResMgr->GetYRatio(), g_pInterfaceResMgr->Get4x3Offset());
+	}
 }
 
 
@@ -125,12 +128,13 @@ void CHUDPopup::Update()
 //
 // ----------------------------------------------------------------------- //
 
-void CHUDPopup::SetScale(float fScale)
+void CHUDPopup::ApplyPosition(float fScale, int nOffset)
 {
-	m_Frame.SetScale( fScale );
-	m_Text.SetScale( fScale );
+	m_Frame.ApplyPosition( fScale, nOffset);
+	m_Text.ApplyPosition( fScale, nOffset);
 
 	m_fScale = fScale;
+	m_nOffset = nOffset;
 }
 
 
@@ -148,21 +152,16 @@ void CHUDPopup::Show( uint8 nPopupID, const char *pText )
 	if (!pPopup) return;
 
 	CUIFont *pFont = g_pInterfaceResMgr->GetFont(pPopup->nFont);
-	LTIntPt pos;
+	LTIntPt pos((640 - pPopup->sSize.x) / 2, (480 - pPopup->sSize.y) / 2);
 
-	// We need to expand the width of our 640x480 to whatever aspect ratio we're using.
-	int offset = g_pInterfaceResMgr->Get640x480Offset();
 	int width = pPopup->sSize.x;
 	int height = pPopup->sSize.y;
 
-	// Reference: 640 / 2 = 320
-	pos.x = (320 + offset) - (width / 2);
-	pos.y = (480 - height) / 2;
 
 	m_Frame.SetFrame(g_pInterfaceResMgr->GetTexture(pPopup->szFrame));
 	m_Frame.SetSize(width, height);
 	m_Frame.SetBasePos(pos);
-	m_Frame.SetScale(g_pInterfaceResMgr->GetYRatio());
+	m_Frame.ApplyPosition(g_pInterfaceResMgr->GetYRatio(), g_pInterfaceResMgr->Get4x3Offset());
 
 	pos.x += pPopup->sTextOffset.x;
 	pos.y += pPopup->sTextOffset.y;
@@ -173,14 +172,14 @@ void CHUDPopup::Show( uint8 nPopupID, const char *pText )
 
 	m_Text.SetFont(pFont,pPopup->nFontSize);
 
-	if( !m_bColorOverride )
-		m_Text.SetColors(pPopup->argbTextColor,pPopup->argbTextColor,pPopup->argbTextColor);
-
+	if (!m_bColorOverride) {
+		m_Text.SetColors(pPopup->argbTextColor, pPopup->argbTextColor, pPopup->argbTextColor);
+	}
 	m_bColorOverride = LTFALSE;
 	
 	m_Text.SetFixedWidth(pPopup->nTextWidth);
 	m_Text.SetBasePos(pos);
-	m_Text.SetScale(g_pInterfaceResMgr->GetYRatio());
+	m_Text.ApplyPosition(g_pInterfaceResMgr->GetYRatio(), g_pInterfaceResMgr->Get4x3Offset());
 
 	m_bVisible = LTTRUE;
 }

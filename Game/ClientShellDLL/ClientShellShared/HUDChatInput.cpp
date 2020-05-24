@@ -62,7 +62,7 @@ LTBOOL CHUDChatInput::Init()
 	m_EditCtrl.EnableCaret(LTTRUE);
 
 	m_EditCtrl.SetBasePos(m_BasePos);
-	m_EditCtrl.SetScale(g_pInterfaceResMgr->GetXRatio());
+	m_EditCtrl.ApplyPosition(g_pInterfaceResMgr->GetYRatio(), g_pInterfaceResMgr->Get4x3Offset());
 
 	UpdateLayout();
 
@@ -100,10 +100,11 @@ void CHUDChatInput::Update()
 	m_pStr->SetCharScreenHeight(h);
 
 	float x = ((float)(m_BasePos.x - 5)  * g_pInterfaceResMgr->GetYRatio()) - m_pStr->GetWidth();
+	x += g_pInterfaceResMgr->Get4x3Offset();
 	float y = (float)(m_BasePos.y) * g_pInterfaceResMgr->GetYRatio();
 	m_pStr->SetPosition(x,y);
 
-	m_EditCtrl.SetScale(g_pInterfaceResMgr->GetYRatio());
+	m_EditCtrl.ApplyPosition(g_pInterfaceResMgr->GetYRatio(), g_pInterfaceResMgr->Get4x3Offset());
 }
 
 void CHUDChatInput::OnExitWorld() 

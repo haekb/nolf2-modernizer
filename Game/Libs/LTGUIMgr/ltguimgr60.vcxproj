@@ -124,7 +124,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <AdditionalIncludeDirectories>..\..\..\libs\STLPORT-4.0\STLPORT_no;..\..\..\Engine\sdk\inc;..\..\..\Engine\sdk\inc\compat;..\..\..\libs\STLPORT-STD;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;WIN32;_WINDOWS;_LITHTECH2;LT15_COMPAT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;WIN32;_WINDOWS;_LITHTECH2;LT15_COMPAT;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\..\built\Debug\libs\LTGuiMgr\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
       <PrecompiledHeaderOutputFile>.\..\..\built\Debug\libs\LTGuiMgr\ltguimgr60.pch</PrecompiledHeaderOutputFile>

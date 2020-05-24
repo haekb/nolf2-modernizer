@@ -108,7 +108,7 @@ LTBOOL CHUDMessage::Create(MsgCreate &mc)
 
 	SetBasePos(LTIntPt(0,0));
 
-	SetScale(g_pInterfaceResMgr->GetXRatio());
+	ApplyPosition(g_pInterfaceResMgr->GetYRatio(), g_pInterfaceResMgr->Get4x3Offset());
 
 	m_bVisible = LTTRUE;
 
@@ -153,8 +153,9 @@ void CHUDMessage::Update()
 	// Sanity checks...
 	if (!IsVisible()) return;
 
-	if (m_fScale != g_pInterfaceResMgr->GetYRatio())
-		SetScale(g_pInterfaceResMgr->GetYRatio());
+	if (m_fScale != g_pInterfaceResMgr->GetYRatio()) {
+		ApplyPosition(g_pInterfaceResMgr->GetYRatio(), g_pInterfaceResMgr->Get4x3Offset());
+	}
 
 	if (m_fInitTime < 0.0f)
 		m_fInitTime = g_pLTClient->GetTime();
@@ -249,9 +250,6 @@ float CHUDMessage::GetLifetime()
 
 void CHUDMessage::SetBasePos ( LTIntPt pos )
 { 
-	// Correct the positioning
-	pos.x += g_pInterfaceResMgr->Get640x480Offset();
-
 	CLTGUICtrl::SetBasePos(pos);
 	ScalePoly();
 	if (m_pText)
@@ -281,9 +279,9 @@ void CHUDMessage::SetBasePos ( LTIntPt pos )
 
 }
 
-void CHUDMessage::SetScale(float fScale)
+void CHUDMessage::ApplyPosition(float fScale, int nOffset)
 {
-	CLTGUICtrl::SetScale(fScale);
+	CLTGUICtrl::ApplyPosition(fScale, nOffset);
 	ScalePoly();
 	m_fImageGap = 4.0f * m_fScale;
 	m_nFontSize = (uint8)(m_fScale * (float)m_nBaseFontSize);
@@ -369,8 +367,10 @@ void CHUDMessage::JustifyPoly()
 {
 	if (!m_hImage) return;
 
-	float x = (float)m_basePos.x * m_fScale;
-	float y = (float)m_basePos.y * m_fScale;
+	CLTGUICtrl::ApplyPosition(m_fScale, m_nOffset);
+
+	float x = (float)m_pos.x;
+	float y = (float)m_pos.y;
 	float fw = (float)m_imageSize.x;
 	float fh = (float)m_imageSize.y;
 

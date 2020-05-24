@@ -68,6 +68,7 @@ LTBOOL CScreenCrosshair::Build()
 	CLTGUIFrame *pFrame = debug_new(CLTGUIFrame);
 	pFrame->Create(hFrame,nWd,nHt+8,LTTRUE);
 	pFrame->SetBasePos(pos);
+	pFrame->ApplyPosition(g_pInterfaceResMgr->GetYRatio(), g_pInterfaceResMgr->Get4x3Offset());
 	pFrame->SetBorder(2,m_SelectedColor);
 	AddControl(pFrame);
 
@@ -246,7 +247,7 @@ LTBOOL CScreenCrosshair::Render ( HSURFACE hDestSurf )
 		g_pInterfaceResMgr->ConvertScreenPos(pos.x,pos.y);
 
 
-		uint32 nSize = (uint32)((float)nCrosshairSize * g_pInterfaceResMgr->GetXRatio());
+		uint32 nSize = (uint32)((float)nCrosshairSize * g_pInterfaceResMgr->GetYRatio());
 		uint8  nIndent = (uint8)(8.0f * g_pInterfaceResMgr->GetXRatio());
         LTRect rect(pos.x,pos.y,pos.x+nSize+(nIndent*2),pos.y+nSize+(nIndent*2));
 

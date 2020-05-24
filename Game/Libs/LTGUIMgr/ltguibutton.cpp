@@ -202,9 +202,9 @@ void CLTGUIButton::SetBasePos ( LTIntPt pos )
 	}
 }
 
-void CLTGUIButton::SetScale(float fScale)
+void CLTGUIButton::ApplyPosition(float fScale, int nOffset)
 {
-	CLTGUICtrl::SetScale(fScale);
+	CLTGUICtrl::ApplyPosition(fScale, nOffset);
 	ScalePoly();
 	m_nFontSize = (uint8)(m_fScale * (float)m_nBaseFontSize);
 	if (m_pText)
@@ -212,9 +212,8 @@ void CLTGUIButton::SetScale(float fScale)
 		m_pText->SetCharScreenHeight(m_nFontSize);
 		float x = (float)m_pos.x + ((float)GetWidth() - m_pText->GetWidth()) / 2.0f;
 		float y = (float)m_pos.y + ((float)GetHeight() - m_pText->GetHeight()) / 2.0f;
-		m_pText->SetPosition(x,y);
+		m_pText->SetPosition(x, y);
 	}
-
 }
 
 void CLTGUIButton::SetTextureScale(float fScale)
@@ -243,8 +242,8 @@ void CLTGUIButton::ScalePoly()
 	if (!m_hNormal) return;
 	uint32 w,h;
 	g_pTexInterface->GetTextureDims(m_hNormal,w,h);
-	float x = (float)m_basePos.x * m_fScale;
-	float y = (float)m_basePos.y * m_fScale;
+	float x = (float)m_pos.x;
+	float y = (float)m_pos.y;
 	float fw = (float)w * m_fScale * m_fTextureScale;
 	float fh = (float)h * m_fScale * m_fTextureScale;
 

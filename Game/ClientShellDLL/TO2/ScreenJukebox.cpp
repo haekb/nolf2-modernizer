@@ -123,6 +123,7 @@ LTBOOL CScreenJukebox::Build()
 	m_pSongFrame = debug_new(CLTGUIFrame);
 	m_pSongFrame->Create(hFrame, nWidth, nHeight, LTTRUE);
 	m_pSongFrame->SetBasePos(pos);
+	m_pSongFrame->ApplyPosition(g_pInterfaceResMgr->GetYRatio(), g_pInterfaceResMgr->Get4x3Offset());
 	m_pSongFrame->Show(LTFALSE);
 	AddControl(m_pSongFrame);
 

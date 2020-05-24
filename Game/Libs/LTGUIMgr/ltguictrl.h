@@ -18,6 +18,8 @@
 #define LGCS_SELECTED	1
 #define LGCS_DISABLED	2
 
+
+
 class CLTGUICtrl : public CLTGUICommandHandler
 {
 public:
@@ -49,14 +51,28 @@ public:
 	virtual uint16	GetBaseWidth ( ) { return ( uint16 )( (float)GetWidth() / GetScale()); }
 	virtual uint16	GetBaseHeight ( ) { return ( uint16 )( (float)GetHeight() / GetScale()); }
 	
-	virtual void	SetBasePos( LTIntPt pos )       { m_basePos=pos; SetScale(m_fScale);}
+	virtual void	SetBasePos(LTIntPt pos)			{ 
+		m_basePos = pos; 
+		ApplyPosition(m_fScale, m_nOffset);
+	}
     virtual LTIntPt GetBasePos ( )                  { return m_basePos; }
     virtual LTIntPt GetPos ( )                      { return m_pos; }
 
 	virtual void	SetScale(float fScale);
 	virtual float	GetScale()					{return m_fScale;}
 
+	//
+	// Set the X Offset. Used to push things in the centre for widescreen resolutions
+	//
+	virtual void	SetOffset(int nOffset);
+	virtual int		GetOffset() { return m_nOffset; }
 	
+	//
+	// Applies the final value for m_pos. This code use to be in SetScale.
+	//
+	virtual void ApplyPosition(float fScale, int nOffset = 0);
+
+
 	// Commonly used input messages
     virtual LTBOOL  OnLeft ( ) {return LTFALSE;}
     virtual LTBOOL  OnRight ( ) {return LTFALSE;}
@@ -144,6 +160,7 @@ protected:
     LTIntPt         m_pos;
     LTIntPt         m_basePos;
 	float			m_fScale;
+	int				m_nOffset;
 
     LTBOOL          m_bSelected;
     LTBOOL          m_bEnabled;

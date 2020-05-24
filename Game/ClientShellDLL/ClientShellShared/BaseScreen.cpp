@@ -179,7 +179,7 @@ LTBOOL CBaseScreen::Init(int nScreenID)
 
 		s_BackArrow.Create(CMD_BACK,LTNULL,hBack,hBackH);
 		s_BackArrow.SetBasePos(arrowBackPos);
-		s_BackArrow.SetScale(g_pInterfaceResMgr->GetYRatio());
+		s_BackArrow.ApplyPosition(g_pInterfaceResMgr->GetYRatio(), g_pInterfaceResMgr->Get4x3Offset());
 
 		g_pLTClient->RegisterConsoleProgram("EditFX", EditFXFn);
 		
@@ -229,11 +229,11 @@ LTBOOL CBaseScreen::Init(int nScreenID)
 	if (!s_pHelpStr)
 	{
 		
-		uint16 nWidth = (uint16)( (LTFLOAT)s_HelpWidth * g_pInterfaceResMgr->GetXRatio());
+		uint16 nWidth = (uint16)( (LTFLOAT)s_HelpWidth * g_pInterfaceResMgr->GetYRatio());
 		float helpX = (float)s_HelpRect.left * g_pInterfaceResMgr->GetXRatio();
 		float helpY = (float)s_HelpRect.top * g_pInterfaceResMgr->GetYRatio();
 		uint8 nFont = g_pLayoutMgr->GetHelpFont();
-		uint8 nSize = (uint8)((LTFLOAT)s_HelpSize * g_pInterfaceResMgr->GetXRatio());
+		uint8 nSize = (uint8)((LTFLOAT)s_HelpSize * g_pInterfaceResMgr->GetYRatio());
 
 		CUIFont* pFont = g_pInterfaceResMgr->GetFont(nFont);
 		s_pHelpStr = g_pFontManager->CreateFormattedPolyString(pFont,"",helpX,helpY);
@@ -456,7 +456,7 @@ LTBOOL CBaseScreen::CreateTitle(char *lpszTitle)
 		if (!m_pTitleString)
 			return LTFALSE;
 
-		uint8 nFontSize = (uint8)((LTFLOAT)m_TitleSize * g_pInterfaceResMgr->GetXRatio());
+		uint8 nFontSize = (uint8)((LTFLOAT)m_TitleSize * g_pInterfaceResMgr->GetYRatio());
 		m_pTitleString->SetCharScreenHeight(nFontSize);
 		m_pTitleString->SetColor(m_TitleColor);
 
@@ -1154,7 +1154,8 @@ CLTGUITextCtrl* CBaseScreen::CreateTextItem(char *pString, uint32 commandID, int
 
 	m_nextPos.y += (pCtrl->GetBaseHeight() + m_nItemSpacing);
 
-	pCtrl->SetScale(g_pInterfaceResMgr->GetYRatio());
+	pCtrl->ApplyPosition(g_pInterfaceResMgr->GetYRatio(), g_pInterfaceResMgr->Get4x3Offset());
+
 	
 
 	if (bFixed)
@@ -1179,7 +1180,7 @@ CLTGUIListCtrl* CBaseScreen::CreateList(LTIntPt pos, uint16 nHeight, LTBOOL bUse
     if (pList->Create(nHeight))
 	{
 		pList->SetBasePos(pos);
-		pList->SetScale(g_pInterfaceResMgr->GetYRatio());
+		pList->ApplyPosition(g_pInterfaceResMgr->GetYRatio(), g_pInterfaceResMgr->Get4x3Offset());
 		if (bUseArrows)
 		{
 			HTEXTURE hUp = g_pInterfaceResMgr->GetTexture("interface\\menu\\sprtex\\arrowup.dtx");
@@ -1235,7 +1236,7 @@ CLTGUICycleCtrl* CBaseScreen::CreateCycle(char *pString, int helpID, int nHeader
 
 	m_nextPos.y += (pCtrl->GetBaseHeight() + m_nItemSpacing);
 
-	pCtrl->SetScale(g_pInterfaceResMgr->GetYRatio());
+	pCtrl->ApplyPosition(g_pInterfaceResMgr->GetYRatio(), g_pInterfaceResMgr->Get4x3Offset());
 	
 
 	if (bFixed)
@@ -1296,7 +1297,7 @@ CLTGUIToggle* CBaseScreen::CreateToggle(char *pString, int helpID, int nHeaderWi
 
 	m_nextPos.y += (pCtrl->GetBaseHeight() + m_nItemSpacing);
 
-	pCtrl->SetScale(g_pInterfaceResMgr->GetYRatio());
+	pCtrl->ApplyPosition(g_pInterfaceResMgr->GetYRatio(), g_pInterfaceResMgr->Get4x3Offset());
 
 	pCtrl->SetOnString(LoadTempString(IDS_ON));
 	pCtrl->SetOffString(LoadTempString(IDS_OFF));
@@ -1369,7 +1370,7 @@ CLTGUISlider* CBaseScreen::CreateSlider(char *pString, int helpID, int nHeaderWi
 
 	m_nextPos.y += (pCtrl->GetBaseHeight() + m_nItemSpacing);
 
-	pCtrl->SetScale(g_pInterfaceResMgr->GetYRatio());
+	pCtrl->ApplyPosition(g_pInterfaceResMgr->GetYRatio(), g_pInterfaceResMgr->Get4x3Offset());
 	
 
 	if (bFixed)
@@ -1418,7 +1419,7 @@ CLTGUIColumnCtrl* CBaseScreen::CreateColumnCtrl(uint32 commandID, int helpID, LT
 
 	m_nextPos.y += (nFontSize + m_nItemSpacing);
 
-	pCtrl->SetScale(g_pInterfaceResMgr->GetYRatio());
+	pCtrl->ApplyPosition(g_pInterfaceResMgr->GetYRatio(), g_pInterfaceResMgr->Get4x3Offset());
 	
 
 	if (bFixed)
@@ -1563,7 +1564,7 @@ void CBaseScreen::OnFocus(LTBOOL bFocus)
 
 	if (bFocus)
 	{
-		if (m_fLastScale != g_pInterfaceResMgr->GetXRatio())
+		if (m_fLastScale != g_pInterfaceResMgr->GetXRatio() + g_pInterfaceResMgr->GetYRatio())
 		{
 			ScreenDimsChanged();
 		}
@@ -2074,10 +2075,10 @@ void CBaseScreen::UpdateHelpText()
 			if (s_pHelpStr && strlen(szHelpText))
 			{
 				s_pHelpStr->SetText(szHelpText);
-				uint16 nWidth = (uint16)( (LTFLOAT)s_HelpWidth * g_pInterfaceResMgr->GetXRatio());
+				uint16 nWidth = (uint16)( (LTFLOAT)s_HelpWidth * g_pInterfaceResMgr->GetYRatio());
 				float helpX = (float)s_HelpRect.left * g_pInterfaceResMgr->GetXRatio();
 				float helpY = (float)s_HelpRect.top * g_pInterfaceResMgr->GetYRatio();
-				uint8 nSize = (uint8)((LTFLOAT)s_HelpSize * g_pInterfaceResMgr->GetXRatio());
+				uint8 nSize = (uint8)((LTFLOAT)s_HelpSize * g_pInterfaceResMgr->GetYRatio());
 
 				s_pHelpStr->SetPosition(helpX,helpY);
 				s_pHelpStr->SetCharScreenHeight(nSize);
@@ -2091,12 +2092,12 @@ void CBaseScreen::UpdateHelpText()
 
 void CBaseScreen::ScreenDimsChanged()
 {
-	m_fLastScale = g_pInterfaceResMgr->GetXRatio();
+	// Need both! It's actually not used for anything but cache busting.
+	m_fLastScale = g_pInterfaceResMgr->GetXRatio() + g_pInterfaceResMgr->GetYRatio();
 	unsigned int i;
 	for ( i = 0; i < m_controlArray.size(); i++ )
 	{
-		m_controlArray[i]->SetScale(g_pInterfaceResMgr->GetYRatio());
-
+		m_controlArray[i]->ApplyPosition(g_pInterfaceResMgr->GetYRatio(), g_pInterfaceResMgr->Get4x3Offset());
 	}
 
 	if (m_pTitleString)
@@ -2104,16 +2105,16 @@ void CBaseScreen::ScreenDimsChanged()
 		LTIntPt pos = m_TitlePos;
 		g_pInterfaceResMgr->ConvertScreenPos(pos);
 		m_pTitleString->SetPosition((float)pos.x,(float)pos.y);
-		uint8 nFontSize = (uint8)((LTFLOAT)m_TitleSize * g_pInterfaceResMgr->GetXRatio());
+		uint8 nFontSize = (uint8)((LTFLOAT)m_TitleSize * g_pInterfaceResMgr->GetYRatio());
 		m_pTitleString->SetCharScreenHeight(nFontSize);
 	}
 
 	if (s_pHelpStr)
 	{
-		uint16 nWidth = (uint16)( (LTFLOAT)s_HelpWidth * g_pInterfaceResMgr->GetXRatio());
+		uint16 nWidth = (uint16)( (LTFLOAT)s_HelpWidth * g_pInterfaceResMgr->GetYRatio());
 		float helpX = (float)s_HelpRect.left * g_pInterfaceResMgr->GetXRatio();
 		float helpY = (float)s_HelpRect.top * g_pInterfaceResMgr->GetYRatio();
-		uint8 nSize = (uint8)((LTFLOAT)s_HelpSize * g_pInterfaceResMgr->GetXRatio());
+		uint8 nSize = (uint8)((LTFLOAT)s_HelpSize * g_pInterfaceResMgr->GetYRatio());
 
 		s_pHelpStr->SetPosition(helpX,helpY);
 		s_pHelpStr->SetCharScreenHeight(nSize);
@@ -2166,7 +2167,7 @@ void CBaseScreen::SetTitleSize(uint8 nFontSize)
 	if (m_pTitleString)
 	{
 		CUIFont* pFont = g_pInterfaceResMgr->GetFont(m_TitleFont);
-		uint8 nFontSize = (uint8)((LTFLOAT)m_TitleSize * g_pInterfaceResMgr->GetXRatio());
+		uint8 nFontSize = (uint8)((LTFLOAT)m_TitleSize * g_pInterfaceResMgr->GetYRatio());
 		m_pTitleString->SetCharScreenHeight(nFontSize);
 	}
 }
@@ -2211,10 +2212,10 @@ void CBaseScreen::ScalePoly(LTPoly_GT4* pPoly, LTIntPt pos, HTEXTURE hTex)
 		return;
 	uint32 w,h;
 	g_pTexInterface->GetTextureDims(hTex,w,h);
-	float x = (float)pos.x * g_pInterfaceResMgr->GetXRatio();
-	float y = (float)pos.y * g_pInterfaceResMgr->GetXRatio();
-	float fw = (float)w * g_pInterfaceResMgr->GetXRatio();
-	float fh = (float)h * g_pInterfaceResMgr->GetXRatio();
+	float x = (float)pos.x * g_pInterfaceResMgr->GetYRatio();
+	float y = (float)pos.y * g_pInterfaceResMgr->GetYRatio();
+	float fw = (float)w * g_pInterfaceResMgr->GetYRatio();
+	float fh = (float)h * g_pInterfaceResMgr->GetYRatio();
 
 	g_pDrawPrim->SetXYWH(pPoly,x,y,fw,fh);
 
