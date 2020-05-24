@@ -26,6 +26,14 @@ VarTrack			g_vtShowFPS;					// ShowFramerate			<0-1>
 int g_nSampleRate = 22050;
 
 
+LONG WINAPI UncaughtExceptionHandler(EXCEPTION_POINTERS* /*ExceptionInfo*/)
+{
+	g_pLTClient->CPrint("!! CRASH DETECTED !! Dumping console log to debug.log!");
+	g_pLTClient->RunConsoleString("WriteToDebugLog");
+
+	return EXCEPTION_CONTINUE_SEARCH;// g_showCrashDialog ? EXCEPTION_CONTINUE_SEARCH : EXCEPTION_EXECUTE_HANDLER;
+}
+
 // ----------------------------------------------------------------------- //
 //
 //	ROUTINE:	CTO2GameClientShell::CTO2GameClientShell()
@@ -66,7 +74,10 @@ CTO2GameClientShell::~CTO2GameClientShell()
 
 uint32 CTO2GameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
 {
-
+	// Set a top level exception handler to catch any bugs and dump our console log.
+	// This may or may not work depending on what crashed, but it's worth a try.
+	// This won't happen in debug mode!
+	SetUnhandledExceptionFilter(UncaughtExceptionHandler);
 
 	uint32 nResult = CGameClientShell::OnEngineInitialized(pMode, pAppGuid);
 

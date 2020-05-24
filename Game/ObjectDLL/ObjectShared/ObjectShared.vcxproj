@@ -101,6 +101,7 @@
       <ProgramDataBaseFileName>.\..\..\Built\Release\ObjectDll\ObjectShared\</ProgramDataBaseFileName>
       <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ExceptionHandling>Async</ExceptionHandling>
     </ClCompile>
     <ResourceCompile>
       <Culture>0x0409</Culture>

@@ -156,6 +156,7 @@
       <ProgramDataBaseFileName>.\..\..\Built\Release\ClientShellDll\TO2\</ProgramDataBaseFileName>
       <AdditionalOptions> /Zm1000 </AdditionalOptions>
       <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
+      <ExceptionHandling>Async</ExceptionHandling>
     </ClCompile>
     <Midl>
       <SuppressStartupBanner>true</SuppressStartupBanner>
