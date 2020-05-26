@@ -53,6 +53,9 @@ public:
 	void SetConsoleLock(bool bOn) { m_bLockConsole = bOn; };
 	std::string GetConsoleLines() { return m_sStr; };
 
+	bool GetDumpStatus() { return m_bDumpingConsole; };
+	void SetDumpStatus(bool bStatus) { m_bDumpingConsole = bStatus; };
+
 protected:
 	std::vector<HistoryData> m_History;
 	std::vector<HistoryData> m_HistorySlice;
@@ -81,6 +84,8 @@ protected:
 	bool m_bInitialized;
 	bool m_bVisible;
 	bool m_bLockConsole;
+
+	bool m_bDumpingConsole;
 
 	std::string m_sStr;
 };

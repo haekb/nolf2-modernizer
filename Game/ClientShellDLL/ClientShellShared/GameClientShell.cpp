@@ -169,7 +169,13 @@ void proxyGetAxisOffsets(LTFLOAT* offsets)
 
 void SDLLog(void* userdata, int category, SDL_LogPriority priority, const char* message)
 {
-	if (g_pLTClient && g_pConsoleMgr)
+	if (!g_pLTClient) {
+		return;
+	}
+
+	// If we have the client, console, and the console is not dumping
+	// Print our SDL Log's to console.
+	if (g_pLTClient && g_pConsoleMgr && !g_pConsoleMgr->GetDumpStatus())
 	{
 		g_pLTClient->CPrint("<SDL_LOG>: %s", message);
 	}

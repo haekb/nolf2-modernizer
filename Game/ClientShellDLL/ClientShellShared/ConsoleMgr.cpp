@@ -28,6 +28,9 @@ void WriteToDebugLog(int argc, char** argv)
 		return;
 	}
 
+	// We need to set dump status, otherwise SDL_Log will write to console while we're trying to dump..
+	g_pConsoleMgr->SetDumpStatus(true);
+
 	g_pLTClient->CPrint("Writing to Debug.log...");
 
 	SDL_Log("Writing Console History");
@@ -50,6 +53,9 @@ void WriteToDebugLog(int argc, char** argv)
 	SDL_Log("---------------------------------------");
 
 	g_pLTClient->CPrint("Done!");
+
+	g_pConsoleMgr->SetDumpStatus(false);
+
 }
 
 ConsoleMgr::ConsoleMgr()
@@ -59,6 +65,8 @@ ConsoleMgr::ConsoleMgr()
 	m_bInitialized = false;
 	m_bVisible = false;
 	m_bLockConsole = true;
+
+	m_bDumpingConsole = false;
 
 	m_sStr = "";
 
