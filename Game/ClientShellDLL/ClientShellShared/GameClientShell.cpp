@@ -657,6 +657,24 @@ CGameClientShell::CGameClientShell()
 	m_pPerformanceTest = LTNULL;
 
 	m_fInputAxis[0] = m_fInputAxis[1] = m_fInputAxis[2] = 0.0f;
+
+
+	// Start up SDL! -- Maybe trim down what we're initing here...
+
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0)
+	{
+		const char* error = SDL_GetError();
+		__debugbreak();
+	}
+
+	// Setup the logging functions
+	SDL_LogSetOutputFunction(&SDLLog, NULL);
+
+	// Clear file
+	//g_SDLLogFile.open("Debug.log", STD ios::out | STD ios::trunc);
+	//g_SDLLogFile.close();
+
+	SDL_Log("-- Hello World, We're all set here. Enjoy the show!");
 }
 
 
@@ -941,22 +959,6 @@ uint32 CGameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
 
 	*pAppGuid = GAMEGUID;
 
-	// Start up SDL! -- Maybe trim down what we're initing here...
-
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0)
-	{
-		const char* error = SDL_GetError();
-		__debugbreak();
-	}
-
-	// Setup the logging functions
-	SDL_LogSetOutputFunction(&SDLLog, NULL);
-
-	// Clear file
-	//g_SDLLogFile.open("Debug.log", STD ios::out | STD ios::trunc);
-	//g_SDLLogFile.close();
-
-	SDL_Log("-- Hello World, We're all set here. Enjoy the show!");
 
 	ConsoleMgr* conMgr = new ConsoleMgr();
 
@@ -1880,7 +1882,7 @@ void CGameClientShell::PostUpdate()
 
 	GetInterfaceMgr( )->PostUpdate();
 
-	GetPlayerMgr()->UpdateRotationAxis();
+	//GetPlayerMgr()->UpdateRotationAxis();
 }
 
 // ----------------------------------------------------------------------- //
@@ -2093,7 +2095,7 @@ static void QuickLoadCallBack(LTBOOL bReturn, void *pData)
 
 void CGameClientShell::OnCommandOn(int command)
 {
-
+	g_pLTClient->CPrint("[OnCommandOn] Command triggered [%d]: %s", command, GetCommandName(command));
 	// Make sure we're in the world...
 
 	if (!GetPlayerMgr()->IsPlayerInWorld()) return;
@@ -4594,6 +4596,7 @@ void CGameClientShell::OnLButtonUp(HWND hWnd, int x, int y, UINT keyFlags)
 
 void CGameClientShell::OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 {
+	g_pLTClient->CPrint("Left Mouse Button Down [%d/%d], Double Click? %d", x, y, fDoubleClick);
 	/*if (!g_tmrDblClick.Stopped() &&
 		(g_mouseMgr.GetClickPosX() == x) && (g_mouseMgr.GetClickPosY() == y))
 	{
@@ -4640,11 +4643,16 @@ void CGameClientShell::OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags)
 {
 	//g_mouseMgr.SetMousePos(x,y);
 
+
+	/*
 	SDL_GetMouseState(&x, &y);
 
 	if (g_vtShowSDLMouse.GetFloat() == 1.0f && x != 0 && y != 0) {
 		g_pLTClient->CPrint("State: %d/%d", x,y);
 	}
+	*/
+
+	g_pPlayerMgr->UpdateRotationAxis();
 
 	g_pInterfaceMgr->OnMouseMove(x,y);
 }
@@ -4675,15 +4683,17 @@ BOOL SetWindowSize(uint32 nWidth, uint32 nHeight)
 			bClip = FALSE;
 	}
 
-	RECT screenRect;
-	GetWindowRect(GetDesktopWindow(), &screenRect);
+	//RECT screenRect;
+	//GetWindowRect(GetDesktopWindow(), &screenRect);
 
 	if (g_SDLWindow)
 	{
 		SDL_SetWindowSize(g_SDLWindow, nWidth, nHeight);
 		SDL_SetWindowPosition(g_SDLWindow, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+		//SDL_SetWindowGrab(g_SDLWindow, SDL_TRUE);
 	}
 
+	/*
 	if(bClip)
 	{
   		SetWindowLong(g_hMainWnd,GWL_STYLE,WS_VISIBLE);
@@ -4701,6 +4711,8 @@ BOOL SetWindowSize(uint32 nWidth, uint32 nHeight)
 					nWidth, nHeight,SWP_FRAMECHANGED);
 		ShowWindow(g_hMainWnd, SW_NORMAL);
 	}
+	*/
+
 
 	if (g_SDLWindow)
 	{

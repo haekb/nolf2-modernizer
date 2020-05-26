@@ -3669,9 +3669,7 @@ void CPlayerMgr::UpdateMultiplayerCameraPosition()
 void CPlayerMgr::UpdateRotationAxis()
 {
 	float offsets[3];
-	int deltaX, deltaY;
-
-	//SDL_PumpEvents();
+	int deltaX = 0, deltaY = 0;
 
 	// Firstly, we need a point of reference.
 	// This conditional is here, in case we need to reset the mouse.
@@ -3681,19 +3679,15 @@ void CPlayerMgr::UpdateRotationAxis()
 		m_bGetBaseMouse = LTFALSE;
 	}
 
+	SDL_GetRelativeMouseState(&deltaX, &deltaY);
 
-
-
-
-	int x = 0, y = 0;
-
-	SDL_GetMouseState(&x, &y);
-
-	if (x != 0 && y != 0) {
-		//g_pLTClient->CPrint("State: %d/%d", x,y);
+	static int nDelay = 0;
+	if (GetConsoleFloat("SDLShowMouse", 0) && nDelay % 10 == 0) {
+		g_pLTClient->CPrint("Delta: %d/%d", deltaX, deltaY);
+		nDelay = 0;
 	}
 
-	SDL_GetRelativeMouseState(&deltaX, &deltaY);
+	nDelay++;
 
 	m_iCurrentMouseX += deltaX;
 	m_iCurrentMouseY += deltaY;
