@@ -48,7 +48,7 @@ steps:
 
 - task: CmdLine@2
   inputs:
-    script: 'mkdir $(Pipeline.Workspace)\\Artifacts\\Custom\\Modernizer'
+    script: 'mkdir $(Pipeline.Workspace)\\Artifacts\\Custom\\Mods\\Modernizer'
 
 - task: CmdLine@2
   inputs:
