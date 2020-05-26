@@ -3682,7 +3682,7 @@ void CPlayerMgr::UpdateRotationAxis()
 	SDL_GetRelativeMouseState(&deltaX, &deltaY);
 
 	static int nDelay = 0;
-	if (GetConsoleFloat("SDLShowMouse", 0) && nDelay % 10 == 0) {
+	if (GetConsoleFloat("ShowSDLMouse", 0) && nDelay % 10 == 0) {
 		g_pLTClient->CPrint("Delta: %d/%d", deltaX, deltaY);
 		nDelay = 0;
 	}
