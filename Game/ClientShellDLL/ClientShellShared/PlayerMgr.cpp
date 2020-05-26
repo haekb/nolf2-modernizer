@@ -3681,13 +3681,7 @@ void CPlayerMgr::UpdateRotationAxis()
 
 	SDL_GetRelativeMouseState(&deltaX, &deltaY);
 
-	static int nDelay = 0;
-	if (GetConsoleFloat("ShowSDLMouse", 0) && nDelay % 10 == 0) {
-		g_pLTClient->CPrint("Delta: %d/%d", deltaX, deltaY);
-		nDelay = 0;
-	}
 
-	nDelay++;
 
 	m_iCurrentMouseX += deltaX;
 	m_iCurrentMouseY += deltaY;
@@ -3700,6 +3694,16 @@ void CPlayerMgr::UpdateRotationAxis()
 	offsets[0] = (float)(m_iCurrentMouseX - m_iPreviousMouseX) * nScale;
 	offsets[1] = (float)(m_iCurrentMouseY - m_iPreviousMouseY) * nScale;
 	offsets[2] = 0.0f;
+
+	static int nDelay = 0;
+	if (GetConsoleFloat("ShowSDLMouse", 0) && nDelay % 10 == 0) {
+		g_pLTClient->CPrint("Delta: %d/%d", deltaX, deltaY);
+		g_pLTClient->CPrint("Offset %f/%f/%f", offsets[0], offsets[1], offsets[2]);
+		g_pLTClient->CPrint("Mouse Sensitivity %f / Scaled %f", nMouseSensitivity, nScale);
+		nDelay = 0;
+	}
+
+	nDelay++;
 
 	g_pGameClientShell->SetInputAxis(offsets);
 
