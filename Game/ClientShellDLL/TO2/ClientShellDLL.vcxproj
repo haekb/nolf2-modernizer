@@ -199,7 +199,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\Shared\TO2;.\;..\..\..\libs\STLPORT-4.0\STLPORT_NO;..\ClientShellShared;..\..\clientres\shared;..\..\clientres\TO2;..\..\shared;..\..\..\Engine\sdk\inc;..\..\..\libs\stdlith;..\..\..\libs\butemgr;..\..\..\libs\cryptmgr;..\..\..\libs\lith;..\..\..\libs\mfcstub;..\..\libs\ltguimgr;..\..\..\libs\regmgr;..\..\libs\wonapi;..\..\libs\serverdir;..\..\..\libs\STLPORT-STD\;$(SolutionDir)\..\libs\SDL2-2.0.12\include;$(SolutionDir)\..\config\;$(SolutionDir)\..\libs\discord_game_sdk\cpp\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Shared\TO2;.\;..\..\..\libs\STLPORT-4.0\STLPORT_NO;..\ClientShellShared;..\..\clientres\shared;..\..\clientres\TO2;..\..\shared;..\..\..\Engine\sdk\inc;..\..\..\libs\stdlith;..\..\..\libs\butemgr;..\..\..\libs\cryptmgr;..\..\..\libs\lith;..\..\..\libs\mfcstub;..\..\libs\ltguimgr;..\..\..\libs\regmgr;..\..\libs\wonapi;..\..\libs\serverdir;..\..\..\libs\STLPORT-STD\;$(SolutionDir)\..\libs\SDL2-2.0.12\include;$(SolutionDir)\..\config\;$(SolutionDir)\..\libs\discord_game_sdk\cpp\;$(SolutionDir)\..\libs\InputGetter\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;_CLIENTBUILD;WIN32;_WINDOWS;NOPS2;MEMTRACK_CLIENT;_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;NDISCORDBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\..\Built\Debug\ClientShellDll\TO2\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -239,8 +239,8 @@
       <SubSystem>Windows</SubSystem>
       <OutputFile>..\..\Built\Debug\ClientShellDll\TO2\CShell.dll</OutputFile>
       <ImportLibrary>.\..\..\Built\Debug\ClientShellDll\TO2\CShell.lib</ImportLibrary>
-      <AdditionalDependencies>winmm.lib;wsock32.lib;ButeMgr.lib;ClientShellShared.lib;cryptmgr.lib;Lib_Lith.lib;Lib_StdLith.lib;ltguimgr.lib;MFCStub.lib;regmgr.lib;ServerDir.lib;SDL2.lib;SDL2main.lib;discord_game_sdk.dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)\..\libs\SDL2-2.0.12\lib\x86;$(SolutionDir)..\libs\built\Debug\ButeMgr;$(SolutionDir)..\libs\built\Debug\cryptmgr;$(SolutionDir)..\libs\built\Debug\Lib_Lith;$(SolutionDir)..\libs\built\Debug\Lib_StdLith;$(SolutionDir)..\libs\built\Debug\MFCStub;$(SolutionDir)..\libs\built\Debug\regmgr;$(SolutionDir)\built\debug\libs\ltguimgr;$(SolutionDir)\built\debug\ClientShellDLL\ClientShellShared;$(SolutionDir)\libs\ServerDir\debug;$(SolutionDir)..\libs\discord_game_sdk\lib\x86;D:\GameDev\no-one-lives-forever-2-source\libs\discord_game_sdk\lib\x86</AdditionalLibraryDirectories>
+      <AdditionalDependencies>winmm.lib;wsock32.lib;ButeMgr.lib;ClientShellShared.lib;cryptmgr.lib;Lib_Lith.lib;Lib_StdLith.lib;ltguimgr.lib;MFCStub.lib;regmgr.lib;ServerDir.lib;SDL2.lib;SDL2main.lib;InputGetter.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\..\libs\SDL2-2.0.10\lib\x86;$(SolutionDir)..\libs\built\Debug\ButeMgr;$(SolutionDir)..\libs\built\Debug\cryptmgr;$(SolutionDir)..\libs\built\Debug\Lib_Lith;$(SolutionDir)..\libs\built\Debug\Lib_StdLith;$(SolutionDir)..\libs\built\Debug\MFCStub;$(SolutionDir)..\libs\built\Debug\regmgr;$(SolutionDir)\built\debug\libs\ltguimgr;$(SolutionDir)\built\debug\ClientShellDLL\ClientShellShared;$(SolutionDir)\libs\ServerDir\debug;$(SolutionDir)\Debug\</AdditionalLibraryDirectories>
     </Link>
     <CustomBuildStep>
       <Command>
