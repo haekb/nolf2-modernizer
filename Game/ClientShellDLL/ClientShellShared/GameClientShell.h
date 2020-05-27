@@ -34,6 +34,7 @@
 #include "MsgIds.h"
 #include "JukeboxButeMgr.h"
 
+
 class CSpecialFX;
 class CCameraFX;
 class CGameTexMgr;

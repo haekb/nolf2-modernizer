@@ -17,6 +17,10 @@
 #include "CursorMgr.h"
 #include "ClientResShared.h"
 #include <SDL.h>
+#include "InputGetter.h"
+#include "GameClientShell.h"
+
+extern SDL_Window* g_SDLWindow;
 
 VarTrack	g_vtCursorHack;
 
@@ -208,17 +212,9 @@ void CCursorMgr::UseCursor(LTBOOL bUseCursor, LTBOOL bLockCursorToCenter)
 			g_pLTClient->RunConsoleString("CursorCenter 1");
 		}
 		else {
-			auto nSupported = SDL_SetRelativeMouseMode(SDL_FALSE);
-			nSupported = SDL_SetRelativeMouseMode(SDL_TRUE);
+			SDL_SetWindowGrab(g_SDLWindow, SDL_TRUE);
 
-			auto error = SDL_GetError();
-
-			g_pLTClient->CPrint("Error: %s", error);
-
-			if (nSupported != 0)
-			{
-				g_pLTClient->CPrint("!! WARNING !! Relative Mouse Mode isn't supported!");
-			}
+			InputGetter::SetMouseMode(true);
 		}
 	}
 	else
@@ -227,7 +223,9 @@ void CCursorMgr::UseCursor(LTBOOL bUseCursor, LTBOOL bLockCursorToCenter)
 			g_pLTClient->RunConsoleString("CursorCenter 0");
 		}
 		else {
-			SDL_SetRelativeMouseMode(SDL_FALSE);
+			SDL_SetWindowGrab(g_SDLWindow, SDL_FALSE);
+
+			InputGetter::SetMouseMode(false);
 		}
 	}
 }

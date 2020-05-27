@@ -56,6 +56,7 @@
 #include "ScmdConsoleDriver_CShell.h"
 #include "mmsystem.h"
 #include "JukeboxButeMgr.h"
+#include "InputGetter.h"
 
 #include <SDL.h>
 
@@ -1384,6 +1385,13 @@ uint32 CGameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
 	m_pJukeboxButeMgr = debug_new(CJukeboxButeMgr);
 	m_pJukeboxButeMgr->Init();
 
+	auto ret = InputGetter::Init();
+
+	if (ret != INIT_OK)
+	{
+		__debugbreak();
+	}
+
 	return LT_OK;
 }
 
@@ -1433,7 +1441,19 @@ void CGameClientShell::OnEngineTerm()
 		debug_delete( m_pPerformanceTest );
 		m_pPerformanceTest = NULL;
 	}
+
+	InputGetter::Shutdown();
 }
+
+
+
+
+
+
+
+
+
+
 
 // ----------------------------------------------------------------------- //
 //
@@ -1882,7 +1902,7 @@ void CGameClientShell::PostUpdate()
 
 	GetInterfaceMgr( )->PostUpdate();
 
-	//GetPlayerMgr()->UpdateRotationAxis();
+	GetPlayerMgr()->UpdateRotationAxis();
 }
 
 // ----------------------------------------------------------------------- //
@@ -4642,18 +4662,6 @@ void CGameClientShell::OnMouseWheel(HWND hwnd, int x, int y, int zDelta, UINT fw
 void CGameClientShell::OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags)
 {
 	//g_mouseMgr.SetMousePos(x,y);
-
-
-	/*
-	SDL_GetMouseState(&x, &y);
-
-	if (g_vtShowSDLMouse.GetFloat() == 1.0f && x != 0 && y != 0) {
-		g_pLTClient->CPrint("State: %d/%d", x,y);
-	}
-	*/
-
-	g_pPlayerMgr->UpdateRotationAxis();
-
 	g_pInterfaceMgr->OnMouseMove(x,y);
 }
 

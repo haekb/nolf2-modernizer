@@ -44,6 +44,7 @@
 #include "LTEulerAngles.h"
 #include "DoomsDayPieceFX.h"
 #include <SDL.h>
+#include "InputGetter.h"
 
 extern SDL_Window* g_SDLWindow;
 
@@ -3679,9 +3680,8 @@ void CPlayerMgr::UpdateRotationAxis()
 		m_bGetBaseMouse = LTFALSE;
 	}
 
-	SDL_GetRelativeMouseState(&deltaX, &deltaY);
-
-
+	//SDL_GetRelativeMouseState(&deltaX, &deltaY);
+	InputGetter::ReadMousePosition(&deltaX, &deltaY);
 
 	m_iCurrentMouseX += deltaX;
 	m_iCurrentMouseY += deltaY;
