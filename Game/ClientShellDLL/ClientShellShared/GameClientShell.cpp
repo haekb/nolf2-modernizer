@@ -179,7 +179,14 @@ void proxyGetAxisOffsets(LTFLOAT* offsets)
 //
 LTRESULT proxyClearInput()
 {
+	// Request PostUpdate() to re-register SDL2's relative mouse mode
 	g_pGameClientShell->SetReRegisterRawInput(true);
+
+	// Clear our InputAxis offsets
+	float fAxisOffsets[3] = { 0.0f, 0.0f, 0.0f };
+	g_pGameClientShell->SetInputAxis(fAxisOffsets);
+
+	// Actually run the engine's ClearInput
 	return g_pClearInput();
 }
 
@@ -1593,9 +1600,6 @@ LTRESULT CGameClientShell::OnTouchNotify(HOBJECT hMain, CollisionInfo *pInfo, fl
 
 void CGameClientShell::OnEnterWorld()
 {
-
-	g_pLTClient->CPrint("OnEnterWorld");
-
 	// Reset our speed hack.
 	g_nStartTicks = 0;
 
@@ -1908,7 +1912,7 @@ void CGameClientShell::PostUpdate()
 	// This should maybe be in CursorMgr, but it's here.
 	// This basically checks to see if we need to re-register raw input
 	// DirectInput has its own RawInput listener that will steal ours. (So rude!)
-	// So on WM_ActivateApp or FirstUpdate we re-register so we can use it.
+	// So on WM_ActivateApp or ClearInput() we re-register so we can use it.
 	if (GetReRegisterRawInput())
 	{
 		auto bInRelativeMode = SDL_GetRelativeMouseMode();
@@ -4586,19 +4590,8 @@ void DefaultModelHook (ModelHookData *pData, void *pUser)
 //	PURPOSE:	Hook it real good
 //
 // --------------------------------------------------------------------------- //
-/*
-#ifndef WM_INPUT
-#define WM_INPUT 0x00ff
-#endif
-*/
 LRESULT CALLBACK HookedWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	//if (uMsg == WM_INPUT)
-	{
-		//g_pLTClient->CPrint("Got raw input event!");
-		//return DefWindowProc(hWnd, uMsg, wParam, lParam);
-	}
-
 	switch(uMsg)
 	{
 		HANDLE_MSG(hWnd, WM_LBUTTONUP, CGameClientShell::OnLButtonUp);
@@ -4613,12 +4606,15 @@ LRESULT CALLBACK HookedWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lP
 		HANDLE_MSG(hWnd, WM_SETCURSOR, OnSetCursor);
 	}
 
-	// Special case, we just want to ignore this message if the user wants the game to run in background.
-	// So just return 0;
+	
 	if (uMsg == WM_ACTIVATEAPP && g_pGameClientShell)
 	{
+		// DirectInput probably has a similar WM_ACTIVATEAPP on focus call. 
+		// So we gotta compete against that.
 		g_pGameClientShell->SetReRegisterRawInput(true);
 
+		// If they want the game to run in the background, 
+		// just pass it to the default window proc instead of the engine's window proc.
 		if (g_vtRunInBackground.GetFloat() == 1.0f)
 		{
 			return DefWindowProc(hWnd, uMsg, wParam, lParam);

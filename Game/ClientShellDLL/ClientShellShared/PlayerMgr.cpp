@@ -3734,16 +3734,6 @@ void CPlayerMgr::CalculateCameraRotation()
 	float offsets[3] = { 0.0f };
 	g_pLTClient->GetAxisOffsets(offsets);
 
-#if 0
-	static int nDelay = 0;
-	if (nDelay % 10 == 0)
-	{
-		g_pLTClient->CPrint("[GetAxisOffset] %f/%f/%f", offsets[0], offsets[1], offsets[2]);
-		nDelay = 0;
-	}
-	nDelay++;
-#endif
-
 	if (m_bRestoreOrientation)
 	{
 		offsets[0] = offsets[1] = offsets[2] = 0.0f;
