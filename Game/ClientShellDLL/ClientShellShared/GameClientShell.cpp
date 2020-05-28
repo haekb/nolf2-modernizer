@@ -134,8 +134,10 @@ void UnhookWindow();
 BOOL OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT msg);
 LRESULT CALLBACK HookedWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-LTRESULT(*g_pRegisterConsoleProgram)(const char* pName, ConsoleProgramFn fn) = NULL;
-LTRESULT(*g_pUnregisterConsoleProgram)(const char* pName);
+LTRESULT(*g_pRegisterConsoleProgram)(const char* pName, ConsoleProgramFn fn) = nullptr;
+LTRESULT(*g_pUnregisterConsoleProgram)(const char* pName) = nullptr;
+LTRESULT(*g_pClearInput)() = nullptr;
+
 
 // We can build a list of registered console programs here :)!
 LTRESULT proxyRegisterConsoleProgram(const char* pName, ConsoleProgramFn fn)
@@ -165,6 +167,20 @@ void proxyGetAxisOffsets(LTFLOAT* offsets)
 	offsets[0] = g_pGameClientShell->GetInputAxis()[0];
 	offsets[1] = g_pGameClientShell->GetInputAxis()[1];
 	offsets[2] = g_pGameClientShell->GetInputAxis()[2];
+}
+
+//
+// Proxy ClearInput
+// Through testing I found ClearInput must re-init DirectInput's RawInput listener. 
+// So here we're flagging our system to re-init OUR RawInput listener (through SDL) after it does this.
+//
+// Note: If anyone is doing engine work and have already replaced the odd DirectInput implementation, 
+// you can remove this along with all the SDL code in this mod.
+//
+LTRESULT proxyClearInput()
+{
+	g_pGameClientShell->SetReRegisterRawInput(true);
+	return g_pClearInput();
 }
 
 void SDLLog(void* userdata, int category, SDL_LogPriority priority, const char* message)
@@ -204,6 +220,9 @@ void InitClientShell()
 	g_pLTClient->UnregisterConsoleProgram = proxyUnregisterConsoleProgram;
 
 	g_pLTClient->GetAxisOffsets = proxyGetAxisOffsets;
+
+	g_pClearInput = g_pLTClient->ClearInput;
+	g_pLTClient->ClearInput = proxyClearInput;
 
 	// Init our LT subsystems
 
@@ -657,6 +676,7 @@ CGameClientShell::CGameClientShell()
 	m_pPerformanceTest = LTNULL;
 
 	m_fInputAxis[0] = m_fInputAxis[1] = m_fInputAxis[2] = 0.0f;
+	m_bReRegisterRawInput = false;
 
 
 	// Start up SDL! -- Maybe trim down what we're initing here...
@@ -1573,6 +1593,9 @@ LTRESULT CGameClientShell::OnTouchNotify(HOBJECT hMain, CollisionInfo *pInfo, fl
 
 void CGameClientShell::OnEnterWorld()
 {
+
+	g_pLTClient->CPrint("OnEnterWorld");
+
 	// Reset our speed hack.
 	g_nStartTicks = 0;
 
@@ -1882,7 +1905,25 @@ void CGameClientShell::PostUpdate()
 
 	GetInterfaceMgr( )->PostUpdate();
 
-	//GetPlayerMgr()->UpdateRotationAxis();
+	// This should maybe be in CursorMgr, but it's here.
+	// This basically checks to see if we need to re-register raw input
+	// DirectInput has its own RawInput listener that will steal ours. (So rude!)
+	// So on WM_ActivateApp or FirstUpdate we re-register so we can use it.
+	if (GetReRegisterRawInput())
+	{
+		auto bInRelativeMode = SDL_GetRelativeMouseMode();
+
+		SDL_SetRelativeMouseMode(SDL_FALSE);
+
+		if (bInRelativeMode)
+		{
+			SDL_SetRelativeMouseMode(SDL_TRUE);
+		}
+
+		SetReRegisterRawInput(false);
+	}
+
+	GetPlayerMgr()->UpdateRotationAxis();
 }
 
 // ----------------------------------------------------------------------- //
@@ -2099,7 +2140,6 @@ void CGameClientShell::OnCommandOn(int command)
 	// Make sure we're in the world...
 
 	if (!GetPlayerMgr()->IsPlayerInWorld()) return;
-
 
 	// Let the interface handle the command first...
 
@@ -4071,7 +4111,6 @@ void CGameClientShell::FirstUpdate()
 
 	RestoreMusic();
 
-
 	// Start with a clean slate...
 
 	g_pLTClient->ClearInput();
@@ -4547,15 +4586,17 @@ void DefaultModelHook (ModelHookData *pData, void *pUser)
 //	PURPOSE:	Hook it real good
 //
 // --------------------------------------------------------------------------- //
+/*
 #ifndef WM_INPUT
 #define WM_INPUT 0x00ff
 #endif
+*/
 LRESULT CALLBACK HookedWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	if (uMsg == WM_INPUT)
+	//if (uMsg == WM_INPUT)
 	{
 		//g_pLTClient->CPrint("Got raw input event!");
-		return DefWindowProc(hWnd, uMsg, wParam, lParam);
+		//return DefWindowProc(hWnd, uMsg, wParam, lParam);
 	}
 
 	switch(uMsg)
@@ -4574,11 +4615,17 @@ LRESULT CALLBACK HookedWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lP
 
 	// Special case, we just want to ignore this message if the user wants the game to run in background.
 	// So just return 0;
-	if (uMsg == WM_ACTIVATEAPP && g_vtRunInBackground.GetFloat() == 1.0f)
+	if (uMsg == WM_ACTIVATEAPP && g_pGameClientShell)
 	{
-		return DefWindowProc(hWnd, uMsg, wParam, lParam);
+		g_pGameClientShell->SetReRegisterRawInput(true);
+
+		if (g_vtRunInBackground.GetFloat() == 1.0f)
+		{
+			return DefWindowProc(hWnd, uMsg, wParam, lParam);
+		}
 	}
 
+	//
 	_ASSERT(g_pfnMainWndProc);
 	return(CallWindowProc(g_pfnMainWndProc,hWnd,uMsg,wParam,lParam));
 }
@@ -4634,26 +4681,11 @@ void CGameClientShell::OnRButtonDblClick(HWND hwnd, BOOL fDoubleClick, int x, in
 
 void CGameClientShell::OnMouseWheel(HWND hwnd, int x, int y, int zDelta, UINT fwKeys)
 {
-	//g_mouseMgr.SetMousePos(x,y);
-
 	g_pInterfaceMgr->OnMouseWheel(x, y, zDelta);
 }
 
 void CGameClientShell::OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags)
 {
-	//g_mouseMgr.SetMousePos(x,y);
-
-
-	/*
-	SDL_GetMouseState(&x, &y);
-
-	if (g_vtShowSDLMouse.GetFloat() == 1.0f && x != 0 && y != 0) {
-		g_pLTClient->CPrint("State: %d/%d", x,y);
-	}
-	*/
-
-	g_pPlayerMgr->UpdateRotationAxis();
-
 	g_pInterfaceMgr->OnMouseMove(x,y);
 }
 
@@ -4774,7 +4806,7 @@ BOOL HookWindow()
 		g_pLTClient->CPrint("SDL2 found and hooked window!");
 
 		
-
+		/*
 		// NOLF2 seems to dislike us using raw input, so just use mouse warping.
 		//auto bSet = SDL_SetHint(SDL_HINT_MOUSE_RELATIVE_MODE_WARP, "0");
 		auto bSet = SDL_SetHintWithPriority(SDL_HINT_MOUSE_RELATIVE_MODE_WARP, "1", SDL_HINT_OVERRIDE);
@@ -4785,6 +4817,7 @@ BOOL HookWindow()
 		{
 			g_pLTClient->CPrint("!! WARNING !! Mouse Relative Mode = Warp is not supported on this system!");
 		}
+		*/
 	}
 	else {
 		SDL_Log("Error hooking window: %s", SDL_GetError());
@@ -5177,6 +5210,10 @@ bool CGameClientShell::LauncherServerApp( char const* pszProfileFile )
 
 void CGameClientShell::OnConsolePrint(CConsolePrintData* pData)
 {
+	if (!g_pConsoleMgr)
+	{
+		return;
+	}
 	g_pConsoleMgr->Read(pData);
 }
 

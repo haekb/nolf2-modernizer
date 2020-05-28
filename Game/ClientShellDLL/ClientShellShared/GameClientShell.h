@@ -153,6 +153,9 @@ public:
 
 	virtual	void OnConsolePrint(CConsolePrintData* pData);
 
+	void SetReRegisterRawInput(bool bVal) { SDL_Log("Setting Re-Register RawInput to %d", bVal); m_bReRegisterRawInput = bVal; };
+	bool GetReRegisterRawInput() { return m_bReRegisterRawInput; };
+
 protected :
     uint32      OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid);
 	void		OnEngineTerm();
@@ -386,10 +389,13 @@ private :
 	bool				m_bRunningPerfTest;
 	CPerformanceTest	*m_pPerformanceTest;
 
+	bool m_bReRegisterRawInput;
 	LTFLOAT m_fInputAxis[3];
 
 	// Just shoving this here..
 	CJukeboxButeMgr* m_pJukeboxButeMgr;
+
+
 };
 
 void DefaultModelHook(ModelHookData *pData, void *pUser);
