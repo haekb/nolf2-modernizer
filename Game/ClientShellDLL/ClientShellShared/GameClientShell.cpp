@@ -1931,6 +1931,8 @@ void CGameClientShell::PostUpdate()
 
 	GetInterfaceMgr( )->PostUpdate();
 
+	m_pGameInputMgr->Update();
+
 	// This should maybe be in CursorMgr, but it's here.
 	// This basically checks to see if we need to re-register raw input
 	// DirectInput has its own RawInput listener that will steal ours. (So rude!)

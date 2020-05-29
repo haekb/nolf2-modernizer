@@ -25,6 +25,7 @@ public:
 	GameInputMgr();
 	~GameInputMgr();
 
+	void Update();
 
 	void OnMouseDown(GameInputButton button);
 	void OnMouseUp(GameInputButton button);
@@ -44,6 +45,10 @@ private:
 	std::map<GameInputButton, int> m_BindList;
 	std::vector<int> m_ActiveCommands;
 	
+	// Cheaper than checking an array for our two special case buttons..
+	bool m_bIsWheelingUp;
+	bool m_bIsWheelingDown;
 
+	int m_nLastZDelta;
 };
 

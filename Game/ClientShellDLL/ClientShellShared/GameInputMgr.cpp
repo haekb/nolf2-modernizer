@@ -9,6 +9,9 @@ GameInputMgr* g_pGameInputMgr = nullptr;
 GameInputMgr::GameInputMgr()
 {
 	g_pGameInputMgr = this;
+	m_bIsWheelingUp = false;
+	m_bIsWheelingDown = false;
+	m_nLastZDelta = 0;
 }
 
 GameInputMgr::~GameInputMgr()
@@ -17,6 +20,39 @@ GameInputMgr::~GameInputMgr()
 	if (!m_BindList.empty()) {
 		m_BindList.clear();
 	}
+}
+
+void GameInputMgr::Update()
+{
+	
+	// Properly handle sending OnWheel CommandOff calls
+	// I'm not sure if the engine actually supports this properly
+	// But we do!
+
+	// OnWheel "Released"
+	if (m_bIsWheelingUp && m_nLastZDelta < WHEEL_DELTA)
+	{
+		int nActionCode = m_BindList[GIB_MOUSE_WHEEL_UP];
+
+		g_pGameClientShell->OnCommandOff(nActionCode);
+		DeactivateCommand(nActionCode);
+
+		m_bIsWheelingUp = false;
+	}
+
+	// OnWheel "Released"
+	if (m_bIsWheelingDown && m_nLastZDelta > -WHEEL_DELTA)
+	{
+		int nActionCode = m_BindList[GIB_MOUSE_WHEEL_DOWN];
+
+		g_pGameClientShell->OnCommandOff(nActionCode);
+		DeactivateCommand(nActionCode);
+
+		m_bIsWheelingDown = false;
+	}
+
+	// Empty out our last ZDelta.
+	m_nLastZDelta = 0;
 }
 
 void GameInputMgr::OnMouseDown(GameInputButton button)
@@ -50,13 +86,17 @@ void GameInputMgr::OnMouseUp(GameInputButton button)
 
 	if (button == GIB_LEFT_MOUSE)
 	{
-		g_pGameClientShell->OnCommandOff(m_BindList[GIB_LEFT_MOUSE]);
-		DeactivateCommand(m_BindList[GIB_LEFT_MOUSE]);
+		int nActionCode = m_BindList[GIB_LEFT_MOUSE];
+
+		g_pGameClientShell->OnCommandOff(nActionCode);
+		DeactivateCommand(nActionCode);
 	}
 	else if (button == GIB_RIGHT_MOUSE)
 	{
-		g_pGameClientShell->OnCommandOff(m_BindList[GIB_RIGHT_MOUSE]);
-		DeactivateCommand(m_BindList[GIB_RIGHT_MOUSE]);
+		int nActionCode = m_BindList[GIB_RIGHT_MOUSE];
+
+		g_pGameClientShell->OnCommandOff(nActionCode);
+		DeactivateCommand(nActionCode);
 
 	}
 }
@@ -68,17 +108,28 @@ void GameInputMgr::OnMouseWheel(int nZDelta)
 		return;
 	}
 
+	
+	// OnWheel "Pressed"
 	if (nZDelta >= WHEEL_DELTA)
 	{
-		g_pGameClientShell->OnCommandOn(m_BindList[GIB_MOUSE_WHEEL_UP]);
-		g_pGameClientShell->OnCommandOff(m_BindList[GIB_MOUSE_WHEEL_UP]);
+		int nActionCode = m_BindList[GIB_MOUSE_WHEEL_UP];
+		g_pGameClientShell->OnCommandOn(nActionCode);
+		m_ActiveCommands.push_back(nActionCode);
+		m_bIsWheelingUp = true;
 	}
 
+	
+	// OnWheel "Pressed"
 	if (nZDelta <= -WHEEL_DELTA)
 	{
-		g_pGameClientShell->OnCommandOn(m_BindList[GIB_MOUSE_WHEEL_DOWN]);
-		g_pGameClientShell->OnCommandOff(m_BindList[GIB_MOUSE_WHEEL_DOWN]);
+		int nActionCode = m_BindList[GIB_MOUSE_WHEEL_DOWN];
+		g_pGameClientShell->OnCommandOn(nActionCode);
+		m_ActiveCommands.push_back(nActionCode);
+		m_bIsWheelingDown = true;
 	}
+
+	// Store this for Update()
+	m_nLastZDelta = nZDelta;
 }
 
 void GameInputMgr::ReadDeviceBindings()
