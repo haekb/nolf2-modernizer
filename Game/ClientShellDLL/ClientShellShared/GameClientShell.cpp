@@ -118,6 +118,7 @@ extern LTVector		g_vPlayerCameraOffset;
 extern VarTrack		g_vtFOVXNormal;
 extern VarTrack		g_vtFOVYNormal;
 extern ConsoleMgr*  g_pConsoleMgr;
+extern GameInputMgr* g_pGameInputMgr;
 
 // Sample rate
 extern int g_nSampleRate;
@@ -134,8 +135,10 @@ void UnhookWindow();
 BOOL OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT msg);
 LRESULT CALLBACK HookedWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-LTRESULT(*g_pRegisterConsoleProgram)(const char* pName, ConsoleProgramFn fn) = NULL;
-LTRESULT(*g_pUnregisterConsoleProgram)(const char* pName);
+LTRESULT(*g_pRegisterConsoleProgram)(const char* pName, ConsoleProgramFn fn) = nullptr;
+LTRESULT(*g_pUnregisterConsoleProgram)(const char* pName) = nullptr;
+LTRESULT(*g_pClearInput)() = nullptr;
+bool (*g_pIsCommandOn)(int commandNum) = nullptr;
 
 // We can build a list of registered console programs here :)!
 LTRESULT proxyRegisterConsoleProgram(const char* pName, ConsoleProgramFn fn)
@@ -165,6 +168,40 @@ void proxyGetAxisOffsets(LTFLOAT* offsets)
 	offsets[0] = g_pGameClientShell->GetInputAxis()[0];
 	offsets[1] = g_pGameClientShell->GetInputAxis()[1];
 	offsets[2] = g_pGameClientShell->GetInputAxis()[2];
+}
+
+bool proxyIsCommandOn(int commandNum)
+{
+	if (g_pGameInputMgr)
+	{
+		// Ignore if the command isn't on in the input manager
+		if (g_pGameInputMgr->IsCommandOn(commandNum))
+		{
+			return true;
+		}
+	}
+
+	return g_pIsCommandOn(commandNum);
+}
+//
+// Proxy ClearInput
+// Through testing I found ClearInput must re-init DirectInput's RawInput listener. 
+// So here we're flagging our system to re-init OUR RawInput listener (through SDL) after it does this.
+//
+// Note: If anyone is doing engine work and have already replaced the odd DirectInput implementation, 
+// you can remove this along with all the SDL code in this mod.
+//
+LTRESULT proxyClearInput()
+{
+	// Request PostUpdate() to re-register SDL2's relative mouse mode
+	g_pGameClientShell->SetReRegisterRawInput(true);
+
+	// Clear our InputAxis offsets
+	float fAxisOffsets[3] = { 0.0f, 0.0f, 0.0f };
+	g_pGameClientShell->SetInputAxis(fAxisOffsets);
+
+	// Actually run the engine's ClearInput
+	return g_pClearInput();
 }
 
 void SDLLog(void* userdata, int category, SDL_LogPriority priority, const char* message)
@@ -204,6 +241,12 @@ void InitClientShell()
 	g_pLTClient->UnregisterConsoleProgram = proxyUnregisterConsoleProgram;
 
 	g_pLTClient->GetAxisOffsets = proxyGetAxisOffsets;
+
+	g_pClearInput = g_pLTClient->ClearInput;
+	g_pLTClient->ClearInput = proxyClearInput;
+
+	g_pIsCommandOn = g_pLTClient->IsCommandOn;
+	g_pLTClient->IsCommandOn = proxyIsCommandOn;
 
 	// Init our LT subsystems
 
@@ -657,6 +700,9 @@ CGameClientShell::CGameClientShell()
 	m_pPerformanceTest = LTNULL;
 
 	m_fInputAxis[0] = m_fInputAxis[1] = m_fInputAxis[2] = 0.0f;
+	m_bReRegisterRawInput = false;
+
+	m_pGameInputMgr = nullptr;
 
 
 	// Start up SDL! -- Maybe trim down what we're initing here...
@@ -979,6 +1025,9 @@ uint32 CGameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
 	{
 		return LT_ERROR;
 	}
+
+	// Create GameInputMgr sometime before we load our profile..
+	m_pGameInputMgr = debug_new(GameInputMgr);
 
 	// Initialize global console variables...
 
@@ -1383,7 +1432,7 @@ uint32 CGameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
 	// Boot up Jukebox Manager.
 	m_pJukeboxButeMgr = debug_new(CJukeboxButeMgr);
 	m_pJukeboxButeMgr->Init();
-
+	
 	return LT_OK;
 }
 
@@ -1882,7 +1931,27 @@ void CGameClientShell::PostUpdate()
 
 	GetInterfaceMgr( )->PostUpdate();
 
-	//GetPlayerMgr()->UpdateRotationAxis();
+	m_pGameInputMgr->Update();
+
+	// This should maybe be in CursorMgr, but it's here.
+	// This basically checks to see if we need to re-register raw input
+	// DirectInput has its own RawInput listener that will steal ours. (So rude!)
+	// So on WM_ActivateApp or ClearInput() we re-register so we can use it.
+	if (GetReRegisterRawInput())
+	{
+		auto bInRelativeMode = SDL_GetRelativeMouseMode();
+
+		SDL_SetRelativeMouseMode(SDL_FALSE);
+
+		if (bInRelativeMode)
+		{
+			SDL_SetRelativeMouseMode(SDL_TRUE);
+		}
+
+		SetReRegisterRawInput(false);
+	}
+
+	GetPlayerMgr()->UpdateRotationAxis();
 }
 
 // ----------------------------------------------------------------------- //
@@ -2100,7 +2169,6 @@ void CGameClientShell::OnCommandOn(int command)
 
 	if (!GetPlayerMgr()->IsPlayerInWorld()) return;
 
-
 	// Let the interface handle the command first...
 
 	if (IsMultiplayerGame() || !GetPlayerMgr()->IsPlayerDead())
@@ -2129,6 +2197,8 @@ void CGameClientShell::OnCommandOn(int command)
 
 void CGameClientShell::OnCommandOff(int command)
 {
+	g_pLTClient->CPrint("[OnCommandOff] Command triggered [%d]: %s", command, GetCommandName(command));
+
 	// Let the interface handle the command first...
 	if (GetInterfaceMgr( )->OnCommandOff(command))
 	{
@@ -4071,7 +4141,6 @@ void CGameClientShell::FirstUpdate()
 
 	RestoreMusic();
 
-
 	// Start with a clean slate...
 
 	g_pLTClient->ClearInput();
@@ -4547,17 +4616,8 @@ void DefaultModelHook (ModelHookData *pData, void *pUser)
 //	PURPOSE:	Hook it real good
 //
 // --------------------------------------------------------------------------- //
-#ifndef WM_INPUT
-#define WM_INPUT 0x00ff
-#endif
 LRESULT CALLBACK HookedWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	if (uMsg == WM_INPUT)
-	{
-		//g_pLTClient->CPrint("Got raw input event!");
-		return DefWindowProc(hWnd, uMsg, wParam, lParam);
-	}
-
 	switch(uMsg)
 	{
 		HANDLE_MSG(hWnd, WM_LBUTTONUP, CGameClientShell::OnLButtonUp);
@@ -4572,13 +4632,22 @@ LRESULT CALLBACK HookedWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lP
 		HANDLE_MSG(hWnd, WM_SETCURSOR, OnSetCursor);
 	}
 
-	// Special case, we just want to ignore this message if the user wants the game to run in background.
-	// So just return 0;
-	if (uMsg == WM_ACTIVATEAPP && g_vtRunInBackground.GetFloat() == 1.0f)
+	
+	if (uMsg == WM_ACTIVATEAPP && g_pGameClientShell)
 	{
-		return DefWindowProc(hWnd, uMsg, wParam, lParam);
+		// DirectInput probably has a similar WM_ACTIVATEAPP on focus call. 
+		// So we gotta compete against that.
+		g_pGameClientShell->SetReRegisterRawInput(true);
+
+		// If they want the game to run in the background, 
+		// just pass it to the default window proc instead of the engine's window proc.
+		if (g_vtRunInBackground.GetFloat() == 1.0f)
+		{
+			return DefWindowProc(hWnd, uMsg, wParam, lParam);
+		}
 	}
 
+	//
 	_ASSERT(g_pfnMainWndProc);
 	return(CallWindowProc(g_pfnMainWndProc,hWnd,uMsg,wParam,lParam));
 }
@@ -4591,6 +4660,9 @@ void CGameClientShell::OnChar(HWND hWnd, char c, int rep)
 
 void CGameClientShell::OnLButtonUp(HWND hWnd, int x, int y, UINT keyFlags)
 {
+
+	g_pGameInputMgr->OnMouseUp(GIB_LEFT_MOUSE);
+
 	g_pInterfaceMgr->OnLButtonUp(x,y);
 }
 
@@ -4608,6 +4680,7 @@ void CGameClientShell::OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y,
 		g_mouseMgr.SetClickPos(x,y);
 		g_tmrDblClick.Start(.5);
 	}*/
+	g_pGameInputMgr->OnMouseDown(GIB_LEFT_MOUSE);
 
 	g_pInterfaceMgr->OnLButtonDown(x,y);
 }
@@ -4619,11 +4692,16 @@ void CGameClientShell::OnLButtonDblClick(HWND hwnd, BOOL fDoubleClick, int x, in
 
 void CGameClientShell::OnRButtonUp(HWND hwnd, int x, int y, UINT keyFlags)
 {
+	g_pGameInputMgr->OnMouseUp(GIB_RIGHT_MOUSE);
+
+
 	g_pInterfaceMgr->OnRButtonUp(x,y);
 }
 
 void CGameClientShell::OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 {
+	g_pGameInputMgr->OnMouseDown(GIB_RIGHT_MOUSE);
+
 	g_pInterfaceMgr->OnRButtonDown(x,y);
 }
 
@@ -4634,26 +4712,12 @@ void CGameClientShell::OnRButtonDblClick(HWND hwnd, BOOL fDoubleClick, int x, in
 
 void CGameClientShell::OnMouseWheel(HWND hwnd, int x, int y, int zDelta, UINT fwKeys)
 {
-	//g_mouseMgr.SetMousePos(x,y);
-
+	g_pGameInputMgr->OnMouseWheel(zDelta);
 	g_pInterfaceMgr->OnMouseWheel(x, y, zDelta);
 }
 
 void CGameClientShell::OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags)
 {
-	//g_mouseMgr.SetMousePos(x,y);
-
-
-	/*
-	SDL_GetMouseState(&x, &y);
-
-	if (g_vtShowSDLMouse.GetFloat() == 1.0f && x != 0 && y != 0) {
-		g_pLTClient->CPrint("State: %d/%d", x,y);
-	}
-	*/
-
-	g_pPlayerMgr->UpdateRotationAxis();
-
 	g_pInterfaceMgr->OnMouseMove(x,y);
 }
 
@@ -4772,19 +4836,6 @@ BOOL HookWindow()
 	
 	if (g_SDLWindow) {
 		g_pLTClient->CPrint("SDL2 found and hooked window!");
-
-		
-
-		// NOLF2 seems to dislike us using raw input, so just use mouse warping.
-		//auto bSet = SDL_SetHint(SDL_HINT_MOUSE_RELATIVE_MODE_WARP, "0");
-		auto bSet = SDL_SetHintWithPriority(SDL_HINT_MOUSE_RELATIVE_MODE_WARP, "1", SDL_HINT_OVERRIDE);
-
-		g_pLTClient->CPrint("SDL_HINT_MOUSE_RELATIVE_MODE_WARP is set, and the return value is %d", bSet);
-
-		if (bSet == SDL_FALSE)
-		{
-			g_pLTClient->CPrint("!! WARNING !! Mouse Relative Mode = Warp is not supported on this system!");
-		}
 	}
 	else {
 		SDL_Log("Error hooking window: %s", SDL_GetError());
@@ -5177,6 +5228,10 @@ bool CGameClientShell::LauncherServerApp( char const* pszProfileFile )
 
 void CGameClientShell::OnConsolePrint(CConsolePrintData* pData)
 {
+	if (!g_pConsoleMgr)
+	{
+		return;
+	}
 	g_pConsoleMgr->Read(pData);
 }
 

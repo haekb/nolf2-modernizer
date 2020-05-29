@@ -26,9 +26,11 @@
 #include "MsgIds.h"
 #include "VersionMgr.h"
 #include "SDL.h"
+#include "GameInputMgr.h"
 
 extern SDL_Window* g_SDLWindow;
 extern CGameClientShell* g_pGameClientShell;
+extern GameInputMgr* g_pGameInputMgr;
 
 #include <Direct.h>			// For _rmdir
 #include "dinput.h"
@@ -388,6 +390,11 @@ void CUserProfile::Load()
 	LoadMultiplayer();
 	LoadGameOptions();
 	LoadSound(true);
+
+	// Load the bindings!
+	if (g_pGameInputMgr) {
+		g_pGameInputMgr->ReadDeviceBindings();
+	}
 }
 
 void CUserProfile::LoadControls()
@@ -647,6 +654,10 @@ void CUserProfile::Save(bool bForceClose /*= false*/)
 	std::string fn = GetProfileFile( m_sName.c_str( ));
 	m_buteMgr.Save(fn.c_str());
 
+	// Now let's reload our input bindings
+	if (g_pGameInputMgr) {
+		g_pGameInputMgr->ReadDeviceBindings();
+	}
 
 	if (bForceClose)
 	{
@@ -715,7 +726,6 @@ void CUserProfile::SaveControls()
 		m_buteMgr.SetInt(s_aTagName,szAxis,(int)m_nAxis[a]);
 		
 	}
-
 }
 
 
@@ -1194,7 +1204,6 @@ void CUserProfile::SendPerformanceMsg()
 
 void CUserProfile::ApplyControls()
 {
-
 	WriteConsoleInt("UseJoystick",(int)m_bUseJoystick);
 }
 
@@ -1400,8 +1409,6 @@ void CUserProfile::SetBindings()
 		}
         g_pLTClient->FreeDeviceBindings (pBindings);
 	}
-
-
 }
 
 void CUserProfile::SetMouse()

@@ -2053,6 +2053,7 @@ void CPlayerMgr::TurnOffAlternativeCamera(uint8 nCamType)
 		WriteConsoleInt("ModelShadow_Proj_MaxShadowsPerFrame", g_nCinSaveNumModelShadows);
 		g_bCinChangedNumModelShadows = false;
 	}
+
 }
 
 
@@ -3730,46 +3731,8 @@ void CPlayerMgr::CalculateCameraRotation()
 
 	// Get axis offsets...
 
-	float offsets[3];
-
-#if 0
-	if (!m_bOldMouseLook)
-	{
-		int deltaX, deltaY;
-
-		//SDL_PumpEvents();
-
-		// Firstly, we need a point of reference.
-		// This conditional is here, in case we need to reset the mouse.
-		if (m_bGetBaseMouse)
-		{
-			SDL_GetMouseState(&m_iCurrentMouseX, &m_iCurrentMouseY);
-			m_bGetBaseMouse = LTFALSE;
-		}
-
-
-		SDL_GetRelativeMouseState(&deltaX, &deltaY);
-
-		m_iCurrentMouseX += deltaX;
-		m_iCurrentMouseY += deltaY;
-
-		// TODO: Clean up, Code is from GameSettings.
-		float nMouseSensitivity = GetConsoleFloat("MouseSensitivity", 1.0f);
-		float nScale = 0.00125f + ((float)nMouseSensitivity * 0.001125f);
-
-		offsets[0] = (float)(m_iCurrentMouseX - m_iPreviousMouseX) * nScale;
-		offsets[1] = (float)(m_iCurrentMouseY - m_iPreviousMouseY) * nScale;
-
-		m_iPreviousMouseX = m_iCurrentMouseX;
-		m_iPreviousMouseY = m_iCurrentMouseY;
-	}
-	else
-	{
-		g_pLTClient->GetAxisOffsets(offsets);
-	}
-#else
+	float offsets[3] = { 0.0f };
 	g_pLTClient->GetAxisOffsets(offsets);
-#endif
 
 	if (m_bRestoreOrientation)
 	{
@@ -3785,7 +3748,7 @@ void CPlayerMgr::CalculateCameraRotation()
 
     float fYawDelta    = offsets[0] / fVal;
     float fPitchDelta  = offsets[1] / fVal;
-	/*
+	
 	if (g_vtAdaptiveMouse.GetFloat() && fYawDelta != 0.0f)
 	{
 		float fMaxOff = g_vtAdaptiveMouseMaxOffset.GetFloat();
@@ -3805,7 +3768,7 @@ void CPlayerMgr::CalculateCameraRotation()
 		}
 		
 	}
-	*/
+	
 	m_fYaw += fYawDelta;
 
 	// [kml] 12/26/00 Check varying degrees of strafe and look.
