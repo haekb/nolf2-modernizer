@@ -118,6 +118,7 @@ extern LTVector		g_vPlayerCameraOffset;
 extern VarTrack		g_vtFOVXNormal;
 extern VarTrack		g_vtFOVYNormal;
 extern ConsoleMgr*  g_pConsoleMgr;
+extern GameInputMgr* g_pGameInputMgr;
 
 // Sample rate
 extern int g_nSampleRate;
@@ -137,7 +138,7 @@ LRESULT CALLBACK HookedWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lP
 LTRESULT(*g_pRegisterConsoleProgram)(const char* pName, ConsoleProgramFn fn) = nullptr;
 LTRESULT(*g_pUnregisterConsoleProgram)(const char* pName) = nullptr;
 LTRESULT(*g_pClearInput)() = nullptr;
-
+bool (*g_pIsCommandOn)(int commandNum) = nullptr;
 
 // We can build a list of registered console programs here :)!
 LTRESULT proxyRegisterConsoleProgram(const char* pName, ConsoleProgramFn fn)
@@ -169,6 +170,19 @@ void proxyGetAxisOffsets(LTFLOAT* offsets)
 	offsets[2] = g_pGameClientShell->GetInputAxis()[2];
 }
 
+bool proxyIsCommandOn(int commandNum)
+{
+	if (g_pGameInputMgr)
+	{
+		// Ignore if the command isn't on in the input manager
+		if (g_pGameInputMgr->IsCommandOn(commandNum))
+		{
+			return true;
+		}
+	}
+
+	return g_pIsCommandOn(commandNum);
+}
 //
 // Proxy ClearInput
 // Through testing I found ClearInput must re-init DirectInput's RawInput listener. 
@@ -230,6 +244,9 @@ void InitClientShell()
 
 	g_pClearInput = g_pLTClient->ClearInput;
 	g_pLTClient->ClearInput = proxyClearInput;
+
+	g_pIsCommandOn = g_pLTClient->IsCommandOn;
+	g_pLTClient->IsCommandOn = proxyIsCommandOn;
 
 	// Init our LT subsystems
 
@@ -685,6 +702,8 @@ CGameClientShell::CGameClientShell()
 	m_fInputAxis[0] = m_fInputAxis[1] = m_fInputAxis[2] = 0.0f;
 	m_bReRegisterRawInput = false;
 
+	m_pGameInputMgr = nullptr;
+
 
 	// Start up SDL! -- Maybe trim down what we're initing here...
 
@@ -1006,6 +1025,9 @@ uint32 CGameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
 	{
 		return LT_ERROR;
 	}
+
+	// Create GameInputMgr sometime before we load our profile..
+	m_pGameInputMgr = debug_new(GameInputMgr);
 
 	// Initialize global console variables...
 
@@ -1410,7 +1432,7 @@ uint32 CGameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
 	// Boot up Jukebox Manager.
 	m_pJukeboxButeMgr = debug_new(CJukeboxButeMgr);
 	m_pJukeboxButeMgr->Init();
-
+	
 	return LT_OK;
 }
 
@@ -2173,6 +2195,8 @@ void CGameClientShell::OnCommandOn(int command)
 
 void CGameClientShell::OnCommandOff(int command)
 {
+	g_pLTClient->CPrint("[OnCommandOff] Command triggered [%d]: %s", command, GetCommandName(command));
+
 	// Let the interface handle the command first...
 	if (GetInterfaceMgr( )->OnCommandOff(command))
 	{
@@ -4634,6 +4658,9 @@ void CGameClientShell::OnChar(HWND hWnd, char c, int rep)
 
 void CGameClientShell::OnLButtonUp(HWND hWnd, int x, int y, UINT keyFlags)
 {
+
+	g_pGameInputMgr->OnMouseUp(GIB_LEFT_MOUSE);
+
 	g_pInterfaceMgr->OnLButtonUp(x,y);
 }
 
@@ -4651,6 +4678,7 @@ void CGameClientShell::OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y,
 		g_mouseMgr.SetClickPos(x,y);
 		g_tmrDblClick.Start(.5);
 	}*/
+	g_pGameInputMgr->OnMouseDown(GIB_LEFT_MOUSE);
 
 	g_pInterfaceMgr->OnLButtonDown(x,y);
 }
@@ -4662,11 +4690,16 @@ void CGameClientShell::OnLButtonDblClick(HWND hwnd, BOOL fDoubleClick, int x, in
 
 void CGameClientShell::OnRButtonUp(HWND hwnd, int x, int y, UINT keyFlags)
 {
+	g_pGameInputMgr->OnMouseUp(GIB_RIGHT_MOUSE);
+
+
 	g_pInterfaceMgr->OnRButtonUp(x,y);
 }
 
 void CGameClientShell::OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 {
+	g_pGameInputMgr->OnMouseDown(GIB_RIGHT_MOUSE);
+
 	g_pInterfaceMgr->OnRButtonDown(x,y);
 }
 
@@ -4677,6 +4710,7 @@ void CGameClientShell::OnRButtonDblClick(HWND hwnd, BOOL fDoubleClick, int x, in
 
 void CGameClientShell::OnMouseWheel(HWND hwnd, int x, int y, int zDelta, UINT fwKeys)
 {
+	g_pGameInputMgr->OnMouseWheel(zDelta);
 	g_pInterfaceMgr->OnMouseWheel(x, y, zDelta);
 }
 
@@ -4800,20 +4834,6 @@ BOOL HookWindow()
 	
 	if (g_SDLWindow) {
 		g_pLTClient->CPrint("SDL2 found and hooked window!");
-
-		
-		/*
-		// NOLF2 seems to dislike us using raw input, so just use mouse warping.
-		//auto bSet = SDL_SetHint(SDL_HINT_MOUSE_RELATIVE_MODE_WARP, "0");
-		auto bSet = SDL_SetHintWithPriority(SDL_HINT_MOUSE_RELATIVE_MODE_WARP, "1", SDL_HINT_OVERRIDE);
-
-		g_pLTClient->CPrint("SDL_HINT_MOUSE_RELATIVE_MODE_WARP is set, and the return value is %d", bSet);
-
-		if (bSet == SDL_FALSE)
-		{
-			g_pLTClient->CPrint("!! WARNING !! Mouse Relative Mode = Warp is not supported on this system!");
-		}
-		*/
 	}
 	else {
 		SDL_Log("Error hooking window: %s", SDL_GetError());

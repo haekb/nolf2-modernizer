@@ -33,6 +33,7 @@
 #include "ClientSoundMgr.h"
 #include "MsgIds.h"
 #include "JukeboxButeMgr.h"
+#include "GameInputMgr.h"
 
 class CSpecialFX;
 class CCameraFX;
@@ -156,6 +157,10 @@ public:
 	void SetReRegisterRawInput(bool bVal) { SDL_Log("Setting Re-Register RawInput to %d", bVal); m_bReRegisterRawInput = bVal; };
 	bool GetReRegisterRawInput() { return m_bReRegisterRawInput; };
 
+	// These are now public so GameInputMgr can use them.
+	void		OnCommandOn(int command);
+	void		OnCommandOff(int command);
+
 protected :
     uint32      OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid);
 	void		OnEngineTerm();
@@ -167,8 +172,7 @@ protected :
 	void		Update();
 	void		PostUpdate();
 	void		UpdatePlaying();
-	void		OnCommandOn(int command);
-	void		OnCommandOff(int command);
+
 	void		OnKeyDown(int key, int rep);
 	void		OnKeyUp(int key);
 	void		OnObjectRemove(HLOCALOBJ hObj);
@@ -394,7 +398,7 @@ private :
 
 	// Just shoving this here..
 	CJukeboxButeMgr* m_pJukeboxButeMgr;
-
+	GameInputMgr* m_pGameInputMgr;
 
 };
 
