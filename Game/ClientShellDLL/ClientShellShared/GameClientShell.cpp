@@ -2164,7 +2164,7 @@ static void QuickLoadCallBack(LTBOOL bReturn, void *pData)
 
 void CGameClientShell::OnCommandOn(int command)
 {
-	g_pLTClient->CPrint("[OnCommandOn] Command triggered [%d]: %s", command, GetCommandName(command));
+	//g_pLTClient->CPrint("[OnCommandOn] Command triggered [%d]: %s", command, GetCommandName(command));
 	// Make sure we're in the world...
 
 	if (!GetPlayerMgr()->IsPlayerInWorld()) return;
@@ -2197,7 +2197,7 @@ void CGameClientShell::OnCommandOn(int command)
 
 void CGameClientShell::OnCommandOff(int command)
 {
-	g_pLTClient->CPrint("[OnCommandOff] Command triggered [%d]: %s", command, GetCommandName(command));
+	//g_pLTClient->CPrint("[OnCommandOff] Command triggered [%d]: %s", command, GetCommandName(command));
 
 	// Let the interface handle the command first...
 	if (GetInterfaceMgr( )->OnCommandOff(command))
@@ -4668,7 +4668,7 @@ void CGameClientShell::OnLButtonUp(HWND hWnd, int x, int y, UINT keyFlags)
 
 void CGameClientShell::OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 {
-	g_pLTClient->CPrint("Left Mouse Button Down [%d/%d], Double Click? %d", x, y, fDoubleClick);
+	//g_pLTClient->CPrint("Left Mouse Button Down [%d/%d], Double Click? %d", x, y, fDoubleClick);
 	/*if (!g_tmrDblClick.Stopped() &&
 		(g_mouseMgr.GetClickPosX() == x) && (g_mouseMgr.GetClickPosY() == y))
 	{
