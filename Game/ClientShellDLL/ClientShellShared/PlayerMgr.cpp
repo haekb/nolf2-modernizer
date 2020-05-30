@@ -2822,19 +2822,19 @@ void CPlayerMgr::UpdateCameraZoom()
 
 	if (fOldFovX != fovX)
 	{
-		fovY = (fovX * DEG2RAD(g_vtFOVYNormal.GetFloat())) / DEG2RAD(g_vtFOVXNormal.GetFloat());
+		fovY = DEG2RAD(g_pInterfaceResMgr->GetVerticalFOV(RAD2DEG(fovX)));
 
 		SetCameraFOV(fovX, fovY);
 
 		// Update the lod adjustment for models...
 		float fZoomAmount = (DEG2RAD(g_vtFOVXNormal.GetFloat()) - fovX) / (DEG2RAD(g_vtFOVXNormal.GetFloat()) - DEG2RAD(FOVX_ZOOMED2));
+
 		float fNewLODOffset = m_fSaveLODScale + (LOD_ZOOMADJUST * fZoomAmount);
-
 		sprintf(strConsole, "+ModelLODOffset %f", fNewLODOffset);
-        g_pLTClient->RunConsoleString(strConsole);
+		g_pLTClient->RunConsoleString(strConsole);
 
-        //g_pLTClient->CPrint("Current FOV (%f, %f)", fovX, fovY);
-        //g_pLTClient->CPrint("Current Zoom LODOffset: %f", fNewLODOffset);
+		//g_pLTClient->CPrint("Current FOV (%f, %f)", RAD2DEG(fovX), RAD2DEG(fovY));
+		//g_pLTClient->CPrint("Current Zoom LODOffset: %f", fNewLODOffset);
 	}
 
 }
