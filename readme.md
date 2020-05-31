@@ -8,7 +8,7 @@ The goal of NOLF 2 Modernizer is to help fix some long standing bugs, and update
 
  - Widescreen support
  - Re-implemented several graphic effects including anti-aliasing
- - Fixed mouse stuttering
+ - Fixed weird mouse behaviour
  - Jukebox to play some of your favourite in-game tunes
  - Several original game crashes have been fixed
 
@@ -34,7 +34,7 @@ There have been community efforts to localize Modernizer into other languages. A
 
 First off modify the string table located in CRes.dll (Client Resource). This can be done with the latest version of Visual Studio 2019 and this source code. You may also attempt to use other programs to modify the string table directly in the dll. 
 
-Secondly there are some additional strings in Jukebox.txt located here: https://github.com/haekb/nolf1-modernizer/blob/master/ASSETS/Attributes/Jukebox.txt) 
+Secondly there are some additional strings in Jukebox.txt located here: https://github.com/haekb/nolf2-modernizer/blob/master/Assets/Attributes/Jukebox.txt) 
 
 Finally compile your new CRes.dll and the modified attribute file into its own rez using LithRez.exe (from the SDK) and make sure it loads after Modernizer.rez.
 
