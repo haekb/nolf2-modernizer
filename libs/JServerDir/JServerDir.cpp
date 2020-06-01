@@ -704,20 +704,18 @@ void JServerDir::QueryMasterServer()
 	try {
 		pSock->Connect(connectionData);
 
-		/* Bad way of handling challenge, server times out.
-		// Say hello
-		pSock->Query("", connectionData);
-
-		std::string sChallenge = pSock->Recieve(connectionData);
-
-		Sleep(1000);
-		*/
-
-		std::string sResponse = QUERY_UPDATE_LIST;
+		std::string sResponse = QUERY_CONNECT;
 		sResponse += "queryid\\" + std::to_string(++m_iQueryNum) + ".1";
 
 		pSock->Query(sResponse, connectionData);
-		
+
+		// We can pretty much ignore this response
+		auto sConnectResponse = pSock->Recieve(connectionData);
+
+		sResponse = QUERY_UPDATE_LIST;
+		sResponse += "queryid\\" + std::to_string(++m_iQueryNum) + ".1";
+		pSock->Query(sResponse, connectionData);
+
 		sServerList = pSock->Recieve(connectionData);
 
 		bool done = true;
@@ -752,6 +750,7 @@ void JServerDir::QueryMasterServer()
 	std::string sCursor = sServerList;
 
 	while (true) {
+#if 0
 		// Skip the challenge if it's there.
 		// Kinda bad code, but it gets the job done.
 		if (sCursor.find("\\basic\\\\secure\\TXKOAT") == 0) {
@@ -759,6 +758,7 @@ void JServerDir::QueryMasterServer()
 			sCursor = sServerList.substr(nCurrentPosition, sCursor.size());
 			continue;
 		}
+#endif
 
 		sCursor = sServerList.substr(nCurrentPosition, sCursor.size());
 		nCurrentPosition += sizeof(ipTest);
@@ -819,7 +819,15 @@ void JServerDir::QueryServer(std::string sAddress)
 
 		Sleep(1000);
 
-		std::string sStatus = pSock->Recieve(connectionData);
+		std::string sStatus = "";
+
+		try {
+			sStatus = pSock->Recieve(connectionData);
+		}
+		catch (...)
+		{
+			// Intentionally empty. It'll error out below since sStatus is empty.
+		}
 
 		// This server is not responding...
 		if (sStatus.empty()) {
@@ -1018,7 +1026,13 @@ void JServerDir::PublishServer(Peer peerParam)
 
 			// TODO: This kinda sucks. Feed it into the main loop up there.
 			// Also it seems QTracker will just drop it, if we don't send it anything after a statechange. I'lllll take it!
-			uSock->Query(getHeartbeat(m_iQueryNum, true), masterConnectionData);
+			try {
+				uSock->Query(getHeartbeat(m_iQueryNum, true), masterConnectionData);
+			}
+			catch (...)
+			{
+				// We're exiting anyways, so just continue along
+			}
 
 			delete uSock;
 			uSock = NULL;
@@ -1056,8 +1070,14 @@ void JServerDir::PingPeer(Peer* peer)
 
 	// Loop until we got something, or until we hit the iteration count
 	while (iterations < INVALID_PING) {
+		std::string sStatus = "";
+		try {
+			sStatus = pSock->Recieve(connectionData);
+		}
+		catch (...) {
+			// Ignore because the .empty() statement will handle this.
+		}
 
-		std::string sStatus = pSock->Recieve(connectionData);
 
 		// This server is not responding...
 		if (sStatus.empty()) {

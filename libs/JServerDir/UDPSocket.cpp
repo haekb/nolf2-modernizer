@@ -161,7 +161,10 @@ std::string UDPSocket::Recieve(ConnectionData& connectionData)
 			break;
 		}
 
-		sBuffer += szBuffer;
+		for (int i = 0; i < iResult; i++)
+		{
+			sBuffer += szBuffer[i];
+		}
 
 		size_t found = sBuffer.find("\\final\\");
 
