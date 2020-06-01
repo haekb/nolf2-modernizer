@@ -257,7 +257,10 @@ void CMusicMgr::Update()
 
 	// Check that function for details
 	// But basically, we gotta wait until the time is riiiiight.
-	if (!IsItTimeToRun()) return;
+	if (!IsItTimeToRun())
+	{
+		return;
+	}
 
 	LTBOOL bChoseMood = LTFALSE;
 
