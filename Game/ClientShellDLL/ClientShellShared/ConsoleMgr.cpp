@@ -302,7 +302,7 @@ void ConsoleMgr::Send()
 
 	// Throw it in our history!
 	m_CommandHistory.push_back(m_szEdit);
-	m_iCommandHistoryPosition = m_CommandHistory.size();
+	m_iCommandHistoryPosition = m_CommandHistory.size() - 1;
 
 	// Echo it back
 	g_pLTClient->CPrint(m_szEdit);
@@ -361,8 +361,8 @@ void ConsoleMgr::Draw()
 
 void ConsoleMgr::Show(bool bShow)
 {
-	// Disable if in MP or if the console is locked
-	if (m_bLockConsole || IsMultiplayerGame()) {
+	// Disable if the console is locked
+	if (m_bLockConsole ) {
 		m_bVisible = false;
 		return;
 	}
