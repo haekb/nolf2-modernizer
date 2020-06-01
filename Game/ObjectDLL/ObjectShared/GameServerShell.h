@@ -201,6 +201,11 @@ class CGameServerShell : public IServerShellStub
 
         void        SendPlayerInfoMsgToClients(HCLIENT hClients, CPlayerObj *pPlayer, uint8 nInfoType);
 
+		//
+		// Lithtech servers seem to be capped at 100fps.
+		//
+		LTFLOAT GetMaxServerFrametime() { return (1.0f / 100.0f); }
+
 	protected :
 
 	    virtual LTRESULT	OnServerInitialized();
@@ -348,6 +353,7 @@ class CGameServerShell : public IServerShellStub
 		// Gets the clientdata given a HCLIENT.
 		ClientData* GetClientData( HCLIENT hClient );
 
+
 	protected:
 
 		TimeRamp			m_TimeRamps[MAX_TIME_RAMPS];
@@ -463,6 +469,7 @@ class CGameServerShell : public IServerShellStub
 
 		typedef std::vector< ClientData* > ClientDataList;
 		ClientDataList	m_ClientDataList;
+
 };
 
 extern class CGameServerShell* g_pGameServerShell;

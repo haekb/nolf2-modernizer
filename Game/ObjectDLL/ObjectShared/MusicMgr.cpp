@@ -5,6 +5,7 @@
 #include "GameButeMgr.h"
 #include "MsgIds.h"
 #include "GameServerShell.h"
+#include <SDL.h>
 
 extern CGameServerShell* g_pGameServerShell;
 
@@ -62,6 +63,8 @@ CMusicMgr::CMusicMgr()
 	m_pMusicButeMgr = NULL;
 
 	m_bInitialized = LTFALSE;
+
+	m_fLastTime = 0;
 }
 
 // ----------------------------------------------------------------------- //
@@ -213,7 +216,16 @@ void CMusicMgr::Load(ILTMessage_Read *pMsg)
 
 void CMusicMgr::Update()
 {
-	if ( !m_bEnabled ) return;
+	// Don't update music intensity if we're paused!
+	if (g_pGameServerShell->IsPaused())
+	{
+		return;
+	}
+
+	if (!m_bEnabled) 
+	{
+		return;
+	}
 
 	if ( m_bLockedMood )
 	{
@@ -240,6 +252,13 @@ void CMusicMgr::Update()
 			m_bRestoreMusicIntensity = LTFALSE;
 		}
 
+		return;
+	}
+
+	// Check that function for details
+	// But basically, we gotta wait until the time is riiiiight.
+	if (!IsItTimeToRun())
+	{
 		return;
 	}
 
@@ -299,6 +318,23 @@ void CMusicMgr::DoEvent(Event eEvent)
 		g_pLTServer->SendToClient(cMsg.Read(), LTNULL, MESSAGE_GUARANTEED);
 		FREE_HSTRING(hMusic);
 	}
+}
+
+bool CMusicMgr::IsItTimeToRun()
+{
+	float fCurrentTime = SDL_GetTicks() / 1000.0f;
+	float fDelta = fCurrentTime - m_fLastTime;
+
+	// Server framerate is capped at 100fps, so uhh..
+	// make sure we don't decrement the music timer until we've gone a full cycle.
+	if (fDelta > g_pGameServerShell->GetMaxServerFrametime())
+	{
+		m_fLastTime = fCurrentTime;
+		return true;
+	}
+
+	return false;
+
 }
 
 // ----------------------------------------------------------------------- //

@@ -84,6 +84,8 @@ class CMusicMgr
 
 		void Enable() { m_bEnabled = LTTRUE; }
 		void Disable() { m_bEnabled = LTFALSE; }
+
+		bool IsItTimeToRun();
 		
 	protected :
 
@@ -112,6 +114,9 @@ class CMusicMgr
 		LTFLOAT		m_afEventChances[kNumEvents];
 
 		LTBOOL		m_bEnabled;
+
+		// For keeping music decrementing in sync
+		LTFLOAT		m_fLastTime;
 };
 
 #endif // MUSICMGR_H
