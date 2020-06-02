@@ -24,8 +24,7 @@
 #define LOCAL_PEER "_LOCAL_PEER"
 #define NO_ACTIVE_PEER -1
 
-// TODO: Throw this in a ini file!
-//#define MASTER_SERVER "65.112.87.186"
+// These are defaults in case the JServerInfo.txt file is missing!
 #if 0
 #define MASTER_SERVER "178.62.4.245"
 #define MASTER_PORT_HTTP 80
@@ -65,6 +64,15 @@ struct Job {
 
 	// Publish server specific
 	Peer Peer;
+};
+
+struct MasterServerInfo {
+	char szServer[128];
+	int nPortHTTP;
+	int nPortTCP;
+	int nPortUDP;
+	bool bSkipMOTD;
+	bool bSkipVersionCheck;
 };
 
 class JServerDir :
@@ -195,7 +203,6 @@ public:
 	virtual bool IsMOTDNew(EMOTD eMOTD) const;
 	// Get the current MOTD
 	virtual char const* GetMOTD(EMOTD eMOTD) const { return ""; };
-	virtual char const* GetMOTD(EMOTD eMOTD);
 
 	//////////////////////////////////////////////////////////////////////////////
 	// Active peer info
@@ -246,10 +253,19 @@ public:
 	inline std::string GetVersion() { return m_sVersion; };
 	inline std::string GetRegion() { return m_sRegion; };
 
+	//
+	// JServerDir only functions
+	//
+
 	// Cheat a little
 	__declspec(dllexport) void Update();
+	__declspec(dllexport) void SetMasterServerInfo(MasterServerInfo info);
+	__declspec(dllexport) void UseDefaultMasterServerInfo();
 
-	std::string GetGameMOTD() { m_mBasicInfoMutex.lock(); auto sMotd = m_sGameMOTD; m_mBasicInfoMutex.unlock(); return sMotd; }
+	// We use a mutex here
+	virtual char const* GetMOTD(EMOTD eMOTD);
+
+
 
 	protected:
 		ILTCSBase* m_pLTCSBase;
@@ -261,6 +277,7 @@ public:
 		std::string m_sRegion;
 
 		StartupInfo_Titan m_StartupInfo;
+		MasterServerInfo m_MasterServerInfo;
 
 		// Maybe just generate this on the fly for the client?
 		//TPeerList m_PeerList;
@@ -291,6 +308,10 @@ public:
 		std::string m_sGameVersion;
 		std::string m_sGameMOTD;
 		std::string m_sSystemMOTD;
+		std::atomic_bool m_bGotMOTD;
+
+		// This is set in Update, and can be used in a const function
+		std::string m_sSafeGameVersion;
 		
 
 		// Used to determine if we're doing anything on the thread

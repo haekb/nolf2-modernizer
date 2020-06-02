@@ -42,6 +42,11 @@ JServerDir::JServerDir(bool bClientSide, ILTCSBase& ltCSBase, HMODULE hResourceM
 	m_sSystemMOTD = "";
 	m_sGameMOTD = "";
 	m_sGameVersion = "";
+	m_sSafeGameVersion = "";
+	m_bGotMOTD = false;
+
+	// Blank out that struct
+	m_MasterServerInfo = { 0 };
 }
 
 JServerDir::~JServerDir()
@@ -66,6 +71,24 @@ JServerDir::~JServerDir()
 // successfully.
 bool JServerDir::QueueRequest(ERequest eNewRequest)
 {
+	// Handle skipping motd if the config requests it
+	if (m_MasterServerInfo.bSkipMOTD && eNewRequest == ERequest::eRequest_MOTD)
+	{
+		return true;
+	}
+
+	// Handle skipping version checking if the config requests it
+	if (m_MasterServerInfo.bSkipVersionCheck && eNewRequest == ERequest::eRequest_Validate_Version)
+	{
+		return true;
+	}
+
+	// Only do these once, MOTD and version happen at the same check, so we can safely do this.
+	if ((eNewRequest == ERequest::eRequest_MOTD || eNewRequest == ERequest::eRequest_Validate_Version) && m_bGotMOTD)
+	{
+		return true;
+	}
+
 	if (!m_bIsRequestQueueRunning) {
 		m_bStopThread = false;
 		m_tRequestQueue = std::thread(&JServerDir::RequestQueueLoop, this);
@@ -91,7 +114,6 @@ bool JServerDir::QueueRequest(ERequest eNewRequest)
 		eJob = { eJobRequest_Publish_Server, "", peer };
 		break;
 	}
-
 
 	AddJob(eJob);
 	SwitchStatus(eStatus_Processing);
@@ -351,14 +373,14 @@ bool JServerDir::IsVersionValid() const
 // Note : Returns false if eRequest_Validate_Version has not been processed
 bool JServerDir::IsVersionNewest() const
 {
-	return true;
+	return m_sSafeGameVersion == m_sVersion;
 }
 
 // Is a patch available?
 // Note : Returns false if eRequest_Validate_Version has not been processed
 bool JServerDir::IsPatchAvailable() const
 {
-	return false;
+	return m_sSafeGameVersion != m_sVersion;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -367,8 +389,8 @@ bool JServerDir::IsPatchAvailable() const
 // Is the MOTD "new"?
 // Note : Returns false if eRequest_MOTD has not been processed
 bool JServerDir::IsMOTDNew(EMOTD eMOTD) const
-{
-	return false;
+{   
+	return true;
 }
 
 // Get the current MOTD
@@ -717,14 +739,44 @@ bool JServerDir::SetNetHeader(ILTMessage_Read& cMsg)
 
 void JServerDir::Update()
 {
+	if (m_sSafeGameVersion.empty())
+	{
+		m_mBasicInfoMutex.lock();
+		if (!m_sGameVersion.empty())
+		{
+			m_sSafeGameVersion = m_sGameVersion;
+		}
+
+		m_mBasicInfoMutex.unlock();
+	}
+
 	CheckForQueuedPeers();
+}
+
+void JServerDir::SetMasterServerInfo(MasterServerInfo info)
+{
+	m_MasterServerInfo = info;
+}
+
+void JServerDir::UseDefaultMasterServerInfo()
+{
+	MasterServerInfo info;
+	info.bSkipMOTD = false;
+	info.bSkipVersionCheck = false;
+
+	LTStrCpy(info.szServer, MASTER_SERVER, sizeof(info.szServer));
+	info.nPortHTTP = MASTER_PORT_HTTP;
+	info.nPortTCP = MASTER_PORT;
+	info.nPortUDP = MASTER_PORT_UDP;
+
+	m_MasterServerInfo = info;
 }
 
 void JServerDir::QueryMasterServer()
 {
 	TCPSocket* pSock = new TCPSocket();
 
-	ConnectionData connectionData = { MASTER_SERVER, MASTER_PORT };
+	ConnectionData connectionData = { m_MasterServerInfo.szServer, m_MasterServerInfo.nPortTCP };
 
 	std::string sServerList = "";
 
@@ -959,7 +1011,7 @@ void JServerDir::PublishServer(Peer peerParam)
 	Peer peer = peerParam;
 
 	ConnectionData selfConnectionData = { "0.0.0.0", 27889 };
-	ConnectionData masterConnectionData = { MASTER_SERVER, MASTER_PORT_UDP };
+	ConnectionData masterConnectionData = { m_MasterServerInfo.szServer, m_MasterServerInfo.nPortUDP };
 	ConnectionData incomingConnectionData = { "0.0.0.0", 0 };
 
 	std::string heartbeat = getHeartbeat(m_iQueryNum, false);
@@ -1165,6 +1217,74 @@ void JServerDir::SwitchStatus(EStatus eStatus)
 	m_iStatus = eStatus;
 }
 
+void JServerDir::QueryMOTD()
+{
+	std::string sGameMOTD = QueryHttpText(GAME_MOTD_ROUTE);
+	std::string sSystemMOTD = QueryHttpText(SYSTEM_MOTD_ROUTE);
+
+	m_mBasicInfoMutex.lock();
+
+	m_sSystemMOTD = sSystemMOTD;
+	m_sGameMOTD = sGameMOTD;
+
+	m_mBasicInfoMutex.unlock();
+
+	m_bGotMOTD = true;
+}
+
+void JServerDir::QueryVersion()
+{
+	std::string sGameVersion = QueryHttpText(GAME_VERSION_ROUTE);
+
+	m_mBasicInfoMutex.lock();
+
+	m_sGameVersion = sGameVersion;
+
+	m_mBasicInfoMutex.unlock();
+}
+
+std::string JServerDir::QueryHttpText(std::string sRoute)
+{
+	TCPSocket* pSock = new TCPSocket();
+
+	ConnectionData connectionData = { m_MasterServerInfo.szServer, m_MasterServerInfo.nPortHTTP };
+
+	std::string sRet = "";
+
+	try {
+		pSock->Connect(connectionData);
+
+		// System MOTD
+		char buffer[256];
+		memset(buffer, 0, sizeof(buffer));
+		sprintf(buffer, "GET %s HTTP/1.1\r\nHost: %s\r\n\r\n", sRoute.c_str(), m_MasterServerInfo.szServer);
+
+		std::string sResponse = buffer;
+
+		pSock->Query(sResponse, connectionData);
+
+		// We can pretty much ignore this response
+		auto sConnectResponse = pSock->Recieve(connectionData);
+
+		auto contentStartLine = sConnectResponse.find("\r\n\r\n");
+		if (contentStartLine == std::string::npos)
+		{
+			throw std::exception("Could not get text");
+		}
+
+		sRet = sConnectResponse.substr(contentStartLine + 4, std::string::npos);
+	}
+	catch (...) {
+		// For now none of these calls are vital.
+	}
+
+	delete pSock;
+	pSock = nullptr;
+
+	return sRet;
+}
+
+
 //
 // Thread loop!
 //
@@ -1246,7 +1366,7 @@ void JServerDir::RequestQueueLoop()
 			PublishServer(job.Peer);
 			break;
 		}
-		
+
 		// This may cause brief switching between processing/waiting, but it's better than waiting for the thread to timeout!
 		SwitchStatus(eStatus_Waiting);
 
@@ -1260,70 +1380,4 @@ void JServerDir::RequestQueueLoop()
 	m_bIsRequestQueueRunning = false;
 
 	SwitchStatus(eStatus_Waiting);
-}
-
-
-void JServerDir::QueryMOTD()
-{
-	std::string sGameMOTD = QueryHttpText(GAME_MOTD_ROUTE);
-	std::string sSystemMOTD = QueryHttpText(SYSTEM_MOTD_ROUTE);
-
-	m_mBasicInfoMutex.lock();
-
-	m_sSystemMOTD = sSystemMOTD;
-	m_sGameMOTD = sGameMOTD;
-
-	m_mBasicInfoMutex.unlock();
-}
-
-void JServerDir::QueryVersion()
-{
-	std::string sGameVersion = QueryHttpText(GAME_VERSION_ROUTE);
-
-	m_mBasicInfoMutex.lock();
-
-	m_sVersion = sGameVersion;
-
-	m_mBasicInfoMutex.unlock();
-}
-
-std::string JServerDir::QueryHttpText(std::string sRoute)
-{
-	TCPSocket* pSock = new TCPSocket();
-
-	ConnectionData connectionData = { MASTER_SERVER, MASTER_PORT_HTTP };
-
-	std::string sRet = "";
-
-	try {
-		pSock->Connect(connectionData);
-
-		// System MOTD
-		char buffer[256];
-		memset(buffer, 0, sizeof(buffer));
-		sprintf(buffer, "GET %s HTTP/1.1\r\nHost: %s\r\n\r\n", sRoute.c_str(), MASTER_SERVER);
-
-		std::string sResponse = buffer;
-
-		pSock->Query(sResponse, connectionData);
-
-		// We can pretty much ignore this response
-		auto sConnectResponse = pSock->Recieve(connectionData);
-
-		auto contentStartLine = sConnectResponse.find("\r\n\r\n");
-		if (contentStartLine == std::string::npos)
-		{
-			throw std::exception("Could not get text");
-		}
-
-		sRet = sConnectResponse.substr(contentStartLine + 4, std::string::npos);
-	}
-	catch (...) {
-		// For now none of these calls are vital.
-	}
-
-	delete pSock;
-	pSock = nullptr;
-
-	return sRet;
 }

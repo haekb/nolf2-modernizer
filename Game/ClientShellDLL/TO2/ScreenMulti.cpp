@@ -482,6 +482,11 @@ void CScreenMulti::Update()
 	FormatString(IDS_STATUS_STRING,aTempBuffer,sizeof(aTempBuffer),g_pClientMultiplayerMgr->GetServerDir()->GetCurStatusString());
 	m_pStatusCtrl->SetString(aTempBuffer);
 
+	// Break our lovely interface to poke our Update function.
+	auto pJServerDir = (JServerDir*)pServerDir;
+	if (pJServerDir) {
+		pJServerDir->Update();
+	}
 
 	// Are we still waiting?
 	switch (pServerDir->GetCurStatus())
@@ -525,6 +530,12 @@ void CScreenMulti::Update()
 				{
 					m_pWait->Show(LTFALSE);
 					SetCapture(NULL);
+
+					// Status switch can happen due to the processing thread...it's not great, but this works for now.
+					if (pServerDir->GetCurStatus() == IServerDirectory::eStatus_Processing)
+					{
+						return;
+					}
 			
 					if (pServerDir->IsVersionNewest())
 					{
