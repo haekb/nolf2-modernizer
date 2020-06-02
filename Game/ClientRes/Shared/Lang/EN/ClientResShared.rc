@@ -883,7 +883,7 @@ BEGIN
     IDS_HELP_HARDWARE_CURSOR "Toggle use of the hardware cursor."
     IDS_CONFIRM_CURSOR      "Enabling the hardware cursor provides smoother cursor movement, however some video cards do not support use of a hardware cursor. Do you wish to enable the hardware cursor?"
     IDS_LAUNCH_UPDATE       "Update to latest version"
-    IDS_HELP_LAUNCH_UPDATE  "Shutdown the game and attempt to download the latest version of the game."
+    IDS_HELP_LAUNCH_UPDATE  "Launch a web browser to Modernizer's download page to check for updates."
     IDS_NEW_VERSION         "An updated version of the game is available."
 END
 

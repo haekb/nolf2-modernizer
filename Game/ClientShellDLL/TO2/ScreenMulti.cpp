@@ -21,6 +21,7 @@
 #include "direct.h"
 #include "ClientButeMgr.h"
 #include "JServerDir.h"
+#include <shellapi.h>
 
 namespace
 {
@@ -43,6 +44,8 @@ namespace
 	}
 }
 
+// The url the user goes to when there's an update available.
+#define UPDATE_URL "https://haekb.itch.io"
 
 extern bool g_bLAN;
 
@@ -232,7 +235,6 @@ LTBOOL CScreenMulti::Build()
  	// Make sure to call the base class
 	return CBaseScreen::Build();
 }
-
 uint32 CScreenMulti::OnCommand(uint32 dwCommand, uint32 dwParam1, uint32 dwParam2)
 {
 	if (m_eCurState == eState_Startup || m_eCurState == eState_ValidateCDKey) return 0;
@@ -240,7 +242,8 @@ uint32 CScreenMulti::OnCommand(uint32 dwCommand, uint32 dwParam1, uint32 dwParam
 	{
 	case CMD_UPDATE:
 		{
-			LaunchSierraUp();
+			// Simply launch a web browser to my itch.io page
+		    ShellExecute(NULL, NULL, UPDATE_URL, NULL, NULL, SW_SHOWNORMAL);
 		} break;
 
 	case CMD_OK:
@@ -745,6 +748,9 @@ void CScreenMulti::RequestMOTD()
 // Run the game update utility
 //////////////////////////////////////////////////////////////////////
 
+//
+// Jake: This isn't used anymore
+//
 LTBOOL CScreenMulti::LaunchSierraUp()
 {
 	PROCESS_INFORMATION procInfo;
