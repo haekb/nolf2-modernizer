@@ -20,6 +20,7 @@
 #include "WinUtil.h"
 #include "direct.h"
 #include "ClientButeMgr.h"
+#include "JServerDir.h"
 
 namespace
 {
@@ -356,7 +357,7 @@ void    CScreenMulti::OnFocus(LTBOOL bFocus)
 			m_pStatusCtrl->Show(LTTRUE);
 			
 
-			m_pCDKeyCtrl->Show(LTTRUE);
+			m_pCDKeyCtrl->Show(LTFALSE);
 			IServerDirectory *pServerDir = g_pClientMultiplayerMgr->GetServerDir();
 			// Make a serverdir if we don't have one
 			// Note : Find a way to put this back in the game client shell!!!  It has to be
@@ -551,7 +552,9 @@ void CScreenMulti::Update()
 						return;
 					}
 
-					RequestValidate();
+					// Jake: We don't need to validate cd key!
+					//RequestValidate();
+					RequestMOTD();
 
 				} break;
 
@@ -568,6 +571,13 @@ void CScreenMulti::Update()
 
 			case eState_MOTD:
 				{
+				
+					// Status switch can happen due to the processing thread...it's not great, but this works for now.
+					if (pServerDir->GetCurStatus() == IServerDirectory::eStatus_Processing)
+					{
+						return;
+					}
+					
 					//completed system MOTD... check game MOTD
 
 					if ((m_sSysMOTD.empty() && pServerDir->IsMOTDNew(IServerDirectory::eMOTD_System)) ||
@@ -579,19 +589,25 @@ void CScreenMulti::Update()
 						g_pInterfaceMgr->ShowMessageBox(IDS_NEW_MOTD,&mb);
 
 					}
+
+					m_sSysMOTD = "";
+					m_sGameMOTD = "";
+
+					auto pJServerDir = (JServerDir*)g_pClientMultiplayerMgr->GetServerDir();
+					if (pJServerDir) {
+						std::string sTemp = pJServerDir->GetMOTD(IServerDirectory::eMOTD_System);
+						if (sTemp.length() > 512)
+							m_sSysMOTD.assign(sTemp.c_str(), 512);
+						else
+							m_sSysMOTD = sTemp;
+
+						sTemp = pJServerDir->GetMOTD(IServerDirectory::eMOTD_Game);
+						if (sTemp.length() > 512)
+							m_sGameMOTD.assign(sTemp.c_str(), 512);
+						else
+							m_sGameMOTD = sTemp;
+					}
 					
-					std::string sTemp = pServerDir->GetMOTD(IServerDirectory::eMOTD_System);
-					if (sTemp.length() > 512)
-						m_sSysMOTD.assign(sTemp.c_str(),512);
-					else
-						m_sSysMOTD = sTemp;
-
-					sTemp = pServerDir->GetMOTD(IServerDirectory::eMOTD_Game);
-					if (sTemp.length() > 512)
-						m_sGameMOTD.assign(sTemp.c_str(),512);
-					else
-						m_sGameMOTD = sTemp;
-
 					m_pSysMOTD->SetString(m_sSysMOTD.c_str());
 					m_pGameMOTD->SetString(m_sGameMOTD.c_str());
 
