@@ -47,6 +47,9 @@ JServerDir::JServerDir(bool bClientSide, ILTCSBase& ltCSBase, HMODULE hResourceM
 
 	// Blank out that struct
 	m_MasterServerInfo = { 0 };
+
+	m_iLastStatus = -1;
+	m_sLastStatus = "";
 }
 
 JServerDir::~JServerDir()
@@ -389,17 +392,17 @@ bool JServerDir::IsPatchAvailable() const
 //////////////////////////////////////////////////////////////////////////////
 // Message of the Day
 
+// Jake: This isn't a useful feature, so I'm not implementing it.
 // Is the MOTD "new"?
 // Note : Returns false if eRequest_MOTD has not been processed
 bool JServerDir::IsMOTDNew(EMOTD eMOTD) const
 {   
-	return true;
+	return false;
 }
 
 // Get the current MOTD
 char const* JServerDir::GetMOTD(EMOTD eMOTD)
 {
-#if 1
 	m_mBasicInfoMutex.lock();
 	char const* sMOTD = "";
 
@@ -413,14 +416,6 @@ char const* JServerDir::GetMOTD(EMOTD eMOTD)
 	m_mBasicInfoMutex.unlock();
 
 	return sMOTD;
-#else
-	if (eMOTD == eMOTD_Game) {
-		return "Welcome to NOLF2 online!\nMake sure to check out https://www.spawnsite.net/ for the latest map packs.";
-	}
-
-
-	return "Master server provided by QTracker.\nVisit https://www.qtracker.com/ for more information.";
-#endif
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -753,6 +748,8 @@ void JServerDir::Update()
 		m_mBasicInfoMutex.unlock();
 	}
 
+
+
 	CheckForQueuedPeers();
 }
 
@@ -834,16 +831,6 @@ void JServerDir::QueryMasterServer()
 	std::string sCursor = sServerList;
 
 	while (true) {
-#if 0
-		// Skip the challenge if it's there.
-		// Kinda bad code, but it gets the job done.
-		if (sCursor.find("\\basic\\\\secure\\TXKOAT") == 0) {
-			nCurrentPosition += 21;
-			sCursor = sServerList.substr(nCurrentPosition, sCursor.size());
-			continue;
-		}
-#endif
-
 		sCursor = sServerList.substr(nCurrentPosition, sCursor.size());
 		nCurrentPosition += sizeof(ipTest);
 
@@ -1217,6 +1204,7 @@ void JServerDir::AddJob(Job eJob)
 
 void JServerDir::SwitchStatus(EStatus eStatus)
 {
+	m_iLastStatus.store(m_iStatus.load());
 	m_iStatus = eStatus;
 }
 
@@ -1224,6 +1212,9 @@ void JServerDir::QueryMOTD()
 {
 	std::string sGameMOTD = QueryHttpText(GAME_MOTD_ROUTE);
 	std::string sSystemMOTD = QueryHttpText(SYSTEM_MOTD_ROUTE);
+	
+	sGameMOTD = DecodeNewLines(sGameMOTD);
+	sSystemMOTD = DecodeNewLines(sSystemMOTD);
 
 	m_mBasicInfoMutex.lock();
 
@@ -1285,6 +1276,26 @@ std::string JServerDir::QueryHttpText(std::string sRoute)
 	pSock = nullptr;
 
 	return sRet;
+}
+
+//
+// MOTD might contain a encoded new line character
+// We want the actual new line, so remove the encoded character, 
+// and insert the newline char in its place.
+//
+std::string JServerDir::DecodeNewLines(std::string sMOTD)
+{
+	auto nPos = sMOTD.find("\\n");
+
+	while (nPos != std::string::npos)
+	{
+		sMOTD.erase(nPos, 2);
+		sMOTD.insert(nPos, 1, '\n');
+
+		nPos = sMOTD.find("\\n");
+	}
+
+	return sMOTD;
 }
 
 

@@ -290,6 +290,11 @@ public:
 		// Replaced with an atomic int that casts to EStatus
 		//EStatus m_eStatus;
 		std::atomic_int m_iStatus;
+		std::atomic_int m_iLastStatus;
+
+		std::string m_sLastStatus;
+
+		std::mutex m_mStatusChangeMutex;
 
 		// 
 
@@ -346,6 +351,7 @@ public:
 		void QueryMOTD();
 		void QueryVersion();
 		std::string QueryHttpText(std::string sRoute);
+		std::string DecodeNewLines(std::string sMOTD);
 
 		void QueryMasterServer();
 		void QueryServer(std::string sAddress);
