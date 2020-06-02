@@ -36,6 +36,8 @@ JServerDir::JServerDir(bool bClientSide, ILTCSBase& ltCSBase, HMODULE hResourceM
 	g_pCommonLT = m_pLTCSBase->Common();
 
 	g_pJServerDir = this;
+
+	m_iQueryRefCounter = 0;
 }
 
 JServerDir::~JServerDir()
@@ -183,7 +185,7 @@ IServerDirectory::ERequestResult JServerDir::BlockOnProcessing(uint32 nTimeout)
 // Is this request in request list?
 bool JServerDir::IsRequestPending(ERequest ePendingRequest) const
 {
-	if (m_Peers.size() == 0) {
+	if (m_iQueryRefCounter > 0) {
 		return true;
 	}
 
@@ -1152,6 +1154,7 @@ void JServerDir::RequestQueueLoop()
 	m_bPublishingServer = false;
 	m_bBoundConnection = false;
 
+	m_iQueryRefCounter = 0;
 	m_iQueryNum = 0;
 
 	while (true) {
@@ -1188,10 +1191,14 @@ void JServerDir::RequestQueueLoop()
 
 		switch (job.eRequestType) {
 		case eJobRequest_Query_Master_Server:
+			m_iQueryRefCounter++;
 			QueryMasterServer();
+			m_iQueryRefCounter--;
 			break;
 		case eJobRequest_Query_Server:
+			m_iQueryRefCounter++;
 			QueryServer(job.sData);
+			m_iQueryRefCounter--;
 			break;
 		case eJobRequest_Publish_Server:
 			m_bPublishingServer = true;

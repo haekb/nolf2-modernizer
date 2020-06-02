@@ -20,6 +20,7 @@
 #include "iserverdir.h"
 #include <algorithm>
 #include "GameClientShell.h"
+#include "JServerDir.h"
 
 void JoinCallBack(LTBOOL bReturn, void *pData);
 
@@ -924,6 +925,7 @@ bool CScreenJoin::ChangeState(EState eNewState)
 	return true;
 }
 
+
 void CScreenJoin::Update()
 {
 	char aTempBuffer[256];
@@ -931,6 +933,11 @@ void CScreenJoin::Update()
 	FormatString(IDS_STATUS_STRING,aTempBuffer,sizeof(aTempBuffer),g_pClientMultiplayerMgr->GetServerDir()->GetCurStatusString());
 	m_pStatusCtrl->SetString(aTempBuffer);
 
+	// Break our lovely interface to poke our Update function.
+	auto pServerDir = (JServerDir*)g_pClientMultiplayerMgr->GetServerDir();
+	if (pServerDir) {
+		pServerDir->Update();
+	}
 
 	switch (m_eCurState)
 	{

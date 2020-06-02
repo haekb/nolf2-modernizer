@@ -4,7 +4,7 @@
 #define SERVERDIR_EXPORTS
 
 // Uncomment if you want it to work with NOLF2 vanilla
-#define _DROPIN
+//#define _DROPIN
 
 #include "IServerDir.h"
 #include "IServerDir_Titan.h"
@@ -231,6 +231,9 @@ public:
 	inline std::string GetVersion() { return m_sVersion; };
 	inline std::string GetRegion() { return m_sRegion; };
 
+	// Cheat a little
+	__declspec(dllexport) void Update();
+
 	protected:
 		ILTCSBase* m_pLTCSBase;
 		HMODULE m_hResourceModule;
@@ -255,7 +258,7 @@ public:
 		std::atomic_int m_iStatus;
 
 		// 
-		void Update();
+
 
 		void CheckForQueuedPeers();
 
@@ -265,6 +268,9 @@ public:
 		//
 		// Thread Stuff
 		//
+
+		// Used to determine if we're doing anything on the thread
+		std::atomic_int m_iQueryRefCounter;
 
 		std::atomic_bool m_bIsRequestQueueRunning;
 		std::atomic_bool m_bProcessJobs;
