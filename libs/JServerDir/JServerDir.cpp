@@ -38,6 +38,10 @@ JServerDir::JServerDir(bool bClientSide, ILTCSBase& ltCSBase, HMODULE hResourceM
 	g_pJServerDir = this;
 
 	m_iQueryRefCounter = 0;
+
+	m_sSystemMOTD = "";
+	m_sGameMOTD = "";
+	m_sGameVersion = "";
 }
 
 JServerDir::~JServerDir()
@@ -62,12 +66,6 @@ JServerDir::~JServerDir()
 // successfully.
 bool JServerDir::QueueRequest(ERequest eNewRequest)
 {
-
-	if (eNewRequest == ERequest::eRequest_Validate_Version
-		|| eNewRequest == ERequest::eRequest_MOTD) {
-		return true;
-	}
-
 	if (!m_bIsRequestQueueRunning) {
 		m_bStopThread = false;
 		m_tRequestQueue = std::thread(&JServerDir::RequestQueueLoop, this);
@@ -77,13 +75,23 @@ bool JServerDir::QueueRequest(ERequest eNewRequest)
 
 	Job eJob;
 
-	if (eNewRequest == ERequest::eRequest_Update_List) {
+	switch (eNewRequest)
+	{
+	case ERequest::eRequest_MOTD:
+		eJob = { eJobRequest_Query_MOTD, "", {} };
+		break;
+	case ERequest::eRequest_Validate_Version:
+		eJob = { eJobRequest_Query_Version, "", {} };
+		break;
+	case ERequest::eRequest_Update_List:
 		eJob = { eJobRequest_Query_Master_Server, "", {} };
-	}
-	else if (eNewRequest == ERequest::eRequest_Publish_Server) {
+		break;
+	case ERequest::eRequest_Publish_Server:
 		Peer peer = *m_Peers.at(m_nActivePeer);
 		eJob = { eJobRequest_Publish_Server, "", peer };
+		break;
 	}
+
 
 	AddJob(eJob);
 	SwitchStatus(eStatus_Processing);
@@ -221,6 +229,7 @@ IServerDirectory::ERequestResult JServerDir::GetLastRequestResult() const
 // Get the string associated with the most recently processed result
 const char* JServerDir::GetLastRequestResultString() const
 {
+	// Used when the game boots you to the menu
 	return "T E S T";
 }
 
@@ -363,14 +372,30 @@ bool JServerDir::IsMOTDNew(EMOTD eMOTD) const
 }
 
 // Get the current MOTD
-char const* JServerDir::GetMOTD(EMOTD eMOTD) const
+char const* JServerDir::GetMOTD(EMOTD eMOTD)
 {
+#if 1
+	m_mBasicInfoMutex.lock();
+	char const* sMOTD = "";
+
+	if (eMOTD == eMOTD_Game) {
+		sMOTD = m_sGameMOTD.c_str();
+	}
+	else {
+		sMOTD = m_sSystemMOTD.c_str();
+	}
+
+	m_mBasicInfoMutex.unlock();
+
+	return sMOTD;
+#else
 	if (eMOTD == eMOTD_Game) {
 		return "Welcome to NOLF2 online!\nMake sure to check out https://www.spawnsite.net/ for the latest map packs.";
 	}
 
 
 	return "Master server provided by QTracker.\nVisit https://www.qtracker.com/ for more information.";
+#endif
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -673,6 +698,8 @@ void JServerDir::ClearPeerList()
 
 bool JServerDir::HandleNetMessage(ILTMessage_Read& cMsg, const char* pSender, uint16 nPort)
 {
+
+	
 
 	// We don't know any of the messages yet :thinking:
 	// Probably has to do with sending the challenge to the server, and getting lists and stuff.
@@ -1189,7 +1216,19 @@ void JServerDir::RequestQueueLoop()
 
 		m_mJobMutex.unlock();
 
+		SwitchStatus(eStatus_Processing);
+
 		switch (job.eRequestType) {
+		case eJobRequest_Query_Version:
+			m_iQueryRefCounter++;
+			QueryVersion();
+			m_iQueryRefCounter--;
+			break;
+		case eJobRequest_Query_MOTD:
+			m_iQueryRefCounter++;
+			QueryMOTD();
+			m_iQueryRefCounter--;
+			break;
 		case eJobRequest_Query_Master_Server:
 			m_iQueryRefCounter++;
 			QueryMasterServer();
@@ -1207,6 +1246,9 @@ void JServerDir::RequestQueueLoop()
 			PublishServer(job.Peer);
 			break;
 		}
+		
+		// This may cause brief switching between processing/waiting, but it's better than waiting for the thread to timeout!
+		SwitchStatus(eStatus_Waiting);
 
 		// We did something, neat! So update the last activity time.
 		m_nThreadLastActivity = getTimestamp();
@@ -1218,4 +1260,70 @@ void JServerDir::RequestQueueLoop()
 	m_bIsRequestQueueRunning = false;
 
 	SwitchStatus(eStatus_Waiting);
+}
+
+
+void JServerDir::QueryMOTD()
+{
+	std::string sGameMOTD = QueryHttpText(GAME_MOTD_ROUTE);
+	std::string sSystemMOTD = QueryHttpText(SYSTEM_MOTD_ROUTE);
+
+	m_mBasicInfoMutex.lock();
+
+	m_sSystemMOTD = sSystemMOTD;
+	m_sGameMOTD = sGameMOTD;
+
+	m_mBasicInfoMutex.unlock();
+}
+
+void JServerDir::QueryVersion()
+{
+	std::string sGameVersion = QueryHttpText(GAME_VERSION_ROUTE);
+
+	m_mBasicInfoMutex.lock();
+
+	m_sVersion = sGameVersion;
+
+	m_mBasicInfoMutex.unlock();
+}
+
+std::string JServerDir::QueryHttpText(std::string sRoute)
+{
+	TCPSocket* pSock = new TCPSocket();
+
+	ConnectionData connectionData = { MASTER_SERVER, MASTER_PORT_HTTP };
+
+	std::string sRet = "";
+
+	try {
+		pSock->Connect(connectionData);
+
+		// System MOTD
+		char buffer[256];
+		memset(buffer, 0, sizeof(buffer));
+		sprintf(buffer, "GET %s HTTP/1.1\r\nHost: %s\r\n\r\n", sRoute.c_str(), MASTER_SERVER);
+
+		std::string sResponse = buffer;
+
+		pSock->Query(sResponse, connectionData);
+
+		// We can pretty much ignore this response
+		auto sConnectResponse = pSock->Recieve(connectionData);
+
+		auto contentStartLine = sConnectResponse.find("\r\n\r\n");
+		if (contentStartLine == std::string::npos)
+		{
+			throw std::exception("Could not get text");
+		}
+
+		sRet = sConnectResponse.substr(contentStartLine + 4, std::string::npos);
+	}
+	catch (...) {
+		// For now none of these calls are vital.
+	}
+
+	delete pSock;
+	pSock = nullptr;
+
+	return sRet;
 }

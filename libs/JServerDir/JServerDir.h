@@ -26,9 +26,16 @@
 
 // TODO: Throw this in a ini file!
 //#define MASTER_SERVER "65.112.87.186"
+#if 0
+#define MASTER_SERVER "178.62.4.245"
+#define MASTER_PORT_HTTP 80
+#else
 #define MASTER_SERVER "127.0.0.1"
+#define MASTER_PORT_HTTP 8000
+#endif
 #define MASTER_PORT 28900
 #define MASTER_PORT_UDP 27900
+
 
 // Default ping for bad timeouts
 #define INVALID_PING 999
@@ -36,7 +43,14 @@
 #define QUERY_CONNECT "\\gamename\\nolf2\\gamever\\1.3\\location\\0\\validate\\g3Fo6x\\final\\"
 #define QUERY_UPDATE_LIST "\\list\\\\gamename\\nolf2\\final\\"
 
+// These are curled
+#define SYSTEM_MOTD_ROUTE  "/4/motd"
+#define GAME_MOTD_ROUTE	   "/3/motd"
+#define GAME_VERSION_ROUTE "/3/version"
+
 enum EJobRequest {
+	eJobRequest_Query_Version,
+	eJobRequest_Query_MOTD,
 	eJobRequest_Query_Master_Server,
 	eJobRequest_Query_Server,
 	eJobRequest_Publish_Server,
@@ -180,7 +194,8 @@ public:
 	// Note : Returns false if eRequest_MOTD has not been processed
 	virtual bool IsMOTDNew(EMOTD eMOTD) const;
 	// Get the current MOTD
-	virtual char const* GetMOTD(EMOTD eMOTD) const;
+	virtual char const* GetMOTD(EMOTD eMOTD) const { return ""; };
+	virtual char const* GetMOTD(EMOTD eMOTD);
 
 	//////////////////////////////////////////////////////////////////////////////
 	// Active peer info
@@ -234,6 +249,8 @@ public:
 	// Cheat a little
 	__declspec(dllexport) void Update();
 
+	std::string GetGameMOTD() { m_mBasicInfoMutex.lock(); auto sMotd = m_sGameMOTD; m_mBasicInfoMutex.unlock(); return sMotd; }
+
 	protected:
 		ILTCSBase* m_pLTCSBase;
 		HMODULE m_hResourceModule;
@@ -269,6 +286,13 @@ public:
 		// Thread Stuff
 		//
 
+		// Gatekeeper for our motd/version stuff
+		std::mutex m_mBasicInfoMutex;
+		std::string m_sGameVersion;
+		std::string m_sGameMOTD;
+		std::string m_sSystemMOTD;
+		
+
 		// Used to determine if we're doing anything on the thread
 		std::atomic_int m_iQueryRefCounter;
 
@@ -298,9 +322,14 @@ public:
 
 		void RequestQueueLoop();
 		// Jobs
+		void QueryMOTD();
+		void QueryVersion();
+		std::string QueryHttpText(std::string sRoute);
+
 		void QueryMasterServer();
 		void QueryServer(std::string sAddress);
 		void PublishServer(Peer peer);
+		
 
 		// Was a job, but update pings is only called with query master list. ¯\_(ツ)_/¯
 		void PingPeer(Peer* peer);
