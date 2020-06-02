@@ -25,6 +25,22 @@ extern ILTCommon* g_pCommonLT;
 
 JServerDir* g_pJServerDir;
 
+//
+// Jake's Server Directory!
+// I'm bad at naming things, and probably bad at threading!
+// ---
+// This class is a basic implementation of IServerDir + a few extra functions to help the request thread
+// I built the request thread around a Worker/Queue model, however I never quite figured out a good way to acquire data from a completed job
+// Hence all the atomics, and mutexes where I couldn't atomic the variable..
+//
+// It's built around MGMSE https://github.com/haekb/mgmse
+//
+// NOLF 2 doesn't use all the functions of IServerDir, so you probably don't need to do it either.
+// ---
+// Important functions:
+// QueueRequest - (Main/Game Thread) Pushes a job into the worker queue.
+// RequestQueueLoop - (Request Thread) Takes a job from the queue and runs it.
+//
 JServerDir::JServerDir(bool bClientSide, ILTCSBase& ltCSBase, HMODULE hResourceModule)
 {
 	m_bClientSide = bClientSide;
@@ -289,8 +305,6 @@ const char* JServerDir::GetCurStatusString() const
 		return "Paused";
 	case IServerDirectory::eStatus_Processing:
 		return "Processing";
-	case IServerDirectory::eStatus_TotalNum:
-		return "You shouldn't get this >:(";
 	case IServerDirectory::eStatus_Waiting:
 		return "Waiting";
 	}
