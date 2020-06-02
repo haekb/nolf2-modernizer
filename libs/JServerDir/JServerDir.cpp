@@ -80,6 +80,9 @@ bool JServerDir::QueueRequest(ERequest eNewRequest)
 	// Handle skipping version checking if the config requests it
 	if (m_MasterServerInfo.bSkipVersionCheck && eNewRequest == ERequest::eRequest_Validate_Version)
 	{
+		// Make sure we never get a "Update is available" message.
+		m_sGameVersion = m_sVersion;
+		m_sSafeGameVersion = m_sVersion;
 		return true;
 	}
 

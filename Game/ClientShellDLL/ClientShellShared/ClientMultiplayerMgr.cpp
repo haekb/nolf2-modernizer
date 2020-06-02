@@ -487,6 +487,8 @@ IServerDirectory* ClientMultiplayerMgr::CreateServerDir( )
 
 	CButeMgr serverInfoBute;
 
+	serverInfoBute.Init();
+
 	// If the file is not found, use the defaults!
 	if (!serverInfoBute.Parse("JServerInfo.txt"))
 	{
