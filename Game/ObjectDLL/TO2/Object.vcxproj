@@ -128,7 +128,7 @@
       <OutputFile>..\..\Built\Release\ObjectDLL\TO2\Object.lto</OutputFile>
       <ImportLibrary>.\..\..\Built\Debug\ObjectDLL\TO2\Object.lib</ImportLibrary>
       <AdditionalDependencies>odbc32.lib;odbccp32.lib;ButeMgr.lib;ObjectShared.lib;cryptmgr.lib;Lib_Lith.lib;Lib_StdLith.lib;MFCStub.lib;regmgr.lib;ServerDir.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\libs\built\Release\ButeMgr;$(SolutionDir)..\libs\built\Release\cryptmgr;$(SolutionDir)..\libs\built\Release\Lib_Lith;$(SolutionDir)..\libs\built\Release\Lib_StdLith;$(SolutionDir)..\libs\built\Release\MFCStub;$(SolutionDir)..\libs\built\Release\regmgr;$(SolutionDir)\built\Release\ObjectDLL\ObjectShared;$(SolutionDir)\libs\ServerDir\Release</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\libs\built\Release\ButeMgr;$(SolutionDir)..\libs\built\Release\cryptmgr;$(SolutionDir)..\libs\built\Release\Lib_Lith;$(SolutionDir)..\libs\built\Release\Lib_StdLith;$(SolutionDir)..\libs\built\Release\MFCStub;$(SolutionDir)..\libs\built\Release\regmgr;$(SolutionDir)\built\Release\ObjectDLL\ObjectShared;$(SolutionDir)\libs\ServerDir\Release;$(SolutionDir)\Release</AdditionalLibraryDirectories>
     </Link>
     <CustomBuildStep>
       <Command>
@@ -146,7 +146,7 @@
       <WarningLevel>Level3</WarningLevel>
       <MinimalRebuild>true</MinimalRebuild>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\Shared\TO2;.\;..\objectshared;..\..\..\libs\STLPORT-4.0\STLPORT_NO;..\..\shared;..\..\..\Engine\sdk\inc;..\..\..\libs\stdlith;..\..\..\libs\butemgr;..\..\..\libs\cryptmgr;..\..\..\libs\lith;..\..\..\libs\mfcstub;..\..\..\libs\regmgr;..\..\libs;..\..\libs\serverdir;..\..\..\libs\STLPORT-STD;$(SolutionDir)\..\libs\SDL2-2.0.12\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Shared\TO2;.\;..\objectshared;..\..\..\libs\STLPORT-4.0\STLPORT_NO;..\..\shared;..\..\..\Engine\sdk\inc;..\..\..\libs\stdlith;..\..\..\libs\butemgr;..\..\..\libs\cryptmgr;..\..\..\libs\lith;..\..\..\libs\mfcstub;..\..\..\libs\regmgr;..\..\libs;..\..\libs\serverdir;..\..\..\libs\STLPORT-STD;$(SolutionDir)\..\libs\SDL2-2.0.12\include;$(SolutionDir)\..\libs\JServerDir;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WIN32;_WINDOWS;NOPS2;_SERVERBUILD;MEMTRACK_SERVER;_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\..\Built\Debug\ObjectDLL\TO2\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -208,7 +208,7 @@
       <Optimization>MaxSpeed</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>..\..\Shared\TO2;.\;..\objectshared;..\..\..\libs\STLPORT-4.0\STLPORT_NO;..\..\shared;..\..\..\Engine\sdk\inc;..\..\..\libs\stdlith;..\..\..\libs\butemgr;..\..\..\libs\cryptmgr;..\..\..\libs\lith;..\..\..\libs\mfcstub;..\..\..\libs\regmgr;..\..\libs;..\..\libs\serverdir;..\..\..\libs\STLPORT-STD;$(SolutionDir)\..\libs\SDL2-2.0.12\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Shared\TO2;.\;..\objectshared;..\..\..\libs\STLPORT-4.0\STLPORT_NO;..\..\shared;..\..\..\Engine\sdk\inc;..\..\..\libs\stdlith;..\..\..\libs\butemgr;..\..\..\libs\cryptmgr;..\..\..\libs\lith;..\..\..\libs\mfcstub;..\..\..\libs\regmgr;..\..\libs;..\..\libs\serverdir;..\..\..\libs\STLPORT-STD;$(SolutionDir)\..\libs\SDL2-2.0.12\include;$(SolutionDir)\..\libs\JServerDir;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_NOLFBUILD;USE_INTEL_COMPILER;WIN32;_WINDOWS;NOPS2;_SERVERBUILD;_FINAL;MEMTRACK_SERVER;_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;NDISCORDBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\..\Built\Final\ObjectDLL\TO2\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\..\..\Built\Final\ObjectDLL\TO2\Object.pch</PrecompiledHeaderOutputFile>
@@ -242,8 +242,8 @@
       <SubSystem>Windows</SubSystem>
       <OutputFile>..\..\Built\Final\ObjectDLL\TO2\Object.lto</OutputFile>
       <ImportLibrary>.\..\..\Built\Final\ObjectDLL\TO2\Object.lib</ImportLibrary>
-      <AdditionalDependencies>odbc32.lib;odbccp32.lib;ButeMgr.lib;ObjectShared.lib;cryptmgr.lib;Lib_Lith.lib;Lib_StdLith.lib;MFCStub.lib;regmgr.lib;ServerDir.lib;SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\libs\built\Final\ButeMgr;$(SolutionDir)..\libs\built\Final\cryptmgr;$(SolutionDir)..\libs\built\Final\Lib_Lith;$(SolutionDir)..\libs\built\Final\Lib_StdLith;$(SolutionDir)..\libs\built\Final\MFCStub;$(SolutionDir)..\libs\built\Final\regmgr;$(SolutionDir)\built\Final\ObjectDLL\ObjectShared;$(SolutionDir)\libs\ServerDir\Final;$(SolutionDir)\..\libs\SDL2-2.0.12\lib\x86</AdditionalLibraryDirectories>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;ButeMgr.lib;ObjectShared.lib;cryptmgr.lib;Lib_Lith.lib;Lib_StdLith.lib;MFCStub.lib;regmgr.lib;JServerDir.lib;SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\libs\built\Final\ButeMgr;$(SolutionDir)..\libs\built\Final\cryptmgr;$(SolutionDir)..\libs\built\Final\Lib_Lith;$(SolutionDir)..\libs\built\Final\Lib_StdLith;$(SolutionDir)..\libs\built\Final\MFCStub;$(SolutionDir)..\libs\built\Final\regmgr;$(SolutionDir)\built\Final\ObjectDLL\ObjectShared;$(SolutionDir)\libs\ServerDir\Final;$(SolutionDir)\..\libs\SDL2-2.0.12\lib\x86;$(SolutionDir)\Release\</AdditionalLibraryDirectories>
     </Link>
     <CustomBuildStep>
       <Command>

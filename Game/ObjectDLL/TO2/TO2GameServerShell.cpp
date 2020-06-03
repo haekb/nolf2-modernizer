@@ -18,7 +18,7 @@
 #include "PlayerObj.h"
 #include "msgids.h"
 #include "iserverdir_titan.h"
-
+#include "JServerDir.h"
 // Refresh every 5 seconds
 const uint32 k_nRepublishDelay = 5000;
 
@@ -133,8 +133,42 @@ LTRESULT CTO2GameServerShell::OnServerInitialized()
 	startupInfo.m_sGameSpySecretKey += "x";
 	cMsg.Writeuint32(( uint32 )&startupInfo );
 
-	// JAKE: Causes OOM error!
+
+
 	pServerDir->SetStartupInfo( *cMsg.Read( ));
+
+	//
+	// Ok now let's set up our MasterServerInfo!
+	//
+	auto pJServerDir = (JServerDir*)m_pServerDir;
+	if (!pJServerDir) {
+		return nResult;
+	}
+
+	CButeMgr serverInfoBute;
+
+	serverInfoBute.Init();
+
+	// If the file is not found, use the defaults!
+	if (!serverInfoBute.Parse("JServerInfo.txt"))
+	{
+		pJServerDir->UseDefaultMasterServerInfo();
+		return nResult;
+	}
+
+	MasterServerInfo info;
+
+	auto szServerAddress = (char*)serverInfoBute.GetString("Info", "Server");
+	LTStrCpy(info.szServer, szServerAddress, sizeof(info.szServer));
+
+	info.nPortHTTP = serverInfoBute.GetInt("Info", "PortHTTP");
+	info.nPortTCP = serverInfoBute.GetInt("Info", "PortTCP");
+	info.nPortUDP = serverInfoBute.GetInt("Info", "PortUDP");
+
+	info.bSkipMOTD = serverInfoBute.GetBool("Info", "SkipMOTD");
+	info.bSkipVersionCheck = serverInfoBute.GetBool("Info", "SkipVersionCheck");
+
+	pJServerDir->SetMasterServerInfo(info);
 
 	return nResult;
 }
