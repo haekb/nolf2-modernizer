@@ -58,14 +58,11 @@ JServerDir::JServerDir(bool bClientSide, ILTCSBase& ltCSBase, HMODULE hResourceM
 	m_sSystemMOTD = "";
 	m_sGameMOTD = "";
 	m_sGameVersion = "";
-	m_sSafeGameVersion = "";
+
 	m_bGotMOTD = false;
 
 	// Blank out that struct
 	m_MasterServerInfo = { 0 };
-
-	m_iLastStatus = -1;
-	m_sLastStatus = "";
 }
 
 JServerDir::~JServerDir()
@@ -101,7 +98,6 @@ bool JServerDir::QueueRequest(ERequest eNewRequest)
 	{
 		// Make sure we never get a "Update is available" message.
 		m_sGameVersion = m_sVersion;
-		m_sSafeGameVersion = m_sVersion;
 		return true;
 	}
 
@@ -393,14 +389,14 @@ bool JServerDir::IsVersionValid() const
 // Note : Returns false if eRequest_Validate_Version has not been processed
 bool JServerDir::IsVersionNewest() const
 {
-	return m_sSafeGameVersion == m_sVersion;
+	return m_sGameVersion == m_sVersion;
 }
 
 // Is a patch available?
 // Note : Returns false if eRequest_Validate_Version has not been processed
 bool JServerDir::IsPatchAvailable() const
 {
-	return m_sSafeGameVersion != m_sVersion;
+	return m_sGameVersion != m_sVersion;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -415,21 +411,13 @@ bool JServerDir::IsMOTDNew(EMOTD eMOTD) const
 }
 
 // Get the current MOTD
-char const* JServerDir::GetMOTD(EMOTD eMOTD)
+char const* JServerDir::GetMOTD(EMOTD eMOTD) const
 {
-	m_mBasicInfoMutex.lock();
-	char const* sMOTD = "";
-
 	if (eMOTD == eMOTD_Game) {
-		sMOTD = m_sGameMOTD.c_str();
-	}
-	else {
-		sMOTD = m_sSystemMOTD.c_str();
+		return m_sGameMOTD.c_str();
 	}
 
-	m_mBasicInfoMutex.unlock();
-
-	return sMOTD;
+	return m_sSystemMOTD.c_str();
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -751,20 +739,40 @@ bool JServerDir::SetNetHeader(ILTMessage_Read& cMsg)
 
 void JServerDir::Update()
 {
-	if (m_sSafeGameVersion.empty())
+	// See if we can lock the return data
+	if (!m_mReturnMutex.try_lock())
 	{
-		m_mBasicInfoMutex.lock();
-		if (!m_sGameVersion.empty())
-		{
-			m_sSafeGameVersion = m_sGameVersion;
-		}
-
-		m_mBasicInfoMutex.unlock();
+		return;
 	}
 
+	if (m_vReturnData.size() == 0) {
+		m_mReturnMutex.unlock();
+		return;
+	}
 
+	// Grab the next return data
+	auto pRetData = m_vReturnData.back();
+	m_vReturnData.pop_back();
 
-	CheckForQueuedPeers();
+	switch (pRetData->eRequestType)
+	{
+	case eJobRequest_Query_Server:
+		m_Peers.push_back(pRetData->peer.pPeer);
+		break;
+	case eJobRequest_Query_MOTD:
+		m_sSystemMOTD = pRetData->motd.szSystemMOTD;
+		m_sGameMOTD = pRetData->motd.szGameMOTD;
+		break;
+	case eJobRequest_Query_Version:
+		m_sGameVersion = pRetData->version.szVersion;
+		break;
+	}
+
+	m_mReturnMutex.unlock();
+	
+	if (m_Peers.size() > 0) {
+		SwitchStatus(eStatus_Waiting);
+	}
 }
 
 void JServerDir::SetMasterServerInfo(MasterServerInfo info)
@@ -876,11 +884,14 @@ void JServerDir::QueryMasterServer()
 //
 // Does not support split queries
 //
-void JServerDir::QueryServer(std::string sAddress)
+PeerReturnData JServerDir::QueryServer(std::string sAddress)
 {
 	Peer* peer = new Peer();
 
 	bool bResult;
+
+	PeerReturnData retData;
+	retData.pPeer = nullptr;
 
 	std::vector<std::string> addressInfo = splitByCharacter(sAddress, ':');
 	std::string sIPAddress = addressInfo[0];
@@ -899,7 +910,9 @@ void JServerDir::QueryServer(std::string sAddress)
 			delete pSock;
 			pSock = NULL;
 
-			return;
+
+
+			return retData;
 		}
 
 		Sleep(1000);
@@ -919,7 +932,7 @@ void JServerDir::QueryServer(std::string sAddress)
 			delete pSock;
 			pSock = NULL;
 
-			return;
+			return retData;
 		}
 
 		std::map<std::string, std::string> mappy = splitResultsToMap(sStatus);
@@ -999,9 +1012,9 @@ void JServerDir::QueryServer(std::string sAddress)
 
 	PingPeer(peer);
 
-	m_mQueuedPeerMutex.lock();
-	m_QueuedPeers.push_back(peer);
-	m_mQueuedPeerMutex.unlock();
+	retData.pPeer = peer;
+
+	return retData;
 }
 
 //
@@ -1192,23 +1205,6 @@ void JServerDir::PingPeer(Peer* peer)
 	pSock = NULL;
 }
 
-void JServerDir::CheckForQueuedPeers()
-{
-	m_mQueuedPeerMutex.lock();
-	std::vector<Peer*> queuedPeers = m_QueuedPeers;
-	m_QueuedPeers.clear();
-	m_mQueuedPeerMutex.unlock();
-	
-	for (Peer* peer : queuedPeers) {
-		m_Peers.push_back(peer);
-	}
-
-
-	if (m_Peers.size() > 0) {
-		SwitchStatus(eStatus_Waiting);
-	}
-}
-
 void JServerDir::AddJob(Job eJob)
 {
 	m_mJobMutex.lock();
@@ -1218,11 +1214,10 @@ void JServerDir::AddJob(Job eJob)
 
 void JServerDir::SwitchStatus(EStatus eStatus)
 {
-	m_iLastStatus.store(m_iStatus.load());
 	m_iStatus = eStatus;
 }
 
-void JServerDir::QueryMOTD()
+MOTDReturnData JServerDir::QueryMOTD()
 {
 	std::string sGameMOTD = QueryHttpText(GAME_MOTD_ROUTE);
 	std::string sSystemMOTD = QueryHttpText(SYSTEM_MOTD_ROUTE);
@@ -1230,25 +1225,24 @@ void JServerDir::QueryMOTD()
 	sGameMOTD = DecodeNewLines(sGameMOTD);
 	sSystemMOTD = DecodeNewLines(sSystemMOTD);
 
-	m_mBasicInfoMutex.lock();
+	MOTDReturnData retData;
+	LTStrCpy(retData.szGameMOTD, sGameMOTD.c_str(), sizeof(retData.szGameMOTD));
+	LTStrCpy(retData.szSystemMOTD, sSystemMOTD.c_str(), sizeof(retData.szSystemMOTD));
 
-	m_sSystemMOTD = sSystemMOTD;
-	m_sGameMOTD = sGameMOTD;
-
-	m_mBasicInfoMutex.unlock();
-
+	// Yep we got it!
 	m_bGotMOTD = true;
+
+	return retData;
 }
 
-void JServerDir::QueryVersion()
+VersionReturnData JServerDir::QueryVersion()
 {
 	std::string sGameVersion = QueryHttpText(GAME_VERSION_ROUTE);
 
-	m_mBasicInfoMutex.lock();
+	VersionReturnData retData;
+	LTStrCpy(retData.szVersion, sGameVersion.c_str(), sizeof(retData.szVersion));
 
-	m_sGameVersion = sGameVersion;
-
-	m_mBasicInfoMutex.unlock();
+	return retData;
 }
 
 std::string JServerDir::QueryHttpText(std::string sRoute)
@@ -1366,15 +1360,20 @@ void JServerDir::RequestQueueLoop()
 
 		SwitchStatus(eStatus_Processing);
 
+		JobReturnData* pRetData = new JobReturnData();
+		pRetData->eRequestType = job.eRequestType;
+
 		switch (job.eRequestType) {
 		case eJobRequest_Query_Version:
 			m_iQueryRefCounter++;
-			QueryVersion();
+			pRetData->version = QueryVersion();
+			pRetData->bSet = true;
 			m_iQueryRefCounter--;
 			break;
 		case eJobRequest_Query_MOTD:
 			m_iQueryRefCounter++;
-			QueryMOTD();
+			pRetData->motd = QueryMOTD();
+			pRetData->bSet = true;
 			m_iQueryRefCounter--;
 			break;
 		case eJobRequest_Query_Master_Server:
@@ -1384,7 +1383,8 @@ void JServerDir::RequestQueueLoop()
 			break;
 		case eJobRequest_Query_Server:
 			m_iQueryRefCounter++;
-			QueryServer(job.sData);
+			pRetData->peer = QueryServer(job.sData);
+			pRetData->bSet = true;
 			m_iQueryRefCounter--;
 			break;
 		case eJobRequest_Publish_Server:
@@ -1393,6 +1393,21 @@ void JServerDir::RequestQueueLoop()
 			// This will block, until we're done publishing.
 			PublishServer(job.Peer);
 			break;
+		}
+
+		// Hey cool, we're set! Shove that data into the vReturnData array.
+		if (pRetData->bSet) 
+		{
+			m_mReturnMutex.lock();
+
+			m_vReturnData.push_back(pRetData);
+
+			m_mReturnMutex.unlock();
+		}
+		// We didn't get used, so let's delete it!
+		else
+		{
+			delete pRetData;
 		}
 
 		// This may cause brief switching between processing/waiting, but it's better than waiting for the thread to timeout!
