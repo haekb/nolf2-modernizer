@@ -14,8 +14,14 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ClientRes", "ClientRes\TO2\ClientRes.vcxproj", "{D75ED753-D262-408F-AF29-842819D07602}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ClientShellDLL", "ClientShellDLL\TO2\ClientShellDLL.vcxproj", "{8A64EDFE-4E6E-4A76-BC74-A2CA899FE39A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E51C9E15-AB16-40B3-9C64-C985C1B77A21} = {E51C9E15-AB16-40B3-9C64-C985C1B77A21}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ClientShellShared", "CLIENTSHELLDLL\ClientShellShared\ClientShellShared.vcxproj", "{8B1AF9DB-5F2F-43DE-A820-D571706EDEBD}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E51C9E15-AB16-40B3-9C64-C985C1B77A21} = {E51C9E15-AB16-40B3-9C64-C985C1B77A21}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CryptMgr", "..\libs\CryptMgr\cryptmgr.vcxproj", "{F4E2F9AE-03D9-43EA-9942-2DD7A7B51C85}"
 EndProject
