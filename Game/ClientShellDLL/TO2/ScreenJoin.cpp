@@ -579,11 +579,8 @@ void CScreenJoin::ReadCurServerList()
 {
 	m_nSelectedServer = 0;
 
-
 	IServerDirectory *pServerDir = g_pClientMultiplayerMgr->GetServerDir();
 	IServerDirectory::TPeerList cPeers = pServerDir->GetPeerList();
-
-
 
 #ifdef GENERATE_FAKE_ENTRIES
 	// Entry testing
@@ -625,8 +622,6 @@ void CScreenJoin::ReadCurServerList()
 	{
 		return;
 	}
-
-	//m_cServerList.resize(m_cServerList.size() + cPeers.size());
 
 	for (auto pPeer : cPeers)
 	{
@@ -713,92 +708,14 @@ void CScreenJoin::ReadCurServerList()
 		m_cServerList.push_back(entry);
 	}
 
-#if 0
-	IServerDirectory::TPeerList::const_iterator iCurPeer = cPeers.begin();
-	TServerList::iterator iCurServer = m_cServerList.begin();
-	for (; iCurPeer != cPeers.end(); ++iCurPeer, ++iCurServer)
-	{
-		// Indicate that the server's an invalid entry until we get everything..
-		iCurServer->m_sAddress.clear();
-
-		char aStringBuffer[256];
-	
-		// Point at this server
-		if (!pServerDir->SetActivePeer(iCurPeer->c_str()))
-			continue;
-
-		// Read the name
-		CAutoMessage cMsg;
-		if (!pServerDir->GetActivePeerInfo(IServerDirectory::ePeerInfo_Name, cMsg))
-			continue;
-
-		{
-			CLTMsgRef_Read cRead(cMsg.Read());
-			cRead->ReadString(aStringBuffer, sizeof(aStringBuffer));
-		}
-		iCurServer->m_sName = aStringBuffer;
-
-		// Read the summary
-		if (!pServerDir->GetActivePeerInfo(IServerDirectory::ePeerInfo_Summary, cMsg))
-			continue;
-		{
-			CLTMsgRef_Read cRead(cMsg.Read());
-			cRead->ReadString(aStringBuffer, sizeof(aStringBuffer));
-			iCurServer->m_sVersion = aStringBuffer;
-
-			cRead->ReadString(aStringBuffer, sizeof(aStringBuffer));
-
-			int nMission, nLevel;
-			iCurServer->m_sMission = "";
-			if	(g_pMissionButeMgr->IsMissionLevel(aStringBuffer,nMission,nLevel))
-			{
-				MISSION* pMission = g_pMissionButeMgr->GetMission(nMission); 
-				if (pMission)
-				{
-					if (pMission->nNameId > 0)
-						iCurServer->m_sMission = LoadTempString(pMission->nNameId);
-					else if (!pMission->sName.empty())
-						iCurServer->m_sMission = pMission->sName;
-				}
-			}
-			
-			if (iCurServer->m_sMission.empty())
-				iCurServer->m_sMission = aStringBuffer;
-
-			iCurServer->m_nNumPlayers = cRead->Readuint8();
-			iCurServer->m_nMaxPlayers = cRead->Readuint8();
-			iCurServer->m_bUsePassword = cRead->Readbool();
-			iCurServer->m_nGameType = cRead->Readuint8();
-			
-			cRead->ReadString( aStringBuffer, sizeof(aStringBuffer) );
-			iCurServer->m_sModName = (aStringBuffer[0] ? aStringBuffer : "Retail");
-		}
-
-		if (pServerDir->GetActivePeerInfo(IServerDirectory::ePeerInfo_Ping, cMsg))
-		{
-			CLTMsgRef_Read cRead(cMsg.Read());
-			iCurServer->m_nPing = cRead->Readuint16();
-		}
-		else			
-			iCurServer->m_nPing = -1;
-
-		// Ok, this one's valid
-		iCurServer->m_sAddress = *iCurPeer;
-	}
-#endif
-
 	SortServers(m_nLastSort);
 
 }
 
 void CScreenJoin::DisplayCurServerList()
 {
-	//m_pServerListCtrl->RemoveAll();
-
 	uint16 nSelected = CLTGUIListCtrl::kNoSelection;
 
-#if 1
-	//for (auto pServer : m_cServerList)
 	for (int i = 0; i < m_cServerList.size(); i++)
 	{
 		auto pServer = m_cServerList[i];
@@ -868,66 +785,6 @@ void CScreenJoin::DisplayCurServerList()
 		}
 
 	}
-
-#else
-	TServerList::const_iterator iCurServer = m_cServerList.begin();
-	for (; iCurServer != m_cServerList.end(); ++iCurServer)
-	{
-		if (iCurServer->m_sAddress.empty())
-			continue;
-
-		char aTempBuffer[256];
-
-		memset(aTempBuffer, 0, sizeof(aTempBuffer));
-
-		// Create a control
-		CLTGUIColumnCtrl* pCtrl = CreateColumnCtrl(CMD_DETAILS, IDS_HELP_JOIN);
-		// Do the name
-		pCtrl->AddColumn(iCurServer->m_sName.c_str(), kColumnWidth_ServerName,LTTRUE);
-
-		// Do the mod...
-
-		sprintf( aTempBuffer, "%s", iCurServer->m_sModName.c_str() );
-		pCtrl->AddColumn( aTempBuffer, kColumnWidth_Mod );
-
-		memset(aTempBuffer, 0, sizeof(aTempBuffer));
-
-		// Do the ping
-		sprintf(aTempBuffer, "%d", iCurServer->m_nPing);
-		pCtrl->AddColumn(aTempBuffer, kColumnWidth_Ping);
-
-		memset(aTempBuffer, 0, sizeof(aTempBuffer));
-
-		// Do the number of players
-		sprintf(aTempBuffer, "%d/%d", iCurServer->m_nNumPlayers, iCurServer->m_nMaxPlayers);
-		pCtrl->AddColumn(aTempBuffer, kColumnWidth_Players);
-
-
-		if (iCurServer->m_bUsePassword)
-		{
-			pCtrl->AddColumn("x", kColumnWidth_Lock);
-		}
-		else
-		{
-			pCtrl->AddColumn(" ", kColumnWidth_Lock);
-		}
-
-
-		// Do the map
-		pCtrl->AddColumn(iCurServer->m_sMission.c_str(), kColumnWidth_Mission,LTTRUE);
-
-		// Remember where we came from
-		uint16 nServerIndex = (uint32)(iCurServer - m_cServerList.begin());
-		pCtrl->SetParam1(nServerIndex);
-
-		// Add the server
-		uint16 nCtrlIndex = m_pServerListCtrl->AddControl(pCtrl);
-
-		if (nServerIndex = m_nSelectedServer)
-			nSelected = nCtrlIndex;
-
-	}
-#endif
 
 	m_pServerListCtrl->Enable( (m_pServerListCtrl->GetNumControls() > 0));
 	m_pServerListCtrl->SetSelection(nSelected);
