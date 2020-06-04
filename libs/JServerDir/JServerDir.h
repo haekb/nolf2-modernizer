@@ -42,10 +42,16 @@
 #define QUERY_CONNECT "\\gamename\\nolf2\\gamever\\1.3\\location\\0\\validate\\g3Fo6x\\final\\"
 #define QUERY_UPDATE_LIST "\\list\\\\gamename\\nolf2\\final\\"
 
-// These are curled
+// These are web routes. Maybe add to config..
+#if 1
+#define SYSTEM_MOTD_ROUTE  "/3/motd"
+#define GAME_MOTD_ROUTE	   "/2/motd"
+#define GAME_VERSION_ROUTE "/2/version"
+#else
 #define SYSTEM_MOTD_ROUTE  "/4/motd"
 #define GAME_MOTD_ROUTE	   "/3/motd"
 #define GAME_VERSION_ROUTE "/3/version"
+#endif
 
 enum EJobRequest {
 	eJobRequest_Unset,
@@ -313,7 +319,6 @@ public:
 
 		//---------------------------------------------------------------
 		// MAIN STUFF
-		void CheckForQueuedPeers();
 		void AddJob(Job eJob);
 		void SwitchStatus(EStatus eStatus);
 

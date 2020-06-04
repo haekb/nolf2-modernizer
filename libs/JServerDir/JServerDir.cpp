@@ -38,8 +38,9 @@ JServerDir* g_pJServerDir;
 // NOLF 2 doesn't use all the functions of IServerDir, so you probably don't need to do it either.
 // ---
 // Important functions:
+// Update - (Main/Game Thread) Copies over data from the return data vector to the main thread.
 // QueueRequest - (Main/Game Thread) Pushes a job into the worker queue.
-// RequestQueueLoop - (Request Thread) Takes a job from the queue and runs it.
+// RequestQueueLoop - (Request Thread) Takes a job from the queue and runs it. Also pushes return data to its vector.
 //
 JServerDir::JServerDir(bool bClientSide, ILTCSBase& ltCSBase, HMODULE hResourceModule)
 {
@@ -441,7 +442,7 @@ bool JServerDir::SetActivePeer(const char* pAddr)
 	// See if we're already in the list!
 	int index = 0;
 	for (auto peer : m_Peers) {
-		if (peer->GetAddress().compare(activePeer) == 0) {
+		if (peer->GetFullAddress().compare(activePeer) == 0) {
 			m_nActivePeer = index;
 			return true;
 		}
@@ -451,13 +452,12 @@ bool JServerDir::SetActivePeer(const char* pAddr)
 
 	Peer* peer = new Peer();
 
-	peer->SetAddress(activePeer);
+	peer->SetFullAddress(activePeer);
 
 	// TODO: High precision timer? Not sure if it's needed here. 
 	peer->SetCreatedAt(m_pLTCSBase->GetTime());
 
 	// Throw in our new ActivePeer(TM)
-	//m_PeerList.push_back(pAddr);
 	m_Peers.push_back(peer);
 	m_nActivePeer = m_Peers.size() - 1;
 
@@ -474,7 +474,7 @@ bool JServerDir::GetActivePeer(std::string* pAddr, bool* pLocal) const
 	}
 
 	Peer* peer = m_Peers.at(m_nActivePeer);
-	std::string activePeer = peer->GetAddress();
+	std::string activePeer = peer->GetFullAddress();
 
 	if (activePeer.compare(LOCAL_PEER)) {
 		pAddr = NULL;
@@ -494,7 +494,7 @@ bool JServerDir::RemoveActivePeer()
 {
 	Peer* peer = m_Peers.at(m_nActivePeer);
 
-	if (peer->GetAddress().compare(LOCAL_PEER)) {
+	if (peer->GetFullAddress().compare(LOCAL_PEER)) {
 		return false;
 	}
 
@@ -703,7 +703,18 @@ IServerDirectory::TPeerList JServerDir::GetPeerList() const
 	TPeerList list;
 
 	for (auto peer : m_Peers) {
-		list.push_back(peer->GetAddress());
+		if (peer == nullptr)
+		{
+			continue;
+		}
+
+		if (peer->GetIsRetrieved())
+		{
+			continue;
+		}
+
+		list.push_back(peer->GetFullAddress());
+		peer->SetIsRetrieved(true);
 	}
 
 	return list;
@@ -739,12 +750,17 @@ bool JServerDir::SetNetHeader(ILTMessage_Read& cMsg)
 
 void JServerDir::Update()
 {
+
+	// TODO: For LastStatus we can have an atomic bool, anytime Status is set, we set that bool
+	// theeeen we unset it here, and set our string so it's nice and fresh for that stupid function.
+
 	// See if we can lock the return data
 	if (!m_mReturnMutex.try_lock())
 	{
 		return;
 	}
 
+	// If there's nothing to copy to the main thread, then skip!
 	if (m_vReturnData.size() == 0) {
 		m_mReturnMutex.unlock();
 		return;
@@ -767,6 +783,9 @@ void JServerDir::Update()
 		m_sGameVersion = pRetData->version.szVersion;
 		break;
 	}
+
+	// Finally we can clean this up!
+	delete pRetData;
 
 	m_mReturnMutex.unlock();
 	
@@ -897,7 +916,6 @@ PeerReturnData JServerDir::QueryServer(std::string sAddress)
 	std::string sIPAddress = addressInfo[0];
 	unsigned short nPort = std::stoi(addressInfo[1]);
 
-
 	{
 		UDPSocket* pSock = new UDPSocket();
 		ConnectionData connectionData = { sIPAddress, nPort };
@@ -1001,6 +1019,9 @@ PeerReturnData JServerDir::QueryServer(std::string sAddress)
 		peer->SetHasDetailsData(true);
 
 		peer->SetAddress(sIPAddress);
+
+		// Address AND port
+		peer->SetFullAddress(sAddress);
 
 		PeerInfo_Port port;
 		port.nHostPort = nPort;

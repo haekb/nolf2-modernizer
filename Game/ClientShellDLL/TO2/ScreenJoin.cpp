@@ -560,6 +560,8 @@ void    CScreenJoin::OnFocus(LTBOOL bFocus)
 
 void CScreenJoin::FindServers()
 {
+	m_cServerList.clear();
+
 	IServerDirectory *pServerDir = g_pClientMultiplayerMgr->GetServerDir();
 	if (pServerDir->IsRequestPending(IServerDirectory::eRequest_Update_List))
 		return;
@@ -573,9 +575,102 @@ void CScreenJoin::ReadCurServerList()
 {
 	m_nSelectedServer = 0;
 
+
 	IServerDirectory *pServerDir = g_pClientMultiplayerMgr->GetServerDir();
 	IServerDirectory::TPeerList cPeers = pServerDir->GetPeerList();
-	m_cServerList.resize(cPeers.size());
+
+	if (cPeers.size() == 0)
+	{
+		return;
+	}
+
+	//m_cServerList.resize(m_cServerList.size() + cPeers.size());
+
+	for (auto pPeer : cPeers)
+	{
+		CServerEntry entry;
+		entry.m_sAddress.clear();
+
+		char aStringBuffer[256];
+
+		// Point at this server
+		if (!pServerDir->SetActivePeer(pPeer.c_str())) {
+			continue;
+		}
+
+		// Read the name
+		CAutoMessage cMsg;
+		if (!pServerDir->GetActivePeerInfo(IServerDirectory::ePeerInfo_Name, cMsg)) {
+			continue;
+		}
+		
+		// Scoped for cRead
+		{
+			CLTMsgRef_Read cRead(cMsg.Read());
+			cRead->ReadString(aStringBuffer, sizeof(aStringBuffer));
+		}
+
+		entry.m_sName = aStringBuffer;
+
+		// Read the summary
+		if (!pServerDir->GetActivePeerInfo(IServerDirectory::ePeerInfo_Summary, cMsg)) {
+			continue;
+
+		}
+		
+		// Scoped for cRead
+		{
+			CLTMsgRef_Read cRead(cMsg.Read());
+			cRead->ReadString(aStringBuffer, sizeof(aStringBuffer));
+		
+			entry.m_sVersion = aStringBuffer;
+
+			cRead->ReadString(aStringBuffer, sizeof(aStringBuffer));
+
+			int nMission, nLevel;
+			entry.m_sMission = "";
+			if (g_pMissionButeMgr->IsMissionLevel(aStringBuffer, nMission, nLevel))
+			{
+				MISSION* pMission = g_pMissionButeMgr->GetMission(nMission);
+				if (pMission)
+				{
+					if (pMission->nNameId > 0) {
+						entry.m_sMission = LoadTempString(pMission->nNameId);
+					}
+					else if (!pMission->sName.empty()) {
+						entry.m_sMission = pMission->sName;
+					}
+				}
+			}
+
+			if (entry.m_sMission.empty()) {
+				entry.m_sMission = aStringBuffer;
+			}
+
+			entry.m_nNumPlayers = cRead->Readuint8();
+			entry.m_nMaxPlayers = cRead->Readuint8();
+			entry.m_bUsePassword = cRead->Readbool();
+			entry.m_nGameType = cRead->Readuint8();
+
+			cRead->ReadString(aStringBuffer, sizeof(aStringBuffer));
+			entry.m_sModName = (aStringBuffer[0] ? aStringBuffer : "Retail");
+		}
+
+		if (pServerDir->GetActivePeerInfo(IServerDirectory::ePeerInfo_Ping, cMsg))
+		{
+			CLTMsgRef_Read cRead(cMsg.Read());
+			entry.m_nPing = cRead->Readuint16();
+		}
+		else
+			entry.m_nPing = -1;
+
+		// Ok, this one's valid
+		entry.m_sAddress = pPeer;
+
+		m_cServerList.push_back(entry);
+	}
+
+#if 0
 	IServerDirectory::TPeerList::const_iterator iCurPeer = cPeers.begin();
 	TServerList::iterator iCurServer = m_cServerList.begin();
 	for (; iCurPeer != cPeers.end(); ++iCurPeer, ++iCurServer)
@@ -647,7 +742,7 @@ void CScreenJoin::ReadCurServerList()
 		// Ok, this one's valid
 		iCurServer->m_sAddress = *iCurPeer;
 	}
-	
+#endif
 
 	SortServers(m_nLastSort);
 
@@ -950,9 +1045,22 @@ void CScreenJoin::Update()
 		case eState_QueryDetails :
 			Update_State_QueryDetails();
 			return;
-		default :
-			return;
+		//default :
+			//return;
 	}
+
+	auto nPreviousServerCount = m_cServerList.size();
+
+	// Read the directory list
+	ReadCurServerList();
+
+	if (nPreviousServerCount != m_cServerList.size())
+	{
+		// Show it
+		DisplayCurServerList();
+	}
+
+
 }
 
 bool CScreenJoin::PreState_Inactive()
