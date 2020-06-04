@@ -21,8 +21,7 @@
 #include <chrono>
 //
 
-extern ILTCommon* g_pCommonLT;
-
+ILTCommon* g_pCommonLT;
 JServerDir* g_pJServerDir;
 
 //

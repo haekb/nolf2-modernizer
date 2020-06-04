@@ -99,7 +99,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>Lib_Lith.lib;Lib_StdLith.lib;ClientShellShared.lib;Ws2_32.lib;ButeMgr.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Lib_Lith.lib;Lib_StdLith.lib;Ws2_32.lib;ButeMgr.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)..\libs\built\Debug\Lib_Lith;$(SolutionDir)..\libs\built\Debug\Lib_StdLith;$(SolutionDir)\built\debug\ClientShellDLL\ClientShellShared;$(SolutionDir)..\libs\built\Debug\ButeMgr;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -142,7 +142,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(SolutionDir)..\libs\built\Final\Lib_Lith;$(SolutionDir)..\libs\built\Final\Lib_StdLith;$(SolutionDir)\built\Final\ClientShellDLL\ClientShellShared;$(SolutionDir)..\libs\built\Final\ButeMgr;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Lib_Lith.lib;Lib_StdLith.lib;ClientShellShared.lib;Ws2_32.lib;ButeMgr.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Lib_Lith.lib;Lib_StdLith.lib;Ws2_32.lib;ButeMgr.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
