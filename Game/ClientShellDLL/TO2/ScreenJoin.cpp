@@ -24,6 +24,9 @@
 
 void JoinCallBack(LTBOOL bReturn, void *pData);
 
+// Uncomment to generate fake server entries every 1.5 seconds
+#define GENERATE_FAKE_ENTRIES
+
 namespace
 {
 	int kColumnWidth_ServerName		= 225;
@@ -400,7 +403,7 @@ uint32 CScreenJoin::OnCommand(uint32 dwCommand, uint32 dwParam1, uint32 dwParam2
 	case CMD_FILTER_MOD:
 	{
 		UpdateData();
-		FilterServers();
+		FilterServers(true);
 		break;
 	} 
 
@@ -561,6 +564,7 @@ void    CScreenJoin::OnFocus(LTBOOL bFocus)
 void CScreenJoin::FindServers()
 {
 	m_cServerList.clear();
+	m_pServerListCtrl->RemoveAll();
 
 	IServerDirectory *pServerDir = g_pClientMultiplayerMgr->GetServerDir();
 	if (pServerDir->IsRequestPending(IServerDirectory::eRequest_Update_List))
@@ -578,6 +582,44 @@ void CScreenJoin::ReadCurServerList()
 
 	IServerDirectory *pServerDir = g_pClientMultiplayerMgr->GetServerDir();
 	IServerDirectory::TPeerList cPeers = pServerDir->GetPeerList();
+
+
+
+#ifdef GENERATE_FAKE_ENTRIES
+	// Entry testing
+	// Spawns a new fake entry every 1.5 seconds.
+	{
+		static Uint32 prevTicks = 0;
+		auto ticks = SDL_GetTicks();
+
+		if (ticks - prevTicks < 1500)
+		{
+			return;
+		}
+
+		prevTicks = ticks;
+
+		static int nCount = 0;
+		CServerEntry entry;
+
+		entry.m_sAddress = "1.2.3." + std::to_string(nCount);
+		entry.m_nGameType = eGameTypeDeathmatch;
+		entry.m_nMaxPlayers = rand() % (16 - 6 + 1) + 6;
+		entry.m_nNumPlayers = rand() % (entry.m_nMaxPlayers - 0 + 1) + 0;
+		entry.m_nPing = rand() % (420 - 0 + 1) + 0;
+		entry.m_sMission = "DM_04";
+		entry.m_sName = "Test Entry " + std::to_string(nCount);
+		entry.m_sVersion = "1.0.0.4M";
+		entry.m_bDisplayed = false;
+		entry.m_bUsePassword = false;
+
+		m_cServerList.push_back(entry);
+
+		nCount++;
+
+		return;
+	}
+#endif
 
 	if (cPeers.size() == 0)
 	{
@@ -666,6 +708,7 @@ void CScreenJoin::ReadCurServerList()
 
 		// Ok, this one's valid
 		entry.m_sAddress = pPeer;
+		entry.m_bDisplayed = false;
 
 		m_cServerList.push_back(entry);
 	}
@@ -750,15 +793,89 @@ void CScreenJoin::ReadCurServerList()
 
 void CScreenJoin::DisplayCurServerList()
 {
-	m_pServerListCtrl->RemoveAll();
+	//m_pServerListCtrl->RemoveAll();
 
 	uint16 nSelected = CLTGUIListCtrl::kNoSelection;
 
+#if 1
+	//for (auto pServer : m_cServerList)
+	for (int i = 0; i < m_cServerList.size(); i++)
+	{
+		auto pServer = m_cServerList[i];
+
+		if (pServer.m_sAddress.empty())
+		{
+			continue;
+		}
+
+		if (pServer.m_bDisplayed)
+		{
+			continue;
+		}
+
+		m_cServerList[i].m_bDisplayed = true;
+
+		char aTempBuffer[256];
+
+		memset(aTempBuffer, 0, sizeof(aTempBuffer));
+
+		// Create a control
+		CLTGUIColumnCtrl* pCtrl = CreateColumnCtrl(CMD_DETAILS, IDS_HELP_JOIN);
+		// Do the name
+		pCtrl->AddColumn(pServer.m_sName.c_str(), kColumnWidth_ServerName, LTTRUE);
+
+		// Do the mod...
+
+		sprintf(aTempBuffer, "%s", pServer.m_sModName.c_str());
+		pCtrl->AddColumn(aTempBuffer, kColumnWidth_Mod);
+
+		memset(aTempBuffer, 0, sizeof(aTempBuffer));
+
+		// Do the ping
+		sprintf(aTempBuffer, "%d", pServer.m_nPing);
+		pCtrl->AddColumn(aTempBuffer, kColumnWidth_Ping);
+
+		memset(aTempBuffer, 0, sizeof(aTempBuffer));
+
+		// Do the number of players
+		sprintf(aTempBuffer, "%d/%d", pServer.m_nNumPlayers, pServer.m_nMaxPlayers);
+		pCtrl->AddColumn(aTempBuffer, kColumnWidth_Players);
+
+
+		if (pServer.m_bUsePassword)
+		{
+			pCtrl->AddColumn("x", kColumnWidth_Lock);
+		}
+		else
+		{
+			pCtrl->AddColumn(" ", kColumnWidth_Lock);
+		}
+
+
+		// Do the map
+		pCtrl->AddColumn(pServer.m_sMission.c_str(), kColumnWidth_Mission, LTTRUE);
+
+		// Remember where we came from
+		//uint16 nServerIndex = (uint32)pServer - m_cServerList.begin());
+		pCtrl->SetParam1(i);
+
+		// Add the server
+		uint16 nCtrlIndex = m_pServerListCtrl->AddControl(pCtrl);
+
+		if (i = m_nSelectedServer)
+		{
+			nSelected = nCtrlIndex;
+		}
+
+	}
+
+#else
 	TServerList::const_iterator iCurServer = m_cServerList.begin();
 	for (; iCurServer != m_cServerList.end(); ++iCurServer)
 	{
 		if (iCurServer->m_sAddress.empty())
 			continue;
+
 		char aTempBuffer[256];
 
 		memset(aTempBuffer, 0, sizeof(aTempBuffer));
@@ -810,10 +927,11 @@ void CScreenJoin::DisplayCurServerList()
 			nSelected = nCtrlIndex;
 
 	}
+#endif
 
 	m_pServerListCtrl->Enable( (m_pServerListCtrl->GetNumControls() > 0));
 	m_pServerListCtrl->SetSelection(nSelected);
-	FilterServers();
+	FilterServers(false);
 }
 
 void CScreenJoin::ReadDetails()
@@ -1309,11 +1427,18 @@ void CScreenJoin::SortServers(uint32 nSortField)
 
 	};
 
+	// Set our servers as not displayed, and delete the controls.
+	for (int i = 0; i < m_cServerList.size(); i++)
+	{
+		m_cServerList[i].m_bDisplayed = false;
+	}
+	m_pServerListCtrl->RemoveAll();
+
 	DisplayCurServerList();
 	m_nLastSort = nSortField;
 }
 
-void CScreenJoin::FilterServers()
+void CScreenJoin::FilterServers(bool bResetView)
 {
 
 	uint16 iFirst = CLTGUIListCtrl::kNoSelection; 
@@ -1410,11 +1535,17 @@ void CScreenJoin::FilterServers()
 	else
 	{
 		m_pServerListCtrl->Enable(true);
-		m_pServerListCtrl->SetStartIndex(iFirst);
+		if (bResetView)
+		{
+			m_pServerListCtrl->SetStartIndex(iFirst);
+		}
 	}
 
-	m_pServerListCtrl->SetSelection(iFirst);
-	m_nSelectedServer = iFirst;
+	if (bResetView)
+	{
+		m_pServerListCtrl->SetSelection(iFirst);
+		m_nSelectedServer = iFirst;
+	}
 }
 
 
