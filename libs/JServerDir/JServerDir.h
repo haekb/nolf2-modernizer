@@ -25,7 +25,7 @@
 #define NO_ACTIVE_PEER -1
 
 // These are defaults in case the JServerInfo.txt file is missing!
-#if 0
+#if 1
 #define MASTER_SERVER "178.62.4.245"
 #define MASTER_PORT_HTTP 80
 #else
