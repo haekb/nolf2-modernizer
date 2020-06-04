@@ -57,4 +57,14 @@ JServerDir.dll
 *.FileListAbsolute.txt
 *.enc
 *.res
+*.aps
+ServerApp.lib
+NOLF2Srv.exe
+ClientFx.dll
+Autorun*
+*.iobj
+*.ipdb
+*.cache
+TO2EN.lib
 Game/Build
+Assets/Unused Art/*
