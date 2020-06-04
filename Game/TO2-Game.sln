@@ -66,6 +66,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Game", "game.vcxproj", "{F7
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JServerDir", "..\libs\JServerDir\JServerDir.vcxproj", "{E51C9E15-AB16-40B3-9C64-C985C1B77A21}"
+	ProjectSection(ProjectDependencies) = postProject
+		{49342895-9518-4DD6-A220-64156B9CD23C} = {49342895-9518-4DD6-A220-64156B9CD23C}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
