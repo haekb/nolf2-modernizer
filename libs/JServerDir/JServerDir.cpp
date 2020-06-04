@@ -26,11 +26,10 @@ JServerDir* g_pJServerDir;
 
 //
 // Jake's Server Directory!
-// I'm bad at naming things, and probably bad at threading!
+// I'm bad at naming things.
 // ---
 // This class is a basic implementation of IServerDir + a few extra functions to help the request thread
-// I built the request thread around a Worker/Queue model, however I never quite figured out a good way to acquire data from a completed job
-// Hence all the atomics, and mutexes where I couldn't atomic the variable..
+// I ended up threading all the requests, which turned out be a lot more work on the various UI screens in NOLF 2 then here!
 //
 // It's built around MGMSE https://github.com/haekb/mgmse
 //

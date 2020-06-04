@@ -45,7 +45,7 @@ namespace
 }
 
 // The url the user goes to when there's an update available.
-#define UPDATE_URL "https://haekb.itch.io"
+#define UPDATE_URL "https://haekb.itch.io/nolf2-modernizer"
 
 extern bool g_bLAN;
 
