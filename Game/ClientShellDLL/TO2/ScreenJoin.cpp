@@ -25,7 +25,7 @@
 void JoinCallBack(LTBOOL bReturn, void *pData);
 
 // Uncomment to generate fake server entries every 1.5 seconds
-#define GENERATE_FAKE_ENTRIES
+//#define GENERATE_FAKE_ENTRIES
 
 namespace
 {

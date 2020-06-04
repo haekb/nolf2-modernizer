@@ -953,6 +953,8 @@
 #define IDS_HELP_ADD_WEAPONS            1429
 #define IDS_HELP_REM_WEAPONS            1430
 #define IDS_MISSING_WORLD               1431
+#define IDS_FETCHING_MOTD               1432
+#define IDS_CHECKING_VERSION            1433
 #define IDS_SKILL_2110                  2110
 #define IDS_SKILL_2111                  2111
 #define IDS_SKILL_2112                  2112

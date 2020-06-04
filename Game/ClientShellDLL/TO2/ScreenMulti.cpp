@@ -506,6 +506,11 @@ void CScreenMulti::Update()
 					//completed startup... check version
 					m_eCurState = eState_VersionCheck;
 
+					// Show the version check message
+					m_pWaitText->SetString(LoadTempString(IDS_CHECKING_VERSION));
+					m_pWait->Show(LTTRUE);
+					SetCapture(m_pWait);
+
 					bool bResult = pServerDir->QueueRequest(IServerDirectory::eRequest_Validate_Version);
 					if (bResult)
 					{
@@ -568,6 +573,12 @@ void CScreenMulti::Update()
 
 					// Jake: We don't need to validate cd key!
 					//RequestValidate();
+
+					// Show the motd message
+					m_pWaitText->SetString(LoadTempString(IDS_FETCHING_MOTD));
+					m_pWait->Show(LTTRUE);
+					SetCapture(m_pWait);
+
 					RequestMOTD();
 
 				} break;
@@ -627,6 +638,10 @@ void CScreenMulti::Update()
 
 					m_pJoin->Enable(LTTRUE);
 					m_pHost->Enable(LTTRUE);
+
+					// Ok we're good!
+					m_pWait->Show(LTFALSE);
+					SetCapture(NULL);
 
 					m_eCurState = eState_Ready;
 						

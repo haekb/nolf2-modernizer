@@ -1333,6 +1333,8 @@ BEGIN
     IDS_HELP_ADD_WEAPONS    "Add items to the restricted list."
     IDS_HELP_REM_WEAPONS    "Remove items from the restricted list."
     IDS_MISSING_WORLD       "Unable to load world resources."
+    IDS_FETCHING_MOTD       "Fetching MOTD..."
+    IDS_CHECKING_VERSION    "Checking for updates..."
 END
 
 STRINGTABLE
