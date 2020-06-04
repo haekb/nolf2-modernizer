@@ -13,7 +13,7 @@
 #include <afxtempl.h>
 #include "Resource.h"
 #include "server_interface.h"
-#include <strstrea.h>
+#include <strstream>
 #include "ProfileUtils.h"
 
 struct CPlayerInfo
