@@ -21,10 +21,26 @@
 #include <chrono>
 //
 
-extern ILTCommon* g_pCommonLT;
-
+ILTCommon* g_pCommonLT;
 JServerDir* g_pJServerDir;
 
+//
+// Jake's Server Directory!
+// I'm bad at naming things, and probably bad at threading!
+// ---
+// This class is a basic implementation of IServerDir + a few extra functions to help the request thread
+// I built the request thread around a Worker/Queue model, however I never quite figured out a good way to acquire data from a completed job
+// Hence all the atomics, and mutexes where I couldn't atomic the variable..
+//
+// It's built around MGMSE https://github.com/haekb/mgmse
+//
+// NOLF 2 doesn't use all the functions of IServerDir, so you probably don't need to do it either.
+// ---
+// Important functions:
+// Update - (Main/Game Thread) Copies over data from the return data vector to the main thread.
+// QueueRequest - (Main/Game Thread) Pushes a job into the worker queue.
+// RequestQueueLoop - (Request Thread) Takes a job from the queue and runs it. Also pushes return data to its vector.
+//
 JServerDir::JServerDir(bool bClientSide, ILTCSBase& ltCSBase, HMODULE hResourceModule)
 {
 	m_bClientSide = bClientSide;
@@ -36,6 +52,17 @@ JServerDir::JServerDir(bool bClientSide, ILTCSBase& ltCSBase, HMODULE hResourceM
 	g_pCommonLT = m_pLTCSBase->Common();
 
 	g_pJServerDir = this;
+
+	m_iQueryRefCounter = 0;
+
+	m_sSystemMOTD = "";
+	m_sGameMOTD = "";
+	m_sGameVersion = "";
+
+	m_bGotMOTD = false;
+
+	// Blank out that struct
+	m_MasterServerInfo = { 0 };
 }
 
 JServerDir::~JServerDir()
@@ -60,9 +87,23 @@ JServerDir::~JServerDir()
 // successfully.
 bool JServerDir::QueueRequest(ERequest eNewRequest)
 {
+	// Handle skipping motd if the config requests it
+	if (m_MasterServerInfo.bSkipMOTD && eNewRequest == ERequest::eRequest_MOTD)
+	{
+		return true;
+	}
 
-	if (eNewRequest == ERequest::eRequest_Validate_Version
-		|| eNewRequest == ERequest::eRequest_MOTD) {
+	// Handle skipping version checking if the config requests it
+	if (m_MasterServerInfo.bSkipVersionCheck && eNewRequest == ERequest::eRequest_Validate_Version)
+	{
+		// Make sure we never get a "Update is available" message.
+		m_sGameVersion = m_sVersion;
+		return true;
+	}
+
+	// Only do these once, MOTD and version happen at the same check, so we can safely do this.
+	if ((eNewRequest == ERequest::eRequest_MOTD || eNewRequest == ERequest::eRequest_Validate_Version) && m_bGotMOTD)
+	{
 		return true;
 	}
 
@@ -75,12 +116,21 @@ bool JServerDir::QueueRequest(ERequest eNewRequest)
 
 	Job eJob;
 
-	if (eNewRequest == ERequest::eRequest_Update_List) {
+	switch (eNewRequest)
+	{
+	case ERequest::eRequest_MOTD:
+		eJob = { eJobRequest_Query_MOTD, "", {} };
+		break;
+	case ERequest::eRequest_Validate_Version:
+		eJob = { eJobRequest_Query_Version, "", {} };
+		break;
+	case ERequest::eRequest_Update_List:
 		eJob = { eJobRequest_Query_Master_Server, "", {} };
-	}
-	else if (eNewRequest == ERequest::eRequest_Publish_Server) {
+		break;
+	case ERequest::eRequest_Publish_Server:
 		Peer peer = *m_Peers.at(m_nActivePeer);
 		eJob = { eJobRequest_Publish_Server, "", peer };
+		break;
 	}
 
 	AddJob(eJob);
@@ -183,7 +233,7 @@ IServerDirectory::ERequestResult JServerDir::BlockOnProcessing(uint32 nTimeout)
 // Is this request in request list?
 bool JServerDir::IsRequestPending(ERequest ePendingRequest) const
 {
-	if (m_Peers.size() == 0) {
+	if (m_iQueryRefCounter > 0) {
 		return true;
 	}
 
@@ -219,6 +269,7 @@ IServerDirectory::ERequestResult JServerDir::GetLastRequestResult() const
 // Get the string associated with the most recently processed result
 const char* JServerDir::GetLastRequestResultString() const
 {
+	// Used when the game boots you to the menu
 	return "T E S T";
 }
 
@@ -250,8 +301,6 @@ const char* JServerDir::GetCurStatusString() const
 		return "Paused";
 	case IServerDirectory::eStatus_Processing:
 		return "Processing";
-	case IServerDirectory::eStatus_TotalNum:
-		return "You shouldn't get this >:(";
 	case IServerDirectory::eStatus_Waiting:
 		return "Waiting";
 	}
@@ -340,23 +389,24 @@ bool JServerDir::IsVersionValid() const
 // Note : Returns false if eRequest_Validate_Version has not been processed
 bool JServerDir::IsVersionNewest() const
 {
-	return true;
+	return m_sGameVersion == m_sVersion;
 }
 
 // Is a patch available?
 // Note : Returns false if eRequest_Validate_Version has not been processed
 bool JServerDir::IsPatchAvailable() const
 {
-	return false;
+	return m_sGameVersion != m_sVersion;
 }
 
 //////////////////////////////////////////////////////////////////////////////
 // Message of the Day
 
+// Jake: This isn't a useful feature, so I'm not implementing it.
 // Is the MOTD "new"?
 // Note : Returns false if eRequest_MOTD has not been processed
 bool JServerDir::IsMOTDNew(EMOTD eMOTD) const
-{
+{   
 	return false;
 }
 
@@ -364,11 +414,10 @@ bool JServerDir::IsMOTDNew(EMOTD eMOTD) const
 char const* JServerDir::GetMOTD(EMOTD eMOTD) const
 {
 	if (eMOTD == eMOTD_Game) {
-		return "Welcome to NOLF2 online!\nMake sure to check out https://www.spawnsite.net/ for the latest map packs.";
+		return m_sGameMOTD.c_str();
 	}
 
-
-	return "Master server provided by QTracker.\nVisit https://www.qtracker.com/ for more information.";
+	return m_sSystemMOTD.c_str();
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -392,7 +441,7 @@ bool JServerDir::SetActivePeer(const char* pAddr)
 	// See if we're already in the list!
 	int index = 0;
 	for (auto peer : m_Peers) {
-		if (peer->GetAddress().compare(activePeer) == 0) {
+		if (peer->GetFullAddress().compare(activePeer) == 0) {
 			m_nActivePeer = index;
 			return true;
 		}
@@ -402,13 +451,12 @@ bool JServerDir::SetActivePeer(const char* pAddr)
 
 	Peer* peer = new Peer();
 
-	peer->SetAddress(activePeer);
+	peer->SetFullAddress(activePeer);
 
 	// TODO: High precision timer? Not sure if it's needed here. 
 	peer->SetCreatedAt(m_pLTCSBase->GetTime());
 
 	// Throw in our new ActivePeer(TM)
-	//m_PeerList.push_back(pAddr);
 	m_Peers.push_back(peer);
 	m_nActivePeer = m_Peers.size() - 1;
 
@@ -425,7 +473,7 @@ bool JServerDir::GetActivePeer(std::string* pAddr, bool* pLocal) const
 	}
 
 	Peer* peer = m_Peers.at(m_nActivePeer);
-	std::string activePeer = peer->GetAddress();
+	std::string activePeer = peer->GetFullAddress();
 
 	if (activePeer.compare(LOCAL_PEER)) {
 		pAddr = NULL;
@@ -445,7 +493,7 @@ bool JServerDir::RemoveActivePeer()
 {
 	Peer* peer = m_Peers.at(m_nActivePeer);
 
-	if (peer->GetAddress().compare(LOCAL_PEER)) {
+	if (peer->GetFullAddress().compare(LOCAL_PEER)) {
 		return false;
 	}
 
@@ -654,7 +702,18 @@ IServerDirectory::TPeerList JServerDir::GetPeerList() const
 	TPeerList list;
 
 	for (auto peer : m_Peers) {
-		list.push_back(peer->GetAddress());
+		if (peer == nullptr)
+		{
+			continue;
+		}
+
+		if (peer->GetIsRetrieved())
+		{
+			continue;
+		}
+
+		list.push_back(peer->GetFullAddress());
+		peer->SetIsRetrieved(true);
 	}
 
 	return list;
@@ -672,6 +731,8 @@ void JServerDir::ClearPeerList()
 bool JServerDir::HandleNetMessage(ILTMessage_Read& cMsg, const char* pSender, uint16 nPort)
 {
 
+	
+
 	// We don't know any of the messages yet :thinking:
 	// Probably has to do with sending the challenge to the server, and getting lists and stuff.
 
@@ -688,14 +749,74 @@ bool JServerDir::SetNetHeader(ILTMessage_Read& cMsg)
 
 void JServerDir::Update()
 {
-	CheckForQueuedPeers();
+
+	// TODO: For LastStatus we can have an atomic bool, anytime Status is set, we set that bool
+	// theeeen we unset it here, and set our string so it's nice and fresh for that stupid function.
+
+	// See if we can lock the return data
+	if (!m_mReturnMutex.try_lock())
+	{
+		return;
+	}
+
+	// If there's nothing to copy to the main thread, then skip!
+	if (m_vReturnData.size() == 0) {
+		m_mReturnMutex.unlock();
+		return;
+	}
+
+	// Grab the next return data
+	auto pRetData = m_vReturnData.back();
+	m_vReturnData.pop_back();
+
+	switch (pRetData->eRequestType)
+	{
+	case eJobRequest_Query_Server:
+		m_Peers.push_back(pRetData->peer.pPeer);
+		break;
+	case eJobRequest_Query_MOTD:
+		m_sSystemMOTD = pRetData->motd.szSystemMOTD;
+		m_sGameMOTD = pRetData->motd.szGameMOTD;
+		break;
+	case eJobRequest_Query_Version:
+		m_sGameVersion = pRetData->version.szVersion;
+		break;
+	}
+
+	// Finally we can clean this up!
+	delete pRetData;
+
+	m_mReturnMutex.unlock();
+	
+	if (m_Peers.size() > 0) {
+		SwitchStatus(eStatus_Waiting);
+	}
+}
+
+void JServerDir::SetMasterServerInfo(MasterServerInfo info)
+{
+	m_MasterServerInfo = info;
+}
+
+void JServerDir::UseDefaultMasterServerInfo()
+{
+	MasterServerInfo info;
+	info.bSkipMOTD = false;
+	info.bSkipVersionCheck = false;
+
+	LTStrCpy(info.szServer, MASTER_SERVER, sizeof(info.szServer));
+	info.nPortHTTP = MASTER_PORT_HTTP;
+	info.nPortTCP = MASTER_PORT;
+	info.nPortUDP = MASTER_PORT_UDP;
+
+	m_MasterServerInfo = info;
 }
 
 void JServerDir::QueryMasterServer()
 {
 	TCPSocket* pSock = new TCPSocket();
 
-	ConnectionData connectionData = { MASTER_SERVER, MASTER_PORT };
+	ConnectionData connectionData = { m_MasterServerInfo.szServer, m_MasterServerInfo.nPortTCP };
 
 	std::string sServerList = "";
 
@@ -704,20 +825,18 @@ void JServerDir::QueryMasterServer()
 	try {
 		pSock->Connect(connectionData);
 
-		/* Bad way of handling challenge, server times out.
-		// Say hello
-		pSock->Query("", connectionData);
-
-		std::string sChallenge = pSock->Recieve(connectionData);
-
-		Sleep(1000);
-		*/
-
-		std::string sResponse = QUERY_UPDATE_LIST;
+		std::string sResponse = QUERY_CONNECT;
 		sResponse += "queryid\\" + std::to_string(++m_iQueryNum) + ".1";
 
 		pSock->Query(sResponse, connectionData);
-		
+
+		// We can pretty much ignore this response
+		auto sConnectResponse = pSock->Recieve(connectionData);
+
+		sResponse = QUERY_UPDATE_LIST;
+		sResponse += "queryid\\" + std::to_string(++m_iQueryNum) + ".1";
+		pSock->Query(sResponse, connectionData);
+
 		sServerList = pSock->Recieve(connectionData);
 
 		bool done = true;
@@ -752,14 +871,6 @@ void JServerDir::QueryMasterServer()
 	std::string sCursor = sServerList;
 
 	while (true) {
-		// Skip the challenge if it's there.
-		// Kinda bad code, but it gets the job done.
-		if (sCursor.find("\\basic\\\\secure\\TXKOAT") == 0) {
-			nCurrentPosition += 21;
-			sCursor = sServerList.substr(nCurrentPosition, sCursor.size());
-			continue;
-		}
-
 		sCursor = sServerList.substr(nCurrentPosition, sCursor.size());
 		nCurrentPosition += sizeof(ipTest);
 
@@ -791,16 +902,18 @@ void JServerDir::QueryMasterServer()
 //
 // Does not support split queries
 //
-void JServerDir::QueryServer(std::string sAddress)
+PeerReturnData JServerDir::QueryServer(std::string sAddress)
 {
 	Peer* peer = new Peer();
 
 	bool bResult;
 
+	PeerReturnData retData;
+	retData.pPeer = nullptr;
+
 	std::vector<std::string> addressInfo = splitByCharacter(sAddress, ':');
 	std::string sIPAddress = addressInfo[0];
 	unsigned short nPort = std::stoi(addressInfo[1]);
-
 
 	{
 		UDPSocket* pSock = new UDPSocket();
@@ -814,19 +927,29 @@ void JServerDir::QueryServer(std::string sAddress)
 			delete pSock;
 			pSock = NULL;
 
-			return;
+
+
+			return retData;
 		}
 
 		Sleep(1000);
 
-		std::string sStatus = pSock->Recieve(connectionData);
+		std::string sStatus = "";
+
+		try {
+			sStatus = pSock->Recieve(connectionData);
+		}
+		catch (...)
+		{
+			// Intentionally empty. It'll error out below since sStatus is empty.
+		}
 
 		// This server is not responding...
 		if (sStatus.empty()) {
 			delete pSock;
 			pSock = NULL;
 
-			return;
+			return retData;
 		}
 
 		std::map<std::string, std::string> mappy = splitResultsToMap(sStatus);
@@ -896,6 +1019,9 @@ void JServerDir::QueryServer(std::string sAddress)
 
 		peer->SetAddress(sIPAddress);
 
+		// Address AND port
+		peer->SetFullAddress(sAddress);
+
 		PeerInfo_Port port;
 		port.nHostPort = nPort;
 		peer->m_PortData = port;
@@ -906,9 +1032,9 @@ void JServerDir::QueryServer(std::string sAddress)
 
 	PingPeer(peer);
 
-	m_mQueuedPeerMutex.lock();
-	m_QueuedPeers.push_back(peer);
-	m_mQueuedPeerMutex.unlock();
+	retData.pPeer = peer;
+
+	return retData;
 }
 
 //
@@ -922,7 +1048,7 @@ void JServerDir::PublishServer(Peer peerParam)
 	Peer peer = peerParam;
 
 	ConnectionData selfConnectionData = { "0.0.0.0", 27889 };
-	ConnectionData masterConnectionData = { MASTER_SERVER, MASTER_PORT_UDP };
+	ConnectionData masterConnectionData = { m_MasterServerInfo.szServer, m_MasterServerInfo.nPortUDP };
 	ConnectionData incomingConnectionData = { "0.0.0.0", 0 };
 
 	std::string heartbeat = getHeartbeat(m_iQueryNum, false);
@@ -1018,7 +1144,13 @@ void JServerDir::PublishServer(Peer peerParam)
 
 			// TODO: This kinda sucks. Feed it into the main loop up there.
 			// Also it seems QTracker will just drop it, if we don't send it anything after a statechange. I'lllll take it!
-			uSock->Query(getHeartbeat(m_iQueryNum, true), masterConnectionData);
+			try {
+				uSock->Query(getHeartbeat(m_iQueryNum, true), masterConnectionData);
+			}
+			catch (...)
+			{
+				// We're exiting anyways, so just continue along
+			}
 
 			delete uSock;
 			uSock = NULL;
@@ -1056,8 +1188,14 @@ void JServerDir::PingPeer(Peer* peer)
 
 	// Loop until we got something, or until we hit the iteration count
 	while (iterations < INVALID_PING) {
+		std::string sStatus = "";
+		try {
+			sStatus = pSock->Recieve(connectionData);
+		}
+		catch (...) {
+			// Ignore because the .empty() statement will handle this.
+		}
 
-		std::string sStatus = pSock->Recieve(connectionData);
 
 		// This server is not responding...
 		if (sStatus.empty()) {
@@ -1087,23 +1225,6 @@ void JServerDir::PingPeer(Peer* peer)
 	pSock = NULL;
 }
 
-void JServerDir::CheckForQueuedPeers()
-{
-	m_mQueuedPeerMutex.lock();
-	std::vector<Peer*> queuedPeers = m_QueuedPeers;
-	m_QueuedPeers.clear();
-	m_mQueuedPeerMutex.unlock();
-	
-	for (Peer* peer : queuedPeers) {
-		m_Peers.push_back(peer);
-	}
-
-
-	if (m_Peers.size() > 0) {
-		SwitchStatus(eStatus_Waiting);
-	}
-}
-
 void JServerDir::AddJob(Job eJob)
 {
 	m_mJobMutex.lock();
@@ -1115,6 +1236,96 @@ void JServerDir::SwitchStatus(EStatus eStatus)
 {
 	m_iStatus = eStatus;
 }
+
+MOTDReturnData JServerDir::QueryMOTD()
+{
+	std::string sGameMOTD = QueryHttpText(GAME_MOTD_ROUTE);
+	std::string sSystemMOTD = QueryHttpText(SYSTEM_MOTD_ROUTE);
+	
+	sGameMOTD = DecodeNewLines(sGameMOTD);
+	sSystemMOTD = DecodeNewLines(sSystemMOTD);
+
+	MOTDReturnData retData;
+	LTStrCpy(retData.szGameMOTD, sGameMOTD.c_str(), sizeof(retData.szGameMOTD));
+	LTStrCpy(retData.szSystemMOTD, sSystemMOTD.c_str(), sizeof(retData.szSystemMOTD));
+
+	// Yep we got it!
+	m_bGotMOTD = true;
+
+	return retData;
+}
+
+VersionReturnData JServerDir::QueryVersion()
+{
+	std::string sGameVersion = QueryHttpText(GAME_VERSION_ROUTE);
+
+	VersionReturnData retData;
+	LTStrCpy(retData.szVersion, sGameVersion.c_str(), sizeof(retData.szVersion));
+
+	return retData;
+}
+
+std::string JServerDir::QueryHttpText(std::string sRoute)
+{
+	TCPSocket* pSock = new TCPSocket();
+
+	ConnectionData connectionData = { m_MasterServerInfo.szServer, m_MasterServerInfo.nPortHTTP };
+
+	std::string sRet = "";
+
+	try {
+		pSock->Connect(connectionData);
+
+		// System MOTD
+		char buffer[256];
+		memset(buffer, 0, sizeof(buffer));
+		sprintf(buffer, "GET %s HTTP/1.1\r\nHost: %s\r\n\r\n", sRoute.c_str(), m_MasterServerInfo.szServer);
+
+		std::string sResponse = buffer;
+
+		pSock->Query(sResponse, connectionData);
+
+		// We can pretty much ignore this response
+		auto sConnectResponse = pSock->Recieve(connectionData);
+
+		auto contentStartLine = sConnectResponse.find("\r\n\r\n");
+		if (contentStartLine == std::string::npos)
+		{
+			throw std::exception("Could not get text");
+		}
+
+		sRet = sConnectResponse.substr(contentStartLine + 4, std::string::npos);
+	}
+	catch (...) {
+		// For now none of these calls are vital.
+	}
+
+	delete pSock;
+	pSock = nullptr;
+
+	return sRet;
+}
+
+//
+// MOTD might contain a encoded new line character
+// We want the actual new line, so remove the encoded character, 
+// and insert the newline char in its place.
+//
+std::string JServerDir::DecodeNewLines(std::string sMOTD)
+{
+	auto nPos = sMOTD.find("\\n");
+
+	while (nPos != std::string::npos)
+	{
+		sMOTD.erase(nPos, 2);
+		sMOTD.insert(nPos, 1, '\n');
+
+		nPos = sMOTD.find("\\n");
+	}
+
+	return sMOTD;
+}
+
 
 //
 // Thread loop!
@@ -1132,6 +1343,7 @@ void JServerDir::RequestQueueLoop()
 	m_bPublishingServer = false;
 	m_bBoundConnection = false;
 
+	m_iQueryRefCounter = 0;
 	m_iQueryNum = 0;
 
 	while (true) {
@@ -1166,12 +1378,34 @@ void JServerDir::RequestQueueLoop()
 
 		m_mJobMutex.unlock();
 
+		SwitchStatus(eStatus_Processing);
+
+		JobReturnData* pRetData = new JobReturnData();
+		pRetData->eRequestType = job.eRequestType;
+
 		switch (job.eRequestType) {
+		case eJobRequest_Query_Version:
+			m_iQueryRefCounter++;
+			pRetData->version = QueryVersion();
+			pRetData->bSet = true;
+			m_iQueryRefCounter--;
+			break;
+		case eJobRequest_Query_MOTD:
+			m_iQueryRefCounter++;
+			pRetData->motd = QueryMOTD();
+			pRetData->bSet = true;
+			m_iQueryRefCounter--;
+			break;
 		case eJobRequest_Query_Master_Server:
+			m_iQueryRefCounter++;
 			QueryMasterServer();
+			m_iQueryRefCounter--;
 			break;
 		case eJobRequest_Query_Server:
-			QueryServer(job.sData);
+			m_iQueryRefCounter++;
+			pRetData->peer = QueryServer(job.sData);
+			pRetData->bSet = true;
+			m_iQueryRefCounter--;
 			break;
 		case eJobRequest_Publish_Server:
 			m_bPublishingServer = true;
@@ -1180,6 +1414,24 @@ void JServerDir::RequestQueueLoop()
 			PublishServer(job.Peer);
 			break;
 		}
+
+		// Hey cool, we're set! Shove that data into the vReturnData array.
+		if (pRetData->bSet) 
+		{
+			m_mReturnMutex.lock();
+
+			m_vReturnData.push_back(pRetData);
+
+			m_mReturnMutex.unlock();
+		}
+		// We didn't get used, so let's delete it!
+		else
+		{
+			delete pRetData;
+		}
+
+		// This may cause brief switching between processing/waiting, but it's better than waiting for the thread to timeout!
+		SwitchStatus(eStatus_Waiting);
 
 		// We did something, neat! So update the last activity time.
 		m_nThreadLastActivity = getTimestamp();

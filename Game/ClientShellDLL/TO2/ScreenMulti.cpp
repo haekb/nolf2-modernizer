@@ -20,6 +20,8 @@
 #include "WinUtil.h"
 #include "direct.h"
 #include "ClientButeMgr.h"
+#include "JServerDir.h"
+#include <shellapi.h>
 
 namespace
 {
@@ -42,6 +44,8 @@ namespace
 	}
 }
 
+// The url the user goes to when there's an update available.
+#define UPDATE_URL "https://haekb.itch.io"
 
 extern bool g_bLAN;
 
@@ -231,7 +235,6 @@ LTBOOL CScreenMulti::Build()
  	// Make sure to call the base class
 	return CBaseScreen::Build();
 }
-
 uint32 CScreenMulti::OnCommand(uint32 dwCommand, uint32 dwParam1, uint32 dwParam2)
 {
 	if (m_eCurState == eState_Startup || m_eCurState == eState_ValidateCDKey) return 0;
@@ -239,7 +242,8 @@ uint32 CScreenMulti::OnCommand(uint32 dwCommand, uint32 dwParam1, uint32 dwParam
 	{
 	case CMD_UPDATE:
 		{
-			LaunchSierraUp();
+			// Simply launch a web browser to my itch.io page
+		    ShellExecute(NULL, NULL, UPDATE_URL, NULL, NULL, SW_SHOWNORMAL);
 		} break;
 
 	case CMD_OK:
@@ -356,7 +360,7 @@ void    CScreenMulti::OnFocus(LTBOOL bFocus)
 			m_pStatusCtrl->Show(LTTRUE);
 			
 
-			m_pCDKeyCtrl->Show(LTTRUE);
+			m_pCDKeyCtrl->Show(LTFALSE);
 			IServerDirectory *pServerDir = g_pClientMultiplayerMgr->GetServerDir();
 			// Make a serverdir if we don't have one
 			// Note : Find a way to put this back in the game client shell!!!  It has to be
@@ -481,6 +485,11 @@ void CScreenMulti::Update()
 	FormatString(IDS_STATUS_STRING,aTempBuffer,sizeof(aTempBuffer),g_pClientMultiplayerMgr->GetServerDir()->GetCurStatusString());
 	m_pStatusCtrl->SetString(aTempBuffer);
 
+	// Break our lovely interface to poke our Update function.
+	auto pJServerDir = (JServerDir*)pServerDir;
+	if (pJServerDir) {
+		pJServerDir->Update();
+	}
 
 	// Are we still waiting?
 	switch (pServerDir->GetCurStatus())
@@ -496,6 +505,11 @@ void CScreenMulti::Update()
 				{
 					//completed startup... check version
 					m_eCurState = eState_VersionCheck;
+
+					// Show the version check message
+					m_pWaitText->SetString(LoadTempString(IDS_CHECKING_VERSION));
+					m_pWait->Show(LTTRUE);
+					SetCapture(m_pWait);
 
 					bool bResult = pServerDir->QueueRequest(IServerDirectory::eRequest_Validate_Version);
 					if (bResult)
@@ -524,6 +538,12 @@ void CScreenMulti::Update()
 				{
 					m_pWait->Show(LTFALSE);
 					SetCapture(NULL);
+
+					// Status switch can happen due to the processing thread...it's not great, but this works for now.
+					if (pServerDir->GetCurStatus() == IServerDirectory::eStatus_Processing)
+					{
+						return;
+					}
 			
 					if (pServerDir->IsVersionNewest())
 					{
@@ -551,7 +571,15 @@ void CScreenMulti::Update()
 						return;
 					}
 
-					RequestValidate();
+					// Jake: We don't need to validate cd key!
+					//RequestValidate();
+
+					// Show the motd message
+					m_pWaitText->SetString(LoadTempString(IDS_FETCHING_MOTD));
+					m_pWait->Show(LTTRUE);
+					SetCapture(m_pWait);
+
+					RequestMOTD();
 
 				} break;
 
@@ -568,6 +596,13 @@ void CScreenMulti::Update()
 
 			case eState_MOTD:
 				{
+				
+					// Status switch can happen due to the processing thread...it's not great, but this works for now.
+					if (pServerDir->GetCurStatus() == IServerDirectory::eStatus_Processing)
+					{
+						return;
+					}
+					
 					//completed system MOTD... check game MOTD
 
 					if ((m_sSysMOTD.empty() && pServerDir->IsMOTDNew(IServerDirectory::eMOTD_System)) ||
@@ -579,24 +614,34 @@ void CScreenMulti::Update()
 						g_pInterfaceMgr->ShowMessageBox(IDS_NEW_MOTD,&mb);
 
 					}
+
+					m_sSysMOTD = "";
+					m_sGameMOTD = "";
+
+					auto pJServerDir = (JServerDir*)g_pClientMultiplayerMgr->GetServerDir();
+					if (pJServerDir) {
+						std::string sTemp = pJServerDir->GetMOTD(IServerDirectory::eMOTD_System);
+						if (sTemp.length() > 512)
+							m_sSysMOTD.assign(sTemp.c_str(), 512);
+						else
+							m_sSysMOTD = sTemp;
+
+						sTemp = pJServerDir->GetMOTD(IServerDirectory::eMOTD_Game);
+						if (sTemp.length() > 512)
+							m_sGameMOTD.assign(sTemp.c_str(), 512);
+						else
+							m_sGameMOTD = sTemp;
+					}
 					
-					std::string sTemp = pServerDir->GetMOTD(IServerDirectory::eMOTD_System);
-					if (sTemp.length() > 512)
-						m_sSysMOTD.assign(sTemp.c_str(),512);
-					else
-						m_sSysMOTD = sTemp;
-
-					sTemp = pServerDir->GetMOTD(IServerDirectory::eMOTD_Game);
-					if (sTemp.length() > 512)
-						m_sGameMOTD.assign(sTemp.c_str(),512);
-					else
-						m_sGameMOTD = sTemp;
-
 					m_pSysMOTD->SetString(m_sSysMOTD.c_str());
 					m_pGameMOTD->SetString(m_sGameMOTD.c_str());
 
 					m_pJoin->Enable(LTTRUE);
 					m_pHost->Enable(LTTRUE);
+
+					// Ok we're good!
+					m_pWait->Show(LTFALSE);
+					SetCapture(NULL);
 
 					m_eCurState = eState_Ready;
 						
@@ -718,6 +763,9 @@ void CScreenMulti::RequestMOTD()
 // Run the game update utility
 //////////////////////////////////////////////////////////////////////
 
+//
+// Jake: This isn't used anymore
+//
 LTBOOL CScreenMulti::LaunchSierraUp()
 {
 	PROCESS_INFORMATION procInfo;

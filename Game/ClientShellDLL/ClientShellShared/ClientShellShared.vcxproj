@@ -94,7 +94,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <AdditionalIncludeDirectories>.\;..\..\..\libs\STLPort-4.0\stlport_no;..\..\clientres\shared;..\..\shared;..\..\..\Engine\sdk\inc;..\..\..\libs\stdlith;..\..\..\libs\butemgr;..\..\..\libs\cryptmgr;..\..\..\libs\lith;..\..\..\libs\mfcstub;..\..\libs\ltguimgr;..\..\..\libs\regmgr;..\;..\..\libs\serverdir;..\..\..\libs\STLPort-STD;$(SolutionDir)\..\libs\SDL2-2.0.10\include;$(SolutionDir)\..\config\;$(SolutionDir)\..\libs\discord_game_sdk\cpp\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\;..\..\..\libs\STLPort-4.0\stlport_no;..\..\clientres\shared;..\..\shared;..\..\..\Engine\sdk\inc;..\..\..\libs\stdlith;..\..\..\libs\butemgr;..\..\..\libs\cryptmgr;..\..\..\libs\lith;..\..\..\libs\mfcstub;..\..\libs\ltguimgr;..\..\..\libs\regmgr;..\;..\..\libs\serverdir;..\..\..\libs\STLPort-STD;$(SolutionDir)\..\libs\SDL2-2.0.10\include;$(SolutionDir)\..\config\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_CLIENTBUILD;NOPS2;MEMTRACK_CLIENT;_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;__STL_DONT_REDEFINE_STD;NDISCORDBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\..\Built\Release\ClientShellDLL\ClientShellShared\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\..\..\Built\Release\ClientShellDLL\ClientShellShared\ClientShellShared.pch</PrecompiledHeaderOutputFile>
@@ -131,7 +131,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>.\;..\..\..\libs\STLPort-4.0\stlport_no;..\..\clientres\shared;..\..\shared;..\..\..\Engine\sdk\inc;..\..\..\libs\stdlith;..\..\..\libs\butemgr;..\..\..\libs\cryptmgr;..\..\..\libs\lith;..\..\..\libs\mfcstub;..\..\libs\ltguimgr;..\..\..\libs\regmgr;..\;..\..\libs\serverdir;..\..\..\libs\STLPort-STD;$(SolutionDir)\..\libs\SDL2-2.0.12\include;$(SolutionDir)\..\config\;$(SolutionDir)\..\libs\discord_game_sdk\cpp\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\;..\..\..\libs\STLPort-4.0\stlport_no;..\..\clientres\shared;..\..\shared;..\..\..\Engine\sdk\inc;..\..\..\libs\stdlith;..\..\..\libs\butemgr;..\..\..\libs\cryptmgr;..\..\..\libs\lith;..\..\..\libs\mfcstub;..\..\libs\ltguimgr;..\..\..\libs\regmgr;..\;..\..\libs\serverdir;..\..\..\libs\STLPort-STD;$(SolutionDir)\..\libs\SDL2-2.0.12\include;$(SolutionDir)\..\config\;$(SolutionDir)..\libs\JServerDir;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CLIENTBUILD;NOPS2;MEMTRACK_CLIENT;_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;__STL_DONT_REDEFINE_STD;NDISCORDBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\..\Built\Debug\ClientShellDLL\ClientShellShared\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
@@ -169,7 +169,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <AdditionalIncludeDirectories>.\;..\..\..\libs\STLPort-4.0\stlport_no;..\..\clientres\shared;..\..\shared;..\..\..\Engine\sdk\inc;..\..\..\libs\stdlith;..\..\..\libs\butemgr;..\..\..\libs\cryptmgr;..\..\..\libs\lith;..\..\..\libs\mfcstub;..\..\libs\ltguimgr;..\..\..\libs\regmgr;..\;..\..\libs\serverdir;..\..\..\libs\STLPort-STD;$(SolutionDir)\..\libs\SDL2-2.0.12\include;$(SolutionDir)\..\config\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\;..\..\..\libs\STLPort-4.0\stlport_no;..\..\clientres\shared;..\..\shared;..\..\..\Engine\sdk\inc;..\..\..\libs\stdlith;..\..\..\libs\butemgr;..\..\..\libs\cryptmgr;..\..\..\libs\lith;..\..\..\libs\mfcstub;..\..\libs\ltguimgr;..\..\..\libs\regmgr;..\;..\..\libs\serverdir;..\..\..\libs\STLPort-STD;$(SolutionDir)\..\libs\SDL2-2.0.12\include;$(SolutionDir)\..\config\;$(SolutionDir)..\libs\JServerDir;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_CLIENTBUILD;NOPS2;_FINAL;MEMTRACK_CLIENT;_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;NDISCORDBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\..\Built\Final\ClientShellDLL\ClientShellShared\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\..\..\Built\Final\ClientShellDLL\ClientShellShared\ClientShellShared.pch</PrecompiledHeaderOutputFile>

@@ -26,6 +26,9 @@
 #include <chrono>
 #include <ctime>
 
+// Extending the standard
+#include "JServerDir.h"
+
 ClientMultiplayerMgr* g_pClientMultiplayerMgr = NULL;
 
 
@@ -476,6 +479,36 @@ IServerDirectory* ClientMultiplayerMgr::CreateServerDir( )
 	cMsg.Writeuint8(11); // CMSG_MESSAGE
 	cMsg.Writeuint8(MID_MULTIPLAYER_SERVERDIR);
 	m_pServerDir->SetNetHeader(*cMsg.Read());
+
+	auto pJServerDir = (JServerDir*)m_pServerDir;
+	if (!pJServerDir) {
+		return m_pServerDir;
+	}
+
+	CButeMgr serverInfoBute;
+
+	serverInfoBute.Init();
+
+	// If the file is not found, use the defaults!
+	if (!serverInfoBute.Parse("JServerInfo.txt"))
+	{
+		pJServerDir->UseDefaultMasterServerInfo();
+		return m_pServerDir;
+	}
+
+	MasterServerInfo info;
+
+	auto szServerAddress = (char*)serverInfoBute.GetString("Info", "Server");
+	LTStrCpy(info.szServer, szServerAddress, sizeof(info.szServer));
+
+	info.nPortHTTP = serverInfoBute.GetInt("Info", "PortHTTP");
+	info.nPortTCP = serverInfoBute.GetInt("Info", "PortTCP");
+	info.nPortUDP = serverInfoBute.GetInt("Info", "PortUDP");
+
+	info.bSkipMOTD = serverInfoBute.GetBool("Info", "SkipMOTD");
+	info.bSkipVersionCheck = serverInfoBute.GetBool("Info", "SkipVersionCheck");
+
+	pJServerDir->SetMasterServerInfo(info);
 
 	return m_pServerDir;
 }

@@ -45,6 +45,10 @@ public:
 	Peer();
 	~Peer();
 
+	inline void SetFullAddress(std::string sFullAddress) {
+		m_sFullAddress = sFullAddress;
+	}
+
 	inline void SetAddress(std::string sPeerAddress) {
 		m_sPeerAddress = sPeerAddress;
 	}
@@ -61,6 +65,9 @@ public:
 	inline void Shutdown() {
 		m_bShuttingDown = true;
 	}
+
+	// Includes address AND port!
+	inline std::string GetFullAddress() { return m_sFullAddress; }
 
 	inline std::string GetAddress() { return m_sPeerAddress; }
 	inline uint16 GetPing() { return m_nPing; }
@@ -81,6 +88,9 @@ public:
 
 	inline bool IsValidated() { return m_bIsValidated; }
 
+	inline bool GetIsRetrieved() { return m_bRetrieved; }
+	inline void SetIsRetrieved(bool bVal) { m_bRetrieved = bVal; }
+
 	// Data -- Here because i'm lazy
 	PeerInfo_Name m_NameData;
 	PeerInfo_Summary m_SummaryData;
@@ -89,6 +99,7 @@ public:
 	PeerInfo_Service_Titan m_ServiceData;
 
 protected:
+	std::string m_sFullAddress;
 	std::string m_sPeerAddress;
 	uint16 m_nPing;
 	LTFLOAT m_fCreatedAt;
@@ -102,6 +113,8 @@ protected:
 	bool m_bHasServiceData;
 	bool m_bIsValidated;
 
+	// Has the data been retrieved using GetPeerList()
+	bool m_bRetrieved;
 
 
 private:

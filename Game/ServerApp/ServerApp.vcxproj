@@ -177,7 +177,7 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <AdditionalIncludeDirectories>.\;..\..\libs\STLPORT-4.0\STLPORT_NO;..\..\Engine\sdk\inc;..\shared;..\shared\lang\en;..\..\libs\regmgr;..\..\libs\regmgr32;..\..\libs\lith;..\..\libs\butemgr;..\..\libs\cryptmgr;..\..\libs\stdlith;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;WIN32;_WINDOWS;_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\Built\Debug\ServerApp\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
       <PrecompiledHeaderOutputFile>.\..\Built\Debug\ServerApp\ServerApp.pch</PrecompiledHeaderOutputFile>
@@ -208,13 +208,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OutputFile>..\Built\Debug\ServerApp\NOLF2Srv.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\engine\sdk\lib;..\..\libs\built\debug\regmgr;..\..\libs\built\debug\regmgr32;..\..\libs\built\debug\lib_lith;..\..\libs\built\debug\ButeMgrMFCDll;..\..\libs\built\debug\cryptmgrmfcdll;..\..\libs\built\debug\lib_stdlith;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\engine\sdk\lib;..\..\libs\built\debug\regmgr;..\..\libs\built\debug\regmgr32;..\..\libs\built\debug\lib_lith;..\..\libs\built\debug\ButeMgrMFCDll;..\..\libs\built\debug\cryptmgrmfcdll;..\..\libs\built\debug\lib_stdlith;$(SolutionDir)debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>server.lib;regmgr32.lib;regmgr.lib;lib_lith.lib;ButeMgrMfcDll.lib;cryptmgrmfcdll.lib;lib_stdlith.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
-      <Command>Rem IncrediBuild_OutputFile $(TargetPath) 
-echo copy $(TargetPath) $(GAME_MAIN_DIR) 
-copy $(TargetPath) $(GAME_MAIN_DIR) </Command>
+      <Command>
+      </Command>
       <Outputs>$(GAME_MAIN_DIR)\NOLF2Srv.exe;%(Outputs)</Outputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>

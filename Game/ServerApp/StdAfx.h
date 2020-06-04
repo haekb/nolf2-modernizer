@@ -19,6 +19,9 @@
 #include <afxcmn.h>			// MFC support for Windows Common Controls
 #endif // _AFX_NO_AFXCMN_SUPPORT
 
+// Windows SDK has this defined, conflicts with a SurfaceDef enum.
+#undef ST_DEFAULT
+
 #include "ltbasetypes.h"
 #include "iltserver.h"
 #include "iltmessage.h"

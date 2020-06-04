@@ -506,6 +506,7 @@ DWORD CServerDlg::DoHost( )
 	// Set the selected mod so players know what we are playing...
 
 	// Open the registry.
+#if 0
 	CRegMgr32 regMgr;
 	regMgr.Init();
 	if( !regMgr.OpenKey( HKEY_LOCAL_MACHINE, "SOFTWARE", "Monolith Productions", (char*)REGPRODUCTNAME,
@@ -513,11 +514,21 @@ DWORD CServerDlg::DoHost( )
 	{
 		return false;
 	}
+#endif
+	CButeMgr buteMgr;
+	buteMgr.Init();
+
+	bool bConfigFound = buteMgr.Parse("serverconfig.txt");
 
 	char szSelectedMod[256] = {0};
 	DWORD bufSize = sizeof(szSelectedMod);
+
+	if (bConfigFound)
+	{
+		buteMgr.GetString("Config", FIELD_SELECTEDMOD, szSelectedMod, bufSize);
+	}
 	
-	if( regMgr.GetField( FIELD_SELECTEDMOD, szSelectedMod, bufSize ))
+	if(bConfigFound && szSelectedMod)
 	{
 		if( szSelectedMod[0] )
 		{
@@ -1510,7 +1521,17 @@ bool CServerDlg::AddResources( )
 	lstRez.AddTail( "gamep.rez" );
 	lstRez.AddTail( "gamep2.rez" );
 
+	// debug
+	lstRez.AddTail("NewGame");
+
 	// Open the registry.
+	CButeMgr buteMgr;
+	buteMgr.Init();
+
+	auto bConfigFound = buteMgr.Parse("serverconfig.txt");
+
+
+#if 0
 	CRegMgr32 regMgr;
 	regMgr.Init();
 	if( !regMgr.OpenKey( HKEY_LOCAL_MACHINE, "SOFTWARE", "Monolith Productions", (char*)REGPRODUCTNAME,
@@ -1522,6 +1543,7 @@ bool CServerDlg::AddResources( )
 	// Add the rez files from registry.  Add the update after the content so it overrides.
 	ReadRezFromRegCommandLine( lstRez, regMgr, "ContentNum", "ContentCommandLine" );
 	ReadRezFromRegCommandLine( lstRez, regMgr, "UpdateNum", "UpdateCommandLine" );
+#endif
 
 	lstRez.AddTail( "custom" );
 
@@ -1550,9 +1572,15 @@ bool CServerDlg::AddResources( )
 
 	char szSelectedMod[256] = {0};
 	DWORD bufSize = sizeof(szSelectedMod);
-	
-	if( regMgr.GetField( FIELD_SELECTEDMOD, szSelectedMod, bufSize ))
+
+	if (bConfigFound)
 	{
+		buteMgr.GetString("Config", FIELD_SELECTEDMOD, szSelectedMod, bufSize);
+	}
+	
+	//if( regMgr.GetField( FIELD_SELECTEDMOD, szSelectedMod, bufSize ))
+	if (bConfigFound && szSelectedMod)
+	{		
 		if( szSelectedMod[0] )
 		{
 			// Search for all .rez files within the selected mod directory...

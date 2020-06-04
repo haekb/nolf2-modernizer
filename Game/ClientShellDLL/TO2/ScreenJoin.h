@@ -30,6 +30,7 @@ struct CServerEntry
 	uint16 m_nPing;
 	bool m_bUsePassword;
 	uint8 m_nGameType;
+	bool m_bDisplayed;
 };
 
 class CScreenJoin : public CBaseScreen
@@ -125,7 +126,7 @@ protected:
 	void Update_State_QueryDetails();
 
 	void SortServers(uint32 nSortField);
-	void FilterServers();
+	void FilterServers(bool bResetView);
 
 	uint8	m_nVersionFilter;
 	uint8	m_nPlayersFilter;

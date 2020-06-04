@@ -14,6 +14,8 @@ Peer::Peer()
 	m_bHasServiceData = false;
 	m_bIsValidated = false;
 	m_bShuttingDown = false;
+
+	m_bRetrieved = false;
 }
 
 Peer::~Peer()

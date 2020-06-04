@@ -4,7 +4,7 @@
 #define SERVERDIR_EXPORTS
 
 // Uncomment if you want it to work with NOLF2 vanilla
-#define _DROPIN
+//#define _DROPIN
 
 #include "IServerDir.h"
 #include "IServerDir_Titan.h"
@@ -24,18 +24,39 @@
 #define LOCAL_PEER "_LOCAL_PEER"
 #define NO_ACTIVE_PEER -1
 
-// TODO: Throw this in a ini file!
-#define MASTER_SERVER "65.112.87.186"
+// These are defaults in case the JServerInfo.txt file is missing!
+#if 1
+#define MASTER_SERVER "178.62.4.245"
+#define MASTER_PORT_HTTP 80
+#else
+#define MASTER_SERVER "127.0.0.1"
+#define MASTER_PORT_HTTP 8000
+#endif
 #define MASTER_PORT 28900
 #define MASTER_PORT_UDP 27900
+
 
 // Default ping for bad timeouts
 #define INVALID_PING 999
 
-#define QUERY_UPDATE_LIST "\\gamename\\nolf2\\gamever\\1.3\\location\\0\\validate\\g3Fo6x\\final\\"
-//#define QUERY_UPDATE_LIST "\\list\\gamename\\nolf2\\final\\"
+#define QUERY_CONNECT "\\gamename\\nolf2\\gamever\\1.3\\location\\0\\validate\\g3Fo6x\\final\\"
+#define QUERY_UPDATE_LIST "\\list\\\\gamename\\nolf2\\final\\"
+
+// These are web routes. Maybe add to config..
+#if 1
+#define SYSTEM_MOTD_ROUTE  "/3/motd"
+#define GAME_MOTD_ROUTE	   "/2/motd"
+#define GAME_VERSION_ROUTE "/2/version"
+#else
+#define SYSTEM_MOTD_ROUTE  "/4/motd"
+#define GAME_MOTD_ROUTE	   "/3/motd"
+#define GAME_VERSION_ROUTE "/3/version"
+#endif
 
 enum EJobRequest {
+	eJobRequest_Unset,
+	eJobRequest_Query_Version,
+	eJobRequest_Query_MOTD,
 	eJobRequest_Query_Master_Server,
 	eJobRequest_Query_Server,
 	eJobRequest_Publish_Server,
@@ -51,6 +72,48 @@ struct Job {
 	// Publish server specific
 	Peer Peer;
 };
+
+// Types of return data
+struct VersionReturnData {
+	char szVersion[128];
+};
+struct MOTDReturnData {
+	char szGameMOTD[512];
+	char szSystemMOTD[512];
+};
+struct PeerReturnData {
+	Peer* pPeer;
+};
+
+
+struct JobReturnData {
+	JobReturnData() { 
+		eRequestType = eJobRequest_Unset;
+		bSet = false; 
+		version = { 0 };
+		motd = { 0 };
+		peer = { 0 };
+	};
+	~JobReturnData() {};
+	// Required
+	EJobRequest eRequestType;
+	bool bSet;
+	union {
+		VersionReturnData version;
+		MOTDReturnData motd;
+		PeerReturnData peer;
+	};
+};
+
+struct MasterServerInfo {
+	char szServer[128];
+	int nPortHTTP;
+	int nPortTCP;
+	int nPortUDP;
+	bool bSkipMOTD;
+	bool bSkipVersionCheck;
+};
+
 
 class JServerDir :
 	public IServerDirectory
@@ -230,6 +293,15 @@ public:
 	inline std::string GetVersion() { return m_sVersion; };
 	inline std::string GetRegion() { return m_sRegion; };
 
+	//
+	// JServerDir only functions
+	//
+
+	// Cheat a little
+	__declspec(dllexport) void Update();
+	__declspec(dllexport) void SetMasterServerInfo(MasterServerInfo info);
+	__declspec(dllexport) void UseDefaultMasterServerInfo();
+
 	protected:
 		ILTCSBase* m_pLTCSBase;
 		HMODULE m_hResourceModule;
@@ -240,62 +312,77 @@ public:
 		std::string m_sRegion;
 
 		StartupInfo_Titan m_StartupInfo;
-
-		// Maybe just generate this on the fly for the client?
-		//TPeerList m_PeerList;
-
-		// All I see is pears
-		std::vector<Peer*> m_Peers;
-
-		int m_nActivePeer;
-
-		// Replaced with an atomic int that casts to EStatus
-		//EStatus m_eStatus;
-		std::atomic_int m_iStatus;
+		MasterServerInfo m_MasterServerInfo;
 
 		// 
-		void Update();
 
-		void CheckForQueuedPeers();
 
+		//---------------------------------------------------------------
+		// MAIN STUFF
 		void AddJob(Job eJob);
 		void SwitchStatus(EStatus eStatus);
 
-		//
-		// Thread Stuff
-		//
+		// All I see is pears
+		std::vector<Peer*> m_Peers;
+		int m_nActivePeer;
+		
+		std::string m_sGameVersion;
+		std::string m_sGameMOTD;
+		std::string m_sSystemMOTD;
 
+		//---------------------------------------------------------------
+		// SHARED STUFF
+
+		std::atomic_int m_iStatus;
+		std::atomic_bool m_bStopThread;
 		std::atomic_bool m_bIsRequestQueueRunning;
 		std::atomic_bool m_bProcessJobs;
+		std::atomic_bool m_bGotMOTD;
 
-		std::thread m_tRequestQueue;
-
-		std::atomic_bool m_bStopThread;
-		std::mutex m_mJobMutex;
-		std::mutex m_mQueuedPeerMutex;
-		std::vector<Job> m_vJobs;
-		// Weird, but to avoid a lot of mutexing, this is the prep vector that will eventually be merged into Peers
-		std::vector<Peer*> m_QueuedPeers;
-
-		// Thread copy of peers
-		std::vector<Peer*> m_ThreadPeers;
-
-		int m_iQueryNum;
-
+		// Not really used..
 		std::atomic_bool m_bPublishingServer;
 
-		bool m_bBoundConnection;
+		// Used to determine if we're doing anything on the thread
+		std::atomic_int m_iQueryRefCounter;
 
+		// Jobs for our queue
+		std::mutex m_mJobMutex;
+		std::vector<Job> m_vJobs;
+
+		// Return data -- All data should be Game thread safe
+		std::mutex m_mReturnMutex;
+		std::vector<JobReturnData*> m_vReturnData;
+
+
+		//---------------------------------------------------------------
+		// THREAD STUFF
+
+		// The actual thread!
+		std::thread m_tRequestQueue;
+
+		// Counter at the end of a request
+		int m_iQueryNum;
+		bool m_bBoundConnection;
 		// Time we start our thread (for thread only!)
 		long long m_nThreadLastActivity;
 
+		//---------------------------------------------------------------
+		// THREAD FUNCTIONS
+
+		// Main loop
 		void RequestQueueLoop();
+
 		// Jobs
+		MOTDReturnData QueryMOTD();
+		VersionReturnData QueryVersion();
 		void QueryMasterServer();
-		void QueryServer(std::string sAddress);
+		PeerReturnData QueryServer(std::string sAddress);
 		void PublishServer(Peer peer);
-
-		// Was a job, but update pings is only called with query master list. ¯\_(ツ)_/¯
+		
+		// Helpers
+		std::string QueryHttpText(std::string sRoute);
+		std::string DecodeNewLines(std::string sMOTD);
 		void PingPeer(Peer* peer);
-};
 
+		//---------------------------------------------------------------
+};
