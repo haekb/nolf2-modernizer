@@ -57,6 +57,7 @@ steps:
     Contents: |
       dinput8.dll
       Lithtech.exe
+      JServerInfo.txt
     TargetFolder: '$(Pipeline.Workspace)\\Artifacts'
 
 # SDL2
