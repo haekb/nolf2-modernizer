@@ -1,0 +1,17 @@
+/////////////////////////////////////////////////////////////////////////////////////////
+// Jake's Server Directory Config File
+// 
+// Below are some various settings you can tweak 
+// in case my (HeyJake's) master server ever goes under
+//
+// Master server runs on https://github.com/haekb/mgmse
+// But any re-implementation of that should work as well. 
+//
+/////////////////////////////////////////////////////////////////////////////////////////
+[Info]
+Server="178.62.4.245"
+PortHTTP=80
+PortTCP=28900
+PortUDP=27900
+SkipMOTD=False
+SkipVersionCheck=False
