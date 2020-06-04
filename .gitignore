@@ -54,7 +54,7 @@ Object.lto
 JServerDir.lib
 JServerDir.dll
 *.lastbuildstate
-*FileListAbsolute.txt
+*.FileListAbsolute.txt
 *.enc
 *.res
 Game/Build
