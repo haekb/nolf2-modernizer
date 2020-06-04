@@ -14,6 +14,9 @@ variables:
   buildPlatform: 'x86'
   buildConfiguration: 'Final'
 
+##################################
+# Build!
+##################################
 steps:
 - task: VSBuild@1
   inputs:
@@ -22,6 +25,9 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
+##################################
+# Copy over our mod dlls/files
+##################################
 - task: CopyFiles@2
   inputs:
     SourceFolder: '.\\'
@@ -36,16 +42,40 @@ steps:
     
 - task: CopyFiles@2
   inputs:
-    SourceFolder: 'ASSETS'
+    SourceFolder: 'Assets\\Mod'
     Contents: '**'
     TargetFolder: '$(Pipeline.Workspace)\\Artifacts\\Modernizer'
 
+##################################
+# Copy over some Game-level files
+##################################
+
+# Our custom Dinput8.dll and modified Lithtech.exe
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: 'Assets'
+    Contents: |
+      dinput8.dll
+      Lithtech.exe
+    TargetFolder: '$(Pipeline.Workspace)\\Artifacts'
+
+# SDL2
 - task: CopyFiles@2
   inputs:
     SourceFolder: 'LIBS\\SDL2-2.0.12\\lib\\x86\\'
     Contents: 'SDL2.dll'
     TargetFolder: '$(Pipeline.Workspace)\\Artifacts'
 
+# Jake's Server Directory
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: 'Game\\Release'
+    Contents: 'JServerDir.dll'
+    TargetFolder: '$(Pipeline.Workspace)\\Artifacts'
+
+##################################
+# Setup and rez our mod!
+##################################
 - task: CmdLine@2
   inputs:
     script: 'mkdir $(Pipeline.Workspace)\\Artifacts\\Custom\\Mods\\Modernizer'
@@ -54,6 +84,9 @@ steps:
   inputs:
     script: 'Tools\\lithrez.exe c $(Pipeline.Workspace)\\Artifacts\\Custom\\Mods\\Modernizer\\Modernizer.rez $(Pipeline.Workspace)\\Artifacts\\Modernizer'
 
+##################################
+# Publish
+##################################
 - task: PublishPipelineArtifact@1
   inputs:
     targetPath: '$(Pipeline.Workspace)\\Artifacts'
