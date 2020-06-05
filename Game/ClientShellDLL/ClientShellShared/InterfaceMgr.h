@@ -559,6 +559,7 @@ private:
 
 		void	UpdateScreenFade(bool bUpdateAlpha = true);
 		void	UpdateLetterBox();
+		void	UpdateSlidingBars();
 
 		void	CreateInterfaceBackground();
 		void	UpdateInterfaceBackground();
@@ -590,6 +591,10 @@ private:
 
 		bool			m_bHideHUDInPopup;
 		eHUDRenderLevel m_ePrePopupHUDRenderLevel;
+
+		// Sliding bar related
+		Uint32 m_nBarStartTime;
+		HSURFACE m_pBarSurface;
 };
 
 

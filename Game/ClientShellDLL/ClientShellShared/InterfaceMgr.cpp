@@ -51,6 +51,9 @@ extern ConsoleMgr* g_pConsoleMgr;
 #define MAX_INTERFACE_LIGHTS	5
 #define INVALID_ANI			((HMODELANIM)-1)
 
+// in ms
+constexpr auto SLIDING_TIME = 500.0f;
+
 static enum MovieOrderEnum 
 {
 	eSierra,
@@ -396,6 +399,9 @@ CInterfaceMgr::CInterfaceMgr()
 
 	m_bSkipPreLoadScreen = false;
 	m_ePostLoadScreenID	= SCREEN_ID_POSTLOAD;
+
+	m_nBarStartTime = 0;
+	m_pBarSurface = nullptr;
 }
 
 
@@ -984,7 +990,6 @@ void CInterfaceMgr::UpdateScreenState()
 	// to whatever it was before the screen state was entered.
 	WriteConsoleInt("FogEnable", 0);
 
-
 	if (!GetScreenMgr( )->UpdateInterfaceSFX())
 		m_bSuppressNextFlip = true;
 	else
@@ -996,6 +1001,9 @@ void CInterfaceMgr::UpdateScreenState()
 		g_pLTClient->StartOptimized2D();
 		m_InterfaceResMgr.DrawScreen();
 		UpdateScreenFade();
+
+		UpdateSlidingBars();
+
 		g_pLTClient->EndOptimized2D();
 		g_pLTClient->End3D(END3D_CANDRAWCONSOLE);
 	}
@@ -5115,6 +5123,80 @@ void CInterfaceMgr::UpdateLetterBox()
 	g_pLTDrawprim->DrawPrim(m_LetterBox, 2);
 
 */
+}
+
+//
+// Jake: These are the neato-burrito black bars that slide on either sides before we hit the loading screen!
+// Basically I don't have the time to redo all these screens for HD (and even then you have to handle ultra-wide!!)
+// So this is a good compromise that fits into the aesthetic. 
+//
+void CInterfaceMgr::UpdateSlidingBars()
+{
+	// Initialize our sliding bar surface if we haven't already!
+	if (m_pBarSurface == nullptr)
+	{
+		m_pBarSurface = g_pLTClient->CreateSurface(32, 32);
+		LTRect rect = { 0, 0, 32, 32 };
+		g_pLTClient->FillRect(m_pBarSurface, &rect, kBlack);
+	}
+
+	
+	// Only do this on Preload + PostLoad
+	if (GetScreenMgr()->GetCurrentScreenID() == SCREEN_ID_PRELOAD
+		|| GetScreenMgr()->GetCurrentScreenID() == SCREEN_ID_POSTLOAD)
+	{
+		if (m_nBarStartTime == 0)
+		{
+			m_nBarStartTime = SDL_GetTicks();
+		}
+
+		float fSlideDown = 0.0f;
+		float fSlideUp = 0.0f;
+
+		auto currentTime = SDL_GetTicks();
+		auto elapsedTime = currentTime - m_nBarStartTime;
+		if (elapsedTime < (int)SLIDING_TIME) {
+			fSlideDown = (float)elapsedTime / SLIDING_TIME;
+		}
+		else {
+			fSlideDown = 1.0f;
+		}
+
+		fSlideUp = 1.0f - fSlideDown;
+
+		LTRect destRect = { 0, 0, 0, 0 };
+
+		// Account for some rounding errors
+		int nFixEdges = 16;
+		int nWidth = g_pInterfaceResMgr->GetScreenWidth();
+		int nHeight = g_pInterfaceResMgr->GetScreenHeight();
+
+
+		// Image gets stretched out to 735/512, and I can't quite figure out why..
+		// -----------------------------------------------------------------------
+		// This line is actually just Get4x3Offset() with a custom ratio.
+		int nOffset = 0.5f * ((float)nWidth - ((float)nHeight * (735.0f / 512.0f)));
+		
+		nHeight += nFixEdges;
+
+		// Left side
+		destRect.right = nOffset;
+		destRect.bottom = (int)(fSlideDown * (float)nHeight);
+		g_pLTClient->ScaleSurfaceToSurface(g_pLTClient->GetScreenSurface(), m_pBarSurface, &destRect, LTNULL);
+
+		// Right side
+		destRect.left = g_pInterfaceResMgr->GetScreenWidth() - nOffset;
+		destRect.right += destRect.left + nFixEdges;
+		destRect.top = (int)(fSlideUp * (float)nHeight);
+		destRect.bottom = nHeight;
+
+		g_pLTClient->ScaleSurfaceToSurface(g_pLTClient->GetScreenSurface(), m_pBarSurface, &destRect, LTNULL);
+	}
+	else {
+		// Otherwise, reset the start time. 
+		// Once we hit another preload we'll get the animation again.
+		m_nBarStartTime = 0;
+	}
 }
 
 // --------------------------------------------------------------------------- //
