@@ -1499,41 +1499,6 @@ LTBOOL CInterfaceMgr::SetupMusic()
 	}
 
 	// Setup the menu music...
-
-//#define RANDOM_MENU_MUSIC
-
-#ifdef RANDOM_MENU_MUSIC
-	std::string sMusicCtrlFiles[6] = { "India", "Island", "Japan", "Siberia", "Underwater", "Unity" };
-
-	// Lol, rand needs to be seeded. Will poke this later.
-	int nMusicThemeIndex = GetRandom(0, 5);
-
-	std::string sMusicTheme = sMusicCtrlFiles[nMusicThemeIndex];
-	std::string sMusicDir = "Music/" + sMusicTheme;
-	std::string sMusicFile = sMusicTheme + ".txt";
-
-	if (!pMusic->IsInitialized())
-	{
-		if (!pMusic->Init(g_pLTClient))
-		{
-			return LTFALSE;
-		}
-	}
-
-	if (!pMusic->IsLevelInitialized())
-	{
-		CMusicState MusicState;
-		MusicState.nIntensity = nIntensity;
-		strcpy(MusicState.szDirectory, sMusicDir.c_str());
-		strcpy(MusicState.szControlFile, sMusicFile.c_str());
-
-		if (!pMusic->RestoreMusicState(MusicState))
-		{
-			return LTFALSE;
-		}
-	}
-
-#else
 	char szFile[128] = "";
 	g_pClientButeMgr->GetInterfaceAttributeString("MenuMusicCtrlFile", szFile, sizeof(szFile));
 	if (!strlen(szFile)) return LTFALSE;
@@ -1566,9 +1531,6 @@ LTBOOL CInterfaceMgr::SetupMusic()
 			return LTFALSE;
 		}
 	}
-
-#endif
-
 
 	pMusic->Play();
 
