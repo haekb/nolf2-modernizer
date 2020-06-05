@@ -4660,7 +4660,6 @@ void CGameClientShell::OnChar(HWND hWnd, char c, int rep)
 
 void CGameClientShell::OnLButtonUp(HWND hWnd, int x, int y, UINT keyFlags)
 {
-
 	g_pGameInputMgr->OnMouseUp(GIB_LEFT_MOUSE);
 
 	g_pInterfaceMgr->OnLButtonUp(x,y);
@@ -4668,18 +4667,6 @@ void CGameClientShell::OnLButtonUp(HWND hWnd, int x, int y, UINT keyFlags)
 
 void CGameClientShell::OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 {
-	//g_pLTClient->CPrint("Left Mouse Button Down [%d/%d], Double Click? %d", x, y, fDoubleClick);
-	/*if (!g_tmrDblClick.Stopped() &&
-		(g_mouseMgr.GetClickPosX() == x) && (g_mouseMgr.GetClickPosY() == y))
-	{
-		g_tmrDblClick.Stop();
-		OnLButtonDblClick(hwnd,fDoubleClick,x,y,keyFlags);
-	}
-	else
-	{
-		g_mouseMgr.SetClickPos(x,y);
-		g_tmrDblClick.Start(.5);
-	}*/
 	g_pGameInputMgr->OnMouseDown(GIB_LEFT_MOUSE);
 
 	g_pInterfaceMgr->OnLButtonDown(x,y);
@@ -4687,6 +4674,9 @@ void CGameClientShell::OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y,
 
 void CGameClientShell::OnLButtonDblClick(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 {
+	// Handle double clicks like regular clicks.
+	g_pGameInputMgr->OnMouseDown(GIB_LEFT_MOUSE);
+
 	g_pInterfaceMgr->OnLButtonDblClick(x,y);
 }
 
@@ -4707,6 +4697,9 @@ void CGameClientShell::OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y,
 
 void CGameClientShell::OnRButtonDblClick(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 {
+	// Handle double clicks like regular clicks.
+	g_pGameInputMgr->OnMouseDown(GIB_RIGHT_MOUSE);
+
 	g_pInterfaceMgr->OnRButtonDblClick(x,y);
 }
 
