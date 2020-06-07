@@ -5132,13 +5132,15 @@ void CInterfaceMgr::UpdateLetterBox()
 // Basically I don't have the time to redo all these screens for HD (and even then you have to handle ultra-wide!!)
 // So this is a good compromise that fits into the aesthetic. 
 //
-// TODO: Maybe add a flag to Layout.txt to better detect this?
 //
 void CInterfaceMgr::UpdateSlidingBars()
 {
+	
 #if 0
+	// This is the tan-ish colour that the CateBackground uses on the foreground
 	HLTCOLOR kBarColour = SETRGB(255, 215, 93);
 #else
+	// I kinda like black better..
 	HLTCOLOR kBarColour = kBlack;
 #endif
 
@@ -5253,11 +5255,18 @@ void CInterfaceMgr::UpdateSlidingBars()
 	g_pLTClient->ScaleSurfaceToSurface(g_pLTClient->GetScreenSurface(), m_pBarSurface, &destRect, LTNULL);
 }
 
+//
+// Here's where we detect whether or not a screen needs a black bar slide in/out.
+// If we get a ratio, then we need to handle our black bar, if we return 0.0f then we can ignore it!
+//
+// FIXME: Cache std::find result.
+// FIXME: Maybe add a flag to Layout.txt to better detect this?
+//
 float CInterfaceMgr::GetScreenBarRatio(eScreenID eID)
 {
 	float fRatio = 0.0f;
 	
-	eScreenID BarScreensCate[14] = {
+	eScreenID BarScreensCate[16] = {
 		SCREEN_ID_LOAD,
 		SCREEN_ID_SAVE,
 		SCREEN_ID_HOST,
@@ -5271,7 +5280,9 @@ float CInterfaceMgr::GetScreenBarRatio(eScreenID eID)
 		SCREEN_ID_FAILURE,
 		SCREEN_ID_END_MISSION,
 		SCREEN_ID_END_DM_MISSION,
-		SCREEN_ID_END_COOP_MISSION
+		SCREEN_ID_END_COOP_MISSION,
+		SCREEN_ID_JOIN,
+		SCREEN_ID_JOIN_LAN
 	};
 
 	// I initially tried to look for...
