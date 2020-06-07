@@ -68,6 +68,9 @@ CTO2HUDMgr::~CTO2HUDMgr()
 
 LTBOOL CTO2HUDMgr::Init()
 {
+	// Jake: Take damage should be first, it's a full-screen effect!
+	m_itemArray.push_back(&m_TakeDamage);
+
 	//crosshair should be first so that it is rendered first (potential overlap)
 	m_itemArray.push_back(&m_Crosshair);
 

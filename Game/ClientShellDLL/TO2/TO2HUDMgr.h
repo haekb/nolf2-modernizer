@@ -62,6 +62,7 @@ protected:
 	CHUDRespawn			m_Respawn;
 	CHUDDoomsday		m_Doomsday;
 	CHUDFramerate		m_Framerate;
+	CHUDTakeDamage		m_TakeDamage;
 
 };
 
@@ -70,5 +71,6 @@ extern CHUDCrosshair*		g_pCrosshair;
 extern CHUDCompass*			g_pCompass;
 extern CHUDObjectives*		g_pObjectives;
 extern CHUDRadio*			g_pRadio;
+extern CHUDTakeDamage* g_pTakeDamage;
 
 #endif

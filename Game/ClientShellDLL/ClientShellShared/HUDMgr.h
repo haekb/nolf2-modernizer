@@ -27,6 +27,7 @@
 #include "HUDDisplayMeter.h"
 #include "HUDScores.h"
 #include "HUDConsoleLines.h"
+#include "HUDTakeDamage.h"
 
 enum eHUDUpdateFlag
 {
@@ -55,6 +56,7 @@ enum eHUDUpdateFlag
 	kHUDDoomsday	= 0x00200000,
 	kHUDFramerate   = 0x00400000,
 	kHUDConsoleLines= 0x00800000,
+	kHUDTakeDamage  = 0x01000000,
 	kHUDAll			= 0xFFFFFFFF,
 };
 
