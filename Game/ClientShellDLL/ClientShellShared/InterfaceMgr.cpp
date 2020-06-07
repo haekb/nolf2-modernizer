@@ -5259,6 +5259,8 @@ void CInterfaceMgr::UpdateSlidingBars()
 // Here's where we detect whether or not a screen needs a black bar slide in/out.
 // If we get a ratio, then we need to handle our black bar, if we return 0.0f then we can ignore it!
 //
+// Note: I found the ratios by screenshotting the screen, and scaling down resolution to <Locked>x512 in a photo editor.
+//
 // FIXME: Cache std::find result.
 // FIXME: Maybe add a flag to Layout.txt to better detect this?
 //
