@@ -402,6 +402,8 @@ CInterfaceMgr::CInterfaceMgr()
 
 	m_nBarStartTime = 0;
 	m_pBarSurface = nullptr;
+	m_eCurrentScreen = SCREEN_ID_UNASSIGNED;
+	m_bSlidingIsDone = false;
 }
 
 
@@ -5130,73 +5132,177 @@ void CInterfaceMgr::UpdateLetterBox()
 // Basically I don't have the time to redo all these screens for HD (and even then you have to handle ultra-wide!!)
 // So this is a good compromise that fits into the aesthetic. 
 //
+//
 void CInterfaceMgr::UpdateSlidingBars()
 {
+	
+#if 0
+	// This is the tan-ish colour that the CateBackground uses on the foreground
+	HLTCOLOR kBarColour = SETRGB(255, 215, 93);
+#else
+	// I kinda like black better..
+	HLTCOLOR kBarColour = kBlack;
+#endif
+
+	LTRect rect = { 0, 0, 32, 32 };
+
 	// Initialize our sliding bar surface if we haven't already!
 	if (m_pBarSurface == nullptr)
 	{
 		m_pBarSurface = g_pLTClient->CreateSurface(32, 32);
-		LTRect rect = { 0, 0, 32, 32 };
-		g_pLTClient->FillRect(m_pBarSurface, &rect, kBlack);
+		g_pLTClient->FillRect(m_pBarSurface, &rect, kBarColour);
 	}
 
-	
-	// Only do this on Preload + PostLoad
-	if (GetScreenMgr()->GetCurrentScreenID() == SCREEN_ID_PRELOAD
-		|| GetScreenMgr()->GetCurrentScreenID() == SCREEN_ID_POSTLOAD)
+	auto nCurrentScreenID = GetScreenMgr()->GetCurrentScreenID();
+	auto nLastScreenID = GetScreenMgr()->GetLastScreenID();
+
+	// Jake: This was originally in SwitchToScreen()
+	// But not every screen change calls that...
+	if (nCurrentScreenID != m_eCurrentScreen)
 	{
-		if (m_nBarStartTime == 0)
-		{
-			m_nBarStartTime = SDL_GetTicks();
-		}
-
-		float fSlideDown = 0.0f;
-		float fSlideUp = 0.0f;
-
-		auto currentTime = SDL_GetTicks();
-		auto elapsedTime = currentTime - m_nBarStartTime;
-		if (elapsedTime < (int)SLIDING_TIME) {
-			fSlideDown = (float)elapsedTime / SLIDING_TIME;
-		}
-		else {
-			fSlideDown = 1.0f;
-		}
-
-		fSlideUp = 1.0f - fSlideDown;
-
-		LTRect destRect = { 0, 0, 0, 0 };
-
-		// Account for some rounding errors
-		int nFixEdges = 16;
-		int nWidth = g_pInterfaceResMgr->GetScreenWidth();
-		int nHeight = g_pInterfaceResMgr->GetScreenHeight();
-
-
-		// Image gets stretched out to 735/512, and I can't quite figure out why..
-		// -----------------------------------------------------------------------
-		// This line is actually just Get4x3Offset() with a custom ratio.
-		int nOffset = 0.5f * ((float)nWidth - ((float)nHeight * (735.0f / 512.0f)));
-		
-		nHeight += nFixEdges;
-
-		// Left side
-		destRect.right = nOffset;
-		destRect.bottom = (int)(fSlideDown * (float)nHeight);
-		g_pLTClient->ScaleSurfaceToSurface(g_pLTClient->GetScreenSurface(), m_pBarSurface, &destRect, LTNULL);
-
-		// Right side
-		destRect.left = g_pInterfaceResMgr->GetScreenWidth() - nOffset;
-		destRect.right += destRect.left + nFixEdges;
-		destRect.top = (int)(fSlideUp * (float)nHeight);
-		destRect.bottom = nHeight;
-
-		g_pLTClient->ScaleSurfaceToSurface(g_pLTClient->GetScreenSurface(), m_pBarSurface, &destRect, LTNULL);
-	}
-	else {
-		// Otherwise, reset the start time. 
-		// Once we hit another preload we'll get the animation again.
+		// For sliding bars
+		m_bSlidingIsDone = false;
 		m_nBarStartTime = 0;
 	}
+
+	m_eCurrentScreen = nCurrentScreenID;
+
+	float fRatio = 1.0f;
+	bool bFlipSlides = false;
+
+	fRatio = GetScreenBarRatio(nCurrentScreenID);
+	float fPreviousRatio = GetScreenBarRatio(nLastScreenID);
+
+	if (fRatio == fPreviousRatio)
+	{
+		// Hack to make sure percentage is 100%
+		m_nBarStartTime = 1;
+	}
+
+	if (fRatio == 0.0f && fPreviousRatio != 0.0f)
+	{
+		fRatio = fPreviousRatio;
+		bFlipSlides = true;
+	}
+
+	if (fRatio == 0.0f)
+	{
+		return;
+	}
+
+	//
+	// Update the slide percentage
+	//
+
+	float fSlideDown = 0.0f;
+	float fSlideUp = 0.0f;
+
+	// Unset time? Let's set the time!
+	if (m_nBarStartTime == 0)
+	{
+		m_nBarStartTime = SDL_GetTicks();
+	}
+
+	auto currentTime = SDL_GetTicks();
+	auto elapsedTime = currentTime - m_nBarStartTime;
+	if (elapsedTime < (int)SLIDING_TIME) {
+		fSlideDown = (float)elapsedTime / SLIDING_TIME;
+	}
+	else {
+		fSlideDown = 1.0f;
+		m_bSlidingIsDone = true;
+	}
+
+	fSlideUp = 1.0f - fSlideDown;
+
+	if (bFlipSlides)
+	{
+		auto fSlideTemp = fSlideUp;
+		fSlideUp = fSlideDown;
+		fSlideDown = fSlideTemp;
+	}
+
+	//
+	// Perform the slide!
+	//
+
+	LTRect destRect = { 0, 0, 0, 0 };
+
+	// Account for some rounding errors
+	int nFixEdges = 16;
+	int nWidth = g_pInterfaceResMgr->GetScreenWidth();
+	int nHeight = g_pInterfaceResMgr->GetScreenHeight();
+
+
+	// Image gets stretched out to 735/512, and I can't quite figure out why..
+	// -----------------------------------------------------------------------
+	// This line is actually just Get4x3Offset() with a custom ratio.
+	int nOffset = 0.5f * ((float)nWidth - ((float)nHeight * fRatio));
+
+	nHeight += nFixEdges;
+
+	// Left side
+	destRect.right = nOffset;
+	destRect.bottom = (int)(fSlideDown * (float)nHeight);
+	g_pLTClient->ScaleSurfaceToSurface(g_pLTClient->GetScreenSurface(), m_pBarSurface, &destRect, LTNULL);
+
+	// Right side
+	destRect.left = g_pInterfaceResMgr->GetScreenWidth() - nOffset;
+	destRect.right += destRect.left + nFixEdges;
+	destRect.top = (int)(fSlideUp * (float)nHeight);
+	destRect.bottom = nHeight;
+
+	g_pLTClient->ScaleSurfaceToSurface(g_pLTClient->GetScreenSurface(), m_pBarSurface, &destRect, LTNULL);
+}
+
+//
+// Here's where we detect whether or not a screen needs a black bar slide in/out.
+// If we get a ratio, then we need to handle our black bar, if we return 0.0f then we can ignore it!
+//
+// Note: I found the ratios by screenshotting the screen, and scaling down resolution to <Locked>x512 in a photo editor.
+//
+// FIXME: Cache std::find result.
+// FIXME: Maybe add a flag to Layout.txt to better detect this?
+//
+float CInterfaceMgr::GetScreenBarRatio(eScreenID eID)
+{
+	float fRatio = 0.0f;
+	
+	eScreenID BarScreensCate[16] = {
+		SCREEN_ID_LOAD,
+		SCREEN_ID_SAVE,
+		SCREEN_ID_HOST,
+		SCREEN_ID_HOST_OPTIONS,
+		SCREEN_ID_HOST_DD_OPTIONS,
+		SCREEN_ID_HOST_DM_OPTIONS,
+		SCREEN_ID_HOST_TDM_OPTIONS,
+		SCREEN_ID_HOST_LEVELS,
+		SCREEN_ID_HOST_MISSION,
+		SCREEN_ID_HOST_WEAPONS,
+		SCREEN_ID_FAILURE,
+		SCREEN_ID_END_MISSION,
+		SCREEN_ID_END_DM_MISSION,
+		SCREEN_ID_END_COOP_MISSION,
+		SCREEN_ID_JOIN,
+		SCREEN_ID_JOIN_LAN
+	};
+
+	// I initially tried to look for...
+	// LoopFX0 = CateBkgrndFX
+	// But alas, I couldn't get a consistent result. Some screens which didn't have it, had it in the transitionmgr. 
+	// Super weird!
+	if (std::find(std::begin(BarScreensCate), std::end(BarScreensCate), eID) != std::end(BarScreensCate))
+	{
+		fRatio = 815.0f / 512.0f;
+	}
+
+	// Loading screens are special, so look for them directly...
+	else if ((eID == SCREEN_ID_PRELOAD || eID == SCREEN_ID_POSTLOAD))
+	{
+		fRatio = 735.0f / 512.0f;
+	}
+
+	return fRatio;
 }
 
 // --------------------------------------------------------------------------- //

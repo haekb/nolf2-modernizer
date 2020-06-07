@@ -126,10 +126,10 @@ Light2				= "MainRight"
 Light3				= "Floor"
 SelectFXCenter		= 1
 FX0					= "MainBackFX"
-IntroFX1			= "MainIntroFX"
+IntroFX0			= "MainLoopFX"
 //ShortIntroFX1		= "MainLoopFX"
 LoopFX1				= "MainLoopFX"
-IntroFX0			= "CateInterfaceFX"
+//IntroFX0			= "CateInterfaceFX"
 GameTypeRect		= (320,208,585,306)
 FrameTexture		= "interface\menu\sprtex\menuframe2.dtx"
 
@@ -2468,8 +2468,8 @@ TextDisColor	= <128.0, 128.0, 128.0>
 
 [Transition0]	//----------------------------	Main
 TransitionTo			= "ScreenMain"
-IntroFX0			= "CateInterfaceFX"
-IntroFX1			= "MainIntroFX"
+//IntroFX0			= "CateInterfaceFX"
+IntroFX0			= "MainLoopFX"
 LoopFX1				= "MainLoopFX"
 
 [Transition1]	//----------------------------	Single to Load

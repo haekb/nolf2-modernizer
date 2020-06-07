@@ -561,6 +561,8 @@ private:
 		void	UpdateLetterBox();
 		void	UpdateSlidingBars();
 
+		float	GetScreenBarRatio(eScreenID eID);
+
 		void	CreateInterfaceBackground();
 		void	UpdateInterfaceBackground();
 		void	RemoveInterfaceBackground();
@@ -595,6 +597,8 @@ private:
 		// Sliding bar related
 		Uint32 m_nBarStartTime;
 		HSURFACE m_pBarSurface;
+		eScreenID m_eCurrentScreen;
+		LTBOOL m_bSlidingIsDone;
 };
 
 
