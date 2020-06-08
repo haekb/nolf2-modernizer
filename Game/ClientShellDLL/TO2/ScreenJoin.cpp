@@ -587,7 +587,7 @@ void CScreenJoin::ReadCurServerList()
 	// Spawns a new fake entry every 1.5 seconds.
 	{
 		static Uint32 prevTicks = 0;
-		auto ticks = SDL_GetTicks();
+		auto ticks = CWinUtil::GetTicks();
 
 		if (ticks - prevTicks < 1500)
 		{

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "HUDMgr.h"
+#include "WinUtil.h"
 
 // Max items for our vector,
 // also affects how many hits vs the strength of the effect
@@ -58,7 +59,7 @@ void CHUDTakeDamage::Update()
 		// Amount we're adding to our total alpha this frame
 		int nAdd = 255 / MAX_LEVELS_OF_PAIN;
 
-		auto nCurrentTime = SDL_GetTicks();
+		auto nCurrentTime = CWinUtil::GetTicks();
 		auto nTotalTime = nCurrentTime - vLocalPain[i];
 		vLocalPain[i] = nTotalTime;
 
@@ -94,5 +95,5 @@ void CHUDTakeDamage::TakeDamage()
 		return;
 	}
 
-	m_vLevelsOfPain.push_back(SDL_GetTicks());
+	m_vLevelsOfPain.push_back(CWinUtil::GetTicks());
 }

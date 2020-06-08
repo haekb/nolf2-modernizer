@@ -233,6 +233,11 @@ float CWinUtil::GetTime()
 	return (float)SDL_GetTicks() / 1000.0f;
 }
 
+uint32 CWinUtil::GetTicks()
+{
+	return SDL_GetTicks();
+}
+
 char* CWinUtil::GetFocusWindow()
 {
 	static char strText[128];

@@ -34,6 +34,7 @@
 #include "WaveFn.h"
 #include "SDL.h"
 #include "ConsoleMgr.h"
+#include "WinUtil.h"
 
 CInterfaceMgr*  g_pInterfaceMgr = LTNULL;
 
@@ -5200,10 +5201,10 @@ void CInterfaceMgr::UpdateSlidingBars()
 	// Unset time? Let's set the time!
 	if (m_nBarStartTime == 0)
 	{
-		m_nBarStartTime = SDL_GetTicks();
+		m_nBarStartTime = CWinUtil::GetTicks();
 	}
 
-	auto currentTime = SDL_GetTicks();
+	auto currentTime = CWinUtil::GetTicks();
 	auto elapsedTime = currentTime - m_nBarStartTime;
 	if (elapsedTime < (int)SLIDING_TIME) {
 		fSlideDown = (float)elapsedTime / SLIDING_TIME;

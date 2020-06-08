@@ -6,6 +6,7 @@
 #include "MsgIds.h"
 #include "GameServerShell.h"
 #include <SDL.h>
+#include "WinUtil.h"
 
 extern CGameServerShell* g_pGameServerShell;
 
@@ -322,7 +323,7 @@ void CMusicMgr::DoEvent(Event eEvent)
 
 bool CMusicMgr::IsItTimeToRun()
 {
-	float fCurrentTime = SDL_GetTicks() / 1000.0f;
+	float fCurrentTime = CWinUtil::GetTime();
 	float fDelta = fCurrentTime - m_fLastTime;
 
 	// Server framerate is capped at 100fps, so uhh..

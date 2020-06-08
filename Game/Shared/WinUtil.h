@@ -11,6 +11,11 @@
 	typedef unsigned long	DWORD;
 #endif
 
+	// SDL2 uses Uint32
+#ifndef Uint32
+	typedef uint32_t Uint32;
+#endif
+
 class CWinUtil
 {
 public:
@@ -30,6 +35,7 @@ public:
 	static void DebugOut (char const* str);
 	static void DebugBreak();
 	static float GetTime();
+	static Uint32 CWinUtil::GetTicks();
 
 	static char* GetFocusWindow();
 
