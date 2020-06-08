@@ -27,6 +27,7 @@
 #include "HUDDisplayMeter.h"
 #include "HUDScores.h"
 #include "HUDConsoleLines.h"
+#include "HUDTakeDamage.h"
 
 enum eHUDUpdateFlag
 {
@@ -55,6 +56,7 @@ enum eHUDUpdateFlag
 	kHUDDoomsday	= 0x00200000,
 	kHUDFramerate   = 0x00400000,
 	kHUDConsoleLines= 0x00800000,
+	kHUDTakeDamage  = 0x01000000,
 	kHUDAll			= 0xFFFFFFFF,
 };
 
@@ -115,6 +117,9 @@ protected:
 	CHUDScores			m_Scores;
 	CHUDConsoleLines	m_ConsoleLines;
 
+	// This is technically in TO2HudMgr, but it's in Shared namespace..
+	CHUDTakeDamage		m_TakeDamage;
+
 	//items
 	typedef std::vector<CHUDItem *> ItemArray;
 	ItemArray m_itemArray;			// Pointer to each screen
@@ -135,5 +140,6 @@ extern CHUDRewardMsgQueue*	g_pRewardMsgs;
 extern CHUDPaused*			g_pPaused;
 extern CHUDDisplayMeter*	g_pDisplayMeter;
 extern CHUDScores*			g_pScores;
+extern CHUDTakeDamage*		g_pTakeDamage;
 
 #endif

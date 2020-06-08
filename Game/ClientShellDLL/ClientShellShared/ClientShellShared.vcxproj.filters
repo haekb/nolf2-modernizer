@@ -674,6 +674,9 @@
     <ClCompile Include="GameInputMgr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="HUDTakeDamage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ActivateObjectFX.h">
@@ -1310,6 +1313,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameInputMgr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HUDTakeDamage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

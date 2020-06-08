@@ -29,6 +29,7 @@ CHUDRewardMsgQueue*	g_pRewardMsgs = LTNULL;
 CHUDPaused*			g_pPaused = LTNULL;
 CHUDDisplayMeter*	g_pDisplayMeter = LTNULL;
 CHUDScores*			g_pScores = LTNULL;
+CHUDTakeDamage*		g_pTakeDamage = nullptr;
 
 // ----------------------------------------------------------------------- //
 //

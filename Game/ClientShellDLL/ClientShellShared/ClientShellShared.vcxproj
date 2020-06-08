@@ -836,6 +836,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Final|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
     </ClCompile>
+    <ClCompile Include="HUDTakeDamage.cpp" />
     <ClCompile Include="HUDTransmission.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
@@ -1425,6 +1426,7 @@
     <ClInclude Include="HUDRadar.h" />
     <ClInclude Include="HUDScores.h" />
     <ClInclude Include="HUDSubtitles.h" />
+    <ClInclude Include="HUDTakeDamage.h" />
     <ClInclude Include="HUDTransmission.h" />
     <ClInclude Include="IntelItemList.h" />
     <ClInclude Include="InterfaceMgr.h" />

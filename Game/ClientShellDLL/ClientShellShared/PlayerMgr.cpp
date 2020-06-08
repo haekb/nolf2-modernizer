@@ -44,6 +44,7 @@
 #include "LTEulerAngles.h"
 #include "DoomsDayPieceFX.h"
 #include <SDL.h>
+#include "HUDMgr.h"
 
 extern SDL_Window* g_SDLWindow;
 
@@ -1388,6 +1389,17 @@ void CPlayerMgr::HandleMsgPlayerDamage (ILTMessage_Read *pMsg)
 
 	DamageFlags dmgFlag = DamageTypeToFlag( eType );
 
+	// New "Red Hurty" effect.
+	if (bTookHealth)
+	{
+		g_pTakeDamage->TakeDamage();
+	}
+
+	// Jake: For whoever wants to fix it on the FX-side,
+	// below is the original "Red Hurty" effect, I couldn't figure out how to alter its scale
+	// so I replaced it with the HUD item above.
+	// Note: TakingArmorFXName is actually never used anywhere...
+#if 0
 	if( bTookHealth )
 	{
 		// Play the taking health fx for the DamageFX associated with the damage type...
@@ -1424,6 +1436,7 @@ void CPlayerMgr::HandleMsgPlayerDamage (ILTMessage_Read *pMsg)
 			pDamageFX = g_pDamageFXMgr->GetNextDamageFX();
 		}
 	}
+#endif
 
 	// Tilt the camera based on the direction the damage came from...
 

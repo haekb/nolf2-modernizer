@@ -23,6 +23,7 @@ CHUDCompass*		g_pCompass = LTNULL;
 CHUDObjectives*		g_pObjectives = LTNULL;
 CHUDRadio*			g_pRadio = LTNULL;
 
+
 inline void CHUDItem::SetRenderState()
 {
 	g_pDrawPrim->SetTransformType(DRAWPRIM_TRANSFORM_SCREEN);
@@ -68,6 +69,9 @@ CTO2HUDMgr::~CTO2HUDMgr()
 
 LTBOOL CTO2HUDMgr::Init()
 {
+	// Jake: Take damage should be first, it's a full-screen effect!
+	m_itemArray.push_back(&m_TakeDamage);
+
 	//crosshair should be first so that it is rendered first (potential overlap)
 	m_itemArray.push_back(&m_Crosshair);
 
@@ -90,6 +94,7 @@ LTBOOL CTO2HUDMgr::Init()
 	g_pCompass = &m_Compass;
 	g_pObjectives = &m_Objectives;
 	g_pRadio = &m_Radio;
+	g_pTakeDamage = &m_TakeDamage;
 
 	m_itemArray.push_back(&m_WpnChooser);
 	m_itemArray.push_back(&m_AmmoChooser);
