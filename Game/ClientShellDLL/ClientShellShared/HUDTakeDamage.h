@@ -1,28 +1,32 @@
 #pragma once
+#include <vector>
+#include <SDL.h>
 #include "HUDItem.h"
-class CHUDTakeDamage :
-    public CHUDItem
+
+// HUD Take Damage
+// Replacement for TakingHealth FX
+// -------------------------------
+// I couldn't figure out how spriteFX were drawn, 
+// so I disabled the current one in PlayerMgr 
+// and re-created it as a HUD item.
+//
+class CHUDTakeDamage : public CHUDItem
 {
 public:
 	CHUDTakeDamage();
 	~CHUDTakeDamage();
 
-	LTBOOL      Init();
+	LTBOOL  Init();
 
-	void        Render();
-	void        Update();
+	void    Render();
+	void    Update();
 
-	//void        UpdateLayout();
+	void	TakeDamage();
 
 private:
-	LTIntPt		m_BasePos;
-	uint16 		m_nIconHt;
-
-	LTBOOL		m_bDraw;
-
-
 	LTPoly_GT4 m_Poly;
-	HTEXTURE* m_hIcon;			//  icon
+	HTEXTURE m_hDamageTex;
 
+	std::vector<Uint32> m_vLevelsOfPain;
 };
 

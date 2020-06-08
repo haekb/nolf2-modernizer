@@ -117,6 +117,9 @@ protected:
 	CHUDScores			m_Scores;
 	CHUDConsoleLines	m_ConsoleLines;
 
+	// This is technically in TO2HudMgr, but it's in Shared namespace..
+	CHUDTakeDamage		m_TakeDamage;
+
 	//items
 	typedef std::vector<CHUDItem *> ItemArray;
 	ItemArray m_itemArray;			// Pointer to each screen
@@ -137,5 +140,6 @@ extern CHUDRewardMsgQueue*	g_pRewardMsgs;
 extern CHUDPaused*			g_pPaused;
 extern CHUDDisplayMeter*	g_pDisplayMeter;
 extern CHUDScores*			g_pScores;
+extern CHUDTakeDamage*		g_pTakeDamage;
 
 #endif

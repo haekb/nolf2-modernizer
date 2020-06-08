@@ -23,6 +23,7 @@ CHUDCompass*		g_pCompass = LTNULL;
 CHUDObjectives*		g_pObjectives = LTNULL;
 CHUDRadio*			g_pRadio = LTNULL;
 
+
 inline void CHUDItem::SetRenderState()
 {
 	g_pDrawPrim->SetTransformType(DRAWPRIM_TRANSFORM_SCREEN);
@@ -93,6 +94,7 @@ LTBOOL CTO2HUDMgr::Init()
 	g_pCompass = &m_Compass;
 	g_pObjectives = &m_Objectives;
 	g_pRadio = &m_Radio;
+	g_pTakeDamage = &m_TakeDamage;
 
 	m_itemArray.push_back(&m_WpnChooser);
 	m_itemArray.push_back(&m_AmmoChooser);
