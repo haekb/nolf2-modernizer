@@ -563,7 +563,7 @@ void CDestructible::UpdateProgressiveDamage()
 {
 	DamageStruct damage;
 
-    LTFLOAT fFrameTime = g_pLTServer->GetFrameTime();
+    LTFLOAT fFrameTime = g_pGameServerShell->GetFrameTime();
 
 	DamageFlags nActiveDamageFlags = 0;
 	bool bBleeding = false;

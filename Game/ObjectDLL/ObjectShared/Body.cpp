@@ -995,7 +995,7 @@ void Body::Init(const BODYINITSTRUCT& bi)
 	{
 		uint32 nTime;
 		g_pModelLT->GetCurAnimTime( bi.pCharacter->m_hObject, nTracker, nTime );
-		nTime += (uint32)( g_pLTServer->GetFrameTime() * 1000.f );
+		nTime += (uint32)( g_pGameServerShell->GetFrameTime() * 1000.f );
 
 		if( LT_OK == g_pModelLT->GetMainTracker( m_hObject, nTracker ) )
 		{

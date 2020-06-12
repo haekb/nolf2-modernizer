@@ -776,7 +776,7 @@ void CProjectile::HandleTouch(HOBJECT hObj)
 			// prepare the info we need to process it
 			g_pLTServer->GetObjectPos(m_hObject, &m_vInvisNewPos);
 			g_pPhysicsLT->GetVelocity(m_hObject, &m_vInvisVel);
-			m_vInvisNewPos += (m_vInvisVel * g_pLTServer->GetFrameTime());
+			m_vInvisNewPos += (m_vInvisVel * g_pGameServerShell->GetFrameTime());
 
 			// Make sure this new position is inside the world
 			if (LT_INSIDE == g_pCommonLT->GetPointStatus(&m_vInvisNewPos))
@@ -829,7 +829,7 @@ void CProjectile::HandleTouch(HOBJECT hObj)
 			vDir.Normalize();
 
 			// determine how much we've travelled this frame
-			vVel *= g_pLTServer->GetFrameTime();
+			vVel *= g_pGameServerShell->GetFrameTime();
 
 			// get the position
 			LTVector vPos;
@@ -1017,7 +1017,7 @@ void CProjectile::Detonate(HOBJECT hObj)
 			vDir.Normalize();
 
 			// determine how much we've travelled this frame
-			vVel *= g_pLTServer->GetFrameTime();
+			vVel *= g_pGameServerShell->GetFrameTime();
 
 			// get a point just a little in front and behind the impact point
 			vP0 = vPos - vVel;  // a little "behind" of the impact point

@@ -112,7 +112,7 @@ void CAIHumanStateApprehend::Update()
 
 			// Decrement hold timer, and check if it's time to move.
 
-			m_fHoldTimer -= g_pLTServer->GetFrameTime();
+			m_fHoldTimer -= g_pGameServerShell->GetFrameTime();
 
 			if( m_fHoldTimer <= 0.f )
 			{

@@ -938,7 +938,7 @@ void ActiveWorldModel::UpdatePowerOn( const LTFLOAT &fCurTime )
 		SetOn();
 	}
 
-	m_fCurTm += g_pLTServer->GetFrameTime();
+	m_fCurTm += g_pGameServerShell->GetFrameTime();
 }
 
 
@@ -1034,7 +1034,7 @@ void ActiveWorldModel::UpdatePowerOff( const LTFLOAT &fCurTime )
 		SetOff();
 	}
 
-	m_fCurTm += g_pLTServer->GetFrameTime();
+	m_fCurTm += g_pGameServerShell->GetFrameTime();
 
 }
 
@@ -1711,7 +1711,7 @@ LTBOOL ActiveWorldModel::CalcAngle( LTFLOAT &fAngle, LTFLOAT fInitial, LTFLOAT f
 	{
 		fRate = fRate / fTotalTime;
 	}
-	LTFLOAT	fAmount		= GetWaveformValue( fRate, fPercent ) * g_pLTServer->GetFrameTime();
+	LTFLOAT	fAmount		= GetWaveformValue( fRate, fPercent ) * g_pGameServerShell->GetFrameTime();
 
 
 	if( fDir != 0.0f )
@@ -1783,7 +1783,7 @@ LTBOOL ActiveWorldModel::CalculateNewPosRot( LTVector &vOutPos, LTRotation &rOut
 			{
 				fRate = fRate / fTotalTime;
 			}
-			LTFLOAT fDistMove = GetWaveformValue( fRate, fPercent ) * g_pLTServer->GetFrameTime();
+			LTFLOAT fDistMove = GetWaveformValue( fRate, fPercent ) * g_pGameServerShell->GetFrameTime();
 			
 			// Make sure we dont move farther than we're supposed to
 

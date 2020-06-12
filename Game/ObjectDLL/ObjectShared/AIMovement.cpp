@@ -731,7 +731,7 @@ LTBOOL CAIMovement::UpdateConstantVelocity( EnumAnimMovement eMovementType, LTVe
 	}
 
 	LTFLOAT fMoveDist;
-    LTFLOAT fTimeDelta = g_pLTServer->GetFrameTime();
+    LTFLOAT fTimeDelta = g_pGameServerShell->GetFrameTime();
 
 	fMoveDist = m_pAI->GetSpeed()*fTimeDelta;
 

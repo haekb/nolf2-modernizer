@@ -160,7 +160,7 @@ void CAIGoalSerumDeath::HandleStateAnimate()
 
 			if( m_animProps.Get( kAPG_Action ) == kAP_Asleep )
 			{
-				m_fSleepTimer -= g_pLTServer->GetFrameTime();
+				m_fSleepTimer -= g_pGameServerShell->GetFrameTime();
 
 				// Sleep timer expired.
 

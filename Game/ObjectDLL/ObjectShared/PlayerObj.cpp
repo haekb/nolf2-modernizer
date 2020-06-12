@@ -4994,7 +4994,7 @@ char* CPlayerObj::GetDeathSound()
 
 void CPlayerObj::UpdateAirLevel()
 {
-    LTFLOAT fDeltaTime = g_pLTServer->GetFrameTime();
+    LTFLOAT fDeltaTime = g_pGameServerShell->GetFrameTime();
 
 	// See if we are in a liquid...
 
@@ -5048,7 +5048,7 @@ void CPlayerObj::UpdateHealth()
 {
 	if (m_damage.IsDead()) return;
 
-	LTFLOAT fDeltaTime = g_pLTServer->GetFrameTime();
+	LTFLOAT fDeltaTime = g_pGameServerShell->GetFrameTime();
 
 	LTVector vCurPos, vVel;
 	g_pLTServer->GetObjectPos(m_hObject, &vCurPos);
@@ -5094,7 +5094,7 @@ void CPlayerObj::UpdateHiding()
 		}
 
 		LTFLOAT fLast = m_fHiddenTimer;
-		m_fHiddenTimer += g_pLTServer->GetFrameTime();
+		m_fHiddenTimer += g_pGameServerShell->GetFrameTime();
 
 		// Reset interface if player was previously seen by an enemy.
 

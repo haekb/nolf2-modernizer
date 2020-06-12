@@ -28,6 +28,7 @@
 #include "MusicMgr.h"
 #include "MsgIds.h"
 #include "ProfileUtils.h"
+#include "WinUtil.h"
 
 #define MAX_CLIENTS		MAX_MULTI_PLAYERS
 #define MAX_TIME_RAMPS	12
@@ -206,6 +207,9 @@ class CGameServerShell : public IServerShellStub
 		//
 		LTFLOAT GetMaxServerFrametime() { return (1.0f / 100.0f); }
 
+		LTFLOAT GetFrameTime() { return m_fUnrestrictedFrametime; };
+
+
 	protected :
 
 	    virtual LTRESULT	OnServerInitialized();
@@ -354,6 +358,7 @@ class CGameServerShell : public IServerShellStub
 		ClientData* GetClientData( HCLIENT hClient );
 
 
+
 	protected:
 
 		TimeRamp			m_TimeRamps[MAX_TIME_RAMPS];
@@ -470,6 +475,8 @@ class CGameServerShell : public IServerShellStub
 		typedef std::vector< ClientData* > ClientDataList;
 		ClientDataList	m_ClientDataList;
 
+		LTFLOAT m_fLastFrametime;
+		LTFLOAT m_fUnrestrictedFrametime;
 };
 
 extern class CGameServerShell* g_pGameServerShell;

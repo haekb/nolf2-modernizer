@@ -2638,7 +2638,7 @@ void CAIHumanStrategyCover::Update()
 {
 	CAIHumanStrategy::Update();
 
-    LTFLOAT fTimeDelta = g_pLTServer->GetFrameTime();
+    LTFLOAT fTimeDelta = g_pGameServerShell->GetFrameTime();
 
 	switch ( m_eState )
 	{

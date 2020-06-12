@@ -1625,7 +1625,7 @@ void Prop::HandleAttachmentTouch( HOBJECT hToucher )
         g_pLTServer->GetObjectPos( m_hObject, &vPos );
 
 		vP1 = vPos;
-        vCurVel = vVel * g_pLTServer->GetFrameTime();
+        vCurVel = vVel * g_pGameServerShell->GetFrameTime();
 		vP0 = vP1 - vCurVel;
 		vP1 += vCurVel;
 
@@ -1701,7 +1701,7 @@ void Prop::StartFade( float fDuration, float fDelayStartTime /* = 0.0f */, float
 
 	m_bFading = true;
 
-	m_fFadeStartTime	= g_pLTServer->GetTime() + fDelayStartTime + g_pLTServer->GetFrameTime();
+	m_fFadeStartTime	= g_pLTServer->GetTime() + fDelayStartTime + g_pGameServerShell->GetFrameTime();
 	m_fFadeDuration		= Clamp( fDuration, 0.1f, 100000.0f );
 	m_fEndAlpha			= Clamp( fEndAlpha, 0.0f, 1.0f );
 	m_bFadeRemoveWhenDone = bRemove;
@@ -1795,7 +1795,7 @@ void Prop::Update()
 	{
 		if( m_fPitchVel != 0 || m_fYawVel != 0 || m_fRollVel != 0 )
 		{
-			float fDeltaTime = g_pLTServer->GetFrameTime();
+			float fDeltaTime = g_pGameServerShell->GetFrameTime();
 
 			m_fPitch += m_fPitchVel * fDeltaTime;
 			m_fYaw   += m_fYawVel * fDeltaTime;

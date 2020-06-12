@@ -387,6 +387,9 @@ CGameServerShell::CGameServerShell() :
 	// Note : ctor stuff is now all handled by ::OnServerInitialized
 
 	m_pServerMissionMgr = NULL;
+
+	m_fLastFrametime = 0.016f;
+	m_fUnrestrictedFrametime = 0.016f;
 }
 
 
@@ -3232,7 +3235,7 @@ void CGameServerShell::UpdateClientPingTimes()
     uint32 clientID;
 	HCLIENT hClient;
 
-    m_ClientPingSendCounter += g_pLTServer->GetFrameTime();
+    m_ClientPingSendCounter += g_pGameServerShell->GetFrameTime();
 	if(m_ClientPingSendCounter > CLIENT_PING_UPDATE_RATE)
 	{
 		CAutoMessage cMsg;
@@ -3488,6 +3491,15 @@ void CGameServerShell::Update(LTFLOAT timeElapsed)
         m_bFirstUpdate = LTFALSE;
 		FirstUpdate();
 	}
+
+	// Handle delta time
+#ifdef _USE_ENGINE_FRAMETIME
+	m_fUnrestrictedFrametime = g_pLTServer->GetFrameTime();
+#else
+	auto fCurrentTime = CWinUtil::GetTime();
+	m_fUnrestrictedFrametime = fCurrentTime - m_fLastFrametime;
+	m_fLastFrametime = fCurrentTime;
+#endif
 
 	// Update the switching worlds state machine.
 	UpdateSwitchingWorlds();

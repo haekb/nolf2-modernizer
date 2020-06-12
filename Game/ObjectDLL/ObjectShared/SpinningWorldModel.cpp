@@ -204,7 +204,7 @@ void SpinningWorldModel::UpdateOn( const LTFLOAT &fCurTime )
 		m_fYaw		= vOldAngles.y;
 		m_fRoll		= vOldAngles.z;
 
-		m_fMoveStartTm	+= g_pLTServer->GetFrameTime();
+		m_fMoveStartTm	+= g_pGameServerShell->GetFrameTime();
 		m_fLastTime		= fCurTime;
 		m_bUpdateSpin	= LTFALSE;
 
@@ -225,7 +225,7 @@ void SpinningWorldModel::UpdateOn( const LTFLOAT &fCurTime )
 		m_fYaw		= vOldAngles.y;
 		m_fRoll		= vOldAngles.z;
 
-		m_fMoveStartTm	+= g_pLTServer->GetFrameTime();
+		m_fMoveStartTm	+= g_pGameServerShell->GetFrameTime();
 		m_fLastTime		= fCurTime;
 		m_bUpdateSpin	= LTFALSE;
 
@@ -282,7 +282,7 @@ void SpinningWorldModel::UpdatePowerOn( const LTFLOAT &fCurTime )
 	LTBOOL	bDoneInZ = LTFALSE;
 	LTFLOAT	fPercent;
 	LTFLOAT	fRate;
-	LTFLOAT	fFrameTm = g_pLTServer->GetFrameTime();
+	LTFLOAT	fFrameTm = g_pGameServerShell->GetFrameTime();
 	
 	fPercent = (fCurTime - m_fMoveStartTm) / m_fPowerOnTime;
 
@@ -397,7 +397,7 @@ void SpinningWorldModel::UpdatePowerOff( const LTFLOAT &fCurTime )
 	LTBOOL	bDoneInZ = LTFALSE;
 	LTFLOAT	fPercent;
 	LTFLOAT	fRate;
-	LTFLOAT	fFrameTm = g_pLTServer->GetFrameTime();
+	LTFLOAT	fFrameTm = g_pGameServerShell->GetFrameTime();
 	
 	fPercent = (fCurTime - m_fMoveStartTm) / m_fPowerOffTime;
 	if( fPercent > 1.0f )

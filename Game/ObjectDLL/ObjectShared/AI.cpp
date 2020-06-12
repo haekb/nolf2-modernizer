@@ -5443,7 +5443,7 @@ void CAI::UpdateAccuracy()
 	// TODO: rate at which accuracy is regained should be affected
 	// by AI's skill somehow
 
-    m_fAccuracyModifierTimer = Max<LTFLOAT>(0.0f, m_fAccuracyModifierTimer - g_pLTServer->GetFrameTime()*RAISE_BY_DIFFICULTY(m_fAccuracyIncreaseRate));
+    m_fAccuracyModifierTimer = Max<LTFLOAT>(0.0f, m_fAccuracyModifierTimer - g_pGameServerShell->GetFrameTime()*RAISE_BY_DIFFICULTY(m_fAccuracyIncreaseRate));
 }
 
 // ----------------------------------------------------------------------- //
@@ -5561,7 +5561,7 @@ void CAI::UpdatePosition()
 
   	if ( ( !m_pAIMovement->IsRotationLocked() ) && ( m_fRotationTimer < m_fRotationTime ) )
    	{
-		m_fRotationTimer += g_pLTServer->GetFrameTime();
+		m_fRotationTimer += g_pGameServerShell->GetFrameTime();
         m_fRotationTimer = Min<LTFLOAT>(m_fRotationTime, m_fRotationTimer);
    
         LTFLOAT fRotationInterpolation = GetRotationInterpolation(m_fRotationTimer/m_fRotationTime);
@@ -5948,7 +5948,7 @@ LTFLOAT CAI::GetHoverSpeed()
 	// Remember the last time we got the hover speed.
 	m_flLastHoverTime = g_pLTServer->GetTime();
 
-	float flUncappedSpeed = m_flCurrentHoverSpeed + GetHoverAcceleration() * g_pLTServer->GetFrameTime();
+	float flUncappedSpeed = m_flCurrentHoverSpeed + GetHoverAcceleration() * g_pGameServerShell->GetFrameTime();
 	float flMinSpeed = GetBrain()->GetAIData(kAIData_HoverMinSpeed);
 	float flMaxSpeed = GetBrain()->GetAIData(kAIData_HoverMaxSpeed);
 

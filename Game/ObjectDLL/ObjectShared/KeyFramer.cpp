@@ -1477,7 +1477,7 @@ void KeyFramer::Update()
 
 	// Increment timer
 
-    float fTime = g_pLTServer->GetFrameTime();
+    float fTime = g_pGameServerShell->GetFrameTime();
 	m_fCurTime += (m_eDirection == KFD_FORWARD) ? fTime : -fTime;
 }
 
@@ -1726,7 +1726,7 @@ LTBOOL KeyFramer::CalcCurPos(LTBOOL & bAtKey)
 		// Find how far along the total path we are and calculate the distance we should move based on waveform...
 
 		float fPathPercent	= LTCLAMP( m_fCurTime / m_fTotalPathTime, 0.0f, 1.0f );
-		float fMoveDist		= GetKFWaveValue( m_fVelocity, fPathPercent, m_eWaveform ) * g_pLTServer->GetFrameTime();
+		float fMoveDist		= GetKFWaveValue( m_fVelocity, fPathPercent, m_eWaveform ) * g_pGameServerShell->GetFrameTime();
 		float fMovePercent;
 
 		// Calculate distance between pos1 and pos2

@@ -347,7 +347,7 @@ void Controller::HandleFadeCommand(const CParsedMsg &cMsg)
 	}
 
 	// Ok, configure...
-    m_fStartTime = g_pLTServer->GetTime() + g_pLTServer->GetFrameTime();
+    m_fStartTime = g_pLTServer->GetTime() + g_pGameServerShell->GetFrameTime();
 	m_fDuration = duration;
 	m_ParamType = paramType;
 	m_WaveType = waveType;

@@ -94,7 +94,7 @@ uint32 CServerMark::EngineMessageFn(uint32 messageID, void *pData, LTFLOAT fData
 		case MID_UPDATE:
 		{
 			//update the time based upon the server frame time
-			m_fElapsedTime += g_pLTServer->GetFrameTime();
+			m_fElapsedTime += g_pGameServerShell->GetFrameTime();
 
 			//figure out our lifespan times
 			float fSolidTime = g_cvarMarkWMSolidTime.GetFloat();

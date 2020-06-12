@@ -251,7 +251,7 @@ void CAIHumanStateDisappearReappear::UpdateAlpha()
 		return;
 	}
 
-	m_fFadeTimer += g_pLTServer->GetFrameTime();
+	m_fFadeTimer += g_pGameServerShell->GetFrameTime();
 
 	LTFLOAT fAlpha;
 

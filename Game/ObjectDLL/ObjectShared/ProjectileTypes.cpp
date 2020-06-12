@@ -248,7 +248,7 @@ void CGrenade::HandleImpact(HOBJECT hObj)
         g_pLTServer->GetObjectPos(m_hObject, &vPos);
 
 		vP1 = vPos;
-        vCurVel = vVel * g_pLTServer->GetFrameTime();
+        vCurVel = vVel * g_pGameServerShell->GetFrameTime();
 		vP0 = vP1 - vCurVel;
 		vP1 += vCurVel;
 
@@ -414,7 +414,7 @@ void CGrenade::UpdateGrenade()
 	{
 		if (m_fPitchVel != 0 || m_fYawVel != 0 || m_fRollVel != 0)
 		{
-            LTFLOAT fDeltaTime = g_pLTServer->GetFrameTime();
+            LTFLOAT fDeltaTime = g_pGameServerShell->GetFrameTime();
 
 			m_fPitch += m_fPitchVel * fDeltaTime;
 			m_fYaw   += m_fYawVel * fDeltaTime;
@@ -1008,7 +1008,7 @@ void CSpear::HandleImpact(HOBJECT hObj)
 				g_pPhysicsLT->GetVelocity(m_hObject, &vVel);
 
 				vP1 = vPos;
-				vCurVel = vVel * g_pLTServer->GetFrameTime();
+				vCurVel = vVel * g_pGameServerShell->GetFrameTime();
 				vP0 = vP1 - vCurVel;
 				vP1 += vCurVel;
 
@@ -2736,7 +2736,7 @@ void CProjectileSpawner::HandleImpact( HOBJECT hObj )
         g_pLTServer->GetObjectPos(m_hObject, &vPos);
 
 		vP1 = vPos;
-        vCurVel = vVel * g_pLTServer->GetFrameTime();
+        vCurVel = vVel * g_pGameServerShell->GetFrameTime();
 		vP0 = vP1 - vCurVel;
 		vP1 += vCurVel;
 

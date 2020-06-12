@@ -602,7 +602,7 @@ void CAIHumanStatePatrol::Update()
 	}
 	else
 	{
-        m_fTalkTimer -= g_pLTServer->GetFrameTime();
+        m_fTalkTimer -= g_pGameServerShell->GetFrameTime();
 	}
 
 	LTBOOL bGotoNextNode = LTFALSE;
@@ -764,7 +764,7 @@ LTBOOL CAIHumanStatePatrol::UpdateTaskWait()
 	{
 		// We're waiting at our patrol point
 
-        m_fWaitTimer -= g_pLTServer->GetFrameTime();
+        m_fWaitTimer -= g_pGameServerShell->GetFrameTime();
 	}
 	else
 	{
@@ -2430,7 +2430,7 @@ void CAIHumanStateUseObject::Update()
 				if( !GetAnimationContext()->IsTransitioning() )
 				{
 					// Decrement looping timer.
-					m_fAnimTimer += g_pLTServer->GetFrameTime();
+					m_fAnimTimer += g_pGameServerShell->GetFrameTime();
 				}
 				else {
 					bEnableNodeTracking = LTFALSE;
@@ -5406,7 +5406,7 @@ void CAIHumanStateAttack::Update()
 	else if( GetAnimationContext()->IsPropSet(kAPG_Posture, kAP_Crouch) )
 	{
 		m_aniPosture.Set(kAPG_Posture, kAP_Crouch);
-		m_fCrouchTimer += g_pLTServer->GetFrameTime();
+		m_fCrouchTimer += g_pGameServerShell->GetFrameTime();
 
 		if( !( m_dwAttackFlags & kAttk_Crouching ) )
 		{
@@ -5640,7 +5640,7 @@ void CAIHumanStateAttack::Update()
 
 	// Bail if blocked by something other than AI.
 
-	m_fChaseTimer -= g_pLTServer->GetFrameTime();
+	m_fChaseTimer -= g_pGameServerShell->GetFrameTime();
 
 	if ( CanChase(LTFALSE) )
 	{
@@ -7140,7 +7140,7 @@ void CAIHumanStateAttackFromVantage::UpdateAttacking()
 
 	if( m_bFired )
 	{
-		m_fAttackTimer -= g_pLTServer->GetFrameTime();
+		m_fAttackTimer -= g_pGameServerShell->GetFrameTime();
 	}
 }
 
@@ -7470,7 +7470,7 @@ void CAIHumanStateAttackFromView::UpdateAttacking()
 	}
 	else
 	{
-        m_fChaseTimer += g_pLTServer->GetFrameTime();
+        m_fChaseTimer += g_pGameServerShell->GetFrameTime();
 		if ( m_fChaseTimer > GetAI()->GetBrain()->GetAttackFromViewChaseTime() )
 		{
 			// Never exit the state if an attack animation is in progress. 
@@ -8137,11 +8137,11 @@ void CAIHumanStateDistress::Update()
 		// Only increase distress when enemy aims a dangerous weapon at you.
 
 		LTFLOAT fIncreaseRate = GetAI()->GetBrain()->GetDistressIncreaseRate();
-        m_fDistress += g_pLTServer->GetFrameTime()*fIncreaseRate;
+        m_fDistress += g_pGameServerShell->GetFrameTime()*fIncreaseRate;
 	}
 	else {
 		LTFLOAT fDecreaseRate = GetAI()->GetBrain()->GetDistressDecreaseRate();
-        m_fDistress = Max<LTFLOAT>(-3.0f, m_fDistress-g_pLTServer->GetFrameTime()*fDecreaseRate);
+        m_fDistress = Max<LTFLOAT>(-3.0f, m_fDistress-g_pGameServerShell->GetFrameTime()*fDecreaseRate);
 	}
 
 	// See if we need to go to the next level
@@ -9075,7 +9075,7 @@ void CAIHumanStateFollow::Update()
 		GetAI()->EnableNodeTracking( kTrack_LookAt, LTNULL );
 	}
 
-    m_fTimer += g_pLTServer->GetFrameTime();
+    m_fTimer += g_pGameServerShell->GetFrameTime();
 
 	if ( m_pStrategyFollowPath->IsDone() || m_fTimer > 1.0f )
 	{
