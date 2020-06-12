@@ -48,7 +48,7 @@ void AirFn(int argc, char **argv)
 	g_pPlayerStats->UpdateAir((float)atof(argv[0])/100.0f);
 }
 
-#define TOTAL_FRAMERATE_SAMPLES 10
+#define TOTAL_FRAMERATE_SAMPLES 30
 
 // ----------------------------------------------------------------------- //
 //
@@ -1765,7 +1765,7 @@ float CTO2PlayerStats::GetSkillModifier(eSkill skl, uint8 nMod)
 
 void CTO2PlayerStats::UpdateFramerate(LTFLOAT framerate)
 {
-	// Sample up to 10 frames
+	// Sample up to 30 frames
 	if (m_iFramerateSampleIndex >= TOTAL_FRAMERATE_SAMPLES) {
 		m_fFramerate = m_fFramerateSamples / TOTAL_FRAMERATE_SAMPLES;
 
