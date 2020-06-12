@@ -704,6 +704,7 @@ CGameClientShell::CGameClientShell()
 
 	m_pGameInputMgr = nullptr;
 
+	m_fLastFrametime = 0.016f;
 
 	// Start up SDL! -- Maybe trim down what we're initing here...
 
@@ -1713,7 +1714,17 @@ void CGameClientShell::Update()
 	g_pClientMultiplayerMgr->Update( );
 
 	// Set up the time for this frame...
+#ifdef _USE_ENGINE_FRAMETIME
     m_fFrameTime = g_pLTClient->GetFrameTime();
+#else
+	// Calculate our frametime - This is somehow more accurate than the engine's GetFrameTime().
+	auto fCurrentTime = CWinUtil::GetTime();
+	auto fDeltaTime = fCurrentTime - m_fLastFrametime;
+	m_fLastFrametime = fCurrentTime;
+	//
+
+	m_fFrameTime = fDeltaTime;
+#endif
 	if (m_fFrameTime > MAX_FRAME_DELTA)
 	{
 		m_fFrameTime = MAX_FRAME_DELTA;

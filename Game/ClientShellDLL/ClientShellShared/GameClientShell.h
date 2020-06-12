@@ -400,6 +400,7 @@ private :
 	CJukeboxButeMgr* m_pJukeboxButeMgr;
 	GameInputMgr* m_pGameInputMgr;
 
+	LTFLOAT m_fLastFrametime;
 };
 
 void DefaultModelHook(ModelHookData *pData, void *pUser);
