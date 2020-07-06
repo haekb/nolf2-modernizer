@@ -2172,6 +2172,28 @@ void CMoveMgr::Update()
 	HOBJECT hObj = g_pLTClient->GetClientObject();
 	if (!m_hObject || !hObj) return;
 
+	//////////////////////////////////////////////////////////////////
+	static auto nStartTick = SDL_GetTicks();
+	static bool bForward = false;
+	if (m_dwControlFlags & BC_CFLG_FORWARD)
+	{
+		if (!bForward)
+		{
+			nStartTick = SDL_GetTicks();
+		}
+		bForward = true;
+
+	}
+	else
+	{
+		bForward = false;
+	}
+	if (bForward)
+	{
+		g_pLTClient->CPrint("Time: %d", SDL_GetTicks() - nStartTick);
+	}
+	//////////////////////////////////////////////////////////////////
+
 	m_eLastContainerCode = m_eCurContainerCode;
 	m_eCurContainerCode  = g_pPlayerMgr->GetCurContainerCode();
 
