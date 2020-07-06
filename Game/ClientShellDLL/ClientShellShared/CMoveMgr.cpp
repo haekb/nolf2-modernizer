@@ -98,6 +98,8 @@ VarTrack	g_vtSlideToStopTime;
 
 VarTrack	g_vtMaxPushYVelocity;
 
+VarTrack	g_vtForwardTime;
+
 
 LTBOOL g_bJumpRequested  = LTFALSE;
 
@@ -203,6 +205,8 @@ LTBOOL CMoveMgr::Init()
 
     g_vtMaxPushYVelocity.Init(g_pLTClient, "PusherMaxYVelocity", LTNULL, 100.0f);
 
+	// Displays ticks since you've pressed forward!
+	g_vtForwardTime.Init(g_pLTClient, "ShowForwardTime", LTNULL, 1.0f);
 
  	// Init some defaults.  These should NEVER get used because we don't
 	// have our object until the server sends the physics update.
@@ -1995,11 +1999,20 @@ void CMoveMgr::MoveLocalSolidObject()
 	pPhysics->SetGlobalForce(vNewGlobalForce);
 
 	info.m_hObject = m_hObject;
-	info.m_dt = g_pGameClientShell->GetFrameTime();
+
+	// Jake: Update our movement at 60fps
+	info.m_dt = 0.016f;
+
 	pPhysics->UpdateMovement(&info);
 
 	if (info.m_Offset.MagSqr() > 0.01f)
 	{
+		// Jake: So for some odd reason the calculation in the engine seems to be off..
+		// So I update it at a solid 16ms, and then adjust it for delta time here.
+		// ---
+		// The multiplication value was tweaked by hand until got basically the same result as normal running speed
+		info.m_Offset *= (62.5f * g_pGameClientShell->GetFrameTime());
+
 		g_pLTClient->GetObjectPos(m_hObject, &curPos);
 		newPos = curPos + info.m_Offset;
 	
@@ -2026,6 +2039,7 @@ void CMoveMgr::MoveLocalSolidObject()
 			pPhysics->SetVelocity(m_hObject, &vObjVel);
 		}
 	}
+	
 
 	pPhysics->SetGlobalForce(vOldGlobalForce);
 }
@@ -2173,24 +2187,29 @@ void CMoveMgr::Update()
 	if (!m_hObject || !hObj) return;
 
 	//////////////////////////////////////////////////////////////////
-	static auto nStartTick = SDL_GetTicks();
-	static bool bForward = false;
-	if (m_dwControlFlags & BC_CFLG_FORWARD)
+	// Debug code to show ticks since you've first pressed forward
+	// For debugging framerate related nonsense.
+	if (g_vtForwardTime.GetFloat() != 0.0f)
 	{
-		if (!bForward)
+		static auto nStartTick = SDL_GetTicks();
+		static bool bForward = false;
+		if (m_dwControlFlags & BC_CFLG_FORWARD)
 		{
-			nStartTick = SDL_GetTicks();
-		}
-		bForward = true;
+			if (!bForward)
+			{
+				nStartTick = SDL_GetTicks();
+			}
+			bForward = true;
 
-	}
-	else
-	{
-		bForward = false;
-	}
-	if (bForward)
-	{
-		g_pLTClient->CPrint("Time: %d", SDL_GetTicks() - nStartTick);
+		}
+		else
+		{
+			bForward = false;
+		}
+		if (bForward)
+		{
+			g_pLTClient->CPrint("Time: %d", SDL_GetTicks() - nStartTick);
+		}
 	}
 	//////////////////////////////////////////////////////////////////
 
