@@ -1963,7 +1963,9 @@ bool CMoveMgr::CanStandUp()
 void CMoveMgr::MoveLocalSolidObject()
 {
 	MoveInfo info;
+	MoveInfo infoJump;
     LTVector newPos, curPos;
+	bool bTouched = false;
 
 	// Check if we're using a vehicle physics model.
 	if( m_pVehicleMgr->IsVehiclePhysics( ))
@@ -1998,12 +2000,42 @@ void CMoveMgr::MoveLocalSolidObject()
 	pPhysics->GetGlobalForce(vOldGlobalForce);
 	pPhysics->SetGlobalForce(vNewGlobalForce);
 
+	// Jake: General non-jumping related movement.
+	// This updates at a static 60fps, and we apply our delta time after!
 	info.m_hObject = m_hObject;
-
-	// Jake: Update our movement at 60fps
 	info.m_dt = 0.016f;
+	info.m_Offset = LTVector(0.0f, 0.0f, 0.0f);
 
+	// Jake: Falling/Jumping related movement
+	// For whatever reason this function works fine with jumping/falling...
+	// So begins this hack...
+	infoJump.m_hObject = m_hObject;
+	infoJump.m_dt = g_pGameClientShell->GetFrameTime();
+	infoJump.m_Offset = LTVector(0.0f, 0.0f, 0.0f);
+
+	// We need to save our Accel and Velocity states
+	LTVector vRawA = { 0.0f, 0.0f, 0.0f };
+	LTVector vRawV = { 0.0f, 0.0f, 0.0f };
+
+	LTVector vProcessedA = { 0.0f, 0.0f, 0.0f };
+	LTVector vProcessedV = { 0.0f, 0.0f, 0.0f };
+
+	// Get our before-real movement accel and velocity
+	pPhysics->GetAcceleration(m_hObject, &vRawA);
+	pPhysics->GetVelocity(m_hObject, &vRawV);
+
+	// Apply our real movement
 	pPhysics->UpdateMovement(&info);
+
+	// Save the processed accel and velocity
+	pPhysics->GetAcceleration(m_hObject, &vProcessedA);
+	pPhysics->GetVelocity(m_hObject, &vProcessedV);
+
+	// Set our before-real movement accel and velocity, so the jump will be processed correctly
+	pPhysics->SetAcceleration(m_hObject, &vRawA);
+	pPhysics->SetVelocity(m_hObject, &vRawV);
+
+	pPhysics->UpdateMovement(&infoJump);
 
 	if (info.m_Offset.MagSqr() > 0.01f)
 	{
@@ -2011,14 +2043,29 @@ void CMoveMgr::MoveLocalSolidObject()
 		// So I update it at a solid 16ms, and then adjust it for delta time here.
 		// ---
 		// The multiplication value was tweaked by hand until got basically the same result as normal running speed
-		info.m_Offset *= (62.5f * g_pGameClientShell->GetFrameTime());
+		info.m_Offset.x *= (62.5f * g_pGameClientShell->GetFrameTime());
+		info.m_Offset.z *= (62.5f * g_pGameClientShell->GetFrameTime());
+
+		bTouched = true;
+	}
+
+	if (infoJump.m_Offset.MagSqr() > 0.01f)
+	{
+		// Y-value (up/down) seems fine as is, just use it!
+		info.m_Offset.y = infoJump.m_Offset.y;
+		bTouched = true;
+	}
+
+	if (bTouched)
+	{
+		//g_pLTClient->CPrint("Offset: %f/%f/%f", info.m_Offset.x, info.m_Offset.y, info.m_Offset.z);
 
 		g_pLTClient->GetObjectPos(m_hObject, &curPos);
 		newPos = curPos + info.m_Offset;
-	
-		if( m_pVehicleMgr->IsVehiclePhysics( ) )
+
+		if (m_pVehicleMgr->IsVehiclePhysics())
 		{
-			m_pVehicleMgr->MoveVehicleObject( newPos );
+			m_pVehicleMgr->MoveVehicleObject(newPos);
 		}
 		else
 		{
@@ -2031,7 +2078,7 @@ void CMoveMgr::MoveLocalSolidObject()
 		// you should be sliding on, but you're blocked, so gravity keeps
 		// getting applied to the velocity.  Only do this if the UpdateMovement
 		// affected our y direction.
-		if ( fabsf( info.m_Offset.y ) > 0.01f && fabsf(newPos.y - curPos.y) < 0.01f)
+		if (fabsf(info.m_Offset.y) > 0.01f && fabsf(newPos.y - curPos.y) < 0.01f)
 		{
 			LTVector vObjVel;
 			pPhysics->GetVelocity(m_hObject, &vObjVel);
@@ -2039,7 +2086,6 @@ void CMoveMgr::MoveLocalSolidObject()
 			pPhysics->SetVelocity(m_hObject, &vObjVel);
 		}
 	}
-	
 
 	pPhysics->SetGlobalForce(vOldGlobalForce);
 }
