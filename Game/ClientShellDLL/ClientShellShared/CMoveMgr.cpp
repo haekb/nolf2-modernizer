@@ -1986,7 +1986,17 @@ void CMoveMgr::MoveLocalSolidObject()
     LTVector newPos, curPos;
 	bool bTouched = false;
 	bool bUseAltMovement = g_vtMovementFramerateFix.GetFloat() != 0.0f;
+
+	// If we're in spectator mode, don't apply our gravity.
+	// It's such an edgecase that we really don't need to handle it
+	if (g_pPlayerMgr->IsSpectatorMode())
+	{
+		bUseAltMovement = false;
+	}
+
 	LTFLOAT fDeltaTime = bUseAltMovement ? 0.016f : g_pGameClientShell->GetFrameTime();
+
+
 
 	// Check if we're using a vehicle physics model.
 	if( m_pVehicleMgr->IsVehiclePhysics( ))
@@ -2075,7 +2085,7 @@ void CMoveMgr::MoveLocalSolidObject()
 	// Handle our alternate jumping/falling
 	if (m_bYVelocitySet)
 	{
-		m_vYVelocity += m_fGravity * g_pGameClientShell->GetFrameTime();
+		m_vYVelocity += vNewGlobalForce.y * g_pGameClientShell->GetFrameTime();
 
 		// Value is tweaked to reach the "fall cam" threshold
 		info.m_Offset.y = m_vYVelocity.y * g_pGameClientShell->GetFrameTime() * 1.118f;
