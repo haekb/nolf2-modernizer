@@ -45,6 +45,9 @@
 #define PLAYERANIM_STAND	"LSt"
 #define PLAYERANIM_CROUCH	"LC"
 
+// Uncomment if you want helpful prints for debugging jump height
+//#define DEBUG_JUMP_HEIGHT
+
 class Pusher
 {
 public:
@@ -186,7 +189,7 @@ LTBOOL CMoveMgr::Init()
     g_vtFallDamageMin.Init(g_pLTClient, "FallDamageMin", LTNULL, 5.0f);
     g_vtFallDamageMax.Init(g_pLTClient, "FallDamageMax", LTNULL, 500.0f);
 
-    g_vtCamLandMinHeight.Init(g_pLTClient, "CamLandMinHeight", LTNULL, 50.0f);
+    g_vtCamLandMinHeight.Init(g_pLTClient, "CamLandMinHeight", LTNULL, 47.0f); // Changed from 50.0f
     g_vtCamLandMoveDist.Init(g_pLTClient, "CamLandMoveDist", LTNULL, -15.0f);
     g_vtCamLandDownTime.Init(g_pLTClient, "CamLandDownTime", LTNULL, 0.15f);
     g_vtCamLandUpTime.Init(g_pLTClient, "CamLandUpTime", LTNULL, 0.4f);
@@ -873,6 +876,9 @@ void CMoveMgr::UpdateOnGround()
 			if (vPos.y > m_fLastOnGroundY)
 			{
 				m_fLastOnGroundY = vPos.y;
+#ifdef DEBUG_JUMP_HEIGHT
+				g_pLTClient->CPrint("Last on ground %f", m_fLastOnGroundY);
+#endif
 			}
 		}
 
@@ -997,6 +1003,10 @@ void CMoveMgr::HandleFallLand(LTFLOAT fDistFell)
 	float fDamageMaxHeight = m_pVehicleMgr->IsVehiclePhysics() ? g_vtVehicleFallDamageMaxHeight.GetFloat() : g_vtFallDamageMaxHeight.GetFloat();
 	float fFallDamageMin = g_vtFallDamageMin.GetFloat();
 	float fFallDamageMax = g_vtFallDamageMax.GetFloat();
+
+#ifdef DEBUG_JUMP_HEIGHT
+	g_pLTClient->CPrint("Distance Fell %f / %f", fDistFell, fMinLandHeight);
+#endif
 
 	if (fDistFell > fMinLandHeight)
 	{
@@ -1998,7 +2008,6 @@ void CMoveMgr::MoveLocalSolidObject()
 		g_pPhysicsLT->SetStairHeight( fStairHeight );
 	}
 
-
 	LTVector vOldGlobalForce(0, 0, 0);
 	LTVector vNewGlobalForce(0, m_bGravityOverride ? m_fTotalContainerGravity : m_fGravity, 0);
 
@@ -2026,7 +2035,6 @@ void CMoveMgr::MoveLocalSolidObject()
 	// If we're not set, and we've jumped or are falling
 	if (!bYSet && (m_bJumped || !m_bOnGround))
 	{
-		g_pLTClient->CPrint("[%u] Jumping or Falling!!", SDL_GetTicks());
 		vYV = vRawV;
 		vYA = vRawA;
 		bYSet = true;
@@ -2059,6 +2067,7 @@ void CMoveMgr::MoveLocalSolidObject()
 			info.m_Offset.x *= (62.5f * g_pGameClientShell->GetFrameTime());
 			info.m_Offset.z *= (62.5f * g_pGameClientShell->GetFrameTime());
 			info.m_Offset.y = 0;
+
 		}
 
 		bTouched = true;
@@ -2069,7 +2078,8 @@ void CMoveMgr::MoveLocalSolidObject()
 	{
 		vYV += m_fGravity * g_pGameClientShell->GetFrameTime();
 
-		info.m_Offset.y = vYV.y * g_pGameClientShell->GetFrameTime();
+		// Value is tweaked to reach the "fall cam" threshold
+		info.m_Offset.y = vYV.y * g_pGameClientShell->GetFrameTime() * 1.118f;
 
 		bTouched = true;
 	}
