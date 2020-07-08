@@ -99,6 +99,7 @@ VarTrack	g_vtSlideToStopTime;
 VarTrack	g_vtMaxPushYVelocity;
 
 VarTrack	g_vtForwardTime;
+VarTrack	g_vtMovementFramerateFix;
 
 
 LTBOOL g_bJumpRequested  = LTFALSE;
@@ -206,7 +207,10 @@ LTBOOL CMoveMgr::Init()
     g_vtMaxPushYVelocity.Init(g_pLTClient, "PusherMaxYVelocity", LTNULL, 100.0f);
 
 	// Displays ticks since you've pressed forward!
-	g_vtForwardTime.Init(g_pLTClient, "ShowForwardTime", LTNULL, 1.0f);
+	g_vtForwardTime.Init(g_pLTClient, "ShowForwardTime", LTNULL, 0.0f);
+
+	// Use alternate movement/jumping methods. This fixes movement 
+	g_vtMovementFramerateFix.Init(g_pLTClient, "MovementFramerateFix", LTNULL, 1.0f);
 
  	// Init some defaults.  These should NEVER get used because we don't
 	// have our object until the server sends the physics update.
@@ -1963,9 +1967,10 @@ bool CMoveMgr::CanStandUp()
 void CMoveMgr::MoveLocalSolidObject()
 {
 	MoveInfo info;
-	MoveInfo infoJump;
     LTVector newPos, curPos;
 	bool bTouched = false;
+	bool bUseAltMovement = g_vtMovementFramerateFix.GetFloat() != 0.0f;
+	LTFLOAT fDeltaTime = bUseAltMovement ? 0.016f : g_pGameClientShell->GetFrameTime();
 
 	// Check if we're using a vehicle physics model.
 	if( m_pVehicleMgr->IsVehiclePhysics( ))
@@ -2003,39 +2008,45 @@ void CMoveMgr::MoveLocalSolidObject()
 	// Jake: General non-jumping related movement.
 	// This updates at a static 60fps, and we apply our delta time after!
 	info.m_hObject = m_hObject;
-	info.m_dt = 0.016f;
+	info.m_dt = fDeltaTime;
 	info.m_Offset = LTVector(0.0f, 0.0f, 0.0f);
-
-	// Jake: Falling/Jumping related movement
-	// For whatever reason this function works fine with jumping/falling...
-	// So begins this hack...
-	infoJump.m_hObject = m_hObject;
-	infoJump.m_dt = g_pGameClientShell->GetFrameTime();
-	infoJump.m_Offset = LTVector(0.0f, 0.0f, 0.0f);
 
 	// We need to save our Accel and Velocity states
 	LTVector vRawA = { 0.0f, 0.0f, 0.0f };
 	LTVector vRawV = { 0.0f, 0.0f, 0.0f };
 
-	LTVector vProcessedA = { 0.0f, 0.0f, 0.0f };
-	LTVector vProcessedV = { 0.0f, 0.0f, 0.0f };
+	static LTVector vYV = { 0.0f, 0.0f, 0.0f };
+	static LTVector vYA = { 0.0f, 0.0f, 0.0f };
+	static bool bYSet = false;
 
 	// Get our before-real movement accel and velocity
 	pPhysics->GetAcceleration(m_hObject, &vRawA);
 	pPhysics->GetVelocity(m_hObject, &vRawV);
 
+	// If we're not set, and we've jumped or are falling
+	if (!bYSet && (m_bJumped || !m_bOnGround))
+	{
+		g_pLTClient->CPrint("[%u] Jumping or Falling!!", SDL_GetTicks());
+		vYV = vRawV;
+		vYA = vRawA;
+		bYSet = true;
+	}
+	// If we're set, and we're not falling or jumped, reset our state!
+	else if (bYSet && m_bOnGround)
+	{
+		vYV.Init();
+		vYA.Init();
+		bYSet = false;
+	}
+
+	// If we're not using alternate movement system, force set our YSet to false
+	if (!bUseAltMovement)
+	{
+		bYSet = false;
+	}
+
 	// Apply our real movement
 	pPhysics->UpdateMovement(&info);
-
-	// Save the processed accel and velocity
-	pPhysics->GetAcceleration(m_hObject, &vProcessedA);
-	pPhysics->GetVelocity(m_hObject, &vProcessedV);
-
-	// Set our before-real movement accel and velocity, so the jump will be processed correctly
-	pPhysics->SetAcceleration(m_hObject, &vRawA);
-	pPhysics->SetVelocity(m_hObject, &vRawV);
-
-	pPhysics->UpdateMovement(&infoJump);
 
 	if (info.m_Offset.MagSqr() > 0.01f)
 	{
@@ -2043,16 +2054,23 @@ void CMoveMgr::MoveLocalSolidObject()
 		// So I update it at a solid 16ms, and then adjust it for delta time here.
 		// ---
 		// The multiplication value was tweaked by hand until got basically the same result as normal running speed
-		info.m_Offset.x *= (62.5f * g_pGameClientShell->GetFrameTime());
-		info.m_Offset.z *= (62.5f * g_pGameClientShell->GetFrameTime());
+		if (bUseAltMovement)
+		{
+			info.m_Offset.x *= (62.5f * g_pGameClientShell->GetFrameTime());
+			info.m_Offset.z *= (62.5f * g_pGameClientShell->GetFrameTime());
+			info.m_Offset.y = 0;
+		}
 
 		bTouched = true;
 	}
 
-	if (infoJump.m_Offset.MagSqr() > 0.01f)
+	// Handle our alternate jumping/falling
+	if (bYSet)
 	{
-		// Y-value (up/down) seems fine as is, just use it!
-		info.m_Offset.y = infoJump.m_Offset.y;
+		vYV += m_fGravity * g_pGameClientShell->GetFrameTime();
+
+		info.m_Offset.y = vYV.y * g_pGameClientShell->GetFrameTime();
+
 		bTouched = true;
 	}
 
