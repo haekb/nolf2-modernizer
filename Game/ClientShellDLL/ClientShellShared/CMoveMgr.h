@@ -271,6 +271,9 @@ class CMoveMgr
 	
 	LTVector		m_vCrouchDims;
 	LTVector		m_vStandDims;
+
+	LTVector		m_vYVelocity;
+	LTBOOL			m_bYVelocitySet;
 };
 
 

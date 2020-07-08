@@ -297,6 +297,9 @@ void CMoveMgr::InitWorldData()
 	{
 		m_fLastOnGroundY	= MIN_ONGROUND_Y;
 	}
+
+	m_bYVelocitySet = LTFALSE;
+	m_vYVelocity.Init();
 }
 
 // ----------------------------------------------------------------------- //
@@ -1972,6 +1975,9 @@ bool CMoveMgr::CanStandUp()
 //
 //	PURPOSE:	Move our object
 //
+// Jake: Important note, that this is still not framerate perfect
+// The jump heights are now more similar to how they were before!
+//
 // ----------------------------------------------------------------------- //
 
 void CMoveMgr::MoveLocalSolidObject()
@@ -2024,33 +2030,27 @@ void CMoveMgr::MoveLocalSolidObject()
 	LTVector vRawA = { 0.0f, 0.0f, 0.0f };
 	LTVector vRawV = { 0.0f, 0.0f, 0.0f };
 
-	static LTVector vYV = { 0.0f, 0.0f, 0.0f };
-	static LTVector vYA = { 0.0f, 0.0f, 0.0f };
-	static bool bYSet = false;
-
 	// Get our before-real movement accel and velocity
 	pPhysics->GetAcceleration(m_hObject, &vRawA);
 	pPhysics->GetVelocity(m_hObject, &vRawV);
 
-	// If we're not set, and we've jumped or are falling
-	if (!bYSet && (m_bJumped || !m_bOnGround))
+	// If we're not set, and we've jumped or not on the ground (falling..)
+	if (!m_bYVelocitySet && (m_bJumped || !m_bOnGround))
 	{
-		vYV = vRawV;
-		vYA = vRawA;
-		bYSet = true;
+		m_vYVelocity = vRawV;
+		m_bYVelocitySet = true;
 	}
-	// If we're set, and we're not falling or jumped, reset our state!
-	else if (bYSet && m_bOnGround)
+	// If we're set, and we're on the ground, reset our state!
+	else if (m_bYVelocitySet && m_bOnGround)
 	{
-		vYV.Init();
-		vYA.Init();
-		bYSet = false;
+		m_vYVelocity.Init();
+		m_bYVelocitySet = false;
 	}
 
-	// If we're not using alternate movement system, force set our YSet to false
+	// If we're not using alternate movement system, force set our m_bYVelocitySet to false
 	if (!bUseAltMovement)
 	{
-		bYSet = false;
+		m_bYVelocitySet = false;
 	}
 
 	// Apply our real movement
@@ -2067,27 +2067,24 @@ void CMoveMgr::MoveLocalSolidObject()
 			info.m_Offset.x *= (62.5f * g_pGameClientShell->GetFrameTime());
 			info.m_Offset.z *= (62.5f * g_pGameClientShell->GetFrameTime());
 			info.m_Offset.y = 0;
-
 		}
 
 		bTouched = true;
 	}
 
 	// Handle our alternate jumping/falling
-	if (bYSet)
+	if (m_bYVelocitySet)
 	{
-		vYV += m_fGravity * g_pGameClientShell->GetFrameTime();
+		m_vYVelocity += m_fGravity * g_pGameClientShell->GetFrameTime();
 
 		// Value is tweaked to reach the "fall cam" threshold
-		info.m_Offset.y = vYV.y * g_pGameClientShell->GetFrameTime() * 1.118f;
+		info.m_Offset.y = m_vYVelocity.y * g_pGameClientShell->GetFrameTime() * 1.118f;
 
 		bTouched = true;
 	}
 
 	if (bTouched)
 	{
-		//g_pLTClient->CPrint("Offset: %f/%f/%f", info.m_Offset.x, info.m_Offset.y, info.m_Offset.z);
-
 		g_pLTClient->GetObjectPos(m_hObject, &curPos);
 		newPos = curPos + info.m_Offset;
 
