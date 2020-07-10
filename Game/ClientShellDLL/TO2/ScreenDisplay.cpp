@@ -472,7 +472,7 @@ RMode CScreenDisplay::GetRendererModeStruct(int nResolutionIndex)
 // Called when the screen gains or focus
 void CScreenDisplay::OnFocus(LTBOOL bFocus)
 {
-		CUserProfile *pProfile = g_pProfileMgr->GetCurrentProfile();
+	CUserProfile *pProfile = g_pProfileMgr->GetCurrentProfile();
 
 	if (bFocus)
 	{
@@ -498,6 +498,16 @@ void CScreenDisplay::OnFocus(LTBOOL bFocus)
 		m_pAntiAliasing->SetSelIndex(GetAntiAliasIndex(m_nAntiAliasing));
 
 		m_bWindowed = pProfile->m_bWindowed;
+
+		// Only enable run in background if windowed mode is true!
+		m_pRunInBackground->Enable(m_bWindowed);
+
+		// If we're fullscreen force RunInBackground off!
+		if (!m_bWindowed)
+		{
+			WriteConsoleInt("RunInBackground", 0);
+			m_bRunInBackground = false;
+		}
 
 		// The current render mode
 		RMode currentMode;

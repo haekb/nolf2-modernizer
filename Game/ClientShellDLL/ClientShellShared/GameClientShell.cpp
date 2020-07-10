@@ -4650,9 +4650,18 @@ LRESULT CALLBACK HookedWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lP
 		// So we gotta compete against that.
 		g_pGameClientShell->SetReRegisterRawInput(true);
 
+		// Jake: For some odd reason the renderer will just be black when maximizing on fullscreen mode
+		// So for now, only allow run in background for windowed mode!
+		LTBOOL bWindowed = LTFALSE;
+		HCONSOLEVAR hVar = g_pLTClient->GetConsoleVar("Windowed");
+		if (hVar)
+		{
+			bWindowed = (LTBOOL)g_pLTClient->GetVarValueFloat(hVar);
+		}
+		
 		// If they want the game to run in the background, 
 		// just pass it to the default window proc instead of the engine's window proc.
-		if (g_vtRunInBackground.GetFloat() == 1.0f)
+		if (bWindowed && g_vtRunInBackground.GetFloat() == 1.0f)
 		{
 			return DefWindowProc(hWnd, uMsg, wParam, lParam);
 		}
