@@ -2395,7 +2395,9 @@ void KeyFramer::Load(ILTMessage_Read *pMsg, uint32 dwLoadFlags)
 	uint32 blindDataSize;
 	if( g_pLTServer->GetBlindObjectData( m_nKeyDataIndex, KEYFRAMER_BLINDOBJECTID, blindData, blindDataSize ) != LT_OK )
 	{
-		ASSERT(0);			// for some reason the blind data isn't there
+		// Jake: This is probably caused by keyframers that are in the map but not used..
+		// We only really care about this problem, if the keyframer is valid.
+		ASSERT(m_nNumKeys == 0);			// for some reason the blind data isn't there
 		m_nNumKeys = 0;
 	}
 
