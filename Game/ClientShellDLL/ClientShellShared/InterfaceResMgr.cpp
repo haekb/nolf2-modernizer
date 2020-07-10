@@ -15,6 +15,8 @@
 #include "ConsoleMgr.h"
 
 extern ConsoleMgr* g_pConsoleMgr;
+extern SDL_Window* g_SDLWindow;
+
 
 CInterfaceResMgr*   g_pInterfaceResMgr = LTNULL;
 
@@ -293,6 +295,35 @@ void CInterfaceResMgr::DrawMessage(const char *pString, uint8 nFontSize)
 
 }
 
+void CInterfaceResMgr::HandleBorderlessWindowed()
+{
+	// Only do this in windowed mode!
+	if (GetConsoleInt("windowed", 0) == 0) {
+		SDL_SetWindowFullscreen(g_SDLWindow, SDL_WINDOW_FULLSCREEN);
+
+		return;
+	}
+
+	uint32 dwScreenWidth = 0;
+	uint32 dwScreenHeight = 0;
+	SDL_DisplayMode dm;
+	if (SDL_GetDesktopDisplayMode(0, &dm) != 0) {
+		SDL_Log("SDL_GetDesktopDisplayMode failed: %s", SDL_GetError());
+	}
+
+	g_pLTClient->GetSurfaceDims(g_pLTClient->GetScreenSurface(), &dwScreenWidth, &dwScreenHeight);
+
+	// If res matches our desktop, borderless it!
+	if (dm.w == dwScreenWidth && dm.h == dwScreenHeight)
+	{
+		SDL_SetWindowFullscreen(g_SDLWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
+		return;
+	}
+
+	// Otherwise reset to windowed.
+	SDL_SetWindowFullscreen(g_SDLWindow, 0);
+}
+
 LTBOOL CInterfaceResMgr::InitFonts()
 {
 
@@ -332,6 +363,8 @@ LTBOOL CInterfaceResMgr::InitFonts()
 void CInterfaceResMgr::ScreenDimsChanged()
 {
     if (!g_pLTClient) return;
+
+	g_pInterfaceResMgr->HandleBorderlessWindowed();
 
 	RMode currentMode;
     g_pLTClient->GetRenderMode(&currentMode);
