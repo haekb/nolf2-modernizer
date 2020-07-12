@@ -5136,7 +5136,12 @@ void CInterfaceMgr::UpdateLetterBox()
 //
 void CInterfaceMgr::UpdateSlidingBars()
 {
-	
+	// Only do black bars on resolutions greater than 4:3 otherwise it crashes!
+	if (g_pInterfaceResMgr->Get4x3Offset() <= 0)
+	{
+		return;
+	}
+
 #if 0
 	// This is the tan-ish colour that the CateBackground uses on the foreground
 	HLTCOLOR kBarColour = SETRGB(255, 215, 93);
