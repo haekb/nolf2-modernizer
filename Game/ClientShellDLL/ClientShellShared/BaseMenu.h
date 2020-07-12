@@ -85,6 +85,10 @@ public:
 
 	virtual const char *GetTitle() {return m_Title.GetString()->GetText();}
 
+	virtual LTIntPt GetResumePos() { return m_Resume.GetPos(); }
+	virtual int GetResumeWidth() { return m_Resume.GetWidth(); }
+
+
 protected:
 
 	void		SetTitle(int stringID);
