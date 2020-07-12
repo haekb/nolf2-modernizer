@@ -99,10 +99,11 @@ void CSubMenu::ApplyPosition(float fScale, int nOffset)
 void CSubMenu::UpdateFrame()
 {
 	// This was `= m_pos.x;`
-	float fx = (float)m_basePos.x* m_fScale;
+	// m_pos.x contains the offset, which will make the skill menu look garbage!
+	float fx = (float)m_basePos.x * m_fScale;
 	float fy = (float)m_pos.y;
 
-	float fw = (float)m_nWidth * m_fScale;// *0.75f;
+	float fw = (float)m_nWidth * m_fScale;
 	float fh = (float)m_nHeight * m_fScale;
 
 	// Ok we want to add what we normally would offset the x position

@@ -479,9 +479,7 @@ void CMenuMgr::SlideIn()
 	if (!m_pCurrentMenu) return;
 
 	// Refresh our dims!
-	{
-		ScreenDimsChanged();
-	}
+	ScreenDimsChanged();
 	
 	LTIntPt startPos, endPos;
 	startPos.x = m_nMenuPos;
@@ -548,18 +546,16 @@ void CMenuMgr::AdjustControls()
 
 		offset.x += m_nBarSpacing + pCtrl->GetBaseWidth();
 	}
-	
+
 	// Okay we're going to go through them again, and set our real position based off the Resume button - the ending position of the buttons
 	int nOffset = (m_nResumePos.x / nScale) - offset.x;
-
-	// Reset offset
-	offset = {m_nBarSpacing, (m_nBarSize.y - m_nFontSize) / 2};
 
 	for (uint8 i = 0; i < m_MenuArray.size(); i++)
 	{
 		auto pCtrl = m_MenuBar.GetControl(i);
 		LTIntPt newPos = m_MenuBar.GetBasePos();
 		newPos.x += nOffset;
+		newPos.y += offset.y;
 		pCtrl->SetOffset(0);
 		pCtrl->SetBasePos(newPos);
 
@@ -571,13 +567,12 @@ void CMenuMgr::ScreenDimsChanged()
 {
 	LTIntPt nResumePos = { 0,0 };
 	int nResumeWidth = 0;
-	LTIntPt nMenuPos = 0;
+
 	if (m_pCurrentMenu)
 	{
 		m_pCurrentMenu->ApplyPosition(g_pInterfaceResMgr->GetYRatio(), g_pInterfaceResMgr->Get4x3Offset());
 		nResumePos = m_pCurrentMenu->GetResumePos();
 		nResumeWidth = m_pCurrentMenu->GetResumeWidth();
-		nMenuPos = m_pCurrentMenu->GetPos();
 	}
 	if (m_pSubMenu)
 	{
