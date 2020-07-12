@@ -76,6 +76,8 @@ LTBOOL CMenuMgr::Init()
 		iter++;
 	}
 
+
+
 	m_fSlideInTime	= g_pLayoutMgr->GetMenuSlideInTime();
 	m_fSlideOutTime = g_pLayoutMgr->GetMenuSlideOutTime();
 	m_nMenuPos		= g_pLayoutMgr->GetMenuPosition();
@@ -110,8 +112,6 @@ LTBOOL CMenuMgr::Init()
 
 	m_nBarSize = size;
 
-	size.x += nOffset;
-
 	m_MenuBar.Init(hBar,hBarTip, size);
 	m_MenuBar.SetBasePos(LTIntPt(0,m_nBarPos));
 	
@@ -128,6 +128,10 @@ LTBOOL CMenuMgr::Init()
 	}
 
 	AdjustControls();
+
+	// Jake: While we're setting sizes here, the real sizes are done in ScreenDimsChange
+	// So just call that!
+	ScreenDimsChanged();
 
     return LTTRUE;
 }
@@ -473,6 +477,11 @@ void CMenuMgr::SlideIn()
 	if (m_MenuSlide.IsStarted()) return;
 	ASSERT(m_pCurrentMenu);
 	if (!m_pCurrentMenu) return;
+
+	// Refresh our dims!
+	{
+		ScreenDimsChanged();
+	}
 	
 	LTIntPt startPos, endPos;
 	startPos.x = m_nMenuPos;
@@ -491,8 +500,6 @@ void CMenuMgr::SlideIn()
 	endPos.y = m_nBarPos;
 
 	m_BarSlide.Start(startPos,endPos,m_fSlideInTime, false);
-
-
 }
 
 void CMenuMgr::SlideOut()
@@ -525,10 +532,9 @@ void CMenuMgr::SlideOut()
 
 void CMenuMgr::AdjustControls()
 {
-	// We're scaling the offset down a bit
-	int nOffset = g_pInterfaceResMgr->Get4x3Offset() * 0.80f;
+	// Jake: We need to run this once to get the real width of every control!
 	float nScale = g_pInterfaceResMgr->GetYRatio();
-	LTIntPt offset(m_nBarSpacing + nOffset, (m_nBarSize.y - m_nFontSize) / 2);
+	LTIntPt offset(m_nBarSpacing, (m_nBarSize.y - m_nFontSize) / 2);
 
 	for (uint8 i = 0; i < m_MenuArray.size(); i++)
 	{
@@ -542,24 +548,55 @@ void CMenuMgr::AdjustControls()
 
 		offset.x += m_nBarSpacing + pCtrl->GetBaseWidth();
 	}
+	
+	// Okay we're going to go through them again, and set our real position based off the Resume button - the ending position of the buttons
+	int nOffset = (m_nResumePos.x / nScale) - offset.x;
+
+	// Reset offset
+	offset = {m_nBarSpacing, (m_nBarSize.y - m_nFontSize) / 2};
+
+	for (uint8 i = 0; i < m_MenuArray.size(); i++)
+	{
+		auto pCtrl = m_MenuBar.GetControl(i);
+		LTIntPt newPos = m_MenuBar.GetBasePos();
+		newPos.x += nOffset;
+		pCtrl->SetOffset(0);
+		pCtrl->SetBasePos(newPos);
+
+		nOffset += m_nBarSpacing + pCtrl->GetBaseWidth();
+	}
 }
 
 void CMenuMgr::ScreenDimsChanged()
 {
+	LTIntPt nResumePos = { 0,0 };
+	int nResumeWidth = 0;
+	LTIntPt nMenuPos = 0;
 	if (m_pCurrentMenu)
 	{
 		m_pCurrentMenu->ApplyPosition(g_pInterfaceResMgr->GetYRatio(), g_pInterfaceResMgr->Get4x3Offset());
+		nResumePos = m_pCurrentMenu->GetResumePos();
+		nResumeWidth = m_pCurrentMenu->GetResumeWidth();
+		nMenuPos = m_pCurrentMenu->GetPos();
 	}
 	if (m_pSubMenu)
 	{
 		m_pSubMenu->ApplyPosition(g_pInterfaceResMgr->GetYRatio(), g_pInterfaceResMgr->Get4x3Offset());
 	}
 
+	m_nResumePos = nResumePos;
+	m_nResumeWidth = nResumeWidth;
+
 	// Redo the menu size
 	int nOffset = g_pInterfaceResMgr->Get4x3Offset();
 	float nScale = g_pInterfaceResMgr->GetYRatio();
 	auto size = m_nBarSize;
-	size.x += nOffset;
+
+	// Jake: Override the bar size,
+	// we want this go as far as the resume button is, and then back a bit!
+	size.x = m_nResumePos.x;
+	size.x -= m_nResumeWidth * 0.20f;
+	size.x /= nScale;
 
 	// We actually want menubar to extend all the way from the left.
 	m_MenuBar.SetSize(size.x, size.y);

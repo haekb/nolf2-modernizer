@@ -172,6 +172,9 @@ private:
 	LTIntPt			m_nBarSize;
 	int				m_nBarSpacing;
 	int				m_nFontSize;
+
+	LTIntPt			m_nResumePos;
+	int				m_nResumeWidth;
 };
 
 #endif // _MENU_MGR_H_
