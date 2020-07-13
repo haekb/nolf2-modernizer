@@ -10,7 +10,6 @@
 //
 // ----------------------------------------------------------------------- //
 
-
 #include "stdafx.h"
 #include "GameServerShell.h"
 #include "PlayerObj.h"
