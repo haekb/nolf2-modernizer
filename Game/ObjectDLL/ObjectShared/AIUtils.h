@@ -162,7 +162,7 @@ extern const char c_szKeyFX[];
 
 #define AITRACE(var, args) \
 	g_vtAIConsoleVar.Init(g_pLTServer, #var, LTNULL, 0.0f); \
-	if( true ) { \
+	if( g_vtAIConsoleVar.GetFloat() > 0.0f ) { \
 		ObjectCPrint args; }
 
 #define ADD_ATTACHMENT(pos, attachment) ADD_STRINGPROP_FLAG(##pos##,	attachment,			PF_GROUP6|PF_STATICLIST)

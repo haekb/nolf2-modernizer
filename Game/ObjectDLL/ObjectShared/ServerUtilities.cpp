@@ -328,11 +328,6 @@ void ObjectCPrint(HOBJECT hObject, const char *pMsg, ...)
 		g_pLTServer->GetObjectName(hObject, szName, sizeof(szName));
 	}
 
-	if (strcmp(szName, "CAIHuman7") != 0)
-	{
-		return;
-	}
-
 	g_pLTServer->CPrint("%f %s : %s",
 		g_pLTServer->GetTime(),
 		hObject ? szName : "",
