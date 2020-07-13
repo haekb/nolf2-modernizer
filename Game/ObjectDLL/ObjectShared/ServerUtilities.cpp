@@ -320,12 +320,17 @@ void ObjectCPrint(HOBJECT hObject, const char *pMsg, ...)
 	va_start(marker, pMsg);
 	_vsnprintf(msg, msg_length, pMsg, marker);
 	va_end(marker);
-	msg[msg_length] = '\0';
+	msg[msg_length-1] = '\0';
 
 	char szName[64];
 	if(hObject)
 	{
 		g_pLTServer->GetObjectName(hObject, szName, sizeof(szName));
+	}
+
+	if (strcmp(szName, "CAIHuman7") != 0)
+	{
+		return;
 	}
 
 	g_pLTServer->CPrint("%f %s : %s",
@@ -345,7 +350,7 @@ void ObjectCPrint(const char *pName, const char *pMsg, ...)
 	va_start(marker, pMsg);
 	_vsnprintf(msg, msg_length, pMsg, marker);
 	va_end(marker);
-	msg[msg_length] = '\0';
+	msg[msg_length-1] = '\0';
 
 	g_pLTServer->CPrint("%f %s : %s",
 		g_pLTServer->GetTime(),
