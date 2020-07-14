@@ -68,7 +68,9 @@ CBodyFX::~CBodyFX()
 		}
 	}
 
-	debug_delete(m_pRagDoll);
+	if (m_pRagDoll) {
+		debug_delete(m_pRagDoll);
+	}
 
 	if (m_hBackpack)
 	{
@@ -371,7 +373,7 @@ LTBOOL CBodyFX::CreateObject(ILTClient* pClientDE)
 	g_pCommonLT->SetObjectFlags(m_hServerObject, OFT_Client, CF_NOTIFYMODELKEYS, CF_NOTIFYMODELKEYS);
 
 	//setup the ragdoll
-	//SetupRagDoll();
+	SetupRagDoll();
 
     return LTTRUE;
 }
@@ -955,4 +957,15 @@ void CBodyFX::UpdateAttachments()
 void CBodyFX::RemoveClientAssociation( )
 {
 	m_bs.nClientId = (uint8)-1;
+}
+
+void CBodyFX::WantRemove(LTBOOL bRemove)
+{
+	if (bRemove && m_pRagDoll)
+	{
+		debug_delete(m_pRagDoll);
+		m_pRagDoll = LTNULL;
+	}
+
+	CSpecialFX::WantRemove(bRemove);
 }

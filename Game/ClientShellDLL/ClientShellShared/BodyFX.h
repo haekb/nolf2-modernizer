@@ -61,6 +61,8 @@ class CBodyFX : public CSpecialFX
 
 		void	RemoveClientAssociation( );
 
+		virtual void WantRemove(LTBOOL bRemove = LTTRUE);
+
 	protected :
 
 		// Updates
