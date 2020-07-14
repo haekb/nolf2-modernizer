@@ -190,6 +190,8 @@ CRagDoll::CRagDoll(HOBJECT hModel, uint32 nMaxNodes, uint32 nMaxConstraints, uin
 	m_pModelNodes = debug_newa(CModelNode, nMaxModelNodes);
 	if(m_pModelNodes)
 		m_nMaxModelNodes = nMaxModelNodes;
+
+	m_vInitialVelocity.Init(0.0f, 20.0f, 0.0f);
 }
 
 CRagDoll::~CRagDoll()
@@ -587,10 +589,11 @@ bool CRagDoll::ApplyForces(float fNewFrameTime)
 
 	if (m_bFirstUpdate)
 	{
-		m_pNodes[0].m_vPosition[nPrevIndex] += LTVector(0.0f, 20.0f, 0.0f);
+		m_pNodes[0].m_vPosition[nPrevIndex] += m_vInitialVelocity;
 		//m_pNodes[0].m_vPosition[nPrevIndex] += LTVector(0, 0, -55.0f);
 	}
 
+	/*
 	if(rand() % 10 == 0)
 	{
 		LTVector vDir = LTVector(((rand() % 10000) - 5000) / 5000.0f, ((rand() % 10000) - 5000) / 5000.0f, ((rand() % 10000) - 5000) / 5000.0f);
@@ -598,6 +601,7 @@ bool CRagDoll::ApplyForces(float fNewFrameTime)
 
 		//m_pNodes[rand() % m_nNumNodes].m_vPosition[nPrevIndex] += vDir;
 	}
+	*/
 
 	//now we need to swap the indices so we will use the new position, and the old current becomes
 	//the previous
@@ -783,5 +787,14 @@ void CRagDoll::SetDragAmount(float fAmount)
 void CRagDoll::SetFrictionConstant(float fVal)
 {
 	m_fFrictionConstant = fVal;
+}
+
+//
+// The initial velocity applied to the position when they ragdoll
+// Note: This will only be applied before the first update!!
+//
+void CRagDoll::SetInitialVelocity(LTVector vVelocity)
+{
+	m_vInitialVelocity = vVelocity;
 }
 

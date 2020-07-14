@@ -559,6 +559,21 @@ LTBOOL CBodyFX::OnServerMessage(ILTMessage_Read *pMsg)
 			HOBJECT hCarrier = pMsg->ReadObject();
 			HOBJECT hPlayerObj = g_pLTClient->GetClientObject();
 
+			// Jake: If we're carrying the body, we don't want the ragdoll anymore
+			// it'll override our carry-to position!
+			if (bCarried && m_pRagDoll) 
+			{
+				debug_delete(m_pRagDoll);
+				m_pRagDoll = LTNULL;
+			} else if (g_vtEnableRagdolls.GetFloat() != 0.0 && !bCarried && !m_pRagDoll)
+			{
+				// Oh, we're not carrying them anymore? Setup their ragdoll again!
+				SetupRagDoll();
+
+				// We're placing the ragdoll down, no need to make it jump in the air!
+				m_pRagDoll->SetInitialVelocity({ 0.0f, 0.0f, 0.0f });
+			}
+
 			//hide/show, and animate local backpack object if there is one
 			if (m_hBackpack)
 			{

@@ -76,6 +76,7 @@ public:
 	//the frictional constant. The higher this is the stronger the force of friction
 	void			SetFrictionConstant(float fVal);
 
+	void			SetInitialVelocity(LTVector vVelocity);
 
 private:
 
@@ -164,6 +165,7 @@ private:
 	//the node that should be used for the position of the model
 	HRAGDOLLNODE	m_hMovementNode;
 
+	LTVector		m_vInitialVelocity;
 };
 
 #endif
