@@ -494,7 +494,12 @@ bool CRagDoll::Update()
 		if(m_hMovementNode != INVALIDRAGDOLLNODE)
 		{
 			CRagDollNode& MovementNode = m_pNodes[m_hMovementNode];
-			g_pLTClient->SetObjectPos(m_hModel, &MovementNode.m_vPosition[GetCurrentPosition()], TRUE);
+
+			// Jake: Small hack to make sure their hitbox is searchable on death
+			auto vPosition = MovementNode.m_vPosition[GetCurrentPosition()];
+			vPosition.y += 30.0f;
+
+			g_pLTClient->SetObjectPos(m_hModel, &vPosition, TRUE);
 		}
 	}
 

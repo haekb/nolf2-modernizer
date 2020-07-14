@@ -424,8 +424,10 @@ LTBOOL CBodyFX::Update()
 	}
 
 
-	if(m_pRagDoll)
+	if (m_pRagDoll)
+	{
 		m_pRagDoll->Update();
+	}
 
     return LTTRUE;
 }
