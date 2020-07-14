@@ -23,6 +23,8 @@
 
 extern CGameClientShell* g_pGameClientShell;
 
+extern VarTrack g_vtEnableRagdolls;
+
 #define BODY_KEY_BUTE_SOUND	"BUTE_SOUND_KEY"
 
 // ----------------------------------------------------------------------- //
@@ -373,7 +375,10 @@ LTBOOL CBodyFX::CreateObject(ILTClient* pClientDE)
 	g_pCommonLT->SetObjectFlags(m_hServerObject, OFT_Client, CF_NOTIFYMODELKEYS, CF_NOTIFYMODELKEYS);
 
 	//setup the ragdoll
-	SetupRagDoll();
+	if (g_vtEnableRagdolls.GetFloat() != 0.0f)
+	{
+		SetupRagDoll();
+	}
 
     return LTTRUE;
 }

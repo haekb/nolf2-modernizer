@@ -3,6 +3,7 @@
 #include "RagDollNode.h"
 #include "RagDollConstraint.h"
 
+extern VarTrack g_vtRagdollYAdjustment;
 
 //-----------------------------------------------------------------------------------
 // Model Node
@@ -497,7 +498,7 @@ bool CRagDoll::Update()
 
 			// Jake: Small hack to make sure their hitbox is searchable on death
 			auto vPosition = MovementNode.m_vPosition[GetCurrentPosition()];
-			vPosition.y += 30.0f;
+			vPosition.y += g_vtRagdollYAdjustment.GetFloat();
 
 			g_pLTClient->SetObjectPos(m_hModel, &vPosition, TRUE);
 		}
