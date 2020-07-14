@@ -584,8 +584,11 @@ bool CRagDoll::ApplyForces(float fNewFrameTime)
 		pNode->m_vPosition[nPrevIndex] = pNode->m_vPosition[nCurrIndex] + fVelocityScale * (pNode->m_vPosition[nCurrIndex] - pNode->m_vPosition[nPrevIndex]) + vGlobalAccel;
 	}
 
-	if(m_bFirstUpdate)
-		m_pNodes[0].m_vPosition[nPrevIndex] += LTVector(0, 0, -55.0f);
+	if (m_bFirstUpdate)
+	{
+		m_pNodes[0].m_vPosition[nPrevIndex] += LTVector(0.0f, 20.0f, 0.0f);
+		//m_pNodes[0].m_vPosition[nPrevIndex] += LTVector(0, 0, -55.0f);
+	}
 
 	if(rand() % 10 == 0)
 	{
