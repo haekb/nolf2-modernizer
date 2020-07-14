@@ -79,10 +79,9 @@ void GameInputMgr::OnMouseDown(GameInputButton button)
 
 void GameInputMgr::OnMouseUp(GameInputButton button)
 {
-	if (!SDL_GetRelativeMouseMode())
-	{
-		return;
-	}
+	// Jake: There use to be a GetRelativeMouseMode check here,
+	// but that led to uncompleted inputs being left "on".
+	// So let's just finish up anything. 
 
 	if (button == GIB_LEFT_MOUSE)
 	{
