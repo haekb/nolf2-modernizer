@@ -212,7 +212,7 @@ void RadarObject::ReadProps( ObjectCreateStruct *pOCS )
 
 	// Get the Radar Type record...
 
-	RADARTYPE *pType;
+	RADARTYPE *pType = nullptr;
 
 	if( g_pLTServer->GetPropGeneric( "Type", &gProp ) == LT_OK )
 	{

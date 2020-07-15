@@ -87,7 +87,13 @@ void CHUDDamage::Update()
 	float sz = m_nIconHt * g_pInterfaceResMgr->GetYRatio();
 
 	uint32 nNumDamageFX = g_pDamageFXMgr->GetNumDamageFX();
-	bool *aDamageSet = (bool*)alloca(nNumDamageFX);
+	bool *aDamageSet = (bool*)malloc(nNumDamageFX);
+
+	if (aDamageSet == nullptr)
+	{
+		return;
+	}
+
 	memset(aDamageSet, 0, sizeof(aDamageSet[0]) * nNumDamageFX); 
 
 	DAMAGEFX *pDamageFX = g_pDamageFXMgr->GetFirstActiveFX();
@@ -102,6 +108,9 @@ void CHUDDamage::Update()
 	
 		pDamageFX = g_pDamageFXMgr->GetNextActiveFX();
 	}
+
+	free(aDamageSet);
+	aDamageSet = nullptr;
 }
 
 void CHUDDamage::UpdateLayout()

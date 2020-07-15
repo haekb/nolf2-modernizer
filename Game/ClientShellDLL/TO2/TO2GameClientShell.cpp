@@ -102,7 +102,7 @@ uint32 CTO2GameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
 
 	// Init with a default!
 	m_fMaxFPS = g_vtMaxFPS.GetFloat();
-	m_lFrametime = (m_lTimerFrequency.QuadPart / m_fMaxFPS);
+	m_lFrametime = ((LTFLOAT)m_lTimerFrequency.QuadPart / m_fMaxFPS);
 
 	return nResult;
 }
@@ -159,7 +159,7 @@ void CTO2GameClientShell::LimitFramerate()
 	if (m_fMaxFPS != g_vtMaxFPS.GetFloat())
 	{
 		m_fMaxFPS = g_vtMaxFPS.GetFloat();
-		m_lFrametime = (m_lTimerFrequency.QuadPart / m_fMaxFPS);
+		m_lFrametime = ((LTFLOAT)m_lTimerFrequency.QuadPart / m_fMaxFPS);
 	}
 
 	// Occasionally we'll need to unlock the framerate (like during loading!)
@@ -172,7 +172,7 @@ void CTO2GameClientShell::LimitFramerate()
 
 		while (1) {
 			QueryPerformanceCounter(&NewTime);
-			unsigned long lTime = NewTime.QuadPart - m_lNextUpdate;
+			auto lTime = NewTime.QuadPart - m_lNextUpdate;
 			if (lTime > m_lFrametime) {
 				m_lNextUpdate = NewTime.QuadPart;
 				break;

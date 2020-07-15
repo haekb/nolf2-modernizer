@@ -904,6 +904,8 @@ void Body::Init(const BODYINITSTRUCT& bi)
 		break;
 	}
 
+	LTFLOAT fHitPts = 1.0f;
+
 	CDestructible* pDest = bi.pCharacter->GetDestructible();
 	if (pDest)
 	{
@@ -924,6 +926,8 @@ void Body::Init(const BODYINITSTRUCT& bi)
 
 		// Set the energy
 		m_fEnergy = pDest->GetEnergy();
+
+		fHitPts = pDest->GetMaxHitPoints();
 	}
 
 	m_pSearch->CopySearchProperties(bi.pCharacter->GetSearchable());
@@ -935,7 +939,6 @@ void Body::Init(const BODYINITSTRUCT& bi)
 
 	m_pSearch->Enable(m_pSearch->HasItem());
 
-	LTFLOAT fHitPts = pDest->GetMaxHitPoints();
 	m_damage.Reset(fHitPts, 0.0f, 0.0f);
 	m_damage.SetHitPoints(fHitPts);
 	m_damage.SetMaxHitPoints(fHitPts);

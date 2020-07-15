@@ -92,10 +92,10 @@
 											{ 
 												strcpy(m_sName, sName);
 												m_nType = eDataType::VECTOR;
-												m_data.m_fVec[0] = pfVec4[0];
-												m_data.m_fVec[1] = pfVec4[1];
-												m_data.m_fVec[2] = pfVec4[2];
-												m_data.m_fVec[3] = pfVec4[3];
+												m_data.m_fVec4[0] = pfVec4[0];
+												m_data.m_fVec4[1] = pfVec4[1];
+												m_data.m_fVec4[2] = pfVec4[2];
+												m_data.m_fVec4[3] = pfVec4[3];
 											}
 
 		void								ClrKey(char *sName, float tmKey, uint32 dwCol)

@@ -630,6 +630,9 @@ bool JServerDir::GetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Write* pMsg) 
 
 	Peer* peer = m_Peers.at(m_nActivePeer);
 
+	char* szMsg[256];
+	memset(szMsg, 0, sizeof(szMsg));
+
 	switch (eInfoType) {
 	case ePeerInfo_Age:
 		pMsg->Writefloat(peer->GetCreatedAt());
@@ -647,7 +650,7 @@ bool JServerDir::GetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Write* pMsg) 
 			pMsg->Writebool(true);
 
 			// Player info
-			pMsg->WriteString(getMsgString(player.sUniqueName));
+			pMsg->WriteString(player.sUniqueName.substr(0, 256).c_str());
 			pMsg->Writeuint16(player.nPing);
 		}
 
@@ -660,7 +663,7 @@ bool JServerDir::GetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Write* pMsg) 
 	}
 	break;
 	case ePeerInfo_Name:
-		pMsg->WriteString(getMsgString(peer->m_NameData.sHostName));
+		pMsg->WriteString(peer->m_NameData.sHostName.substr(0, 256).c_str());
 		break;
 	case ePeerInfo_Ping:
 		pMsg->Writeuint16(peer->GetPing());
@@ -679,13 +682,13 @@ bool JServerDir::GetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Write* pMsg) 
 	{
 		PeerInfo_Summary* summary = &peer->m_SummaryData;
 
-		pMsg->WriteString(getMsgString(summary->sBuild));
-		pMsg->WriteString(getMsgString(summary->sWorldName));
+		pMsg->WriteString(summary->sBuild.substr(0, 256).c_str());
+		pMsg->WriteString(summary->sWorldName.substr(0, 256).c_str());
 		pMsg->Writeuint8(summary->nCurrentPlayers);
 		pMsg->Writeuint8(summary->nMaxPlayers);
 		pMsg->Writebool(summary->bUsePassword);
 		pMsg->Writeuint8(summary->nGameType);
-		pMsg->WriteString(getMsgString(summary->sModName));
+		pMsg->WriteString(summary->sModName.substr(0, 256).c_str());
 	}
 	break;
 	case ePeerInfo_Validated:
@@ -905,8 +908,6 @@ PeerReturnData JServerDir::QueryServer(std::string sAddress)
 {
 	Peer* peer = new Peer();
 
-	bool bResult;
-
 	PeerReturnData retData;
 	retData.pPeer = nullptr;
 
@@ -1004,7 +1005,7 @@ PeerReturnData JServerDir::QueryServer(std::string sAddress)
 			}
 		}
 
-		for (int i = 0; i < playerList.size(); i++) {
+		for (auto i = 0; i < playerList.size(); i++) {
 			PeerInfo_PlayerDetails player;
 
 			player.sUniqueName = playerList.at(i);
@@ -1047,7 +1048,7 @@ void JServerDir::PublishServer(Peer peerParam)
 	Peer peer = peerParam;
 
 	ConnectionData selfConnectionData = { "0.0.0.0", 27889 };
-	ConnectionData masterConnectionData = { m_MasterServerInfo.szServer, m_MasterServerInfo.nPortUDP };
+	ConnectionData masterConnectionData = { m_MasterServerInfo.szServer, (unsigned short)m_MasterServerInfo.nPortUDP };
 	ConnectionData incomingConnectionData = { "0.0.0.0", 0 };
 
 	std::string heartbeat = getHeartbeat(m_iQueryNum, false);
@@ -1268,7 +1269,7 @@ std::string JServerDir::QueryHttpText(std::string sRoute)
 {
 	TCPSocket* pSock = new TCPSocket();
 
-	ConnectionData connectionData = { m_MasterServerInfo.szServer, m_MasterServerInfo.nPortHTTP };
+	ConnectionData connectionData = { m_MasterServerInfo.szServer, (unsigned short)m_MasterServerInfo.nPortHTTP };
 
 	std::string sRet = "";
 

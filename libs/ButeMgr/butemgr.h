@@ -529,7 +529,7 @@ inline bool CButeMgr::Parse( STD istream& iCrypt, int nLen, const char* cryptKey
 	bool retVal = Parse( *pIStream );
 
 	delete pIStream;
-	delete buf2;
+	delete[] buf2;
 	return retVal;
 }
 

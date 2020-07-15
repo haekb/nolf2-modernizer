@@ -164,16 +164,3 @@ std::string getHeartbeat(int &iQueryNum, bool bStateChanged = false)
 
 	return heartbeat;
 }
-
-//
-// WriteString seems to take up to 256 characters (at least with player details.)
-//
-char* getMsgString(std::string str)
-{
-	char szMsg[256];
-	memset(szMsg, 0, sizeof(szMsg));
-
-	sprintf(szMsg, "%s", str.c_str());
-
-	return szMsg;
-}

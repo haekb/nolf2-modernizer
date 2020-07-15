@@ -1395,7 +1395,7 @@ void CBodyStateExplode::Update()
 		return;
 	}
 
-    if ( g_pLTServer->GetModelPlaybackState(m_pBody->m_hObject) & MS_PLAYDONE )
+    if ( m_pBody && g_pLTServer->GetModelPlaybackState(m_pBody->m_hObject) & MS_PLAYDONE )
 	{
 		if ( g_pLTServer->GetModelAnimation(m_pBody->m_hObject) == m_hAniStart )
 		{

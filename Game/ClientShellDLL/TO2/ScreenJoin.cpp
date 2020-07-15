@@ -21,11 +21,14 @@
 #include <algorithm>
 #include "GameClientShell.h"
 #include "JServerDir.h"
+#include "WinUtil.h"
 
 void JoinCallBack(LTBOOL bReturn, void *pData);
 
 // Uncomment to generate fake server entries every 1.5 seconds
 //#define GENERATE_FAKE_ENTRIES
+
+
 
 namespace
 {

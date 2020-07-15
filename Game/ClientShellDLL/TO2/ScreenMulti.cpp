@@ -480,6 +480,11 @@ void CScreenMulti::Update()
 
 	IServerDirectory *pServerDir = g_pClientMultiplayerMgr->GetServerDir();
 
+	if (!pServerDir)
+	{
+		return;
+	}
+
 	char aTempBuffer[256];
 
 	FormatString(IDS_STATUS_STRING,aTempBuffer,sizeof(aTempBuffer),g_pClientMultiplayerMgr->GetServerDir()->GetCurStatusString());
@@ -880,7 +885,15 @@ void CScreenMulti::RequestValidate()
 void CScreenMulti::CreateDMMissionFile()
 {
 	char path[256];
-	std::string sFN = _getcwd(path,sizeof(path));
+
+	auto szCwd = _getcwd(path, sizeof(path));
+
+	if (!szCwd)
+	{
+		return;
+	}
+
+	std::string sFN = szCwd;
 	sFN += "\\";
 	sFN += MISSION_DM_FILE;
 
@@ -1208,7 +1221,15 @@ void CScreenMulti::CreateTDMMissionFile()
 void CScreenMulti::CreateDDMissionFile()
 {
 	char path[256];
-	std::string sFN = _getcwd(path,sizeof(path));
+
+	auto szCwd = _getcwd(path, sizeof(path));
+
+	if (!szCwd)
+	{
+		return;
+	}
+
+	std::string sFN = szCwd;
 	sFN += "\\";
 	sFN += MISSION_DD_FILE;
 

@@ -217,7 +217,15 @@ uint32 CScreenMain::OnCommand(uint32 dwCommand, uint32 dwParam1, uint32 dwParam2
 	case CMD_DM:
 		{
 			char path[256];
-			std::string sFN = _getcwd(path,sizeof(path));
+
+			auto szCwd = _getcwd(path, sizeof(path));
+
+			if (szCwd == nullptr)
+			{
+				return 0;
+			}
+
+			std::string sFN = szCwd;
 			sFN += "\\";
 			sFN += MISSION_DM_FILE;
 

@@ -421,6 +421,11 @@ bool CSearchable::GiveLastSearchItem(HOBJECT hSender)
 			{
 				case SEARCH_SET::eItemObjectType :
 				{
+					if (!pPlayer)
+					{
+						break;
+					}
+
 					CAutoMessage cMsg;
 					cMsg.Writeuint8( MID_SEARCH );
 					cMsg.Writeuint8( SEARCH_FOUND );
