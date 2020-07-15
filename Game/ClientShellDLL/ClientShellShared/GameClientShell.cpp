@@ -109,6 +109,9 @@ VarTrack			g_vtRunInBackground;
 
 VarTrack			g_vtShowSDLMouse;
 
+VarTrack			g_vtEnableRagdolls;
+VarTrack			g_vtRagdollYAdjustment;
+
 // SDL Logging
 std::fstream 		g_SDLLogFile;
 SDL_Window*			g_SDLWindow = NULL;
@@ -1061,6 +1064,11 @@ uint32 CGameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
 	// If true, we ignore ACTIVATE_APP messages
 	g_vtRunInBackground.Init(g_pLTClient, "RunInBackground", NULL, 0.0f);
 
+	// Enable those ragdolls!
+	g_vtEnableRagdolls.Init(g_pLTClient, "EnableRagdolls", NULL, 1.0f);
+	// Amount that we push the position up. This corrects the hitbox being under the ground on death.
+	g_vtRagdollYAdjustment.Init(g_pLTClient, "RagdollYAdjustment", NULL, 40.0f);
+
 	m_cheatMgr.Init();
 	m_LightScaleMgr.Init();
 
@@ -1086,6 +1094,7 @@ uint32 CGameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
 	g_pLTClient->RegisterConsoleProgram("ClientFX", ClientFXFn);
 
     g_pLTClient->SetModelHook((ModelHookFn)DefaultModelHook, this);
+
 
 	// Make sure the save directory exists...
 	if (!CWinUtil::DirExist("Save"))

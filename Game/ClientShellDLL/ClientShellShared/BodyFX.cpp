@@ -23,6 +23,8 @@
 
 extern CGameClientShell* g_pGameClientShell;
 
+extern VarTrack g_vtEnableRagdolls;
+
 #define BODY_KEY_BUTE_SOUND	"BUTE_SOUND_KEY"
 
 // ----------------------------------------------------------------------- //
@@ -68,7 +70,9 @@ CBodyFX::~CBodyFX()
 		}
 	}
 
-	debug_delete(m_pRagDoll);
+	if (m_pRagDoll) {
+		debug_delete(m_pRagDoll);
+	}
 
 	if (m_hBackpack)
 	{
@@ -371,7 +375,10 @@ LTBOOL CBodyFX::CreateObject(ILTClient* pClientDE)
 	g_pCommonLT->SetObjectFlags(m_hServerObject, OFT_Client, CF_NOTIFYMODELKEYS, CF_NOTIFYMODELKEYS);
 
 	//setup the ragdoll
-	//SetupRagDoll();
+	if (g_vtEnableRagdolls.GetFloat() != 0.0f)
+	{
+		SetupRagDoll();
+	}
 
     return LTTRUE;
 }
@@ -422,8 +429,10 @@ LTBOOL CBodyFX::Update()
 	}
 
 
-	if(m_pRagDoll)
+	if (m_pRagDoll)
+	{
 		m_pRagDoll->Update();
+	}
 
     return LTTRUE;
 }
@@ -549,6 +558,21 @@ LTBOOL CBodyFX::OnServerMessage(ILTMessage_Read *pMsg)
 			bool bCarried = pMsg->Readbool();	
 			HOBJECT hCarrier = pMsg->ReadObject();
 			HOBJECT hPlayerObj = g_pLTClient->GetClientObject();
+
+			// Jake: If we're carrying the body, we don't want the ragdoll anymore
+			// it'll override our carry-to position!
+			if (bCarried && m_pRagDoll) 
+			{
+				debug_delete(m_pRagDoll);
+				m_pRagDoll = LTNULL;
+			} else if (g_vtEnableRagdolls.GetFloat() != 0.0 && !bCarried && !m_pRagDoll)
+			{
+				// Oh, we're not carrying them anymore? Setup their ragdoll again!
+				SetupRagDoll();
+
+				// We're placing the ragdoll down, no need to make it jump in the air!
+				m_pRagDoll->SetInitialVelocity({ 0.0f, 0.0f, 0.0f });
+			}
 
 			//hide/show, and animate local backpack object if there is one
 			if (m_hBackpack)
@@ -955,4 +979,15 @@ void CBodyFX::UpdateAttachments()
 void CBodyFX::RemoveClientAssociation( )
 {
 	m_bs.nClientId = (uint8)-1;
+}
+
+void CBodyFX::WantRemove(LTBOOL bRemove)
+{
+	if (bRemove && m_pRagDoll)
+	{
+		debug_delete(m_pRagDoll);
+		m_pRagDoll = LTNULL;
+	}
+
+	CSpecialFX::WantRemove(bRemove);
 }
