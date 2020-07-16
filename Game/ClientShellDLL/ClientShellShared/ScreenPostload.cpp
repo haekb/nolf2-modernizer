@@ -536,8 +536,10 @@ void CScreenPostload::OnFocus(LTBOOL bFocus)
 
 		// Scale up ContinuePos.x, then add in half our scaled 4x3 offset. 
 		// Seems to work okay. 
-		x = (ContinuePos.x * g_pInterfaceResMgr->GetYRatio()) + (offset / 2);
+		x = (ContinuePos.x * g_pInterfaceResMgr->GetYRatio()) + (offset);
+
 		y = (float)ContinuePos.y * g_pInterfaceResMgr->GetYRatio();
+		
 		m_pContinueStr->SetPosition(x,y);
 
 		s_bFlash = false;
