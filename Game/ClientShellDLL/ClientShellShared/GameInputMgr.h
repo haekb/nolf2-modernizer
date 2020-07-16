@@ -37,6 +37,7 @@ public:
 	bool IsCommandOn(int nActionCode);
 
 	void DeactivateCommand(int nActionCode);
+	void ClearInput();
 
 private:
 
