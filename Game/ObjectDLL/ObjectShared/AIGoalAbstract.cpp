@@ -617,6 +617,27 @@ bool CAIGoalAbstract::HandleCommand(const CParsedMsg &cMsg)
 		szName  = strtok(szTempBuff, "=");
 		szValue = strtok(LTNULL, "");
 
+		// Jake: There's an odd bug where Parse won't detect spaces correctly
+		// The parse command is in the engine, so we can't really fix that...
+		// So let's hack that up!
+		if (szValue == nullptr)
+		{
+			char szNextBuff[256];
+			SAFE_STRCPY(szNextBuff, cMsg.GetArg(iToken + 1));
+			if (strcmp(szNextBuff, "=") == 0)
+			{
+				// Ok copy over the value
+				SAFE_STRCPY(szNextBuff, cMsg.GetArg(iToken + 2));
+				szValue = szNextBuff;
+
+				// Declare our hack to the world!
+				g_pLTServer->CPrint("Hack to fix garbage name/value pair!");
+
+				// Skip the last two broken values
+				iToken += 2;
+			}
+		}
+
 		// Check for legal NAME=VALUE pair.
 		ASSERT(szName && szValue);
 		if ( !(szName && szValue) )
