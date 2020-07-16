@@ -553,6 +553,8 @@ void CScreenPostload::OnFocus(LTBOOL bFocus)
 	CBaseScreen::OnFocus(bFocus);
 	m_bVisited = LTFALSE;
 
+	// Clear any stored inputs
+	g_pLTClient->ClearInput();
 }
 
 

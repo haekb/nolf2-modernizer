@@ -16,7 +16,8 @@ GameInputMgr::GameInputMgr()
 
 GameInputMgr::~GameInputMgr()
 {
-	m_ActiveCommands.clear();
+	ClearInput();
+
 	if (!m_BindList.empty()) {
 		m_BindList.clear();
 	}
@@ -59,6 +60,7 @@ void GameInputMgr::OnMouseDown(GameInputButton button)
 {
 	if (!SDL_GetRelativeMouseMode())
 	{
+		ClearInput();
 		return;
 	}
 
@@ -79,9 +81,11 @@ void GameInputMgr::OnMouseDown(GameInputButton button)
 
 void GameInputMgr::OnMouseUp(GameInputButton button)
 {
-	// Jake: There use to be a GetRelativeMouseMode check here,
-	// but that led to uncompleted inputs being left "on".
-	// So let's just finish up anything. 
+	if (!SDL_GetRelativeMouseMode())
+	{
+		ClearInput();
+		return;
+	}
 
 	if (button == GIB_LEFT_MOUSE)
 	{
@@ -104,6 +108,7 @@ void GameInputMgr::OnMouseWheel(int nZDelta)
 {
 	if (!SDL_GetRelativeMouseMode())
 	{
+		ClearInput();
 		return;
 	}
 
@@ -203,4 +208,13 @@ void GameInputMgr::DeactivateCommand(int nActionCode)
 {
 	auto remove = std::remove(m_ActiveCommands.begin(), m_ActiveCommands.end(), nActionCode);
 	m_ActiveCommands.erase(remove, m_ActiveCommands.end());
+}
+
+void GameInputMgr::ClearInput()
+{
+	for (auto nActionCode : m_ActiveCommands)
+	{
+		g_pGameClientShell->OnCommandOff(nActionCode);
+	}
+	m_ActiveCommands.clear();
 }
