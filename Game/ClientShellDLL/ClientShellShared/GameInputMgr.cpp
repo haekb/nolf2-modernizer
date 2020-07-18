@@ -5,36 +5,11 @@
 #include <algorithm>
 	
 GameInputMgr* g_pGameInputMgr = nullptr;
-
+extern CGameClientShell* g_pGameClientShell;
 
 #define _DIK_TO_SDL2
 
-#ifdef _DIK_TO_VK
-typedef uint32_t VirtualKey;
-typedef uint32_t DInputKey;
-
-// Jake: Man this sucks, but we need a fast way to convert DirectInput keys to VirtualKeys..
-// Yes I know DInput is physical keys vs virtual keys..but much else we can do here..
-const std::map< DInputKey, VirtualKey > g_mDInputToVK = {
-	{ DIK_ESCAPE, VK_ESCAPE },
-	{ DIK_1, VK_1 },
-	{ DIK_2, VK_2 },
-	{ DIK_3, VK_3 },
-	{ DIK_4, VK_4 },
-	{ DIK_5, VK_5 },
-	{ DIK_6, VK_6 },
-	{ DIK_7, VK_7 },
-	{ DIK_8, VK_8 },
-	{ DIK_9, VK_9 },
-	{ DIK_0, VK_0 },
-	{ DIK_MINUS, VK_OEM_MINUS },
-	{ DIK_EQUALS, VK_OEM_NEC_EQUAL }
-
-};
-#endif
-
 #ifdef _DIK_TO_SDL2
-typedef uint32_t VirtualKey;
 typedef uint32_t DInputKey;
 
 // Jake: Man this sucks, but we need a fast way to convert DirectInput keys to SDL2 Scancodes
@@ -205,9 +180,46 @@ GameInputMgr::~GameInputMgr()
 
 void GameInputMgr::Update()
 {
+	if (SDL_GetRelativeMouseMode() && !g_pGameClientShell->IsGamePaused())
+	{
 
-	const uint8* pState = SDL_GetKeyboardState(nullptr);
 
+		// Poll SDL2 for input
+		SDL_Event event;
+		while (SDL_PollEvent(&event)) {
+			int nEventType = event.type;
+
+			if (nEventType != SDL_KEYDOWN && nEventType != SDL_KEYUP)
+			{
+				continue;
+			}
+
+			int nCommand = -1;
+
+			try {
+				nCommand = m_KeyboardBindList.at(event.key.keysym.scancode);
+			}
+			catch (std::out_of_range ex)
+			{
+				continue;
+			}
+
+			if (nEventType == SDL_KEYDOWN)
+			{
+				g_pGameClientShell->OnCommandOn(nCommand);
+				m_ActiveCommands.push_back(nCommand);
+			}
+			else if (nEventType == SDL_KEYUP)
+			{
+				g_pGameClientShell->OnCommandOff(nCommand);
+				DeactivateCommand(nCommand);
+			}
+
+			/* handle your event here */
+		}
+
+	
+	}
 	
 	// Properly handle sending OnWheel CommandOff calls
 	// I'm not sure if the engine actually supports this properly
@@ -333,18 +345,59 @@ void GameInputMgr::OnMouseWheel(int nZDelta)
 
 void GameInputMgr::ReadDeviceBindings()
 {
-	auto pBindings = g_pLTClient->GetDeviceBindings(DEVICETYPE_MOUSE);
+	ProcessBinding(DEVICETYPE_MOUSE);
+	ProcessBinding(DEVICETYPE_KEYBOARD);
+}
+
+void GameInputMgr::ProcessBinding(int nDInputDevice)
+{
+	auto pBindings = g_pLTClient->GetDeviceBindings(nDInputDevice);
 
 	if (!pBindings)
 	{
 		return;
 	}
 
-	// Clear up the bind list, so we can re-fill it.
-	if (!m_BindList.empty()) {
-		m_BindList.clear();
+	if (nDInputDevice == DEVICETYPE_MOUSE)
+	{
+		// Clear up the bind list, so we can re-fill it.
+		if (!m_BindList.empty()) {
+			m_BindList.clear();
+		}
+
+		ReadMouseBindings(pBindings);
+		
+	}
+	else if (nDInputDevice == DEVICETYPE_KEYBOARD)
+	{
+		// Clear up the bind list, so we can re-fill it.
+		if (!m_KeyboardBindList.empty()) {
+			m_KeyboardBindList.clear();
+		}
+
+		ReadKeyboardBindings(pBindings);
 	}
 
+	g_pLTClient->FreeDeviceBindings(pBindings);
+}
+
+void GameInputMgr::ReadKeyboardBindings(DeviceBinding* pBindings)
+{
+	DeviceBinding* ptr = pBindings;
+	while (ptr)
+	{
+		GameAction* pAction = ptr->pActionHead;
+		std::string sDIK = ptr->strRealName;
+		int nDIK = std::stoi(sDIK.substr(2));
+
+		m_KeyboardBindList.insert(std::make_pair(g_mDInputToSDL.at(nDIK), pAction->nActionCode));
+
+		ptr = ptr->pNext;
+	}
+}
+
+void GameInputMgr::ReadMouseBindings(DeviceBinding* pBindings)
+{
 	DeviceBinding* ptr = pBindings;
 	while (ptr)
 	{
@@ -379,41 +432,6 @@ void GameInputMgr::ReadDeviceBindings()
 		}
 
 		ptr = ptr->pNext;
-	}
-
-
-	g_pLTClient->FreeDeviceBindings(pBindings);
-
-	// Keyboard stuff - all temp, clean up jake!
-	{
-		auto pBindings = g_pLTClient->GetDeviceBindings(DEVICETYPE_KEYBOARD);
-
-		if (!pBindings)
-		{
-			return;
-		}
-
-		// Clear up the bind list, so we can re-fill it.
-		if (!m_BindList.empty()) {
-			m_BindList.clear();
-		}
-
-		DeviceBinding* ptr = pBindings;
-		while (ptr)
-		{
-			GameAction* pAction = ptr->pActionHead;
-			std::string sButtonName = ptr->strTriggerName;
-			std::string sDIK = ptr->strRealName;
-			int nDIK = std::stoi(sDIK.substr(2));
-
-			m_KeyboardBindList.insert(std::make_pair( g_mDInputToSDL.at(nDIK), pAction->nActionCode ));
-
-
-			ptr = ptr->pNext;
-		}
-
-
-		g_pLTClient->FreeDeviceBindings(pBindings);
 	}
 }
 

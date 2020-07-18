@@ -37,7 +37,14 @@ public:
 
 	void OnMouseWheel(int nZDelta);
 
+
+
 	void ReadDeviceBindings();
+
+	void ProcessBinding(int nDInputDevice);
+	void ReadKeyboardBindings(DeviceBinding* pBindings);
+	void ReadMouseBindings(DeviceBinding* pBindings);
+	//void ReadGamepadBindings();
 
 	bool IsCommandOn(int nActionCode);
 
