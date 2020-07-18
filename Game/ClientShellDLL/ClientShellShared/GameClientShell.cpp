@@ -203,6 +203,8 @@ LTRESULT proxyClearInput()
 	float fAxisOffsets[3] = { 0.0f, 0.0f, 0.0f };
 	g_pGameClientShell->SetInputAxis(fAxisOffsets);
 
+	g_pGameInputMgr->ClearInput();
+
 	// Actually run the engine's ClearInput
 	return g_pClearInput();
 }
