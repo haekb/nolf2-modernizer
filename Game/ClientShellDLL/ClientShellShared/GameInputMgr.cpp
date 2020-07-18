@@ -180,46 +180,49 @@ GameInputMgr::~GameInputMgr()
 
 void GameInputMgr::Update()
 {
-	if (SDL_GetRelativeMouseMode() && !g_pGameClientShell->IsGamePaused())
-	{
+	// Poll SDL2 for input
+	// I'm actually surprised this works as well as it does..
+	// we have two input loops and no real slowdown. Gosh golly!
+	SDL_Event event;
+	while (SDL_PollEvent(&event)) {
+		int nEventType = event.type;
 
-
-		// Poll SDL2 for input
-		SDL_Event event;
-		while (SDL_PollEvent(&event)) {
-			int nEventType = event.type;
-
-			if (nEventType != SDL_KEYDOWN && nEventType != SDL_KEYUP)
-			{
-				continue;
-			}
-
-			int nCommand = -1;
-
-			try {
-				nCommand = m_KeyboardBindList.at(event.key.keysym.scancode);
-			}
-			catch (std::out_of_range ex)
-			{
-				continue;
-			}
-
-			if (nEventType == SDL_KEYDOWN)
-			{
-				g_pGameClientShell->OnCommandOn(nCommand);
-				m_ActiveCommands.push_back(nCommand);
-			}
-			else if (nEventType == SDL_KEYUP)
-			{
-				g_pGameClientShell->OnCommandOff(nCommand);
-				DeactivateCommand(nCommand);
-			}
-
-			/* handle your event here */
+		// Ignore all events if we're not in-game moving around!
+		if (!SDL_GetRelativeMouseMode() || g_pGameClientShell->IsGamePaused())
+		{
+			continue;
 		}
 
-	
+		// We only want keyboard events
+		if (nEventType != SDL_KEYDOWN && nEventType != SDL_KEYUP)
+		{
+			continue;
+		}
+
+		int nCommand = -1;
+
+		auto nValidCommand = m_KeyboardBindList.find(event.key.keysym.scancode);
+		if (nValidCommand == m_KeyboardBindList.end())
+		{
+			continue;
+		}
+			
+		nCommand = nValidCommand->second;
+
+		//g_pLTClient->CPrint("(%u) %d Processing input command = %d", SDL_GetTicks, nEventType, nCommand);
+
+		if (nEventType == SDL_KEYDOWN)
+		{
+			g_pGameClientShell->OnCommandOn(nCommand);
+			m_ActiveCommands.push_back(nCommand);
+		}
+		else if (nEventType == SDL_KEYUP)
+		{
+			g_pGameClientShell->OnCommandOff(nCommand);
+			DeactivateCommand(nCommand);
+		}
 	}
+	
 	
 	// Properly handle sending OnWheel CommandOff calls
 	// I'm not sure if the engine actually supports this properly
@@ -299,18 +302,6 @@ void GameInputMgr::OnMouseUp(GameInputButton button)
 	}
 }
 
-bool GameInputMgr::OnKeyDown(int key, int rep)
-{
-
-
-	return false;
-}
-
-bool GameInputMgr::OnKeyUp(int key)
-{
-	return false;
-}
-
 void GameInputMgr::OnMouseWheel(int nZDelta)
 {
 	if (!SDL_GetRelativeMouseMode())
@@ -319,7 +310,6 @@ void GameInputMgr::OnMouseWheel(int nZDelta)
 		return;
 	}
 
-	
 	// OnWheel "Pressed"
 	if (nZDelta >= WHEEL_DELTA)
 	{

@@ -184,7 +184,7 @@ bool proxyIsCommandOn(int commandNum)
 		}
 	}
 
-	return g_pIsCommandOn(commandNum);
+	return false;
 }
 //
 // Proxy ClearInput

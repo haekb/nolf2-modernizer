@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <unordered_map>
 #include "ltbasetypes.h"
 #include <SDL.h>
 
@@ -57,7 +58,7 @@ private:
 	// GameInputButton - GameInputMgr's bounded buttons
 	// int - OnCommandOn action code
 	std::map<GameInputButton, int> m_BindList; // Legacy - Handles mouse
-	std::map<SDL_Scancode, int> m_KeyboardBindList;
+	std::unordered_map <SDL_Scancode, int> m_KeyboardBindList;
 
 	std::vector<int> m_ActiveCommands;
 
