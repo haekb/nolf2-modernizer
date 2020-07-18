@@ -5,6 +5,9 @@
 #include "ltbasetypes.h"
 #include <SDL.h>
 
+#include <VKDefs.h>
+#include <dinput.h>
+
 // For now...We only care about Mouse button 1 and 2 and mousewheels
 enum GameInputButton {
 	GIB_LEFT_MOUSE = 0,
@@ -29,6 +32,8 @@ public:
 
 	void OnMouseDown(GameInputButton button);
 	void OnMouseUp(GameInputButton button);
+	bool OnKeyDown(int key, int rep);
+	bool OnKeyUp(int key);
 
 	void OnMouseWheel(int nZDelta);
 
@@ -41,10 +46,15 @@ public:
 
 private:
 
+	
 	// GameInputButton - GameInputMgr's bounded buttons
 	// int - OnCommandOn action code
-	std::map<GameInputButton, int> m_BindList;
+	std::map<GameInputButton, int> m_BindList; // Legacy - Handles mouse
+	std::map<SDL_Scancode, int> m_KeyboardBindList;
+
 	std::vector<int> m_ActiveCommands;
+
+
 	
 	// Cheaper than checking an array for our two special case buttons..
 	bool m_bIsWheelingUp;
