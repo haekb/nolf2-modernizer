@@ -180,6 +180,7 @@ GameInputMgr::~GameInputMgr()
 
 void GameInputMgr::Update()
 {
+
 	// Poll SDL2 for input
 	// I'm actually surprised this works as well as it does..
 	// we have two input loops and no real slowdown. Gosh golly!
@@ -199,7 +200,7 @@ void GameInputMgr::Update()
 			continue;
 		}
 
-		int nCommand = -1;
+//		int nCommand = -1;
 
 		auto nValidCommand = m_KeyboardBindList.find(event.key.keysym.scancode);
 		if (nValidCommand == m_KeyboardBindList.end())
@@ -207,19 +208,22 @@ void GameInputMgr::Update()
 			continue;
 		}
 			
-		nCommand = nValidCommand->second;
+		auto vCommands = nValidCommand->second;
 
-		//g_pLTClient->CPrint("(%u) %d Processing input command = %d", SDL_GetTicks, nEventType, nCommand);
+		for (int nCommand : vCommands)
+		{
+			//g_pLTClient->CPrint("(%u) %d Processing input command = %d", SDL_GetTicks, nEventType, nCommand);
 
-		if (nEventType == SDL_KEYDOWN)
-		{
-			g_pGameClientShell->OnCommandOn(nCommand);
-			m_ActiveCommands.push_back(nCommand);
-		}
-		else if (nEventType == SDL_KEYUP)
-		{
-			g_pGameClientShell->OnCommandOff(nCommand);
-			DeactivateCommand(nCommand);
+			if (nEventType == SDL_KEYDOWN)
+			{
+				g_pGameClientShell->OnCommandOn(nCommand);
+				m_ActiveCommands.push_back(nCommand);
+			}
+			else if (nEventType == SDL_KEYUP)
+			{
+				g_pGameClientShell->OnCommandOff(nCommand);
+				DeactivateCommand(nCommand);
+			}
 		}
 	}
 	
@@ -376,11 +380,22 @@ void GameInputMgr::ReadKeyboardBindings(DeviceBinding* pBindings)
 	DeviceBinding* ptr = pBindings;
 	while (ptr)
 	{
-		GameAction* pAction = ptr->pActionHead;
 		std::string sDIK = ptr->strRealName;
 		int nDIK = std::stoi(sDIK.substr(2));
+		GameAction* pAction = ptr->pActionHead;
 
-		m_KeyboardBindList.insert(std::make_pair(g_mDInputToSDL.at(nDIK), pAction->nActionCode));
+		std::vector<int> vActions;
+
+		// We can have secondary bindings (or more than that!) 
+		while (pAction)
+		{
+			vActions.push_back(pAction->nActionCode);
+
+			pAction = pAction->pNext;
+		}
+
+		m_KeyboardBindList.insert(std::make_pair(g_mDInputToSDL.at(nDIK), vActions));
+
 
 		ptr = ptr->pNext;
 	}
