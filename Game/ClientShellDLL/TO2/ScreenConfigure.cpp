@@ -17,6 +17,9 @@
 #include "InterfaceMgr.h"
 #include "GameClientShell.h"
 
+extern GameInputMgr* g_pGameInputMgr;
+
+
 // The different columns
 #define SCREEN_COLUMN_ACTION		0
 #define SCREEN_COLUMN_EQUALS		1
@@ -315,6 +318,10 @@ void CScreenConfigure::SetControlText(CLTGUICtrl *pCtrl)
 		{
 			char szTemp[256] = "";
 
+#ifdef _USE_CUSTOM_INPUT_MGR
+			SAFE_STRCPY(strControls, pData->strTriggerName[0]);
+#else
+
 			// Get the name twice and take the shorter version.  WinXP has a problem
 			// with occasionally reporting garbage.  Taking the shorter one assumes that
 			// the garbage version is full of bad characters.
@@ -331,6 +338,7 @@ void CScreenConfigure::SetControlText(CLTGUICtrl *pCtrl)
 			{
 				SAFE_STRCPY(strControls, szDeviceObjectName );
 			}
+#endif
 
 			++numControls;
 		}
@@ -406,6 +414,50 @@ int CScreenConfigure::GetCommand(int nType, int nIndex)
 }
 
 // Unbinds an action
+#ifdef _USE_CUSTOM_INPUT_MGR
+void CScreenConfigure::UnBind(uint16 nControlCode, char const* pszControlName, uint32 deviceType)
+{
+	if (!nControlCode && !pszControlName)
+	{
+		ASSERT(!"CScreenConfigure::UnBind: Invalid inputs.");
+		return;
+	}
+
+	int dev = 0;
+	while (dev < 3 && devices[dev] != deviceType)
+		++dev;
+
+	char szTmp[16] = "";
+	for (int i = 0; i < g_kNumCommands; i++)
+	{
+		CBindingData* pData = m_pProfile->FindBinding(i);
+		if (nControlCode)
+		{
+			std::string sDIK = pData->strRealName[dev];
+			if (sDIK.length() < 3)
+			{
+				continue;
+			}
+			int nDIK = std::stoi(sDIK.substr(2));
+
+			if (nDIK != nControlCode)
+			{
+				continue;
+			}
+		}
+		else
+		{
+			if (stricmp(pData->strRealName[dev], pszControlName))
+				continue;
+		}
+
+		strcpy(pData->strRealName[dev], "");
+		strcpy(pData->strTriggerName[dev], "");
+		pData->nDeviceObjectId[dev] = 0;
+
+	}
+}
+#else
 void CScreenConfigure::UnBind( uint32 nObjectId, char const* pszControlName, uint32 deviceType)
 {
 	if( !nObjectId && !pszControlName )
@@ -441,6 +493,7 @@ void CScreenConfigure::UnBind( uint32 nObjectId, char const* pszControlName, uin
 
 	}
 }
+#endif
 
 // Binds a key to a action
 void CScreenConfigure::Bind(int nCommand, uint32 nDeviceObjectId, uint16 nControlCode, char *lpszControlName, uint32 deviceType)
@@ -591,6 +644,16 @@ LTBOOL CScreenConfigure::Render(HSURFACE hDestSurf)
 	// see if we are waiting for a keypress
 	if (m_bWaitingForKey)
 	{
+#ifdef _USE_CUSTOM_INPUT_MGR
+		
+		m_pInputArray[0] = { 0 };
+		if (g_pGameInputMgr->ReadAnyKey(&m_pInputArray[0]))
+		{
+			SetCurrentSelection(&m_pInputArray[0]);
+			m_bWaitingForKey = LTFALSE;
+			m_fInputPauseTimeLeft = 0.2f;
+		}
+#else
         uint32 nArraySize = TRACK_BUFFER_SIZE;
         g_pLTClient->TrackDevice (m_pInputArray, &nArraySize);
 		if (nArraySize > 0)
@@ -611,6 +674,7 @@ LTBOOL CScreenConfigure::Render(HSURFACE hDestSurf)
 				}
 			}
 		}
+#endif
 	}
 
 	return CBaseScreen::Render(hDestSurf);
@@ -666,7 +730,12 @@ LTBOOL CScreenConfigure::SetCurrentSelection (DeviceInput* pInput)
 	// see if this key is bound to something not in the keyboard configuration folder...
 	if (KeyRemappable(pInput))
 	{
-		UnBind( pInput->m_nObjectId, NULL, pInput->m_DeviceType);
+#ifdef _USE_CUSTOM_INPUT_MGR
+		UnBind(pInput->m_ControlCode, NULL, pInput->m_DeviceType);
+#else
+		UnBind(pInput->m_nObjectId, NULL, pInput->m_DeviceType);
+
+#endif
 		Bind(nCommand, pInput->m_nObjectId, pInput->m_ControlCode, pInput->m_ControlName, pInput->m_DeviceType);
 
 	};

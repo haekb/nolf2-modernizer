@@ -22,6 +22,7 @@
 #define SCREEN_CONTROLS_NUM_DEVICES	3
 #define MAX_CONTROLS_PER_ACTION		2
 
+#define _USE_CUSTOM_INPUT_MGR
 
 class CScreenConfigure : public CBaseScreen
 {
@@ -67,7 +68,11 @@ protected:
     LTBOOL  CheckMouseWheel (DeviceInput* pInput);
 	int		GetCommand(int nType, int nIndex);
     void    Bind(int nCommand, uint32 nDeviceObjectId, uint16 nControlCode, char *lpszControlName, uint32 deviceType);
+#ifdef _USE_CUSTOM_INPUT_MGR
+    void    UnBind(uint16 nControlCode, char const* pszControlName, uint32 deviceType);
+#else
     void    UnBind( uint32 nDeviceObjectId, char const* pszControlName, uint32 deviceType);
+#endif
 
 	void	SetCurrentType(int nType);
 

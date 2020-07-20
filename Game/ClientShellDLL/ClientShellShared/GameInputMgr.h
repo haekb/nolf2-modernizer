@@ -29,6 +29,8 @@ public:
 	GameInputMgr();
 	~GameInputMgr();
 
+	void GenerateReverseMap();
+
 	void Update();
 
 	void OnMouseDown(GameInputButton button);
@@ -51,6 +53,13 @@ public:
 
 	void DeactivateCommand(int nActionCode);
 	void ClearInput();
+
+	//
+	// ReadAnyKey
+	// Pass it an empty DeviceInput and it'll fill it with the first key that gets pressed
+	// This function should be called once per frame until it returns true
+	//
+	bool ReadAnyKey(DeviceInput* pDeviceInput);
 
 private:
 

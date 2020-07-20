@@ -159,6 +159,9 @@ const std::map< DInputKey, SDL_Scancode > g_mDInputToSDL = {
 { DIK_MAIL          , SDL_SCANCODE_MAIL },
 { DIK_MEDIASELECT   , SDL_SCANCODE_MEDIASELECT },
 };
+
+// Jake: This is generated at construction from the above map
+std::map < SDL_Scancode, DInputKey > g_mSDLToDInput;
 #endif
 
 GameInputMgr::GameInputMgr()
@@ -167,6 +170,8 @@ GameInputMgr::GameInputMgr()
 	m_bIsWheelingUp = false;
 	m_bIsWheelingDown = false;
 	m_nLastZDelta = 0;
+
+	GenerateReverseMap();
 }
 
 GameInputMgr::~GameInputMgr()
@@ -175,6 +180,20 @@ GameInputMgr::~GameInputMgr()
 
 	if (!m_BindList.empty()) {
 		m_BindList.clear();
+	}
+}
+
+void GameInputMgr::GenerateReverseMap()
+{
+	// Alreaaady filled
+	if (!g_mSDLToDInput.empty())
+	{
+		return;
+	}
+
+	for (auto pair : g_mDInputToSDL)
+	{
+		g_mSDLToDInput.insert( std::make_pair(pair.second, pair.first) );
 	}
 }
 
@@ -467,4 +486,87 @@ void GameInputMgr::ClearInput()
 		g_pGameClientShell->OnCommandOff(nActionCode);
 	}
 	m_ActiveCommands.clear();
+}
+
+bool GameInputMgr::ReadAnyKey(DeviceInput* pDeviceInput)
+{
+	if (pDeviceInput == nullptr)
+	{
+		return false;
+	}
+
+	SDL_Event event;
+	//while (SDL_PollEvent(&event))
+	while(SDL_WaitEventTimeout(&event, 1000))
+	{
+		int nEventType = event.type;
+
+		bool bKeyboard = nEventType == SDL_KEYDOWN || nEventType == SDL_KEYUP;
+		bool bMouse = nEventType == SDL_MOUSEBUTTONDOWN || nEventType == SDL_MOUSEBUTTONUP;
+
+		// We only want button events
+		if (!bKeyboard && !bMouse)
+		{
+			continue;
+		}
+
+		auto validDIK = g_mSDLToDInput.find(event.key.keysym.scancode);
+		if (validDIK == g_mSDLToDInput.end())
+		{
+			continue;
+		}
+
+		pDeviceInput->m_ControlCode = validDIK->second;
+
+		// No clue what this value is! 
+		pDeviceInput->m_InputValue = event.key.keysym.sym;
+
+		SAFE_STRCPY(pDeviceInput->m_ControlName, SDL_GetKeyName(event.key.keysym.sym));
+
+		if (bMouse)
+		{
+			auto pDeviceObject = g_pLTClient->GetDeviceObjects(DEVICETYPE_MOUSE);
+			pDeviceInput->m_nObjectId = pDeviceObject->m_nObjectId;
+			g_pLTClient->FreeDeviceObjects(pDeviceObject);
+
+			pDeviceInput->m_ControlType = CONTROLTYPE_BUTTON;
+			pDeviceInput->m_DeviceType = DEVICETYPE_MOUSE;
+			SAFE_STRCPY(pDeviceInput->m_DeviceName, "Mouse");
+
+		}
+
+		// Oh, we're a keyboard. Let's do that instead.
+		else if (bKeyboard)
+		{
+			// Ok let's look up and find the proper DirectInput8 ID...
+			auto pDeviceObject = g_pLTClient->GetDeviceObjects(DEVICETYPE_KEYBOARD);
+
+			while (pDeviceObject)
+			{
+				if (stricmp(pDeviceObject->m_ObjectName, pDeviceInput->m_ControlName) == 0)
+				{
+					pDeviceInput->m_nObjectId = pDeviceObject->m_nObjectId;
+					break;
+				}
+
+				pDeviceObject = pDeviceObject->m_pNext;
+			}
+
+			g_pLTClient->FreeDeviceObjects(pDeviceObject);
+
+			pDeviceInput->m_ControlType = CONTROLTYPE_KEY;
+			pDeviceInput->m_DeviceType = DEVICETYPE_KEYBOARD;
+			SAFE_STRCPY(pDeviceInput->m_DeviceName, "Keyboard");
+		}
+
+
+
+		// Lol
+		pDeviceInput->m_nObjectId = 1000 + rand();
+		
+		return true;
+	}
+
+
+	return false;
 }
