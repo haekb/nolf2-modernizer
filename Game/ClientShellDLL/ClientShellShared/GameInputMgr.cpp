@@ -12,6 +12,19 @@ extern CGameClientShell* g_pGameClientShell;
 #ifdef _DIK_TO_SDL2
 typedef uint32_t DInputKey;
 
+const std::map <DInputKey, int> g_mSDLMouseToDInputMouse = {
+	/*
+	{ SDL_BUTTON_LEFT	 , DIMOFS_BUTTON0  },
+	{ SDL_BUTTON_RIGHT	 , DIMOFS_BUTTON1  },
+	{ SDL_BUTTON_MIDDLE	 , DIMOFS_BUTTON2  },
+	{ SDL_BUTTON_X1		 , DIMOFS_BUTTON3  },
+	*/
+	// They overlap with DIK, but they're tracked differently.
+	{ SDL_BUTTON_LEFT	 , 3  },
+	{ SDL_BUTTON_RIGHT	 , 4  },
+	{ SDL_BUTTON_MIDDLE	 , 5  },
+};
+
 // Jake: Man this sucks, but we need a fast way to convert DirectInput keys to SDL2 Scancodes
 const std::map< DInputKey, SDL_Scancode > g_mDInputToSDL = {
 { DIK_ESCAPE        , SDL_SCANCODE_ESCAPE },
@@ -510,23 +523,51 @@ bool GameInputMgr::ReadAnyKey(DeviceInput* pDeviceInput)
 			continue;
 		}
 
-		auto validDIK = g_mSDLToDInput.find(event.key.keysym.scancode);
-		if (validDIK == g_mSDLToDInput.end())
-		{
-			continue;
-		}
-
-		pDeviceInput->m_ControlCode = validDIK->second;
-
-		// No clue what this value is! 
-		pDeviceInput->m_InputValue = event.key.keysym.sym;
-
-		SAFE_STRCPY(pDeviceInput->m_ControlName, SDL_GetKeyName(event.key.keysym.sym));
-
 		if (bMouse)
 		{
+			int nEventButton = event.button.button;
+			// No clue what this value is! 
+			pDeviceInput->m_InputValue = nEventButton;
+
+			std::map<int, const char*> mButtonNames = {
+				{ SDL_BUTTON_LEFT, "Button 0" },
+				{ SDL_BUTTON_RIGHT, "Button 1" },
+				{ SDL_BUTTON_MIDDLE, "Button 2" },
+				{ SDL_BUTTON_X1, "Button 3" }, // ?
+				{ SDL_BUTTON_X2, "Button 4" }, // ?
+			};
+
+			try {
+				SAFE_STRCPY(pDeviceInput->m_ControlName, mButtonNames.at(nEventButton));
+			}
+			catch (...)
+			{
+				SAFE_STRCPY(pDeviceInput->m_ControlName, "Unknown Mouse");
+			}
+
+			try {
+				pDeviceInput->m_ControlCode = g_mSDLMouseToDInputMouse.at(nEventButton);
+			}
+			catch (...)
+			{
+				pDeviceInput->m_ControlCode = 0;
+				g_pLTClient->CPrint("Failed to find mouse control code!");
+			}
+
+			// Ok let's look up and find the proper DirectInput8 ID...
 			auto pDeviceObject = g_pLTClient->GetDeviceObjects(DEVICETYPE_MOUSE);
-			pDeviceInput->m_nObjectId = pDeviceObject->m_nObjectId;
+
+			while (pDeviceObject)
+			{
+				if (stricmp(pDeviceObject->m_ObjectName, pDeviceInput->m_ControlName) == 0)
+				{
+					pDeviceInput->m_nObjectId = pDeviceObject->m_nObjectId;
+					break;
+				}
+
+				pDeviceObject = pDeviceObject->m_pNext;
+			}
+
 			g_pLTClient->FreeDeviceObjects(pDeviceObject);
 
 			pDeviceInput->m_ControlType = CONTROLTYPE_BUTTON;
@@ -538,6 +579,18 @@ bool GameInputMgr::ReadAnyKey(DeviceInput* pDeviceInput)
 		// Oh, we're a keyboard. Let's do that instead.
 		else if (bKeyboard)
 		{
+			auto validDIK = g_mSDLToDInput.find(event.key.keysym.scancode);
+			if (validDIK == g_mSDLToDInput.end())
+			{
+				continue;
+			}
+
+			pDeviceInput->m_ControlCode = validDIK->second;
+
+			// No clue what this value is! 
+			pDeviceInput->m_InputValue = event.key.keysym.sym;
+			SAFE_STRCPY(pDeviceInput->m_ControlName, SDL_GetKeyName(event.key.keysym.sym));
+
 			// Ok let's look up and find the proper DirectInput8 ID...
 			auto pDeviceObject = g_pLTClient->GetDeviceObjects(DEVICETYPE_KEYBOARD);
 
@@ -557,6 +610,8 @@ bool GameInputMgr::ReadAnyKey(DeviceInput* pDeviceInput)
 			pDeviceInput->m_ControlType = CONTROLTYPE_KEY;
 			pDeviceInput->m_DeviceType = DEVICETYPE_KEYBOARD;
 			SAFE_STRCPY(pDeviceInput->m_DeviceName, "Keyboard");
+
+
 		}
 
 

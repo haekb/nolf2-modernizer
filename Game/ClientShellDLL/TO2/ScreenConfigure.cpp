@@ -8,6 +8,12 @@
 //
 // ----------------------------------------------------------------------- //
 
+//
+// Jake: Sorry for the giant hack. 
+// Without re-writing the binding system (which would make it tricky for further "official" development), 
+// it's the least invasive way of swapping out DInput for SDL2. 
+//
+
 #include "stdafx.h"
 #include "ScreenConfigure.h"
 #include "ScreenMgr.h"
