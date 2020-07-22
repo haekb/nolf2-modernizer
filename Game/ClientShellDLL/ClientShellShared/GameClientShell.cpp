@@ -142,6 +142,8 @@ LTRESULT(*g_pRegisterConsoleProgram)(const char* pName, ConsoleProgramFn fn) = n
 LTRESULT(*g_pUnregisterConsoleProgram)(const char* pName) = nullptr;
 LTRESULT(*g_pClearInput)() = nullptr;
 bool (*g_pIsCommandOn)(int commandNum) = nullptr;
+void (*g_pShutdown)() = nullptr;
+void (*g_pShutdownWithMessage)(const char* pMsg, ...) = nullptr;
 
 // We can build a list of registered console programs here :)!
 LTRESULT proxyRegisterConsoleProgram(const char* pName, ConsoleProgramFn fn)
@@ -186,6 +188,7 @@ bool proxyIsCommandOn(int commandNum)
 
 	return false;
 }
+
 //
 // Proxy ClearInput
 // Through testing I found ClearInput must re-init DirectInput's RawInput listener. 
@@ -207,6 +210,33 @@ LTRESULT proxyClearInput()
 
 	// Actually run the engine's ClearInput
 	return g_pClearInput();
+}
+
+void proxyShutdown()
+{
+	// Send our shutdown event
+	SDL_Event sdlevent;
+	sdlevent.type = SDL_QUIT;
+	SDL_PushEvent(&sdlevent);
+	
+	g_pShutdown();
+}
+
+void proxyShutdownWithMessage(const char* pMsg, ...)
+{
+	// Send our shutdown event
+	SDL_Event sdlevent;
+	sdlevent.type = SDL_QUIT;
+	SDL_PushEvent(&sdlevent);
+
+	// We need to handle the vargs here...
+	char buff[1024];
+	va_list args;
+	va_start(args, pMsg);
+	vsprintf(buff, pMsg, args);
+	va_end(args);
+
+	g_pShutdownWithMessage(pMsg);
 }
 
 void SDLLog(void* userdata, int category, SDL_LogPriority priority, const char* message)
@@ -252,6 +282,12 @@ void InitClientShell()
 
 	g_pIsCommandOn = g_pLTClient->IsCommandOn;
 	g_pLTClient->IsCommandOn = proxyIsCommandOn;
+
+	g_pShutdown = g_pLTClient->Shutdown;
+	g_pLTClient->Shutdown = proxyShutdown;
+
+	g_pShutdownWithMessage = g_pLTClient->ShutdownWithMessage;
+	g_pLTClient->ShutdownWithMessage = proxyShutdownWithMessage;
 
 	// Init our LT subsystems
 
@@ -1953,6 +1989,15 @@ void CGameClientShell::PostUpdate()
 
 	GetInterfaceMgr( )->PostUpdate();
 
+	// Jake: Let our window event handler do some work
+	if (!ProcessWindowEvents())
+	{
+		g_pLTClient->CPrint("Shutting down!");
+		PostQuitMessage(0);
+
+		return;
+	}
+
 	m_pGameInputMgr->Update();
 
 	// This should maybe be in CursorMgr, but it's here.
@@ -2230,6 +2275,41 @@ void CGameClientShell::OnCommandOff(int command)
 	{
 		return;
 	}
+}
+
+//
+// Process Window Events
+// Steal from the engine's window event handler and process it ourselves.
+// This is needed to handle all the funky stuff we do with replacing input
+// Note: If you're doing engine work, you can fix the input stuff and remove this!
+//
+bool CGameClientShell::ProcessWindowEvents()
+{
+	SDL_Event event;
+	while (SDL_PollEvent(&event)) {
+		int nEventType = event.type;
+
+		//
+		// The engine window event handler must handle quitting as a special condition
+		// So just rebroadcast the message, and break from this loop. The engine should handle it next!
+		//
+		if (nEventType == SDL_QUIT)
+		{
+			return false;
+		}
+
+		// Key events
+		else if (nEventType == SDL_KEYDOWN)
+		{
+			g_pGameInputMgr->OnSDLKeyDown(event.key);
+		}
+		else if (nEventType == SDL_KEYUP)
+		{
+			g_pGameInputMgr->OnSDLKeyUp(event.key);
+		}
+	}
+
+	return true;
 }
 
 // ----------------------------------------------------------------------- //
@@ -4654,9 +4734,14 @@ LRESULT CALLBACK HookedWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lP
 		HANDLE_MSG(hWnd, WM_SETCURSOR, OnSetCursor);
 	}
 
+	if (uMsg == WM_QUIT)
+	{
+		g_pLTClient->CPrint("[WIN MSG] QUIT");
+	}
 	
 	if (uMsg == WM_ACTIVATEAPP && g_pGameClientShell)
 	{
+		g_pLTClient->CPrint("[WIN MSG] ACTIVATE APP");
 		// DirectInput probably has a similar WM_ACTIVATEAPP on focus call. 
 		// So we gotta compete against that.
 		g_pGameClientShell->SetReRegisterRawInput(true);
@@ -4742,6 +4827,7 @@ void CGameClientShell::OnMouseWheel(HWND hwnd, int x, int y, int zDelta, UINT fw
 
 void CGameClientShell::OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags)
 {
+	g_pLTClient->CPrint("Mouse Move %d/%d", x, y);
 	g_pInterfaceMgr->OnMouseMove(x,y);
 }
 

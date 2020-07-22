@@ -35,8 +35,9 @@ public:
 
 	void OnMouseDown(GameInputButton button);
 	void OnMouseUp(GameInputButton button);
-	bool OnKeyDown(int key, int rep);
-	bool OnKeyUp(int key);
+
+	bool OnSDLKeyDown(SDL_KeyboardEvent keyEvent);
+	bool OnSDLKeyUp(SDL_KeyboardEvent keyEvent);
 
 	void OnMouseWheel(int nZDelta);
 

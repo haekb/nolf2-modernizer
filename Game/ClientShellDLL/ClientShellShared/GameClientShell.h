@@ -161,6 +161,8 @@ public:
 	void		OnCommandOn(int command);
 	void		OnCommandOff(int command);
 
+	bool		ProcessWindowEvents();
+
 protected :
     uint32      OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid);
 	void		OnEngineTerm();

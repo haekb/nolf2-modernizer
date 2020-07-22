@@ -211,55 +211,7 @@ void GameInputMgr::GenerateReverseMap()
 }
 
 void GameInputMgr::Update()
-{
-
-	// Poll SDL2 for input
-	// I'm actually surprised this works as well as it does..
-	// we have two input loops and no real slowdown. Gosh golly!
-	SDL_Event event;
-	while (SDL_PollEvent(&event)) {
-		int nEventType = event.type;
-
-		// Ignore all events if we're not in-game moving around!
-		if (!SDL_GetRelativeMouseMode() || g_pGameClientShell->IsGamePaused())
-		{
-			continue;
-		}
-
-		// We only want keyboard events
-		if (nEventType != SDL_KEYDOWN && nEventType != SDL_KEYUP)
-		{
-			continue;
-		}
-
-//		int nCommand = -1;
-
-		auto nValidCommand = m_KeyboardBindList.find(event.key.keysym.scancode);
-		if (nValidCommand == m_KeyboardBindList.end())
-		{
-			continue;
-		}
-			
-		auto vCommands = nValidCommand->second;
-
-		for (int nCommand : vCommands)
-		{
-			//g_pLTClient->CPrint("(%u) %d Processing input command = %d", SDL_GetTicks, nEventType, nCommand);
-
-			if (nEventType == SDL_KEYDOWN)
-			{
-				g_pGameClientShell->OnCommandOn(nCommand);
-				m_ActiveCommands.push_back(nCommand);
-			}
-			else if (nEventType == SDL_KEYUP)
-			{
-				g_pGameClientShell->OnCommandOff(nCommand);
-				DeactivateCommand(nCommand);
-			}
-		}
-	}
-	
-	
+{	
 	// Properly handle sending OnWheel CommandOff calls
 	// I'm not sure if the engine actually supports this properly
 	// But we do!
@@ -337,6 +289,57 @@ void GameInputMgr::OnMouseUp(GameInputButton button)
 
 	}
 }
+
+bool GameInputMgr::OnSDLKeyDown(SDL_KeyboardEvent keyEvent)
+{
+	// Ignore all events if we're not in-game moving around!
+	if (!SDL_GetRelativeMouseMode() || g_pGameClientShell->IsGamePaused())
+	{
+		return false;
+	}
+
+	auto nValidCommand = m_KeyboardBindList.find(keyEvent.keysym.scancode);
+	if (nValidCommand == m_KeyboardBindList.end())
+	{
+		return false;
+	}
+
+	auto vCommands = nValidCommand->second;
+
+	for (int nCommand : vCommands)
+	{
+		g_pGameClientShell->OnCommandOn(nCommand);
+		m_ActiveCommands.push_back(nCommand);
+	}
+
+	return true;
+}
+
+bool GameInputMgr::OnSDLKeyUp(SDL_KeyboardEvent keyEvent)
+{
+	// Ignore all events if we're not in-game moving around!
+	if (!SDL_GetRelativeMouseMode() || g_pGameClientShell->IsGamePaused())
+	{
+		return false;
+	}
+
+	auto nValidCommand = m_KeyboardBindList.find(keyEvent.keysym.scancode);
+	if (nValidCommand == m_KeyboardBindList.end())
+	{
+		return false;
+	}
+
+	auto vCommands = nValidCommand->second;
+
+	for (int nCommand : vCommands)
+	{
+		g_pGameClientShell->OnCommandOff(nCommand);
+		DeactivateCommand(nCommand);
+	}
+
+	return true;
+}
+
 
 void GameInputMgr::OnMouseWheel(int nZDelta)
 {
