@@ -175,15 +175,6 @@ void proxyGetAxisOffsets(LTFLOAT* offsets)
 
 bool proxyIsCommandOn(int commandNum)
 {
-	if (g_pGameInputMgr)
-	{
-		// Ignore if the command isn't on in the input manager
-		if (g_pGameInputMgr->IsCommandOn(commandNum))
-		{
-			return true;
-		}
-	}
-
 	return g_pIsCommandOn(commandNum);
 }
 //
@@ -4689,52 +4680,38 @@ void CGameClientShell::OnChar(HWND hWnd, char c, int rep)
 
 void CGameClientShell::OnLButtonUp(HWND hWnd, int x, int y, UINT keyFlags)
 {
-	g_pGameInputMgr->OnMouseUp(GIB_LEFT_MOUSE);
-
 	g_pInterfaceMgr->OnLButtonUp(x,y);
 }
 
 void CGameClientShell::OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 {
-	g_pGameInputMgr->OnMouseDown(GIB_LEFT_MOUSE);
-
 	g_pInterfaceMgr->OnLButtonDown(x,y);
 }
 
 void CGameClientShell::OnLButtonDblClick(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 {
 	// Handle double clicks like regular clicks.
-	g_pGameInputMgr->OnMouseDown(GIB_LEFT_MOUSE);
-
 	g_pInterfaceMgr->OnLButtonDblClick(x,y);
 }
 
 void CGameClientShell::OnRButtonUp(HWND hwnd, int x, int y, UINT keyFlags)
 {
-	g_pGameInputMgr->OnMouseUp(GIB_RIGHT_MOUSE);
-
-
 	g_pInterfaceMgr->OnRButtonUp(x,y);
 }
 
 void CGameClientShell::OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 {
-	g_pGameInputMgr->OnMouseDown(GIB_RIGHT_MOUSE);
-
 	g_pInterfaceMgr->OnRButtonDown(x,y);
 }
 
 void CGameClientShell::OnRButtonDblClick(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 {
 	// Handle double clicks like regular clicks.
-	g_pGameInputMgr->OnMouseDown(GIB_RIGHT_MOUSE);
-
 	g_pInterfaceMgr->OnRButtonDblClick(x,y);
 }
 
 void CGameClientShell::OnMouseWheel(HWND hwnd, int x, int y, int zDelta, UINT fwKeys)
 {
-	g_pGameInputMgr->OnMouseWheel(zDelta);
 	g_pInterfaceMgr->OnMouseWheel(x, y, zDelta);
 }
 
