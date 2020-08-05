@@ -82,11 +82,25 @@ public:
 
 	static bool ShowInputDevices();
 
+	//
+	// Non-interface functions
+	//
+
 	// Public so static functions can clean them up.
 	InputMgr* m_pInputMgr;
+	DeviceBinding* m_pBindings;
+	GameAction* m_pActions;
+
+	bool GetRelativeMode() { return m_bRelativeMode; }
+	void SetRelativeMode(bool bOn);
+
+	GameAction* FindAction(const char* szActionName);
+
+	void GenerateReverseMap();
 
 private:
 
+	bool m_bRelativeMode;
 
 };
 

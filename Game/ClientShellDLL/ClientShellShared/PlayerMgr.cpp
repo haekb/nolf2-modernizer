@@ -3682,6 +3682,7 @@ void CPlayerMgr::UpdateMultiplayerCameraPosition()
 
 void CPlayerMgr::UpdateRotationAxis()
 {
+	return;
 	float offsets[3];
 	int deltaX = 0, deltaY = 0;
 
@@ -3693,12 +3694,11 @@ void CPlayerMgr::UpdateRotationAxis()
 		m_bGetBaseMouse = LTFALSE;
 	}
 
-	SDL_GetRelativeMouseState(&deltaX, &deltaY);
+	//SDL_GetRelativeMouseState(&deltaX, &deltaY);
+	g_pLTClient->GetAxisOffsets(offsets);
 
-
-
-	m_iCurrentMouseX += deltaX;
-	m_iCurrentMouseY += deltaY;
+	m_iCurrentMouseX += offsets[0];
+	m_iCurrentMouseY += offsets[1];
 
 	// TODO: Clean up, Code is from GameSettings.
 	float nMouseSensitivity = GetConsoleFloat("MouseSensitivity", 1.0f);

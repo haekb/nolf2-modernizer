@@ -716,6 +716,9 @@ CGameClientShell::CGameClientShell()
 	//g_SDLLogFile.close();
 
 	SDL_Log("-- Hello World, We're all set here. Enjoy the show!");
+
+	// Create GameInputMgr sometime before we load our profile..
+	m_pGameInputMgr = debug_new(GameInputMgr);
 }
 
 
@@ -1020,9 +1023,6 @@ uint32 CGameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
 	{
 		return LT_ERROR;
 	}
-
-	// Create GameInputMgr sometime before we load our profile..
-	m_pGameInputMgr = debug_new(GameInputMgr);
 
 	// Initialize global console variables...
 
