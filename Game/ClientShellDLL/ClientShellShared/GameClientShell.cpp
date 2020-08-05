@@ -234,7 +234,7 @@ void InitClientShell()
 	g_pUnregisterConsoleProgram = g_pLTClient->UnregisterConsoleProgram;
 	g_pLTClient->UnregisterConsoleProgram = proxyUnregisterConsoleProgram;
 
-	g_pLTClient->GetAxisOffsets = proxyGetAxisOffsets;
+	//g_pLTClient->GetAxisOffsets = proxyGetAxisOffsets;
 
 	g_pClearInput = g_pLTClient->ClearInput;
 	g_pLTClient->ClearInput = proxyClearInput;
@@ -1941,8 +1941,6 @@ void CGameClientShell::PostUpdate()
 
 
 	GetInterfaceMgr( )->PostUpdate();
-
-	m_pGameInputMgr->Update();
 
 	// This should maybe be in CursorMgr, but it's here.
 	// This basically checks to see if we need to re-register raw input
