@@ -1318,5 +1318,8 @@
     <ClInclude Include="HUDTakeDamage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="InputMgr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
