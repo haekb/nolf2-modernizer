@@ -3680,51 +3680,6 @@ void CPlayerMgr::UpdateMultiplayerCameraPosition()
 	return;
 }
 
-void CPlayerMgr::UpdateRotationAxis()
-{
-	return;
-	float offsets[3];
-	int deltaX = 0, deltaY = 0;
-
-	// Firstly, we need a point of reference.
-	// This conditional is here, in case we need to reset the mouse.
-	if (m_bGetBaseMouse)
-	{
-		SDL_GetMouseState(&m_iCurrentMouseX, &m_iCurrentMouseY);
-		m_bGetBaseMouse = LTFALSE;
-	}
-
-	//SDL_GetRelativeMouseState(&deltaX, &deltaY);
-	g_pLTClient->GetAxisOffsets(offsets);
-
-	m_iCurrentMouseX += offsets[0];
-	m_iCurrentMouseY += offsets[1];
-
-	// TODO: Clean up, Code is from GameSettings.
-	float nMouseSensitivity = GetConsoleFloat("MouseSensitivity", 1.0f);
-	float nScale = 0.00125f + ((float)nMouseSensitivity * 0.001125f);
-	nScale *= 0.50f;
-
-	offsets[0] = (float)(m_iCurrentMouseX - m_iPreviousMouseX) * nScale;
-	offsets[1] = (float)(m_iCurrentMouseY - m_iPreviousMouseY) * nScale;
-	offsets[2] = 0.0f;
-
-	static int nDelay = 0;
-	if (GetConsoleFloat("ShowSDLMouse", 0) && nDelay % 10 == 0) {
-		g_pLTClient->CPrint("Delta: %d/%d", deltaX, deltaY);
-		g_pLTClient->CPrint("Offset %f/%f/%f", offsets[0], offsets[1], offsets[2]);
-		g_pLTClient->CPrint("Mouse Sensitivity %f / Scaled %f", nMouseSensitivity, nScale);
-		nDelay = 0;
-	}
-
-	nDelay++;
-
-	g_pGameClientShell->SetInputAxis(offsets);
-
-	m_iPreviousMouseX = m_iCurrentMouseX;
-	m_iPreviousMouseY = m_iCurrentMouseY;
-}
-
 // ----------------------------------------------------------------------- //
 //
 //	ROUTINE:	CPlayerMgr::CalculateCameraRotation()

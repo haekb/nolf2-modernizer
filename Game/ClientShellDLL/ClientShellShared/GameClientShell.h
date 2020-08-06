@@ -154,9 +154,6 @@ public:
 
 	virtual	void OnConsolePrint(CConsolePrintData* pData);
 
-	void SetReRegisterRawInput(bool bVal) { SDL_Log("Setting Re-Register RawInput to %d", bVal); m_bReRegisterRawInput = bVal; };
-	bool GetReRegisterRawInput() { return m_bReRegisterRawInput; };
-
 	// These are now public so GameInputMgr can use them.
 	void		OnCommandOn(int command);
 	void		OnCommandOff(int command);

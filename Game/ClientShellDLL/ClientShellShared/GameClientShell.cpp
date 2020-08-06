@@ -1941,26 +1941,6 @@ void CGameClientShell::PostUpdate()
 
 
 	GetInterfaceMgr( )->PostUpdate();
-
-	// This should maybe be in CursorMgr, but it's here.
-	// This basically checks to see if we need to re-register raw input
-	// DirectInput has its own RawInput listener that will steal ours. (So rude!)
-	// So on WM_ActivateApp or ClearInput() we re-register so we can use it.
-	if (GetReRegisterRawInput())
-	{
-		auto bInRelativeMode = SDL_GetRelativeMouseMode();
-
-		SDL_SetRelativeMouseMode(SDL_FALSE);
-
-		if (bInRelativeMode)
-		{
-			SDL_SetRelativeMouseMode(SDL_TRUE);
-		}
-
-		SetReRegisterRawInput(false);
-	}
-
-	GetPlayerMgr()->UpdateRotationAxis();
 }
 
 // ----------------------------------------------------------------------- //
