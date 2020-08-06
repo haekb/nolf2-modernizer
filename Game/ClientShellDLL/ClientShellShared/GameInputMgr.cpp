@@ -117,7 +117,7 @@ uint32_t GameInputMgr::PlayJoystickEffect(InputMgr* pInputMgr, const char* szEff
 void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAxisOffsets[3])
 {
 	auto pBinding = g_pGameInputMgr->m_pBindings;
-	int nDeltaX, nDeltaY = 0;
+	int nDeltaX = 0, nDeltaY = 0;
 
 	// Only track mouse if relative mode is enabled
 	if (g_pGameInputMgr->GetRelativeMode())
@@ -139,6 +139,7 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 			continue;
 		}
 
+		// Note: This stuff is all special cases.
 		// Only track mouse if relative mode is enabled
 		if (g_pGameInputMgr->GetRelativeMode())
 		{
@@ -149,22 +150,17 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 			static int nCurrentMouseY = 0;
 			static int nPreviousMouseX = 0;
 			static int nPreviousMouseY = 0;
-
-			// FIXME: This should be dictated by Scale, once I implement ScaleTrigger
-			// TODO: Clean up, Code is from GameSettings.
-			float nMouseSensitivity = GetConsoleFloat("MouseSensitivity", 1.0f);
-			float nScale = 0.00125f + ((float)nMouseSensitivity * 0.001125f);
-			nScale *= 0.50f;
+			float nScale = pDeviceBinding->nScale;
 
 			// Only thing that's not SDL2!
 			if (pBinding->bWheel)
 			{
 				auto nWheelDelta = g_pGameInputMgr->GetWheelDelta();
-				if (nWheelDelta > WHEEL_DELTA)
+				if (nWheelDelta >= WHEEL_DELTA && pDeviceBinding->nRangeScaleMin > 0.0)
 				{
 					pActionsOn[pDeviceBinding->pActionHead->nActionCode] |= 1;
 				}
-				else if (nWheelDelta < -WHEEL_DELTA)
+				else if (nWheelDelta <= -WHEEL_DELTA && pDeviceBinding->nRangeScaleMin < 0.0)
 				{
 					pActionsOn[pDeviceBinding->pActionHead->nActionCode] |= 1;
 				}
@@ -198,7 +194,6 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 		}
 		else if (pBinding->nDeviceType == DEVICETYPE_MOUSE)
 		{
-			
 			nOn = (pButtons & SDL_BUTTON(pBinding->nMouseButton));
 		}
 
@@ -290,6 +285,7 @@ bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, cons
 	LTStrCpy(pDeviceBinding->strTriggerName, pTriggerName, sizeof(pDeviceBinding->strTriggerName));
 	pDeviceBinding->nRangeScaleMin = fRangeLow;
 	pDeviceBinding->nRangeScaleMin = fRangeHigh;
+	pDeviceBinding->nScale = 1.0f;
 	pDeviceBinding->pActionHead = pAction;
 	pDeviceBinding->pNext = nullptr;
 
@@ -333,12 +329,32 @@ bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, cons
 	pBinding->pNext = g_pGameInputMgr->m_pBindings;
 	g_pGameInputMgr->m_pBindings = pBinding;
 
-	return false;
+	return true;
 }
 
 bool GameInputMgr::ScaleTrigger(InputMgr* pInputMgr, const char* pDeviceName, const char* pTriggerName, float fScale, float fRangeScaleMin, float fRangeScaleMax, float fRangeScalePreCenterOffset)
 {
-	return false;
+	auto pBinding = g_pGameInputMgr->m_pBindings;
+	while (pBinding)
+	{
+		if (pBinding->nDeviceType != g_pGameInputMgr->GetDeviceTypeFromName(pDeviceName))
+		{
+			pBinding = pBinding->pNext;
+			continue;
+		}
+
+		if (stricmp(pBinding->pDeviceBinding->strTriggerName, pTriggerName) == 0)
+		{
+			pBinding->pDeviceBinding->nScale = fScale;
+			pBinding->pDeviceBinding->nRangeScaleMin = fRangeScaleMin;
+			pBinding->pDeviceBinding->nRangeScaleMax = fRangeScaleMax;
+			pBinding->pDeviceBinding->nRangeScalePreCenterOffset = fRangeScalePreCenterOffset;
+		}
+
+		pBinding = pBinding->pNext;
+	}
+
+	return true;
 }
 
 DeviceBinding* GameInputMgr::GetDeviceBindings(uint32_t nDevice)
@@ -393,11 +409,89 @@ bool GameInputMgr::EndDeviceTrack()
 // Determines if joysticks/gamepads are available!!!
 DeviceObject* GameInputMgr::GetDeviceObjects(uint32_t nDeviceFlags)
 {
-	return nullptr;
+	// Only mice are supported right now!
+	if (nDeviceFlags != DEVICETYPE_MOUSE)
+	{
+		return nullptr;
+	}
+
+	auto pBinding = g_pGameInputMgr->m_pBindings;
+
+	DeviceObject* pDeviceObjects = nullptr;
+
+	while (pBinding)
+	{
+		if (pBinding->nDeviceType != nDeviceFlags)
+		{
+			pBinding = pBinding->pNext;
+
+			continue;
+		}
+
+		std::string sTriggerName = pBinding->pDeviceBinding->strTriggerName;
+
+		DeviceObject* pDeviceObject = new DeviceObject();
+
+		// Oh memory error? Let's break..
+		if (!pDeviceObject)
+		{
+			break;
+		}
+		
+		pDeviceObject->m_DeviceType = DEVICETYPE_MOUSE;
+		
+		int nObjectType = CONTROLTYPE_UNKNOWN;
+
+		// TODO: This can be a map
+		if (sTriggerName.compare("##x-axis") == 0)
+		{
+			nObjectType = CONTROLTYPE_XAXIS;
+		}
+		else if (sTriggerName.compare("##y-axis") == 0)
+		{
+			nObjectType = CONTROLTYPE_YAXIS;
+		}
+		else if (sTriggerName.compare("##z-axis") == 0)
+		{
+			nObjectType = CONTROLTYPE_ZAXIS;
+		}
+		pDeviceObject->m_ObjectType = nObjectType;
+
+
+		// Strings!
+
+		// Object Name (x-axis, y-axis, z-axis)
+		LTStrCpy(pDeviceObject->m_ObjectName, sTriggerName.substr(2).c_str(), sizeof(pDeviceObject->m_ObjectName));
+
+		// Device Name (mouse!)
+		char szDeviceName[INPUTNAME_LEN];
+		g_pGameInputMgr->GetDeviceName(DEVICETYPE_MOUSE, szDeviceName, sizeof(szDeviceName));
+		LTStrCpy(pDeviceObject->m_DeviceName, szDeviceName, sizeof(pDeviceObject->m_DeviceName));
+
+		pDeviceObject->m_RangeLow = pBinding->pDeviceBinding->nRangeScaleMin;
+		pDeviceObject->m_RangeHigh = pBinding->pDeviceBinding->nRangeScaleMax;
+		
+		
+		pDeviceObject->m_pNext = pDeviceObjects;
+		pDeviceObjects = pDeviceObject;
+
+		pBinding = pBinding->pNext;
+	}
+
+	return pDeviceObjects;
 }
 
 void GameInputMgr::FreeDeviceObjects(DeviceObject* pList)
 {
+	while (pList)
+	{
+		auto pNext = pList->m_pNext;
+
+		delete pList;
+		pList = nullptr;
+
+		pList = pNext;
+	}
 }
 
 bool GameInputMgr::GetDeviceName(uint32_t nDeviceType, char* szBuffer, uint32_t nBufferSize)
@@ -531,12 +625,12 @@ int GameInputMgr::GetDeviceTypeFromName(const char* szDeviceName)
 
 	// We only support mouse + keyboard right now! 
 
-	if (stricmp("##keyboard", szDeviceName) == 0)
+	if (stricmp("keyboard", szDeviceName) == 0 || stricmp("##keyboard", szDeviceName) == 0)
 	{
 		return DEVICETYPE_KEYBOARD;
 	}
 
-	if (stricmp("##mouse", szDeviceName) == 0)
+	if (stricmp("mouse", szDeviceName) == 0 || stricmp("##mouse", szDeviceName) == 0)
 	{
 		return DEVICETYPE_MOUSE;
 	}
