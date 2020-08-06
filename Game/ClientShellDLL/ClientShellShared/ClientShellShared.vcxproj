@@ -1508,6 +1508,7 @@
     <ClInclude Include="ScreenPreload.h" />
     <ClInclude Include="ScreenSpriteMgr.h" />
     <ClInclude Include="ScreenTintMgr.h" />
+    <ClInclude Include="SDLDInput8Conversion.h" />
     <ClInclude Include="Searcher.h" />
     <ClInclude Include="SearchLightFX.h" />
     <ClInclude Include="SFXMgr.h" />

@@ -6,6 +6,38 @@
 #include <SDL.h>
 #include "InputMgr.h"
 
+
+/*
+They didn't name this enum, so it's here for reference...
+enum
+{
+	DEVICETYPE_KEYBOARD    = 1,
+	DEVICETYPE_MOUSE       = 2,
+	DEVICETYPE_JOYSTICK    = 4,
+	DEVICETYPE_GAMEPAD     = 8,
+	DEVICETYPE_UNKNOWN     = 16
+};
+*/
+
+struct GIMBinding {
+	char szName[INPUTNAME_LEN];
+	char szDevice[INPUTNAME_LEN];
+
+	// DirectInput Keycode
+	// Might be null
+	uint32_t nDIK;
+
+	// Based off the DEVICETYPE_* enum
+	int nDeviceType;
+	union {
+		SDL_Scancode nKeyboardScancode;
+		uint32_t nMouseButton;
+	};
+
+	DeviceBinding* pDeviceBinding;
+	GIMBinding* pNext;
+};
+
 //
 // Game Input Manager
 // This is a separate class from ProfileMgr so engine folks can rip this out later!
@@ -88,7 +120,8 @@ public:
 
 	// Public so static functions can clean them up.
 	InputMgr* m_pInputMgr;
-	DeviceBinding* m_pBindings;
+	GIMBinding* m_pBindings;
+	//DeviceBinding* m_pBindings;
 	GameAction* m_pActions;
 
 	bool GetRelativeMode() { return m_bRelativeMode; }
@@ -98,7 +131,17 @@ public:
 
 	void GenerateReverseMap();
 
+	int GetDeviceTypeFromName(const char* szDeviceName);
+
+	// Converts "##42" to 42.
+	int GetIntFromTriggerName(const char* szTriggerName);
+
+	int GetScancodeFromActionCode(int nActionCode);
+	int GetMouseButtonFromActionCode(int nActionCode);
+
 private:
+
+
 
 	bool m_bRelativeMode;
 

@@ -4,179 +4,13 @@
 #include <SDL.h>
 #include <algorithm>
 #include <dinput.h>
+#include "SDLDInput8Conversion.h"
 	
 GameInputMgr* g_pGameInputMgr = nullptr;
 
-
-#define _DIK_TO_SDL2
-
-#ifdef _DIK_TO_SDL2
-typedef uint32_t DInputKey;
-
-const std::map <DInputKey, int> g_mSDLMouseToDInputMouse = {
-	/*
-	{ SDL_BUTTON_LEFT	 , DIMOFS_BUTTON0  },
-	{ SDL_BUTTON_RIGHT	 , DIMOFS_BUTTON1  },
-	{ SDL_BUTTON_MIDDLE	 , DIMOFS_BUTTON2  },
-	{ SDL_BUTTON_X1		 , DIMOFS_BUTTON3  },
-	*/
-	// They overlap with DIK, but they're tracked differently.
-	{ SDL_BUTTON_LEFT	 , 3  },
-	{ SDL_BUTTON_RIGHT	 , 4  },
-	{ SDL_BUTTON_MIDDLE	 , 5  },
-};
-
-// Jake: Man this sucks, but we need a fast way to convert DirectInput keys to SDL2 Scancodes
-const std::map< DInputKey, SDL_Scancode > g_mDInputToSDL = {
-{ DIK_ESCAPE        , SDL_SCANCODE_ESCAPE },
-{ DIK_1             , SDL_SCANCODE_1 },
-{ DIK_2             , SDL_SCANCODE_2 },
-{ DIK_3             , SDL_SCANCODE_3 },
-{ DIK_4             , SDL_SCANCODE_4 },
-{ DIK_5             , SDL_SCANCODE_5 },
-{ DIK_6             , SDL_SCANCODE_6 },
-{ DIK_7             , SDL_SCANCODE_7 },
-{ DIK_8             , SDL_SCANCODE_8 },
-{ DIK_9             , SDL_SCANCODE_9 },
-{ DIK_0             , SDL_SCANCODE_0 },
-{ DIK_MINUS         , SDL_SCANCODE_MINUS },
-{ DIK_EQUALS        , SDL_SCANCODE_EQUALS },
-{ DIK_BACK          , SDL_SCANCODE_BACKSPACE },
-{ DIK_TAB           , SDL_SCANCODE_TAB },
-{ DIK_Q             , SDL_SCANCODE_Q },
-{ DIK_W             , SDL_SCANCODE_W },
-{ DIK_E             , SDL_SCANCODE_E },
-{ DIK_R             , SDL_SCANCODE_R },
-{ DIK_T             , SDL_SCANCODE_T },
-{ DIK_Y             , SDL_SCANCODE_Y },
-{ DIK_U             , SDL_SCANCODE_U },
-{ DIK_I             , SDL_SCANCODE_I },
-{ DIK_O             , SDL_SCANCODE_O },
-{ DIK_P             , SDL_SCANCODE_P },
-{ DIK_LBRACKET      , SDL_SCANCODE_LEFTBRACKET },
-{ DIK_RBRACKET      , SDL_SCANCODE_RIGHTBRACKET },
-{ DIK_RETURN        , SDL_SCANCODE_RETURN },
-{ DIK_LCONTROL      , SDL_SCANCODE_LCTRL },
-{ DIK_A             , SDL_SCANCODE_A },
-{ DIK_S             , SDL_SCANCODE_S },
-{ DIK_D             , SDL_SCANCODE_D },
-{ DIK_F             , SDL_SCANCODE_F },
-{ DIK_G             , SDL_SCANCODE_G },
-{ DIK_H             , SDL_SCANCODE_H },
-{ DIK_J             , SDL_SCANCODE_J },
-{ DIK_K             , SDL_SCANCODE_K },
-{ DIK_L             , SDL_SCANCODE_L },
-{ DIK_SEMICOLON     , SDL_SCANCODE_SEMICOLON },
-{ DIK_APOSTROPHE    , SDL_SCANCODE_APOSTROPHE },
-{ DIK_GRAVE         , SDL_SCANCODE_GRAVE },
-{ DIK_LSHIFT        , SDL_SCANCODE_LSHIFT },
-{ DIK_BACKSLASH     , SDL_SCANCODE_BACKSLASH },
-{ DIK_Z             , SDL_SCANCODE_Z },
-{ DIK_X             , SDL_SCANCODE_X },
-{ DIK_C             , SDL_SCANCODE_C },
-{ DIK_V             , SDL_SCANCODE_V },
-{ DIK_B             , SDL_SCANCODE_B },
-{ DIK_N             , SDL_SCANCODE_N },
-{ DIK_M             , SDL_SCANCODE_M },
-{ DIK_COMMA         , SDL_SCANCODE_COMMA },
-{ DIK_PERIOD        , SDL_SCANCODE_PERIOD },
-{ DIK_SLASH         , SDL_SCANCODE_SLASH },
-{ DIK_RSHIFT        , SDL_SCANCODE_RSHIFT },
-{ DIK_MULTIPLY      , SDL_SCANCODE_KP_MULTIPLY },
-{ DIK_LMENU         , SDL_SCANCODE_LALT },
-{ DIK_SPACE         , SDL_SCANCODE_SPACE },
-{ DIK_CAPITAL       , SDL_SCANCODE_CAPSLOCK },
-{ DIK_F1            , SDL_SCANCODE_F1 },
-{ DIK_F2            , SDL_SCANCODE_F2 },
-{ DIK_F3            , SDL_SCANCODE_F3 },
-{ DIK_F4            , SDL_SCANCODE_F4 },
-{ DIK_F5            , SDL_SCANCODE_F5 },
-{ DIK_F6            , SDL_SCANCODE_F6 },
-{ DIK_F7            , SDL_SCANCODE_F7 },
-{ DIK_F8            , SDL_SCANCODE_F8 },
-{ DIK_F9            , SDL_SCANCODE_F9 },
-{ DIK_F10           , SDL_SCANCODE_F10 },
-{ DIK_NUMLOCK       , SDL_SCANCODE_NUMLOCKCLEAR },
-{ DIK_SCROLL        , SDL_SCANCODE_SCROLLLOCK },
-{ DIK_NUMPAD7       , SDL_SCANCODE_KP_7 },
-{ DIK_NUMPAD8       , SDL_SCANCODE_KP_8 },
-{ DIK_NUMPAD9       , SDL_SCANCODE_KP_9 },
-{ DIK_SUBTRACT      , SDL_SCANCODE_KP_MINUS },
-{ DIK_NUMPAD4       , SDL_SCANCODE_KP_4 },
-{ DIK_NUMPAD5       , SDL_SCANCODE_KP_5 },
-{ DIK_NUMPAD6       , SDL_SCANCODE_KP_6 },
-{ DIK_ADD           , SDL_SCANCODE_KP_PLUS },
-{ DIK_NUMPAD1       , SDL_SCANCODE_KP_1 },
-{ DIK_NUMPAD2       , SDL_SCANCODE_KP_2 },
-{ DIK_NUMPAD3       , SDL_SCANCODE_KP_3 },
-{ DIK_NUMPAD0       , SDL_SCANCODE_KP_0 },
-{ DIK_DECIMAL       , SDL_SCANCODE_KP_PERIOD },
-{ DIK_OEM_102       , SDL_SCANCODE_KP_LESS }, // ???
-{ DIK_F11           , SDL_SCANCODE_F11 },
-{ DIK_F12           , SDL_SCANCODE_F12 },
-{ DIK_F13           , SDL_SCANCODE_F13 },
-{ DIK_F14           , SDL_SCANCODE_F14 },
-{ DIK_F15           , SDL_SCANCODE_F15 },
-{ DIK_KANA          , SDL_SCANCODE_LANG3 },
-{ DIK_ABNT_C1       , SDL_SCANCODE_SLASH }, // ???
-{ DIK_CONVERT       , SDL_SCANCODE_UNKNOWN },
-{ DIK_NOCONVERT     , SDL_SCANCODE_UNKNOWN },
-{ DIK_YEN           , SDL_SCANCODE_INTERNATIONAL3 },
-{ DIK_ABNT_C2       , SDL_SCANCODE_KP_PERIOD },
-{ DIK_NUMPADEQUALS  , SDL_SCANCODE_KP_EQUALS },
-{ DIK_PREVTRACK     , SDL_SCANCODE_AUDIOPREV },
-{ DIK_AT            , SDL_SCANCODE_KP_AT },
-{ DIK_COLON         , SDL_SCANCODE_KP_COLON },
-{ DIK_UNDERLINE     , SDL_SCANCODE_UNKNOWN },
-{ DIK_KANJI         , SDL_SCANCODE_UNKNOWN },
-{ DIK_STOP          , SDL_SCANCODE_STOP },
-{ DIK_AX            , SDL_SCANCODE_UNKNOWN },
-{ DIK_UNLABELED     , SDL_SCANCODE_UNKNOWN },
-{ DIK_NEXTTRACK     , SDL_SCANCODE_AUDIONEXT },
-{ DIK_NUMPADENTER   , SDL_SCANCODE_KP_ENTER },
-{ DIK_RCONTROL      , SDL_SCANCODE_RCTRL },
-{ DIK_MUTE          , SDL_SCANCODE_MUTE },
-{ DIK_CALCULATOR    , SDL_SCANCODE_CALCULATOR },
-{ DIK_PLAYPAUSE     , SDL_SCANCODE_AUDIOPLAY },
-{ DIK_MEDIASTOP     , SDL_SCANCODE_AUDIOSTOP },
-{ DIK_VOLUMEDOWN    , SDL_SCANCODE_VOLUMEDOWN },
-{ DIK_VOLUMEUP      , SDL_SCANCODE_VOLUMEUP },
-{ DIK_WEBHOME       , SDL_SCANCODE_WWW },
-{ DIK_NUMPADCOMMA   , SDL_SCANCODE_KP_COMMA },
-{ DIK_DIVIDE        , SDL_SCANCODE_KP_DIVIDE },
-{ DIK_SYSRQ         , SDL_SCANCODE_SYSREQ },
-{ DIK_RMENU         , SDL_SCANCODE_RALT },
-{ DIK_PAUSE         , SDL_SCANCODE_PAUSE },
-{ DIK_HOME          , SDL_SCANCODE_HOME },
-{ DIK_UP            , SDL_SCANCODE_UP },
-{ DIK_PRIOR         , SDL_SCANCODE_PAGEUP },
-{ DIK_LEFT          , SDL_SCANCODE_LEFT },
-{ DIK_RIGHT         , SDL_SCANCODE_RIGHT },
-{ DIK_END           , SDL_SCANCODE_END },
-{ DIK_DOWN          , SDL_SCANCODE_DOWN },
-{ DIK_NEXT          , SDL_SCANCODE_PAGEDOWN },
-{ DIK_INSERT        , SDL_SCANCODE_INSERT },
-{ DIK_DELETE        , SDL_SCANCODE_DELETE },
-{ DIK_LWIN          , SDL_SCANCODE_LGUI },
-{ DIK_RWIN          , SDL_SCANCODE_RGUI },
-{ DIK_APPS          , SDL_SCANCODE_APPLICATION },
-{ DIK_POWER         , SDL_SCANCODE_POWER },
-{ DIK_SLEEP         , SDL_SCANCODE_SLEEP },
-{ DIK_WAKE          , SDL_SCANCODE_UNKNOWN },
-{ DIK_WEBSEARCH     , SDL_SCANCODE_UNKNOWN },
-{ DIK_WEBFAVORITES  , SDL_SCANCODE_UNKNOWN },
-{ DIK_WEBREFRESH    , SDL_SCANCODE_UNKNOWN },
-{ DIK_WEBSTOP       , SDL_SCANCODE_UNKNOWN },
-{ DIK_WEBFORWARD    , SDL_SCANCODE_UNKNOWN },
-{ DIK_WEBBACK       , SDL_SCANCODE_UNKNOWN },
-{ DIK_MYCOMPUTER    , SDL_SCANCODE_UNKNOWN },
-{ DIK_MAIL          , SDL_SCANCODE_MAIL },
-{ DIK_MEDIASELECT   , SDL_SCANCODE_MEDIASELECT },
-};
-
 // Jake: This is generated at construction from the above map
+std::map <int, DInputKey> g_mDInputMouseToSDLMouse;
 std::map < SDL_Scancode, DInputKey > g_mSDLToDInput;
-#endif
 
 
 #define BIND_FUNC(x) m_pInputMgr->x = GameInputMgr::x
@@ -290,24 +124,38 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 	}
 
 	auto pKeys = SDL_GetKeyboardState(0);
+	auto pButtons = SDL_GetMouseState(nullptr, nullptr);
 
 	while (pBinding)
 	{
+		auto pDeviceBinding = pBinding->pDeviceBinding;
+
+		if (!pDeviceBinding)
+		{
+			pBinding = pBinding->pNext;
+
+			continue;
+		}
+
 		// Only track mouse if relative mode is enabled
 		if (g_pGameInputMgr->GetRelativeMode())
 		{
+			//
+			// Handle Axis
+			//
 			static int nCurrentMouseX = 0;
 			static int nCurrentMouseY = 0;
 			static int nPreviousMouseX = 0;
 			static int nPreviousMouseY = 0;
 
+			// FIXME: This should be dictated by Scale, once I implement ScaleTrigger
 			// TODO: Clean up, Code is from GameSettings.
 			float nMouseSensitivity = GetConsoleFloat("MouseSensitivity", 1.0f);
 			float nScale = 0.00125f + ((float)nMouseSensitivity * 0.001125f);
 			nScale *= 0.50f;
 
 			// X-Axis
-			if (pBinding->pActionHead->nActionCode == -1)
+			if (pDeviceBinding->pActionHead->nActionCode == -1)
 			{
 				nCurrentMouseX += nDeltaX;
 				fAxisOffsets[0] = (float)(nCurrentMouseX - nPreviousMouseX) * nScale;
@@ -315,7 +163,7 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 			}
 
 			// Y-Axis
-			if (pBinding->pActionHead->nActionCode == -2)
+			if (pDeviceBinding->pActionHead->nActionCode == -2)
 			{
 				nCurrentMouseY += nDeltaY;
 				fAxisOffsets[1] = (float)(nCurrentMouseY - nPreviousMouseY) * nScale;
@@ -326,25 +174,18 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 			fAxisOffsets[2] = 0.0f;
 		}
 
-		if (pBinding->pActionHead->nActionCode == 0)
+		uint8_t nOn = 0;
+
+		if (pBinding->nDeviceType == DEVICETYPE_KEYBOARD)
 		{
-			//continue;
+			nOn = pKeys[pBinding->nKeyboardScancode];
 		}
-
-		std::string sDIK = pBinding->strTriggerName;
-		int nDIK = 0;
-		try {
-			nDIK = std::stoi(sDIK.substr(2));
-		}
-		catch (std::invalid_argument e)
+		else if (pBinding->nDeviceType == DEVICETYPE_MOUSE)
 		{
-			pBinding = pBinding->pNext;
-
-			continue;
+			nOn = (pButtons & SDL_BUTTON(pBinding->nMouseButton));
 		}
 
-		auto nScanCode = g_mDInputToSDL.at(nDIK);
-		pActionsOn[pBinding->pActionHead->nActionCode] = (uint8)pKeys[nScanCode];
+		pActionsOn[pDeviceBinding->pActionHead->nActionCode] |= nOn;
 
 		pBinding = pBinding->pNext;
 	}
@@ -352,17 +193,26 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 
 bool GameInputMgr::FlushInputBuffers(InputMgr* pInputMgr)
 {
-	return false;
+	return true;
 }
 
 LTRESULT GameInputMgr::ClearInput()
 {
-	return LTRESULT();
+	return LT_OK;
 }
 
 void GameInputMgr::AddAction(InputMgr* pInputMgr, const char* pActionName, int nActionCode)
 {
-	GameAction* pAction = new GameAction();
+	GameAction* pAction = g_pGameInputMgr->FindAction(pActionName);
+
+	// Update the code, if we already added this action!
+	if (pAction)
+	{
+		pAction->nActionCode = nActionCode;
+		return;
+	}
+
+	pAction = new GameAction();
 
 	if (!pAction)
 	{
@@ -387,11 +237,13 @@ bool GameInputMgr::ClearBindings(InputMgr* pInputMgr, const char* pDeviceName, c
 	return false;
 }
 
+
+
 bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, const char* pTriggerName, const char* pActionName, float fRangeLow, float fRangeHigh)
 {
-	DeviceBinding* pBinding = new DeviceBinding();
+	DeviceBinding* pDeviceBinding = new DeviceBinding();
 
-	if (!pBinding)
+	if (!pDeviceBinding)
 	{
 		return false;
 	}
@@ -401,16 +253,47 @@ bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, cons
 	if (!pAction)
 	{
 		g_pLTClient->CPrint("[GameInputMgr::AddBinding] Action [%s] doesn't exist!", pActionName);
-		delete pBinding;
+		delete pDeviceBinding;
 		return false;
 	}
 
-	LTStrCpy(pBinding->strDeviceName, pDeviceName, sizeof(pBinding->strDeviceName));
-	LTStrCpy(pBinding->strRealName, pActionName, sizeof(pBinding->strRealName));
-	LTStrCpy(pBinding->strTriggerName, pTriggerName, sizeof(pBinding->strTriggerName));
-	pBinding->nRangeScaleMin = fRangeLow;
-	pBinding->nRangeScaleMin = fRangeHigh;
-	pBinding->pActionHead = pAction;
+	// Fill our device binding
+	LTStrCpy(pDeviceBinding->strDeviceName, pDeviceName, sizeof(pDeviceBinding->strDeviceName));
+	LTStrCpy(pDeviceBinding->strRealName, pActionName, sizeof(pDeviceBinding->strRealName));
+	LTStrCpy(pDeviceBinding->strTriggerName, pTriggerName, sizeof(pDeviceBinding->strTriggerName));
+	pDeviceBinding->nRangeScaleMin = fRangeLow;
+	pDeviceBinding->nRangeScaleMin = fRangeHigh;
+	pDeviceBinding->pActionHead = pAction;
+	pDeviceBinding->pNext = nullptr;
+
+	GIMBinding* pBinding = new GIMBinding();
+
+	if (!pBinding)
+	{
+		delete pDeviceBinding;
+		return false;
+	}
+
+	// Ok now we fill our shell, this just holds some cached data + the actual binding
+	int nActionCode = g_pGameInputMgr->GetIntFromTriggerName(pTriggerName);
+	pBinding->nDIK = nActionCode;
+
+	pBinding->nDeviceType = g_pGameInputMgr->GetDeviceTypeFromName(pDeviceName);
+
+	switch (pBinding->nDeviceType)
+	{
+	case DEVICETYPE_KEYBOARD:
+		pBinding->nKeyboardScancode = (SDL_Scancode)g_pGameInputMgr->GetScancodeFromActionCode(nActionCode);
+		break;
+	case DEVICETYPE_MOUSE:
+		pBinding->nMouseButton = (SDL_Scancode)g_pGameInputMgr->GetMouseButtonFromActionCode(nActionCode);
+		break;
+	}
+
+	LTStrCpy(pBinding->szDevice, pDeviceName, sizeof(pBinding->szDevice));
+	LTStrCpy(pBinding->szName, pActionName, sizeof(pBinding->szName));
+	pBinding->pDeviceBinding = pDeviceBinding;
+
 	pBinding->pNext = g_pGameInputMgr->m_pBindings;
 	g_pGameInputMgr->m_pBindings = pBinding;
 
@@ -424,11 +307,36 @@ bool GameInputMgr::ScaleTrigger(InputMgr* pInputMgr, const char* pDeviceName, co
 
 DeviceBinding* GameInputMgr::GetDeviceBindings(uint32_t nDevice)
 {
-	return g_pGameInputMgr->m_pBindings;
+	auto pBinding = g_pGameInputMgr->m_pBindings;
+
+	DeviceBinding* pDeviceBinding = nullptr;
+
+	while (pBinding)
+	{
+		if (pBinding->nDeviceType != nDevice)
+		{
+			pBinding = pBinding->pNext;
+
+			continue;
+		}
+
+		pDeviceBinding = pBinding->pDeviceBinding;
+
+		if (pDeviceBinding)
+		{
+			// Cycle to the next for both our fun binding pointers
+			pDeviceBinding = pDeviceBinding->pNext;
+		}
+		pBinding = pBinding->pNext;
+	}
+
+	return pDeviceBinding;
 }
 
 void GameInputMgr::FreeDeviceBindings(DeviceBinding* pBindings)
 {
+	// No need to free them, they're just references to our m_pBinding->DeviceBindings
+	return;
 }
 
 bool GameInputMgr::StartDeviceTrack(InputMgr* pMgr, uint32_t nDevices, uint32_t nBufferSize)
@@ -525,13 +433,78 @@ GameAction* GameInputMgr::FindAction(const char* szActionName)
 void GameInputMgr::GenerateReverseMap()
 {
 	// Alreaaady filled
-	if (!g_mSDLToDInput.empty())
+	if (g_mSDLToDInput.empty())
 	{
-		return;
+		for (auto pair : g_mDInputToSDL)
+		{
+			g_mSDLToDInput.insert(std::make_pair(pair.second, pair.first));
+		}
 	}
 
-	for (auto pair : g_mDInputToSDL)
+	if (g_mDInputMouseToSDLMouse.empty())
 	{
-		g_mSDLToDInput.insert(std::make_pair(pair.second, pair.first));
+		for (auto pair : g_mSDLMouseToDInputMouse)
+		{
+			g_mDInputMouseToSDLMouse.insert(std::make_pair(pair.second, pair.first));
+		}
+	}
+}
+
+int GameInputMgr::GetDeviceTypeFromName(const char* szDeviceName)
+{
+	/*
+	DEVICETYPE_KEYBOARD    = 1,
+	DEVICETYPE_MOUSE       = 2,
+	DEVICETYPE_JOYSTICK    = 4,
+	DEVICETYPE_GAMEPAD     = 8,
+	DEVICETYPE_UNKNOWN     = 16
+	*/
+
+	// We only support mouse + keyboard right now! 
+
+	if (stricmp("##keyboard", szDeviceName) == 0)
+	{
+		return DEVICETYPE_KEYBOARD;
+	}
+
+	if (stricmp("##mouse", szDeviceName) == 0)
+	{
+		return DEVICETYPE_MOUSE;
+	}
+
+	return DEVICETYPE_UNKNOWN;
+}
+
+int GameInputMgr::GetScancodeFromActionCode(int nActionCode)
+{
+	try {
+		return g_mDInputToSDL.at(nActionCode);
+	}
+	catch (...)
+	{
+		return 0;
+	}
+}
+
+int GameInputMgr::GetMouseButtonFromActionCode(int nActionCode)
+{
+	try {
+		return g_mDInputMouseToSDLMouse.at(nActionCode);
+	}
+	catch (...)
+	{
+		return 0;
+	}
+}
+
+int GameInputMgr::GetIntFromTriggerName(const char* szTriggerName)
+{
+	std::string sDIK = szTriggerName;
+	try {
+		return std::stoi(sDIK.substr(2));
+	}
+	catch (std::invalid_argument e)
+	{
+		return 0;
 	}
 }

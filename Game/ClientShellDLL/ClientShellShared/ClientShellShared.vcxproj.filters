@@ -1321,5 +1321,8 @@
     <ClInclude Include="InputMgr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SDLDInput8Conversion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
