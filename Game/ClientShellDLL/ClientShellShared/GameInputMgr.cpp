@@ -324,6 +324,9 @@ bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, cons
 
 	LTStrCpy(pBinding->szDevice, pDeviceName, sizeof(pBinding->szDevice));
 	LTStrCpy(pBinding->szName, pActionName, sizeof(pBinding->szName));
+
+	// Hope this is okay!
+	pDeviceBinding->m_nObjectId = nActionCode;
 	pBinding->pDeviceBinding = pDeviceBinding;
 
 	pBinding->pNext = g_pGameInputMgr->m_pBindings;
@@ -456,7 +459,7 @@ DeviceObject* GameInputMgr::GetDeviceObjects(uint32_t nDeviceFlags)
 			nObjectType = CONTROLTYPE_ZAXIS;
 		}
 		pDeviceObject->m_ObjectType = nObjectType;
-
+		pDeviceObject->m_nObjectId = pBinding->pDeviceBinding->m_nObjectId;
 
 		// Strings!
 
