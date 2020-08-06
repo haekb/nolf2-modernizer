@@ -166,38 +166,6 @@ LTRESULT proxyUnregisterConsoleProgram(const char* pName)
 	return result;
 }
 
-void proxyGetAxisOffsets(LTFLOAT* offsets)
-{
-	offsets[0] = g_pGameClientShell->GetInputAxis()[0];
-	offsets[1] = g_pGameClientShell->GetInputAxis()[1];
-	offsets[2] = g_pGameClientShell->GetInputAxis()[2];
-}
-
-bool proxyIsCommandOn(int commandNum)
-{
-	return g_pIsCommandOn(commandNum);
-}
-//
-// Proxy ClearInput
-// Through testing I found ClearInput must re-init DirectInput's RawInput listener. 
-// So here we're flagging our system to re-init OUR RawInput listener (through SDL) after it does this.
-//
-// Note: If anyone is doing engine work and have already replaced the odd DirectInput implementation, 
-// you can remove this along with all the SDL code in this mod.
-//
-LTRESULT proxyClearInput()
-{
-	// Request PostUpdate() to re-register SDL2's relative mouse mode
-	g_pGameClientShell->SetReRegisterRawInput(true);
-
-	// Clear our InputAxis offsets
-	float fAxisOffsets[3] = { 0.0f, 0.0f, 0.0f };
-	g_pGameClientShell->SetInputAxis(fAxisOffsets);
-
-	// Actually run the engine's ClearInput
-	return g_pClearInput();
-}
-
 void SDLLog(void* userdata, int category, SDL_LogPriority priority, const char* message)
 {
 	if (!g_pLTClient) {
@@ -233,14 +201,6 @@ void InitClientShell()
 
 	g_pUnregisterConsoleProgram = g_pLTClient->UnregisterConsoleProgram;
 	g_pLTClient->UnregisterConsoleProgram = proxyUnregisterConsoleProgram;
-
-	//g_pLTClient->GetAxisOffsets = proxyGetAxisOffsets;
-
-	g_pClearInput = g_pLTClient->ClearInput;
-	g_pLTClient->ClearInput = proxyClearInput;
-
-	g_pIsCommandOn = g_pLTClient->IsCommandOn;
-	g_pLTClient->IsCommandOn = proxyIsCommandOn;
 
 	// Init our LT subsystems
 
@@ -1941,6 +1901,9 @@ void CGameClientShell::PostUpdate()
 
 
 	GetInterfaceMgr( )->PostUpdate();
+
+	// Clear wheel delta
+	g_pGameInputMgr->SetWheelDelta(0);
 }
 
 // ----------------------------------------------------------------------- //
@@ -4624,10 +4587,6 @@ LRESULT CALLBACK HookedWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lP
 	
 	if (uMsg == WM_ACTIVATEAPP && g_pGameClientShell)
 	{
-		// DirectInput probably has a similar WM_ACTIVATEAPP on focus call. 
-		// So we gotta compete against that.
-		g_pGameClientShell->SetReRegisterRawInput(true);
-
 		// Jake: For some odd reason the renderer will just be black when maximizing on fullscreen mode
 		// So for now, only allow run in background for windowed mode!
 		LTBOOL bWindowed = LTFALSE;
@@ -4690,6 +4649,9 @@ void CGameClientShell::OnRButtonDblClick(HWND hwnd, BOOL fDoubleClick, int x, in
 
 void CGameClientShell::OnMouseWheel(HWND hwnd, int x, int y, int zDelta, UINT fwKeys)
 {
+
+	g_pGameInputMgr->SetWheelDelta(zDelta);
+
 	g_pInterfaceMgr->OnMouseWheel(x, y, zDelta);
 }
 

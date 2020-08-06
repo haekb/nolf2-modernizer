@@ -34,6 +34,8 @@ struct GIMBinding {
 		uint32_t nMouseButton;
 	};
 
+	bool bWheel; // Hack for mouse wheel. It's defined as ##z-axis
+
 	DeviceBinding* pDeviceBinding;
 	GIMBinding* pNext;
 };
@@ -139,10 +141,13 @@ public:
 	int GetScancodeFromActionCode(int nActionCode);
 	int GetMouseButtonFromActionCode(int nActionCode);
 
+	void SetWheelDelta(int nWheelDelta) { m_nWheelDelta = nWheelDelta; };
+	int GetWheelDelta() { return m_nWheelDelta; }
+
 private:
 
 
-
+	int m_nWheelDelta;
 	bool m_bRelativeMode;
 
 };
