@@ -125,6 +125,7 @@ public:
 	GIMBinding* m_pBindings;
 	//DeviceBinding* m_pBindings;
 	GameAction* m_pActions;
+	std::vector<GameAction*> m_pAllActions;
 
 	bool GetRelativeMode() { return m_bRelativeMode; }
 	void SetRelativeMode(bool bOn);
@@ -140,6 +141,7 @@ public:
 
 	int GetScancodeFromActionCode(int nActionCode);
 	int GetMouseButtonFromActionCode(int nActionCode);
+	const char* GetNameFromScancode(int nDevice, SDL_Scancode nScancode);
 
 	void SetWheelDelta(int nWheelDelta) { m_nWheelDelta = nWheelDelta; };
 	int GetWheelDelta() { return m_nWheelDelta; }
