@@ -499,6 +499,16 @@ void GameInputMgr::FreeDeviceBindings(DeviceBinding* pBindings)
 
 bool GameInputMgr::StartDeviceTrack(InputMgr* pMgr, uint32_t nDevices, uint32_t nBufferSize)
 {
+
+	if (nDevices & DEVICE_TYPE_KEYBOARD)
+	{
+		pGIM->m_DeviceTrackingList.push_back(DEVICE_TYPE_KEYBOARD);
+	}
+	if (nDevices & DEVICE_TYPE_MOUSE)
+	{
+		pGIM->m_DeviceTrackingList.push_back(DEVICE_TYPE_MOUSE);
+	}
+
 	return true;
 }
 
@@ -506,11 +516,96 @@ bool GameInputMgr::TrackDevice(DeviceInput* pInputAttay, uint32_t* pInOut)
 {
 	int nArraySize = *pInOut;
 	*pInOut = 0;
+
+	SDL_PumpEvents();
+	auto pKeys = SDL_GetKeyboardState(nullptr);
+	auto pButtons = SDL_GetMouseState(nullptr, nullptr);
+
+	for (auto nDeviceType : pGIM->m_DeviceTrackingList)
+	{
+		if (*pInOut > nArraySize)
+		{
+			break;
+		}
+
+		for (auto pBinding : pGIM->m_pBindingList)
+		{
+			if (*pInOut > nArraySize)
+			{
+				break;
+			}
+			if (pBinding->nDeviceType != nDeviceType)
+			{
+				continue;
+			}
+
+			// No special case, just direct DIK to SDL conversion!
+			uint8_t nOn = 0;
+			uint32_t nControlType = CONTROLTYPE_UNKNOWN;
+
+			if (pBinding->nDeviceType == DEVICE_TYPE_KEYBOARD)
+			{
+				nOn = pKeys[pBinding->nKeyboardScancode];
+				nControlType = CONTROLTYPE_KEY;
+			}
+			else if (pBinding->nDeviceType == DEVICE_TYPE_MOUSE)
+			{
+				nOn = (pButtons & SDL_BUTTON(pBinding->nMouseButton));
+				nControlType = CONTROLTYPE_BUTTON;
+
+				if (pBinding->bIsAxis && pBinding->nMouseAxis == SDL_MOUSE_AXIS_X)
+				{
+					nControlType = CONTROLTYPE_XAXIS;
+				}
+				else if (pBinding->bIsAxis && pBinding->nMouseAxis == SDL_MOUSE_AXIS_Y)
+				{
+					nControlType = CONTROLTYPE_YAXIS;
+				}
+				else if (pBinding->bIsAxis && pBinding->nMouseAxis == SDL_MOUSE_AXIS_WHEEL)
+				{
+					nOn = pGIM->GetWheelDelta();
+					nControlType = CONTROLTYPE_ZAXIS;
+				}
+			}
+			else if (pBinding->nDeviceType == DEVICE_TYPE_GAMEPAD)
+			{
+				// TODO: Implement SDL_GameControllerGetButton
+			}
+
+			if (nOn)
+			{
+				pInputAttay[*pInOut].m_DeviceType = nDeviceType;
+
+				char szDeviceName[INPUTNAME_LEN];
+				pGIM->GetDeviceName(nDeviceType, szDeviceName, sizeof(szDeviceName));
+				LTStrCpy(pInputAttay[*pInOut].m_DeviceName, szDeviceName, sizeof(pInputAttay[*pInOut].m_DeviceName));
+
+				pInputAttay[*pInOut].m_ControlType = nControlType;
+				LTStrCpy(pInputAttay[*pInOut].m_ControlName, pBinding->szName, sizeof(pInputAttay[*pInOut].m_ControlName));
+
+				pInputAttay[*pInOut].m_ControlCode = pBinding->nDIK;
+				pInputAttay[*pInOut].m_nObjectId = pBinding->nDIK;
+
+				pInputAttay[*pInOut].m_InputValue = 1;
+
+				// ??? Maybe ???
+				if (nControlType == CONTROLTYPE_ZAXIS)
+				{
+					pInputAttay[*pInOut].m_InputValue = pGIM->GetWheelDelta();
+				}
+
+				(*pInOut)++;
+			}
+		}
+	}
+
 	return true;
 }
 
 bool GameInputMgr::EndDeviceTrack()
 {
+	pGIM->m_DeviceTrackingList.clear();
+
 	return true;
 }
 

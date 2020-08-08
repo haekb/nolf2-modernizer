@@ -171,6 +171,7 @@ public:
 
 	std::vector<GIMBinding*> m_pBindingList;
 	std::vector<GameAction*> m_pActionList;
+	std::vector< LT_DeviceType> m_DeviceTrackingList;
 
 	bool GetRelativeMode() { return m_bRelativeMode; }
 	void SetRelativeMode(bool bOn);
