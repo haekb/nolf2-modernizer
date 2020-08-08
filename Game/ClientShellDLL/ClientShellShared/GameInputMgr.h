@@ -173,6 +173,11 @@ public:
 	std::vector<GameAction*> m_pActionList;
 	std::vector<LT_DeviceType> m_DeviceTrackingList;
 
+	// Bindable objects - Re-using GIMBinding, without a pDeviceBinding!
+	std::vector<GIMBinding*> m_pAvailableObjects;
+	std::vector< LT_DeviceType> m_EnabledDevices;
+
+
 	bool GetRelativeMode() { return m_bRelativeMode; }
 	void SetRelativeMode(bool bOn);
 

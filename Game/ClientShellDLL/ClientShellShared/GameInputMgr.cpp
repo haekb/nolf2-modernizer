@@ -123,6 +123,13 @@ void GameInputMgr::Term(InputMgr* pInputMgr)
 	}
 	g_pGameInputMgr->m_pActionList.clear();
 
+	for (auto pAvailableObject : g_pGameInputMgr->m_pAvailableObjects)
+	{
+		delete pAvailableObject;
+		pAvailableObject = nullptr;
+	}
+	g_pGameInputMgr->m_pAvailableObjects.clear();
+
 }
 
 bool GameInputMgr::IsInitted(InputMgr* pInputMgr)
@@ -269,13 +276,140 @@ void GameInputMgr::AddAction(InputMgr* pInputMgr, const char* pActionName, int n
 
 bool GameInputMgr::EnableDevice(InputMgr* pInputMgr, const char* pDeviceName)
 {
-	if (stricmp("##mouse", pDeviceName) == 0)
+	char szDeviceName[INPUTNAME_LEN];
+	auto nDeviceType = DEVICE_TYPE_UNKNOWN;
+
+	bool bMouseAlreadyInit = std::find(g_pGameInputMgr->m_EnabledDevices.begin(), g_pGameInputMgr->m_EnabledDevices.end(), DEVICE_TYPE_MOUSE) != g_pGameInputMgr->m_EnabledDevices.end();
+	if (stricmp("##mouse", pDeviceName) == 0 && !bMouseAlreadyInit)
 	{
+		// Create our list of bindable mice objects
+		nDeviceType = DEVICE_TYPE_MOUSE;
+		g_pGameInputMgr->GetDeviceName(nDeviceType, szDeviceName, sizeof(szDeviceName));
+
+		// Create a template to hold basic constant info
+		GIMBinding* tempBinding = new GIMBinding();
+
+		// Create a binding we'll be pushing into our "Available Objects" list.
+		// This will be new'd on every additional object..don't worry we'll free them later.
+		GIMBinding* binding = new GIMBinding();
+
+		// These are constants
+		tempBinding->bIsEnabled = true;
+		tempBinding->bHasDIK = false;
+		tempBinding->nDeviceType = nDeviceType;
+		tempBinding->pDeviceBinding = nullptr;
+		LTStrCpy(tempBinding->szDevice, szDeviceName, sizeof(tempBinding->szName));
+
+		// Left Mouse Button
+		memcpy(binding, tempBinding, sizeof(GIMBinding));
+		LTStrCpy(binding->szName, "Left", sizeof(binding->szName));
+		binding->nDIK = MOUSE_LEFT_BUTTON;
+		binding->nMouseButton = SDL_MOUSE_BUTTON_LEFT;
+		binding->bIsAxis = false;
+
+		g_pGameInputMgr->m_pAvailableObjects.push_back(binding);
+
+		// Right Mouse Button
+		binding = new GIMBinding();
+		memcpy(binding, tempBinding, sizeof(GIMBinding));
+		LTStrCpy(binding->szName, "Right", sizeof(binding->szName));
+		binding->nDIK = MOUSE_RIGHT_BUTTON;
+		binding->nMouseButton = SDL_MOUSE_BUTTON_RIGHT;
+		binding->bIsAxis = false;
+
+		g_pGameInputMgr->m_pAvailableObjects.push_back(binding);
+
+		// Middle Mouse Button
+		binding = new GIMBinding();
+		memcpy(binding, tempBinding, sizeof(GIMBinding));
+		LTStrCpy(binding->szName, "Middle", sizeof(binding->szName));
+		binding->nDIK = MOUSE_MIDDLE_BUTTON;
+		binding->nMouseButton = SDL_MOUSE_BUTTON_MIDDLE;
+		binding->bIsAxis = false;
+
+		g_pGameInputMgr->m_pAvailableObjects.push_back(binding);
+
+		// X-Axis
+		binding = new GIMBinding();
+		memcpy(binding, tempBinding, sizeof(GIMBinding));
+		LTStrCpy(binding->szName, "Axis X", sizeof(binding->szName));
+		binding->nDIK = MOUSE_X_AXIS;
+		binding->nMouseAxis = SDL_MOUSE_AXIS_X;
+		binding->bIsAxis = true;
+
+		g_pGameInputMgr->m_pAvailableObjects.push_back(binding);
+
+		// Y-Axis
+		binding = new GIMBinding();
+		memcpy(binding, tempBinding, sizeof(GIMBinding));
+		LTStrCpy(binding->szName, "Axis Y", sizeof(binding->szName));
+		binding->nDIK = MOUSE_Y_AXIS;
+		binding->nMouseAxis = SDL_MOUSE_AXIS_Y;
+		binding->bIsAxis = true;
+
+		g_pGameInputMgr->m_pAvailableObjects.push_back(binding);
+
+		// Mouse Wheel
+		binding = new GIMBinding();
+		memcpy(binding, tempBinding, sizeof(GIMBinding));
+		LTStrCpy(binding->szName, "Wheel", sizeof(binding->szName));
+		binding->nDIK = MOUSE_Z_AXIS;
+		binding->nMouseAxis = SDL_MOUSE_AXIS_WHEEL;
+		binding->bIsAxis = true;
+
+		g_pGameInputMgr->m_pAvailableObjects.push_back(binding);
+
+		// Clear our template pointer
+		delete tempBinding;
+		tempBinding = nullptr;
+
+		g_pGameInputMgr->m_EnabledDevices.push_back(DEVICE_TYPE_MOUSE);
+
 		return true;
 	}
 
-	if (stricmp("##keyboard", pDeviceName) == 0)
+	bool bKeyboardAlreadyInit = std::find(g_pGameInputMgr->m_EnabledDevices.begin(), g_pGameInputMgr->m_EnabledDevices.end(), DEVICE_TYPE_KEYBOARD) != g_pGameInputMgr->m_EnabledDevices.end();
+	if (stricmp("##keyboard", pDeviceName) == 0 && !bKeyboardAlreadyInit)
 	{
+		nDeviceType = DEVICE_TYPE_KEYBOARD;
+		g_pGameInputMgr->GetDeviceName(nDeviceType, szDeviceName, sizeof(szDeviceName));
+
+
+		// Create a template to hold basic constant info
+		GIMBinding* tempBinding = new GIMBinding();
+
+		// Create a binding we'll be pushing into our "Available Objects" list.
+		// This will be new'd on every additional object..don't worry we'll free them later.
+		GIMBinding* binding = nullptr;
+
+		// These are constants
+		tempBinding->bIsEnabled = true;
+		tempBinding->bHasDIK = true;
+		tempBinding->nDeviceType = nDeviceType;
+		tempBinding->pDeviceBinding = nullptr;
+		LTStrCpy(tempBinding->szDevice, szDeviceName, sizeof(binding->szName));
+
+		// Loop through our giant map of possible DInput -> SDL keys to generate our the available keyboard keys!
+		for (auto pItem : g_mDInputToSDL)
+		{
+			binding = new GIMBinding();
+			memcpy(binding, tempBinding, sizeof(GIMBinding));
+
+			auto nKeyCode = SDL_GetKeyFromScancode(pItem.second);
+
+			LTStrCpy(binding->szName, SDL_GetKeyName(nKeyCode), sizeof(binding->szName));
+			binding->nDIK = pItem.first;
+			binding->nKeyboardScancode = pItem.second;
+			binding->bIsAxis = false;
+
+			g_pGameInputMgr->m_pAvailableObjects.push_back(binding);
+		}
+
+		delete tempBinding;
+		tempBinding = nullptr;
+
+		g_pGameInputMgr->m_EnabledDevices.push_back(DEVICE_TYPE_KEYBOARD);
+
 		return true;
 	}
 
@@ -566,105 +700,11 @@ bool GameInputMgr::TrackDevice(DeviceInput* pInputAttay, uint32_t* pInOut)
 			break;
 		}
 
-		// super temp!
-		auto pDeviceObjects = g_pGameInputMgr->GetDeviceObjects(nDeviceType);
-
-		while (pDeviceObjects)
+		for (auto pBinding : g_pGameInputMgr->m_pAvailableObjects)
 		{
 			if (*pInOut > nArraySize)
 			{
 				break;
-			}
-
-
-			// No special case, just direct DIK to SDL conversion!
-			uint8_t nOn = 0;
-			uint32_t nControlType = CONTROLTYPE_UNKNOWN;
-
-			if (pDeviceObjects->m_DeviceType == DEVICE_TYPE_KEYBOARD)
-			{
-				nOn = pKeys[pDeviceObjects->m_nObjectId];
-				nControlType = CONTROLTYPE_KEY;
-			}
-			else if (pDeviceObjects->m_DeviceType == DEVICE_TYPE_MOUSE)
-			{
-				//nOn = (pButtons & SDL_BUTTON(pBinding->nMouseButton));
-
-				if (pDeviceObjects->m_nObjectId == MOUSE_LEFT_BUTTON)
-				{
-					nOn = (pButtons & SDL_BUTTON(SDL_MOUSE_BUTTON_LEFT));
-				}
-				if (pDeviceObjects->m_nObjectId == MOUSE_MIDDLE_BUTTON)
-				{
-					nOn = (pButtons & SDL_BUTTON(SDL_MOUSE_BUTTON_MIDDLE));
-				}
-				if (pDeviceObjects->m_nObjectId == MOUSE_RIGHT_BUTTON)
-				{
-					nOn = (pButtons & SDL_BUTTON(SDL_MOUSE_BUTTON_RIGHT));
-				}
-
-				nControlType = CONTROLTYPE_BUTTON;
-
-				//if (pBinding->bIsAxis && pBinding->nMouseAxis == SDL_MOUSE_AXIS_X)
-				if (pDeviceObjects->m_nObjectId == MOUSE_X_AXIS)
-				{
-					nControlType = CONTROLTYPE_XAXIS;
-				}
-				//else if (pBinding->bIsAxis && pBinding->nMouseAxis == SDL_MOUSE_AXIS_Y)
-				if (pDeviceObjects->m_nObjectId == MOUSE_Y_AXIS)
-				{
-					nControlType = CONTROLTYPE_YAXIS;
-				}
-				//else if (pBinding->bIsAxis && pBinding->nMouseAxis == SDL_MOUSE_AXIS_WHEEL)
-				if (pDeviceObjects->m_nObjectId == MOUSE_Z_AXIS)
-				{
-					nOn = g_pGameInputMgr->GetWheelDelta();
-					nControlType = CONTROLTYPE_ZAXIS;
-				}
-			}
-			//else if (pBinding->nDeviceType == DEVICE_TYPE_GAMEPAD)
-			{
-				// TODO: Implement SDL_GameControllerGetButton
-			}
-
-			if (nOn)
-			{
-				pInputAttay[*pInOut].m_DeviceType = nDeviceType;
-
-				char szDeviceName[INPUTNAME_LEN];
-				g_pGameInputMgr->GetDeviceName(nDeviceType, szDeviceName, sizeof(szDeviceName));
-				LTStrCpy(pInputAttay[*pInOut].m_DeviceName, szDeviceName, sizeof(pInputAttay[*pInOut].m_DeviceName));
-
-				pInputAttay[*pInOut].m_ControlType = nControlType;
-				LTStrCpy(pInputAttay[*pInOut].m_ControlName, pDeviceObjects->m_ObjectName, sizeof(pInputAttay[*pInOut].m_ControlName));
-
-				pInputAttay[*pInOut].m_ControlCode = pDeviceObjects->m_nObjectId;
-				pInputAttay[*pInOut].m_nObjectId = pDeviceObjects->m_nObjectId;
-
-				pInputAttay[*pInOut].m_InputValue = 1;
-
-				// ??? Maybe ???
-				if (nControlType == CONTROLTYPE_ZAXIS)
-				{
-					pInputAttay[*pInOut].m_InputValue = g_pGameInputMgr->GetWheelDelta();
-				}
-
-				(*pInOut)++;
-			}
-
-			pDeviceObjects = pDeviceObjects->m_pNext;
-		}
-
-#if 0
-		for (auto pBinding : g_pGameInputMgr->m_pBindingList)
-		{
-			if (*pInOut > nArraySize)
-			{
-				break;
-			}
-			if (pBinding->nDeviceType != nDeviceType)
-			{
-				continue;
 			}
 
 			// No special case, just direct DIK to SDL conversion!
@@ -725,7 +765,6 @@ bool GameInputMgr::TrackDevice(DeviceInput* pInputAttay, uint32_t* pInOut)
 				(*pInOut)++;
 			}
 		}
-#endif
 	}
 
 	return true;
@@ -746,101 +785,7 @@ DeviceObject* GameInputMgr::GetDeviceObjects(uint32_t nDeviceFlags)
 	char szDeviceName[INPUTNAME_LEN];
 	LT_DeviceType nDeviceType = DEVICE_TYPE_UNKNOWN;
 
-	// These are bindings generated on the fly!
-	std::vector<GIMBinding> FakeBindings;
-
-	// Handle mouse objects
-	if (nDeviceFlags & DEVICE_TYPE_MOUSE)
-	{
-		nDeviceType = DEVICE_TYPE_MOUSE;
-		g_pGameInputMgr->GetDeviceName(nDeviceType, szDeviceName, sizeof(szDeviceName));
-
-		GIMBinding binding;
-
-		// These are constants
-		binding.bIsEnabled = true;
-		binding.bHasDIK = false;
-		binding.nDeviceType = nDeviceType;
-		binding.pDeviceBinding = nullptr;
-		LTStrCpy(binding.szDevice, szDeviceName, sizeof(binding.szName));
-
-		// Left Mouse Button
-		LTStrCpy(binding.szName, "Left", sizeof(binding.szName));
-		binding.nDIK = MOUSE_LEFT_BUTTON;
-		binding.nMouseButton = SDL_MOUSE_BUTTON_LEFT;
-		binding.bIsAxis = false;
-
-		FakeBindings.push_back(binding);
-
-		// Right Mouse Button
-		LTStrCpy(binding.szName, "Right", sizeof(binding.szName));
-		binding.nDIK = MOUSE_RIGHT_BUTTON;
-		binding.nMouseButton = SDL_MOUSE_BUTTON_RIGHT;
-		binding.bIsAxis = false;
-
-		FakeBindings.push_back(binding);
-
-		// Middle Mouse Button
-		LTStrCpy(binding.szName, "Middle", sizeof(binding.szName));
-		binding.nDIK = MOUSE_MIDDLE_BUTTON;
-		binding.nMouseButton = SDL_MOUSE_BUTTON_MIDDLE;
-		binding.bIsAxis = false;
-
-		FakeBindings.push_back(binding);
-
-		// X-Axis
-		LTStrCpy(binding.szName, "Axis X", sizeof(binding.szName));
-		binding.nDIK = MOUSE_X_AXIS;
-		binding.nMouseAxis = SDL_MOUSE_AXIS_X;
-		binding.bIsAxis = true;
-
-		FakeBindings.push_back(binding);
-
-		// Y-Axis
-		LTStrCpy(binding.szName, "Axis Y", sizeof(binding.szName));
-		binding.nDIK = MOUSE_Y_AXIS;
-		binding.nMouseAxis = SDL_MOUSE_AXIS_Y;
-		binding.bIsAxis = true;
-
-		FakeBindings.push_back(binding);
-
-		// Mouse Wheel
-		LTStrCpy(binding.szName, "Wheel", sizeof(binding.szName));
-		binding.nDIK = MOUSE_Z_AXIS;
-		binding.nMouseAxis = SDL_MOUSE_AXIS_WHEEL;
-		binding.bIsAxis = true;
-
-		FakeBindings.push_back(binding);
-	}
-
-	if (nDeviceFlags & DEVICE_TYPE_KEYBOARD)
-	{
-		nDeviceType = DEVICE_TYPE_KEYBOARD;
-		g_pGameInputMgr->GetDeviceName(nDeviceType, szDeviceName, sizeof(szDeviceName));
-		GIMBinding binding;
-
-		// These are constants
-		binding.bIsEnabled = true;
-		binding.bHasDIK = true;
-		binding.nDeviceType = nDeviceType;
-		binding.pDeviceBinding = nullptr;
-		LTStrCpy(binding.szDevice, szDeviceName, sizeof(binding.szName));
-
-		for (auto pItem : g_mDInputToSDL)
-		{
-			auto nKeyCode = SDL_GetKeyFromScancode(pItem.second);
-
-			LTStrCpy(binding.szName, SDL_GetKeyName(nKeyCode), sizeof(binding.szName));
-			binding.nDIK = pItem.first;
-			binding.nKeyboardScancode = pItem.second;
-			binding.bIsAxis = false;
-
-			FakeBindings.push_back(binding);
-		}
-	}
-
-#if 1
-	for (const auto& pBinding : FakeBindings) //g_pGameInputMgr->m_pBindingList)
+	for (auto pBinding : g_pGameInputMgr->m_pAvailableObjects)
 	{
 		DeviceObject* pDeviceObject = new DeviceObject();
 		if (!pDeviceObject)
@@ -853,7 +798,7 @@ DeviceObject* GameInputMgr::GetDeviceObjects(uint32_t nDeviceFlags)
 		char szDeviceName[INPUTNAME_LEN];
 		int nDeviceType = DEVICE_TYPE_UNKNOWN;
 
-		if (nDeviceFlags & DEVICE_TYPE_KEYBOARD && pBinding.nDeviceType == DEVICE_TYPE_KEYBOARD)
+		if (nDeviceFlags & DEVICE_TYPE_KEYBOARD && pBinding->nDeviceType == DEVICE_TYPE_KEYBOARD)
 		{
 			nDeviceType = DEVICE_TYPE_KEYBOARD;
 			g_pGameInputMgr->GetDeviceName(nDeviceType, szDeviceName, sizeof(szDeviceName));
@@ -861,40 +806,40 @@ DeviceObject* GameInputMgr::GetDeviceObjects(uint32_t nDeviceFlags)
 			LTStrCpy(pDeviceObject->m_DeviceName, szDeviceName, sizeof(pDeviceObject->m_DeviceName));
 			pDeviceObject->m_DeviceType = nDeviceType;
 			pDeviceObject->m_ObjectType = CONTROLTYPE_KEY;
-			LTStrCpy(pDeviceObject->m_ObjectName, pBinding.szName, sizeof(pDeviceObject->m_ObjectName));
-			pDeviceObject->m_nObjectId = pBinding.nDIK;
+			LTStrCpy(pDeviceObject->m_ObjectName, pBinding->szName, sizeof(pDeviceObject->m_ObjectName));
+			pDeviceObject->m_nObjectId = pBinding->nDIK;
 			pDeviceObject->m_RangeLow = 0.0f;
 			pDeviceObject->m_RangeHigh = 0.0f;
 		}
 		
-		if (nDeviceFlags & DEVICE_TYPE_MOUSE && pBinding.nDeviceType == DEVICE_TYPE_MOUSE)
+		if (nDeviceFlags & DEVICE_TYPE_MOUSE && pBinding->nDeviceType == DEVICE_TYPE_MOUSE)
 		{
 			nDeviceType = DEVICE_TYPE_MOUSE;
 			g_pGameInputMgr->GetDeviceName(nDeviceType, szDeviceName, sizeof(szDeviceName));
 			LTStrCpy(pDeviceObject->m_DeviceName, szDeviceName, sizeof(pDeviceObject->m_DeviceName));
 			pDeviceObject->m_DeviceType = nDeviceType;
 			pDeviceObject->m_ObjectType = CONTROLTYPE_BUTTON;
-			LTStrCpy(pDeviceObject->m_ObjectName, pBinding.szName, sizeof(pDeviceObject->m_ObjectName));
-			pDeviceObject->m_nObjectId = pBinding.nDIK;
+			LTStrCpy(pDeviceObject->m_ObjectName, pBinding->szName, sizeof(pDeviceObject->m_ObjectName));
+			pDeviceObject->m_nObjectId = pBinding->nDIK;
 			pDeviceObject->m_RangeLow = 0.0f;
 			pDeviceObject->m_RangeHigh = 0.0f;
 
 			// Special cases...
-			if (pBinding.bIsAxis)
+			if (pBinding->bIsAxis)
 			{
-				if (pBinding.nMouseAxis == SDL_MOUSE_AXIS_X)
+				if (pBinding->nMouseAxis == SDL_MOUSE_AXIS_X)
 				{
 					pDeviceObject->m_RangeLow = -1000.0f;
 					pDeviceObject->m_RangeHigh = 1000.0f;
 					pDeviceObject->m_ObjectType = CONTROLTYPE_XAXIS;
 				}
-				else if (pBinding.nMouseAxis == SDL_MOUSE_AXIS_Y)
+				else if (pBinding->nMouseAxis == SDL_MOUSE_AXIS_Y)
 				{
 					pDeviceObject->m_RangeLow = -1000.0f;
 					pDeviceObject->m_RangeHigh = 1000.0f;
 					pDeviceObject->m_ObjectType = CONTROLTYPE_YAXIS;
 				}
-				else if (pBinding.nMouseAxis == SDL_MOUSE_AXIS_WHEEL)
+				else if (pBinding->nMouseAxis == SDL_MOUSE_AXIS_WHEEL)
 				{
 					pDeviceObject->m_RangeLow = -255.0f;
 					pDeviceObject->m_RangeHigh = 255.0f;
@@ -902,7 +847,7 @@ DeviceObject* GameInputMgr::GetDeviceObjects(uint32_t nDeviceFlags)
 				}
 			}
 		}
-		else if (nDeviceFlags & DEVICE_TYPE_GAMEPAD && pBinding.nDeviceType == DEVICE_TYPE_GAMEPAD)
+		else if (nDeviceFlags & DEVICE_TYPE_GAMEPAD && pBinding->nDeviceType == DEVICE_TYPE_GAMEPAD)
 		{
 
 		}
@@ -923,7 +868,6 @@ DeviceObject* GameInputMgr::GetDeviceObjects(uint32_t nDeviceFlags)
 
 		pDeviceObjects = pDeviceObject;
 	}
-#endif
 
 	return pDeviceObjects;
 }
@@ -968,23 +912,7 @@ bool GameInputMgr::GetDeviceObjectName(const char* szDeviceName, uint32_t nDevic
 {
 	auto nDeviceType = g_pGameInputMgr->GetDeviceTypeFromName(szDeviceName);
 
-	// super temp!
-	auto pDeviceObjects = g_pGameInputMgr->GetDeviceObjects(nDeviceType);
-
-	while (pDeviceObjects)
-	{
-		if (nDeviceObjectID == pDeviceObjects->m_nObjectId)
-		{
-			LTStrCpy(szDeviceObjectName, pDeviceObjects->m_ObjectName, nDeviceObjectNameLength);
-			return true;
-		}
-
-
-		pDeviceObjects = pDeviceObjects->m_pNext;
-	}
-
-#if 0
-	for (auto pBinding : g_pGameInputMgr->m_pBindingList)
+	for (auto pBinding : g_pGameInputMgr->m_pAvailableObjects)
 	{
 		if (nDeviceType != pBinding->nDeviceType)
 		{
@@ -998,7 +926,6 @@ bool GameInputMgr::GetDeviceObjectName(const char* szDeviceName, uint32_t nDevic
 		}
 
 	}
-#endif
 
 	return false;
 }
