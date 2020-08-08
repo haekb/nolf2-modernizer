@@ -329,6 +329,7 @@ bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, cons
 	pDeviceBinding->pNext = nullptr;
 	pDeviceBinding->pActionHead = pAction;
 	pDeviceBinding->m_nObjectId = pGIM->GetActionCodeFromBindString(pTriggerName);
+	pBinding->nDIK = pDeviceBinding->m_nObjectId;
 
 	// These will be set if ScaleTrigger is ever called
 	pDeviceBinding->nRangeScalePreCenterOffset = 0.0f;
@@ -379,6 +380,7 @@ bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, cons
 		{
 			pBinding->bIsAxis = true;
 			pBinding->nMouseAxis = SDL_MOUSE_AXIS_X;
+			pBinding->nDIK = (uint32_t)MOUSE_X_AXIS;
 
 			const char szName[] = "Axis X";
 			LTStrCpy(pDeviceBinding->strTriggerName, szName, sizeof(pDeviceBinding->strTriggerName));
@@ -388,6 +390,7 @@ bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, cons
 		{
 			pBinding->bIsAxis = true;
 			pBinding->nMouseAxis = SDL_MOUSE_AXIS_Y;
+			pBinding->nDIK = (uint32_t)MOUSE_Y_AXIS;
 
 			const char szName[] = "Axis Y";
 			LTStrCpy(pDeviceBinding->strTriggerName, szName, sizeof(pDeviceBinding->strTriggerName));
@@ -397,6 +400,7 @@ bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, cons
 		{
 			pBinding->bIsAxis = true;
 			pBinding->nMouseAxis = SDL_MOUSE_AXIS_WHEEL;
+			pBinding->nDIK = (uint32_t)MOUSE_Z_AXIS;
 
 			const char szName[] = "Mouse Wheel";
 			LTStrCpy(pDeviceBinding->strTriggerName, szName, sizeof(pDeviceBinding->strTriggerName));
@@ -406,6 +410,7 @@ bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, cons
 		{
 			pBinding->bIsAxis = false;
 			pBinding->nMouseButton = SDL_MOUSE_BUTTON_LEFT;
+			pBinding->nDIK = (uint32_t)MOUSE_LEFT_BUTTON;
 
 			const char szName[] = "Left";
 			LTStrCpy(pDeviceBinding->strTriggerName, szName, sizeof(pDeviceBinding->strTriggerName));
@@ -415,6 +420,7 @@ bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, cons
 		{
 			pBinding->bIsAxis = false;
 			pBinding->nMouseButton = SDL_MOUSE_BUTTON_RIGHT;
+			pBinding->nDIK = (uint32_t)MOUSE_RIGHT_BUTTON;
 
 			const char szName[] = "Right";
 			LTStrCpy(pDeviceBinding->strTriggerName, szName, sizeof(pDeviceBinding->strTriggerName));
@@ -424,6 +430,7 @@ bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, cons
 		{
 			pBinding->bIsAxis = false;
 			pBinding->nMouseButton = SDL_MOUSE_BUTTON_MIDDLE;
+			pBinding->nDIK = (uint32_t)MOUSE_MIDDLE_BUTTON;
 
 			const char szName[] = "Middle";
 			LTStrCpy(pDeviceBinding->strTriggerName, szName, sizeof(pDeviceBinding->strTriggerName));
@@ -511,6 +518,12 @@ DeviceObject* GameInputMgr::GetDeviceObjects(uint32_t nDeviceFlags)
 {
 	DeviceObject* pDeviceObjects = nullptr;
 
+	// Ignore unknown call
+	if (nDeviceFlags == DEVICE_TYPE_UNKNOWN)
+	{
+		return pDeviceObjects;
+	}
+
 	for (auto pBinding : pGIM->m_pBindingList)
 	{
 		DeviceObject* pDeviceObject = new DeviceObject();
@@ -519,6 +532,7 @@ DeviceObject* GameInputMgr::GetDeviceObjects(uint32_t nDeviceFlags)
 			g_pLTClient->CPrint("[GameInputMgr::GetDeviceObjects] Failed to create device object.");
 			break;
 		}
+		pDeviceObject->m_pNext = nullptr;
 
 		char szDeviceName[INPUTNAME_LEN];
 		int nDeviceType = DEVICE_TYPE_UNKNOWN;
@@ -537,7 +551,7 @@ DeviceObject* GameInputMgr::GetDeviceObjects(uint32_t nDeviceFlags)
 			pDeviceObject->m_RangeHigh = pBinding->pDeviceBinding->pActionHead->nRangeHigh;
 		}
 		
-		if (nDeviceType & DEVICE_TYPE_MOUSE && pBinding->nDeviceType == DEVICE_TYPE_MOUSE)
+		if (nDeviceFlags & DEVICE_TYPE_MOUSE && pBinding->nDeviceType == DEVICE_TYPE_MOUSE)
 		{
 			nDeviceType = DEVICE_TYPE_MOUSE;
 			pGIM->GetDeviceName(nDeviceType, szDeviceName, sizeof(szDeviceName));
@@ -552,7 +566,6 @@ DeviceObject* GameInputMgr::GetDeviceObjects(uint32_t nDeviceFlags)
 			// Special cases...
 			if (pBinding->bIsAxis)
 			{
-
 				if (pBinding->nMouseAxis == SDL_MOUSE_AXIS_X)
 				{
 					pDeviceObject->m_ObjectType = CONTROLTYPE_XAXIS;
@@ -565,11 +578,17 @@ DeviceObject* GameInputMgr::GetDeviceObjects(uint32_t nDeviceFlags)
 				{
 					pDeviceObject->m_ObjectType = CONTROLTYPE_ZAXIS;
 				}
-
 			}
-
 		}
 
+		// This binding isn't needed, so delete our object and continue
+		// Really I shouldn't even be making the object in the first place...
+		if (nDeviceType == DEVICE_TYPE_UNKNOWN)
+		{
+			delete pDeviceObject;
+			pDeviceObject = nullptr;
+			continue;
+		}
 
 		if (pDeviceObjects)
 		{
@@ -620,6 +639,23 @@ bool GameInputMgr::GetDeviceName(uint32_t nDeviceType, char* szBuffer, uint32_t 
 
 bool GameInputMgr::GetDeviceObjectName(const char* szDeviceName, uint32_t nDeviceObjectID, char* szDeviceObjectName, uint32_t nDeviceObjectNameLength)
 {
+	auto nDeviceType = pGIM->GetDeviceTypeFromName(szDeviceName);
+
+	for (auto pBinding : pGIM->m_pBindingList)
+	{
+		if (nDeviceType != pBinding->nDeviceType)
+		{
+			continue;
+		}
+
+		if (nDeviceObjectID == pBinding->nDIK)
+		{
+			LTStrCpy(szDeviceObjectName, pBinding->szName, nDeviceObjectNameLength);
+			return true;
+		}
+
+	}
+
 	return false;
 }
 
