@@ -425,7 +425,7 @@ bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, cons
 			pBinding->nMouseAxis = SDL_MOUSE_AXIS_WHEEL;
 			pBinding->nDIK = (uint32_t)MOUSE_Z_AXIS;
 
-			const char szName[] = "Mouse Wheel";
+			const char szName[] = "Wheel";
 			LTStrCpy(pDeviceBinding->strTriggerName, szName, sizeof(pDeviceBinding->strTriggerName));
 			LTStrCpy(pBinding->szName, szName, sizeof(pBinding->szName));
 		}
@@ -459,6 +459,8 @@ bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, cons
 			LTStrCpy(pDeviceBinding->strTriggerName, szName, sizeof(pDeviceBinding->strTriggerName));
 			LTStrCpy(pBinding->szName, szName, sizeof(pBinding->szName));
 		}
+
+		pDeviceBinding->m_nObjectId = pBinding->nDIK;
 	}
 	// TODO: Gamepad!
 
