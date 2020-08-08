@@ -7,7 +7,6 @@
 #include "SDLDInput8Conversion.h"
 	
 GameInputMgr* g_pGameInputMgr = nullptr;
-#define pGIM g_pGameInputMgr
 
 // Jake: This is generated at construction from the above map
 std::map <int, DInputKey> g_mDInputMouseToSDLMouse;
@@ -98,7 +97,7 @@ void GameInputMgr::ReplaceBindings()
 
 bool GameInputMgr::Init(InputMgr* pInputMgr, intptr_t* pState)
 {
-	pGIM->GenerateReverseMap();
+	g_pGameInputMgr->GenerateReverseMap();
 
 	return true;
 }
@@ -110,19 +109,19 @@ void GameInputMgr::Term(InputMgr* pInputMgr)
 		return;
 	}
 
-	for (auto pBinding : pGIM->m_pBindingList)
+	for (auto pBinding : g_pGameInputMgr->m_pBindingList)
 	{
 		delete pBinding;
 		pBinding = nullptr;
 	}
-	pGIM->m_pBindingList.clear();
+	g_pGameInputMgr->m_pBindingList.clear();
 
-	for (auto pAction : pGIM->m_pActionList)
+	for (auto pAction : g_pGameInputMgr->m_pActionList)
 	{
 		delete pAction;
 		pAction = nullptr;
 	}
-	pGIM->m_pActionList.clear();
+	g_pGameInputMgr->m_pActionList.clear();
 
 }
 
@@ -143,7 +142,7 @@ uint32_t GameInputMgr::PlayJoystickEffect(InputMgr* pInputMgr, const char* szEff
 
 void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAxisOffsets[3])
 {
-	auto pBinding = pGIM->m_pBindingList;
+	auto pBinding = g_pGameInputMgr->m_pBindingList;
 	int nDeltaX = 0, nDeltaY = 0;
 
 	// Only track mouse if relative mode is enabled
@@ -155,7 +154,7 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 	auto pKeys = SDL_GetKeyboardState(nullptr);
 	auto pButtons = SDL_GetMouseState(nullptr, nullptr);
 
-	for (auto pBinding : pGIM->m_pBindingList)
+	for (auto pBinding : g_pGameInputMgr->m_pBindingList)
 	{
 		auto pDeviceBinding = pBinding->pDeviceBinding;
 		if (!pDeviceBinding)
@@ -242,7 +241,7 @@ LTRESULT GameInputMgr::ClearInput()
 
 void GameInputMgr::AddAction(InputMgr* pInputMgr, const char* pActionName, int nActionCode)
 {
-	GameAction* pAction = pGIM->FindAction(pActionName);
+	GameAction* pAction = g_pGameInputMgr->FindAction(pActionName);
 
 	// Update the code, if we already added this action!
 	if (pAction)
@@ -265,7 +264,7 @@ void GameInputMgr::AddAction(InputMgr* pInputMgr, const char* pActionName, int n
 	// We no longer link actions together, until we need to.
 	pAction->pNext = nullptr;
 
-	pGIM->m_pActionList.push_back(pAction);
+	g_pGameInputMgr->m_pActionList.push_back(pAction);
 }
 
 bool GameInputMgr::EnableDevice(InputMgr* pInputMgr, const char* pDeviceName)
@@ -285,15 +284,39 @@ bool GameInputMgr::EnableDevice(InputMgr* pInputMgr, const char* pDeviceName)
 	return false;
 }
 
+// Important note: pTriggerName is "RealName"
 bool GameInputMgr::ClearBindings(InputMgr* pInputMgr, const char* pDeviceName, const char* pTriggerName)
 {
+	for (int i = 0; i < g_pGameInputMgr->m_pBindingList.size(); i++)
+	{
+		auto pBinding = g_pGameInputMgr->m_pBindingList.at(i);
+
+		// Not our device!
+		if (stricmp(pBinding->szDevice, pDeviceName) != 0)
+		{
+			continue;
+		}
+
+		// Hey it's our binding!
+		if (stricmp(pBinding->pDeviceBinding->strRealName, pTriggerName) == 0)
+		{
+			g_pGameInputMgr->m_pBindingList.erase(g_pGameInputMgr->m_pBindingList.begin() + i);
+
+			// Delete our Binding
+			delete pBinding;
+			pBinding = nullptr;
+			return true;
+		}
+	}
+
+
 	return false;
 }
 
 // Important note: pTriggerName is "RealName"
 bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, const char* pTriggerName, const char* pActionName, float fRangeLow, float fRangeHigh)
 {
-	auto pAction = pGIM->FindAction(pActionName);
+	auto pAction = g_pGameInputMgr->FindAction(pActionName);
 
 	if (!pAction)
 	{
@@ -328,7 +351,7 @@ bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, cons
 
 	pDeviceBinding->pNext = nullptr;
 	pDeviceBinding->pActionHead = pAction;
-	pDeviceBinding->m_nObjectId = pGIM->GetActionCodeFromBindString(pTriggerName);
+	pDeviceBinding->m_nObjectId = g_pGameInputMgr->GetActionCodeFromBindString(pTriggerName);
 	pBinding->nDIK = pDeviceBinding->m_nObjectId;
 
 	// These will be set if ScaleTrigger is ever called
@@ -343,7 +366,7 @@ bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, cons
 	LTStrCpy(pDeviceBinding->strRealName, pTriggerName, sizeof(pDeviceBinding->strRealName));
 
 
-	auto nDeviceType = pGIM->GetDeviceTypeFromName(pDeviceName);
+	auto nDeviceType = g_pGameInputMgr->GetDeviceTypeFromName(pDeviceName);
 	pBinding->nDeviceType = nDeviceType;
 
 	if (nDeviceType == DEVICE_TYPE_KEYBOARD)
@@ -440,14 +463,14 @@ bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, cons
 	// TODO: Gamepad!
 
 	pBinding->pDeviceBinding = pDeviceBinding;
-	pGIM->m_pBindingList.push_back(pBinding);
+	g_pGameInputMgr->m_pBindingList.push_back(pBinding);
 
 	return true;
 }
 
 bool GameInputMgr::ScaleTrigger(InputMgr* pInputMgr, const char* pDeviceName, const char* pTriggerName, float fScale, float fRangeScaleMin, float fRangeScaleMax, float fRangeScalePreCenterOffset)
 {
-	for (auto pBinding : pGIM->m_pBindingList)
+	for (auto pBinding : g_pGameInputMgr->m_pBindingList)
 	{
 		if (pBinding->nDeviceType != g_pGameInputMgr->GetDeviceTypeFromName(pDeviceName))
 		{
@@ -471,14 +494,17 @@ DeviceBinding* GameInputMgr::GetDeviceBindings(uint32_t nDevice)
 {
 	DeviceBinding* pDeviceBindings = nullptr;
 
-	for (auto pBinding : pGIM->m_pBindingList)
+	for (auto pBinding : g_pGameInputMgr->m_pBindingList)
 	{
 		if (pBinding->nDeviceType != nDevice)
 		{
 			continue;
 		}
 
-		DeviceBinding* pDeviceBinding = pBinding->pDeviceBinding;
+		// Jake: I didn't realize they want to do some funky stuff between Get and Free
+		// so we need copies.
+		DeviceBinding* pDeviceBinding = new DeviceBinding();
+		memcpy(pDeviceBinding, pBinding->pDeviceBinding, sizeof(DeviceBinding));
 
 		if (pDeviceBindings)
 		{
@@ -493,7 +519,17 @@ DeviceBinding* GameInputMgr::GetDeviceBindings(uint32_t nDevice)
 
 void GameInputMgr::FreeDeviceBindings(DeviceBinding* pBindings)
 {
-	// No need to free them, they're just references to our m_pBinding->DeviceBindings
+	DeviceBinding* pBinding = pBindings;
+	while (pBinding)
+	{
+		auto pNext = pBinding->pNext;
+
+		delete pBinding;
+		pBinding = nullptr;
+
+		pBinding = pNext;
+	}
+
 	return;
 }
 
@@ -502,11 +538,11 @@ bool GameInputMgr::StartDeviceTrack(InputMgr* pMgr, uint32_t nDevices, uint32_t 
 
 	if (nDevices & DEVICE_TYPE_KEYBOARD)
 	{
-		pGIM->m_DeviceTrackingList.push_back(DEVICE_TYPE_KEYBOARD);
+		g_pGameInputMgr->m_DeviceTrackingList.push_back(DEVICE_TYPE_KEYBOARD);
 	}
 	if (nDevices & DEVICE_TYPE_MOUSE)
 	{
-		pGIM->m_DeviceTrackingList.push_back(DEVICE_TYPE_MOUSE);
+		g_pGameInputMgr->m_DeviceTrackingList.push_back(DEVICE_TYPE_MOUSE);
 	}
 
 	return true;
@@ -521,14 +557,14 @@ bool GameInputMgr::TrackDevice(DeviceInput* pInputAttay, uint32_t* pInOut)
 	auto pKeys = SDL_GetKeyboardState(nullptr);
 	auto pButtons = SDL_GetMouseState(nullptr, nullptr);
 
-	for (auto nDeviceType : pGIM->m_DeviceTrackingList)
+	for (auto nDeviceType : g_pGameInputMgr->m_DeviceTrackingList)
 	{
 		if (*pInOut > nArraySize)
 		{
 			break;
 		}
 
-		for (auto pBinding : pGIM->m_pBindingList)
+		for (auto pBinding : g_pGameInputMgr->m_pBindingList)
 		{
 			if (*pInOut > nArraySize)
 			{
@@ -563,7 +599,7 @@ bool GameInputMgr::TrackDevice(DeviceInput* pInputAttay, uint32_t* pInOut)
 				}
 				else if (pBinding->bIsAxis && pBinding->nMouseAxis == SDL_MOUSE_AXIS_WHEEL)
 				{
-					nOn = pGIM->GetWheelDelta();
+					nOn = g_pGameInputMgr->GetWheelDelta();
 					nControlType = CONTROLTYPE_ZAXIS;
 				}
 			}
@@ -577,7 +613,7 @@ bool GameInputMgr::TrackDevice(DeviceInput* pInputAttay, uint32_t* pInOut)
 				pInputAttay[*pInOut].m_DeviceType = nDeviceType;
 
 				char szDeviceName[INPUTNAME_LEN];
-				pGIM->GetDeviceName(nDeviceType, szDeviceName, sizeof(szDeviceName));
+				g_pGameInputMgr->GetDeviceName(nDeviceType, szDeviceName, sizeof(szDeviceName));
 				LTStrCpy(pInputAttay[*pInOut].m_DeviceName, szDeviceName, sizeof(pInputAttay[*pInOut].m_DeviceName));
 
 				pInputAttay[*pInOut].m_ControlType = nControlType;
@@ -591,7 +627,7 @@ bool GameInputMgr::TrackDevice(DeviceInput* pInputAttay, uint32_t* pInOut)
 				// ??? Maybe ???
 				if (nControlType == CONTROLTYPE_ZAXIS)
 				{
-					pInputAttay[*pInOut].m_InputValue = pGIM->GetWheelDelta();
+					pInputAttay[*pInOut].m_InputValue = g_pGameInputMgr->GetWheelDelta();
 				}
 
 				(*pInOut)++;
@@ -604,7 +640,7 @@ bool GameInputMgr::TrackDevice(DeviceInput* pInputAttay, uint32_t* pInOut)
 
 bool GameInputMgr::EndDeviceTrack()
 {
-	pGIM->m_DeviceTrackingList.clear();
+	g_pGameInputMgr->m_DeviceTrackingList.clear();
 
 	return true;
 }
@@ -613,7 +649,7 @@ DeviceObject* GameInputMgr::GetDeviceObjects(uint32_t nDeviceFlags)
 {
 	DeviceObject* pDeviceObjects = nullptr;
 
-	for (auto pBinding : pGIM->m_pBindingList)
+	for (auto pBinding : g_pGameInputMgr->m_pBindingList)
 	{
 		DeviceObject* pDeviceObject = new DeviceObject();
 		if (!pDeviceObject)
@@ -629,7 +665,7 @@ DeviceObject* GameInputMgr::GetDeviceObjects(uint32_t nDeviceFlags)
 		if (nDeviceFlags & DEVICE_TYPE_KEYBOARD && pBinding->nDeviceType == DEVICE_TYPE_KEYBOARD)
 		{
 			nDeviceType = DEVICE_TYPE_KEYBOARD;
-			pGIM->GetDeviceName(nDeviceType, szDeviceName, sizeof(szDeviceName));
+			g_pGameInputMgr->GetDeviceName(nDeviceType, szDeviceName, sizeof(szDeviceName));
 
 			LTStrCpy(pDeviceObject->m_DeviceName, szDeviceName, sizeof(pDeviceObject->m_DeviceName));
 			pDeviceObject->m_DeviceType = nDeviceType;
@@ -643,7 +679,7 @@ DeviceObject* GameInputMgr::GetDeviceObjects(uint32_t nDeviceFlags)
 		if (nDeviceFlags & DEVICE_TYPE_MOUSE && pBinding->nDeviceType == DEVICE_TYPE_MOUSE)
 		{
 			nDeviceType = DEVICE_TYPE_MOUSE;
-			pGIM->GetDeviceName(nDeviceType, szDeviceName, sizeof(szDeviceName));
+			g_pGameInputMgr->GetDeviceName(nDeviceType, szDeviceName, sizeof(szDeviceName));
 			LTStrCpy(pDeviceObject->m_DeviceName, szDeviceName, sizeof(pDeviceObject->m_DeviceName));
 			pDeviceObject->m_DeviceType = nDeviceType;
 			pDeviceObject->m_ObjectType = CONTROLTYPE_BUTTON;
@@ -728,9 +764,9 @@ bool GameInputMgr::GetDeviceName(uint32_t nDeviceType, char* szBuffer, uint32_t 
 
 bool GameInputMgr::GetDeviceObjectName(const char* szDeviceName, uint32_t nDeviceObjectID, char* szDeviceObjectName, uint32_t nDeviceObjectNameLength)
 {
-	auto nDeviceType = pGIM->GetDeviceTypeFromName(szDeviceName);
+	auto nDeviceType = g_pGameInputMgr->GetDeviceTypeFromName(szDeviceName);
 
-	for (auto pBinding : pGIM->m_pBindingList)
+	for (auto pBinding : g_pGameInputMgr->m_pBindingList)
 	{
 		if (nDeviceType != pBinding->nDeviceType)
 		{

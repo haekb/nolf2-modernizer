@@ -40,8 +40,8 @@ enum ExtendedDIK {
 	MOUSE_Y_AXIS = -2,
 	MOUSE_Z_AXIS = 0,
 	MOUSE_LEFT_BUTTON = 3,
-	MOUSE_MIDDLE_BUTTON = 4,
-	MOUSE_RIGHT_BUTTON = 5,
+	MOUSE_MIDDLE_BUTTON = 5,
+	MOUSE_RIGHT_BUTTON = 4,
 };
 
 struct GIMBinding {
@@ -171,7 +171,7 @@ public:
 
 	std::vector<GIMBinding*> m_pBindingList;
 	std::vector<GameAction*> m_pActionList;
-	std::vector< LT_DeviceType> m_DeviceTrackingList;
+	std::vector<LT_DeviceType> m_DeviceTrackingList;
 
 	bool GetRelativeMode() { return m_bRelativeMode; }
 	void SetRelativeMode(bool bOn);
