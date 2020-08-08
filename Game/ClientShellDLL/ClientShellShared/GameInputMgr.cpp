@@ -180,11 +180,11 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 			if (pBinding->nMouseAxis == SDL_MOUSE_AXIS_WHEEL)
 			{
 				auto nWheelDelta = g_pGameInputMgr->GetWheelDelta();
-				if (nWheelDelta >= WHEEL_DELTA && pDeviceBinding->nRangeScaleMin > 0.0)
+				if (nWheelDelta >= WHEEL_DELTA && pDeviceBinding->pActionHead->nRangeLow > 0.0)
 				{
 					pActionsOn[pDeviceBinding->pActionHead->nActionCode] |= 1;
 				}
-				else if (nWheelDelta <= -WHEEL_DELTA && pDeviceBinding->nRangeScaleMin < 0.0)
+				else if (nWheelDelta <= -WHEEL_DELTA && pDeviceBinding->pActionHead->nRangeLow < 0.0)
 				{
 					pActionsOn[pDeviceBinding->pActionHead->nActionCode] |= 1;
 				}
@@ -379,34 +379,61 @@ bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, cons
 		{
 			pBinding->bIsAxis = true;
 			pBinding->nMouseAxis = SDL_MOUSE_AXIS_X;
+
+			const char szName[] = "Axis X";
+			LTStrCpy(pDeviceBinding->strTriggerName, szName, sizeof(pDeviceBinding->strTriggerName));
+			LTStrCpy(pBinding->szName, szName, sizeof(pBinding->szName));
 		}
 		else if (stricmp("##y-axis", pTriggerName) == 0)
 		{
 			pBinding->bIsAxis = true;
 			pBinding->nMouseAxis = SDL_MOUSE_AXIS_Y;
+
+			const char szName[] = "Axis Y";
+			LTStrCpy(pDeviceBinding->strTriggerName, szName, sizeof(pDeviceBinding->strTriggerName));
+			LTStrCpy(pBinding->szName, szName, sizeof(pBinding->szName));
 		}
 		else if (stricmp("##z-axis", pTriggerName) == 0)
 		{
 			pBinding->bIsAxis = true;
 			pBinding->nMouseAxis = SDL_MOUSE_AXIS_WHEEL;
+
+			const char szName[] = "Mouse Wheel";
+			LTStrCpy(pDeviceBinding->strTriggerName, szName, sizeof(pDeviceBinding->strTriggerName));
+			LTStrCpy(pBinding->szName, szName, sizeof(pBinding->szName));
 		}
 		else if (stricmp("##3", pTriggerName) == 0)
 		{
 			pBinding->bIsAxis = false;
 			pBinding->nMouseButton = SDL_MOUSE_BUTTON_LEFT;
+
+			const char szName[] = "Left";
+			LTStrCpy(pDeviceBinding->strTriggerName, szName, sizeof(pDeviceBinding->strTriggerName));
+			LTStrCpy(pBinding->szName, szName, sizeof(pBinding->szName));
 		}
 		else if (stricmp("##4", pTriggerName) == 0)
 		{
 			pBinding->bIsAxis = false;
 			pBinding->nMouseButton = SDL_MOUSE_BUTTON_RIGHT;
+
+			const char szName[] = "Right";
+			LTStrCpy(pDeviceBinding->strTriggerName, szName, sizeof(pDeviceBinding->strTriggerName));
+			LTStrCpy(pBinding->szName, szName, sizeof(pBinding->szName));
 		}
 		else if (stricmp("##5", pTriggerName) == 0)
 		{
 			pBinding->bIsAxis = false;
 			pBinding->nMouseButton = SDL_MOUSE_BUTTON_MIDDLE;
+
+			const char szName[] = "Middle";
+			LTStrCpy(pDeviceBinding->strTriggerName, szName, sizeof(pDeviceBinding->strTriggerName));
+			LTStrCpy(pBinding->szName, szName, sizeof(pBinding->szName));
 		}
 	}
 	// TODO: Gamepad!
+
+	pBinding->pDeviceBinding = pDeviceBinding;
+	pGIM->m_pBindingList.push_back(pBinding);
 
 	return true;
 }
@@ -420,8 +447,8 @@ bool GameInputMgr::ScaleTrigger(InputMgr* pInputMgr, const char* pDeviceName, co
 			continue;
 		}
 
-		// TODO: Confirm this is suppose to be trigger name.
-		if (stricmp(pBinding->pDeviceBinding->strTriggerName, pTriggerName) == 0)
+		// Not a typo, see every instance where I complain about pTriggerName not actually being strTriggerName
+		if (stricmp(pBinding->pDeviceBinding->strRealName, pTriggerName) == 0)
 		{
 			pBinding->pDeviceBinding->nScale = fScale;
 			pBinding->pDeviceBinding->nRangeScaleMin = fRangeScaleMin;
