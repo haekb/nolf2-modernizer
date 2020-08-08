@@ -7,37 +7,60 @@
 #include "InputMgr.h"
 
 
-/*
-They didn't name this enum, so it's here for reference...
-enum
-{
-	DEVICETYPE_KEYBOARD    = 1,
-	DEVICETYPE_MOUSE       = 2,
-	DEVICETYPE_JOYSTICK    = 4,
-	DEVICETYPE_GAMEPAD     = 8,
-	DEVICETYPE_UNKNOWN     = 16
+
+// They didn't name the enum...
+enum LT_DeviceType {
+	DEVICE_TYPE_KEYBOARD = DEVICETYPE_KEYBOARD,
+	DEVICE_TYPE_MOUSE = DEVICETYPE_MOUSE,
+	DEVICE_TYPE_JOYSTICK = DEVICETYPE_JOYSTICK,
+	DEVICE_TYPE_GAMEPAD = DEVICETYPE_GAMEPAD,
+	DEVICE_TYPE_UNKNOWN = DEVICETYPE_UNKNOWN,
 };
-*/
+
+// I'm not sure why this isn't already an enum.
+enum SDL_MouseButton {
+	SDL_MOUSE_BUTTON_LEFT = SDL_BUTTON_LEFT,
+	SDL_MOUSE_BUTTON_MIDDLE = SDL_BUTTON_MIDDLE,
+	SDL_MOUSE_BUTTON_RIGHT = SDL_BUTTON_RIGHT,
+};
+
+enum SDL_MouseAxis {
+	SDL_MOUSE_AXIS_X = 0,
+	SDL_MOUSE_AXIS_Y,
+	SDL_MOUSE_AXIS_WHEEL,
+	//SDL_MOUSE_AXIS_WHEEL_UP,
+	//SDL_MOUSE_AXIS_WHEEL_DOWN,
+};
 
 struct GIMBinding {
 	char szName[INPUTNAME_LEN];
 	char szDevice[INPUTNAME_LEN];
+	bool bIsEnabled;
 
 	// DirectInput Keycode
-	// Might be null
 	uint32_t nDIK;
+	// Whether or not nDIK is filled with useful info
+	bool bHasDIK;
 
 	// Based off the DEVICETYPE_* enum
-	int nDeviceType;
+	LT_DeviceType nDeviceType;
+	bool bIsAxis;
+
+	// Based off of nDeviceType + bIsAxis
 	union {
+		// Sorry keyboard, you're stuck in digital space
 		SDL_Scancode nKeyboardScancode;
-		uint32_t nMouseButton;
+
+		// Mouse button / axis
+		SDL_MouseButton nMouseButton;
+		SDL_MouseAxis nMouseAxis;
+
+		// Gamepad button / axis
+		SDL_GameControllerButton nGamepadButton;
+		SDL_GameControllerAxis nGamepadAxis;
 	};
 
-	bool bWheel; // Hack for mouse wheel. It's defined as ##z-axis
-
 	DeviceBinding* pDeviceBinding;
-	GIMBinding* pNext;
 };
 
 //
@@ -50,70 +73,80 @@ class GameInputMgr
 public:
 	GameInputMgr();
 	~GameInputMgr();
-	void ReplaceBindings();
 
+	// Replaces DInput's bindings with our own!
+	// Sneaaaky.
+	void ReplaceBindings();
 
 	// InputMgr implementations
 	static bool Init(InputMgr* pInputMgr, intptr_t* pState);
 	static void Term(InputMgr* pInputMgr);
 	static bool IsInitted(InputMgr* pInputMgr);
 
+	// Console print devices
 	static void ListDevices(InputMgr* pInputMgr);
 
+	// Play force feedback effect
 	static uint32_t PlayJoystickEffect(InputMgr* pInputMgr, const char* szEffectName, float x, float y);
 
+	// Read input
 	static void ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAxisOffsets[3]);
 
 	static bool FlushInputBuffers(InputMgr* pInputMgr);
 
 	static LTRESULT ClearInput();
 
+	// Add an action
+	// Actions are things like "Fire", or "Walk Forward". They trigger things in game code.
 	static void AddAction(InputMgr* pInputMgr, const char* pActionName, int nActionCode);
-	
 
+	// Enable a device
 	static bool EnableDevice(InputMgr* pInputMgr, const char* pDeviceName);
 	
-
+	// Clear a particular binding
 	static bool ClearBindings(InputMgr* pInputMgr, const char* pDeviceName, const char* pTriggerName);
 	
-
+	// Add a binding
+	// Bindings are button commands that trigger actions. (Hence binding!)
 	static bool AddBinding(InputMgr* pInputMgr, const char* pDeviceName, const char* pTriggerName, const char* pActionName, float fRangeLow, float fRangeHigh);
 	
-
+	// Whether or not to apply a "scale" to a binding. Mainly for axis.
 	static bool ScaleTrigger(InputMgr* pInputMgr, const char* pDeviceName, const char* pTriggerName, float fScale, float fRangeScaleMin, float fRangeScaleMax, float fRangeScalePreCenterOffset);
 	
-
+	// Let the game code have a lookie at our bindings
 	static DeviceBinding* GetDeviceBindings(uint32_t nDevice);
 	
-
+	// Clear any memory you allocated above
 	static void FreeDeviceBindings(DeviceBinding* pBindings);
 	
-
+	// Game code wants direct access to a device
 	static bool StartDeviceTrack(InputMgr* pMgr, uint32_t nDevices, uint32_t nBufferSize);
 	
-
+	// Send any key/button/axis from the device "started" above, and send it directly to the game code.
 	static bool TrackDevice(DeviceInput* pInputAttay, uint32_t* pInOut);
 	
-
+	// Stop our direct access
 	static bool EndDeviceTrack();
 	
-
+	// Get a list of devices that we can use
 	static DeviceObject* GetDeviceObjects(uint32_t nDeviceFlags);
 	
-
+	// Clean up any memory from the above call
 	static void FreeDeviceObjects(DeviceObject* pList);
 	
-
+	// Let's get the device name!
 	static bool GetDeviceName(uint32_t nDeviceType, char* szBuffer, uint32_t nBufferSize);
 	
-
+	// Let's get individual key/button/axis names from a particular device! (nDeviceObjectID should refer to that key/button/axis!)
 	static bool GetDeviceObjectName(const char* szDeviceName, uint32_t nDeviceObjectID, char* szDeviceObjectName, uint32_t nDeviceObjectNameLength);
 	
-
+	// Is a particular device enabled?
 	static bool IsDeviceEnabled(const char* szDeviceName);
 
+	// Console print devices
 	static bool ShowDeviceObjects(const char* szDeviceName);
 
+	// Console print devices
 	static bool ShowInputDevices();
 
 	//
@@ -122,10 +155,10 @@ public:
 
 	// Public so static functions can clean them up.
 	InputMgr* m_pInputMgr;
-	GIMBinding* m_pBindings;
-	//DeviceBinding* m_pBindings;
-	GameAction* m_pActions;
-	std::vector<GameAction*> m_pAllActions;
+	//GIMBinding* m_pBindings;
+
+	std::vector<GIMBinding*> m_pBindingList;
+	std::vector<GameAction*> m_pActionList;
 
 	bool GetRelativeMode() { return m_bRelativeMode; }
 	void SetRelativeMode(bool bOn);
@@ -134,10 +167,11 @@ public:
 
 	void GenerateReverseMap();
 
-	int GetDeviceTypeFromName(const char* szDeviceName);
+	LT_DeviceType GetDeviceTypeFromName(const char* szDeviceName);
 
 	// Converts "##42" to 42.
-	int GetIntFromTriggerName(const char* szTriggerName);
+	// Returns -999 if failed.
+	int GetActionCodeFromBindString(const char* szTriggerName);
 
 	int GetScancodeFromActionCode(int nActionCode);
 	int GetMouseButtonFromActionCode(int nActionCode);
