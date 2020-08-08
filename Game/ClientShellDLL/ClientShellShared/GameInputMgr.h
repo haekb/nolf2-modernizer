@@ -185,10 +185,6 @@ public:
 	// Returns -999 if failed.
 	int GetActionCodeFromBindString(const char* szTriggerName);
 
-	int GetScancodeFromActionCode(int nActionCode);
-	int GetMouseButtonFromActionCode(int nActionCode);
-	const char* GetNameFromScancode(int nDevice, SDL_Scancode nScancode);
-
 	void SetWheelDelta(int nWheelDelta) { m_nWheelDelta = nWheelDelta; };
 	int GetWheelDelta() { return m_nWheelDelta; }
 

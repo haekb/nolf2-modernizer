@@ -518,12 +518,6 @@ DeviceObject* GameInputMgr::GetDeviceObjects(uint32_t nDeviceFlags)
 {
 	DeviceObject* pDeviceObjects = nullptr;
 
-	// Ignore unknown call
-	if (nDeviceFlags == DEVICE_TYPE_UNKNOWN)
-	{
-		return pDeviceObjects;
-	}
-
 	for (auto pBinding : pGIM->m_pBindingList)
 	{
 		DeviceObject* pDeviceObject = new DeviceObject();
@@ -766,56 +760,6 @@ LT_DeviceType GameInputMgr::GetDeviceTypeFromName(const char* szDeviceName)
 	}
 
 	return DEVICE_TYPE_UNKNOWN;
-}
-
-int GameInputMgr::GetScancodeFromActionCode(int nActionCode)
-{
-	try {
-		return g_mDInputToSDL.at(nActionCode);
-	}
-	catch (...)
-	{
-		return 0;
-	}
-}
-
-int GameInputMgr::GetMouseButtonFromActionCode(int nActionCode)
-{
-	try {
-		return g_mDInputMouseToSDLMouse.at(nActionCode);
-	}
-	catch (...)
-	{
-		return 0;
-	}
-}
-
-const char* GameInputMgr::GetNameFromScancode(int nDevice, SDL_Scancode nScancode)
-{
-	if (nDevice == DEVICETYPE_MOUSE)
-	{
-		switch (nScancode)
-		{
-		case 1:
-			return "Left Mouse";
-			break;
-		case 2:
-			return "Right Mouse";
-			break;
-		case 3:
-			return "Middle Mouse";
-			break;
-		default:
-			return "[Unknown Mouse]";
-		}
-	}
-	else if (nDevice == DEVICETYPE_KEYBOARD)
-	{
-		auto nKeyCode = SDL_GetKeyFromScancode(nScancode);
-		return SDL_GetKeyName(nKeyCode);
-	}
-
-	return "[Unknown Scancode]";
 }
 
 int GameInputMgr::GetActionCodeFromBindString(const char* szTriggerName)
