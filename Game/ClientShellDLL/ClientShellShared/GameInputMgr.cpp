@@ -36,6 +36,7 @@ GameInputMgr::GameInputMgr()
 	g_pGameInputMgr = this;
 	m_nWheelDelta = 0;
 	m_bRelativeMode = false;
+	m_pGamepad = nullptr;
 
 #ifdef USE_OLD_INPUT
 	return;
@@ -129,6 +130,16 @@ void GameInputMgr::Term(InputMgr* pInputMgr)
 		pAvailableObject = nullptr;
 	}
 	g_pGameInputMgr->m_pAvailableObjects.clear();
+
+	for (auto nDevice : g_pGameInputMgr->m_EnabledDevices)
+	{
+		if (nDevice == DEVICE_TYPE_GAMEPAD && g_pGameInputMgr->m_pGamepad)
+		{
+			SDL_GameControllerClose(g_pGameInputMgr->m_pGamepad);
+			g_pGameInputMgr->m_pGamepad = nullptr;
+		}
+	}
+	g_pGameInputMgr->m_EnabledDevices.clear();
 
 }
 
@@ -280,8 +291,13 @@ bool GameInputMgr::EnableDevice(InputMgr* pInputMgr, const char* pDeviceName)
 	auto nDeviceType = DEVICE_TYPE_UNKNOWN;
 
 	bool bMouseAlreadyInit = std::find(g_pGameInputMgr->m_EnabledDevices.begin(), g_pGameInputMgr->m_EnabledDevices.end(), DEVICE_TYPE_MOUSE) != g_pGameInputMgr->m_EnabledDevices.end();
-	if (stricmp("##mouse", pDeviceName) == 0 && !bMouseAlreadyInit)
+	if (stricmp("##mouse", pDeviceName) == 0 || stricmp("Mouse", pDeviceName) == 0)
 	{
+		if (bMouseAlreadyInit)
+		{
+			return true;
+		}
+
 		// Create our list of bindable mice objects
 		nDeviceType = DEVICE_TYPE_MOUSE;
 		g_pGameInputMgr->GetDeviceName(nDeviceType, szDeviceName, sizeof(szDeviceName));
@@ -369,8 +385,13 @@ bool GameInputMgr::EnableDevice(InputMgr* pInputMgr, const char* pDeviceName)
 	}
 
 	bool bKeyboardAlreadyInit = std::find(g_pGameInputMgr->m_EnabledDevices.begin(), g_pGameInputMgr->m_EnabledDevices.end(), DEVICE_TYPE_KEYBOARD) != g_pGameInputMgr->m_EnabledDevices.end();
-	if (stricmp("##keyboard", pDeviceName) == 0 && !bKeyboardAlreadyInit)
+	if (stricmp("##keyboard", pDeviceName) == 0 || stricmp("Keyboard", pDeviceName) == 0)
 	{
+		if (bKeyboardAlreadyInit)
+		{
+			return true;
+		}
+
 		nDeviceType = DEVICE_TYPE_KEYBOARD;
 		g_pGameInputMgr->GetDeviceName(nDeviceType, szDeviceName, sizeof(szDeviceName));
 
@@ -409,6 +430,79 @@ bool GameInputMgr::EnableDevice(InputMgr* pInputMgr, const char* pDeviceName)
 		tempBinding = nullptr;
 
 		g_pGameInputMgr->m_EnabledDevices.push_back(DEVICE_TYPE_KEYBOARD);
+
+		return true;
+	}
+
+	bool bGamepadAlreadyInit = std::find(g_pGameInputMgr->m_EnabledDevices.begin(), g_pGameInputMgr->m_EnabledDevices.end(), DEVICE_TYPE_GAMEPAD) != g_pGameInputMgr->m_EnabledDevices.end();
+	if (stricmp("##gamepad", pDeviceName) == 0 || stricmp("Gamepad", pDeviceName) == 0)
+	{
+		if (bGamepadAlreadyInit)
+		{
+			return true;
+		}
+
+		nDeviceType = DEVICE_TYPE_GAMEPAD;
+		g_pGameInputMgr->GetDeviceName(nDeviceType, szDeviceName, sizeof(szDeviceName));
+
+		// If we haven't, init gamecontroller and haptic systems.
+		if (!SDL_WasInit(SDL_INIT_GAMECONTROLLER | SDL_INIT_HAPTIC))
+		{
+			SDL_Init(SDL_INIT_GAMECONTROLLER | SDL_INIT_HAPTIC);
+		}
+
+		// Open it! 
+		SDL_GameController* pGamepad = nullptr;
+		for (int i = 0; i < SDL_NumJoysticks(); ++i) {
+			if (SDL_IsGameController(i)) {
+				pGamepad = SDL_GameControllerOpen(i);
+				if (pGamepad) {
+					break;
+				}
+				else {
+					g_pLTClient->CPrint("[GameInputMgr::EnableDevice] Could not open gamepad [%d] due to error [%s]", i, SDL_GetError());
+				}
+			}
+		}
+
+#if 0
+		// Create a template to hold basic constant info
+		GIMBinding* tempBinding = new GIMBinding();
+
+		// Create a binding we'll be pushing into our "Available Objects" list.
+		// This will be new'd on every additional object..don't worry we'll free them later.
+		GIMBinding* binding = nullptr;
+
+		// These are constants
+		tempBinding->bIsEnabled = true;
+		tempBinding->bHasDIK = true;
+		tempBinding->nDeviceType = nDeviceType;
+		tempBinding->pDeviceBinding = nullptr;
+		LTStrCpy(tempBinding->szDevice, szDeviceName, sizeof(binding->szName));
+
+		// Loop through our giant map of possible DInput -> SDL keys to generate our the available keyboard keys!
+		for (auto pItem : g_mDInputToSDL)
+		{
+			binding = new GIMBinding();
+			memcpy(binding, tempBinding, sizeof(GIMBinding));
+
+			auto nKeyCode = SDL_GetKeyFromScancode(pItem.second);
+
+			LTStrCpy(binding->szName, SDL_GetKeyName(nKeyCode), sizeof(binding->szName));
+			binding->nDIK = pItem.first;
+			binding->nKeyboardScancode = pItem.second;
+			binding->bIsAxis = false;
+
+			g_pGameInputMgr->m_pAvailableObjects.push_back(binding);
+		}
+
+		delete tempBinding;
+		tempBinding = nullptr;
+#endif
+
+		// Take ownership, and add gamepad to our list of enabled devices
+		g_pGameInputMgr->m_pGamepad = pGamepad;
+		g_pGameInputMgr->m_EnabledDevices.push_back(DEVICE_TYPE_GAMEPAD);
 
 		return true;
 	}
@@ -700,6 +794,14 @@ bool GameInputMgr::TrackDevice(DeviceInput* pInputAttay, uint32_t* pInOut)
 			break;
 		}
 
+		char szDeviceName[INPUTNAME_LEN];
+		g_pGameInputMgr->GetDeviceName(nDeviceType, szDeviceName, sizeof(szDeviceName));
+
+		if (!g_pGameInputMgr->IsDeviceEnabled(szDeviceName))
+		{
+			g_pGameInputMgr->EnableDevice((InputMgr*)g_pGameInputMgr, szDeviceName);
+		}
+
 		for (auto pBinding : g_pGameInputMgr->m_pAvailableObjects)
 		{
 			if (*pInOut > nArraySize)
@@ -749,8 +851,6 @@ bool GameInputMgr::TrackDevice(DeviceInput* pInputAttay, uint32_t* pInOut)
 			{
 				pInputAttay[*pInOut].m_DeviceType = nDeviceType;
 
-				char szDeviceName[INPUTNAME_LEN];
-				g_pGameInputMgr->GetDeviceName(nDeviceType, szDeviceName, sizeof(szDeviceName));
 				LTStrCpy(pInputAttay[*pInOut].m_DeviceName, szDeviceName, sizeof(pInputAttay[*pInOut].m_DeviceName));
 
 				pInputAttay[*pInOut].m_ControlType = nControlType;
@@ -790,6 +890,32 @@ DeviceObject* GameInputMgr::GetDeviceObjects(uint32_t nDeviceFlags)
 	char szDeviceName[INPUTNAME_LEN];
 	LT_DeviceType nDeviceType = DEVICE_TYPE_UNKNOWN;
 
+	// We need to make sure things are enabled first!
+	if (nDeviceFlags & DEVICE_TYPE_KEYBOARD)
+	{
+		g_pGameInputMgr->GetDeviceName(DEVICE_TYPE_KEYBOARD, szDeviceName, sizeof(szDeviceName));
+		if (!g_pGameInputMgr->IsDeviceEnabled(szDeviceName))
+		{
+			g_pGameInputMgr->EnableDevice((InputMgr*)g_pGameInputMgr, szDeviceName);
+		}
+	}
+	if (nDeviceFlags & DEVICE_TYPE_MOUSE)
+	{
+		g_pGameInputMgr->GetDeviceName(DEVICE_TYPE_MOUSE, szDeviceName, sizeof(szDeviceName));
+		if (!g_pGameInputMgr->IsDeviceEnabled(szDeviceName))
+		{
+			g_pGameInputMgr->EnableDevice((InputMgr*)g_pGameInputMgr, szDeviceName);
+		}
+	}
+	if (nDeviceFlags & DEVICE_TYPE_GAMEPAD)
+	{
+		g_pGameInputMgr->GetDeviceName(DEVICE_TYPE_GAMEPAD, szDeviceName, sizeof(szDeviceName));
+		if (!g_pGameInputMgr->IsDeviceEnabled(szDeviceName))
+		{
+			g_pGameInputMgr->EnableDevice((InputMgr*)g_pGameInputMgr, szDeviceName);
+		}
+	}
+
 	for (auto pBinding : g_pGameInputMgr->m_pAvailableObjects)
 	{
 		DeviceObject* pDeviceObject = new DeviceObject();
@@ -800,9 +926,9 @@ DeviceObject* GameInputMgr::GetDeviceObjects(uint32_t nDeviceFlags)
 		}
 		pDeviceObject->m_pNext = nullptr;
 
-		char szDeviceName[INPUTNAME_LEN];
-		int nDeviceType = DEVICE_TYPE_UNKNOWN;
-
+		//
+		// Keyboard
+		//
 		if (nDeviceFlags & DEVICE_TYPE_KEYBOARD && pBinding->nDeviceType == DEVICE_TYPE_KEYBOARD)
 		{
 			nDeviceType = DEVICE_TYPE_KEYBOARD;
@@ -817,10 +943,14 @@ DeviceObject* GameInputMgr::GetDeviceObjects(uint32_t nDeviceFlags)
 			pDeviceObject->m_RangeHigh = 0.0f;
 		}
 		
+		//
+		// Mouse
+		//
 		if (nDeviceFlags & DEVICE_TYPE_MOUSE && pBinding->nDeviceType == DEVICE_TYPE_MOUSE)
 		{
 			nDeviceType = DEVICE_TYPE_MOUSE;
 			g_pGameInputMgr->GetDeviceName(nDeviceType, szDeviceName, sizeof(szDeviceName));
+
 			LTStrCpy(pDeviceObject->m_DeviceName, szDeviceName, sizeof(pDeviceObject->m_DeviceName));
 			pDeviceObject->m_DeviceType = nDeviceType;
 			pDeviceObject->m_ObjectType = CONTROLTYPE_BUTTON;
@@ -852,9 +982,14 @@ DeviceObject* GameInputMgr::GetDeviceObjects(uint32_t nDeviceFlags)
 				}
 			}
 		}
-		else if (nDeviceFlags & DEVICE_TYPE_GAMEPAD && pBinding->nDeviceType == DEVICE_TYPE_GAMEPAD)
+		
+		//
+		// Gamepad
+		//
+		if (nDeviceFlags & DEVICE_TYPE_GAMEPAD && pBinding->nDeviceType == DEVICE_TYPE_GAMEPAD)
 		{
-
+			nDeviceType = DEVICE_TYPE_GAMEPAD;
+			g_pGameInputMgr->GetDeviceName(nDeviceType, szDeviceName, sizeof(szDeviceName));
 		}
 
 		// This binding isn't needed, so delete our object and continue
@@ -907,6 +1042,7 @@ bool GameInputMgr::GetDeviceName(uint32_t nDeviceType, char* szBuffer, uint32_t 
 		LTStrCpy(szBuffer, "Mouse", nBufferSize);
 		break;
 	case DEVICETYPE_UNKNOWN:
+		LTStrCpy(szBuffer, "[Unknown]", nBufferSize);
 		return false;
 	}
 
@@ -939,14 +1075,19 @@ bool GameInputMgr::GetDeviceObjectName(const char* szDeviceName, uint32_t nDevic
 
 bool GameInputMgr::IsDeviceEnabled(const char* szDeviceName)
 {
-	if (stricmp("##mouse", szDeviceName) == 0)
+	if (stricmp("##mouse", szDeviceName) == 0 || stricmp("Mouse", szDeviceName) == 0)
 	{
 		return true;
 	}
 
-	if (stricmp("##keyboard", szDeviceName) == 0)
+	if (stricmp("##keyboard", szDeviceName) == 0 || stricmp("Keyboard", szDeviceName) == 0)
 	{
 		return true;
+	}
+
+	if (stricmp("##gamepad", szDeviceName) == 0 || stricmp("Gamepad", szDeviceName) == 0)
+	{
+		return std::find(g_pGameInputMgr->m_EnabledDevices.begin(), g_pGameInputMgr->m_EnabledDevices.end(), DEVICE_TYPE_GAMEPAD) != g_pGameInputMgr->m_EnabledDevices.end();
 	}
 
 	g_pLTClient->CPrint("[GameInputMgr::IsDeviceEnabled] Tried to enable non-supported device [%s]", szDeviceName);

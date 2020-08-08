@@ -177,6 +177,8 @@ public:
 	std::vector<GIMBinding*> m_pAvailableObjects;
 	std::vector< LT_DeviceType> m_EnabledDevices;
 
+	// Gamepad handle
+	SDL_GameController* m_pGamepad;
 
 	bool GetRelativeMode() { return m_bRelativeMode; }
 	void SetRelativeMode(bool bOn);
