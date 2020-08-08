@@ -140,7 +140,7 @@ public:
 	// Stop our direct access
 	static bool EndDeviceTrack();
 	
-	// Get a list of devices that we can use
+	// Get a list of available keys/button/axis' from a particular device
 	static DeviceObject* GetDeviceObjects(uint32_t nDeviceFlags);
 	
 	// Clean up any memory from the above call

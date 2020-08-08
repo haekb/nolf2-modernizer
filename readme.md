@@ -8,7 +8,7 @@ The goal of NOLF 2 Modernizer is to help fix some long standing bugs, and update
 
  - Widescreen support
  - Re-implemented several graphic effects including anti-aliasing
- - Fixed weird mouse behaviour
+ - Rewrote the entire input system
  - Jukebox to play some of your favourite in-game tunes
  - Several original game crashes have been fixed
  - Fixed dynamic music transitions on framerates higher than 100fps
