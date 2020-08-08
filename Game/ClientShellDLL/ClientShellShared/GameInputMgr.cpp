@@ -223,7 +223,7 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 		{
 			nOn = pKeys[pBinding->nKeyboardScancode];
 		}
-		else if (pBinding->nDeviceType == DEVICE_TYPE_MOUSE)
+		else if (pBinding->nDeviceType == DEVICE_TYPE_MOUSE && !pBinding->bIsAxis)
 		{
 			nOn = (pButtons & SDL_BUTTON(pBinding->nMouseButton));
 		}
