@@ -32,6 +32,18 @@ enum SDL_MouseAxis {
 	//SDL_MOUSE_AXIS_WHEEL_DOWN,
 };
 
+// These only pop up on GIMBinding
+// when bHasDIK is false!
+enum ExtendedDIK {
+	// Mouse
+	MOUSE_X_AXIS = -1,
+	MOUSE_Y_AXIS = -2,
+	MOUSE_Z_AXIS = 0,
+	MOUSE_LEFT_BUTTON = 3,
+	MOUSE_MIDDLE_BUTTON = 4,
+	MOUSE_RIGHT_BUTTON = 5,
+};
+
 struct GIMBinding {
 	char szName[INPUTNAME_LEN];
 	char szDevice[INPUTNAME_LEN];
