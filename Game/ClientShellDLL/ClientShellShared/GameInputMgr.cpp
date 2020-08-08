@@ -706,6 +706,11 @@ bool GameInputMgr::TrackDevice(DeviceInput* pInputAttay, uint32_t* pInOut)
 			{
 				break;
 			}
+			// We only care about this device's binds.
+			if (nDeviceType != pBinding->nDeviceType)
+			{
+				continue;
+			}
 
 			// No special case, just direct DIK to SDL conversion!
 			uint8_t nOn = 0;
@@ -926,6 +931,8 @@ bool GameInputMgr::GetDeviceObjectName(const char* szDeviceName, uint32_t nDevic
 		}
 
 	}
+
+	memset(szDeviceObjectName, 0, nDeviceObjectNameLength);
 
 	return false;
 }
