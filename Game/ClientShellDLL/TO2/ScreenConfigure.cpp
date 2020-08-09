@@ -364,9 +364,11 @@ void CScreenConfigure::SetControlText(CLTGUICtrl *pCtrl)
 
 		if (strlen(pData->strTriggerName[2]) != 0 )
 		{
-			if (numControls)
-				strcat(strControls,", ");
-			strcat(strControls,strDeviceNiceName[2]);
+			if (numControls) {
+				strcat(strControls, ", ");
+			}
+			//strcat(strControls,strDeviceNiceName[2]);
+			strcat(strControls, m_pProfile->GetDeviceName(2));
 			strcat(strControls," ");
 
 			g_pLTClient->GetDeviceObjectName( m_pProfile->GetDeviceName( 2 ), pData->nDeviceObjectId[2], 
