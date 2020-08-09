@@ -6,6 +6,10 @@
 #include <SDL.h>
 #include "InputMgr.h"
 
+//
+// A bunch of helper structs/enums
+//
+
 struct ButtonValue {
 	SDL_GameControllerButton nButton;
 	uint8_t nValue;
@@ -15,6 +19,7 @@ struct AxisValue {
 	SDL_GameControllerAxis nAxis;
 	float fValue;
 };
+
 
 // They didn't name the enum...
 enum LT_DeviceType {
@@ -50,6 +55,15 @@ enum ExtendedDIK {
 	MOUSE_LEFT_BUTTON = 3,
 	MOUSE_MIDDLE_BUTTON = 5,
 	MOUSE_RIGHT_BUTTON = 4,
+};
+
+// Used with EnableDevice to hold a list of unique data
+struct TempBinding {
+	char szName[INPUTNAME_LEN];
+	uint32_t nDIK;
+	uint32_t nSDL; // This can be Button/Key/Axis whatever
+	uint32_t nControlType;
+	bool bIsAxis;
 };
 
 struct GIMBinding {
