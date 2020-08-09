@@ -59,10 +59,10 @@ enum ExtendedDIK {
 
 // Used with EnableDevice to hold a list of unique data
 struct TempBinding {
+	char szCompareName[INPUTNAME_LEN];
 	char szName[INPUTNAME_LEN];
 	uint32_t nDIK;
 	uint32_t nSDL; // This can be Button/Key/Axis whatever
-	uint32_t nControlType;
 	bool bIsAxis;
 };
 

@@ -312,16 +312,16 @@ bool GameInputMgr::EnableDevice(InputMgr* pInputMgr, const char* pDeviceName)
 		pTemplateBinding->pDeviceBinding = nullptr;
 		LTStrCpy(pTemplateBinding->szDevice, szDeviceName, sizeof(pTemplateBinding->szName));
 
-		// Name, DIK Code, SDL Code, Is Axis?
-		TempBinding aTempBinding[] = {
+		// Compare Name (Not used here!), Name, DIK Code, SDL Code, Is Axis?
+		const TempBinding aTempBinding[] = {
 			// Mouse Buttons
-			{ "Left", MOUSE_LEFT_BUTTON, SDL_MOUSE_BUTTON_LEFT,  false },
-			{ "Right", MOUSE_RIGHT_BUTTON, SDL_MOUSE_BUTTON_RIGHT,  false },
-			{ "Middle", MOUSE_MIDDLE_BUTTON, SDL_MOUSE_BUTTON_MIDDLE,  false },
+			{ "", "Left", MOUSE_LEFT_BUTTON, SDL_MOUSE_BUTTON_LEFT,  false },
+			{ "", "Right", MOUSE_RIGHT_BUTTON, SDL_MOUSE_BUTTON_RIGHT,  false },
+			{ "", "Middle", MOUSE_MIDDLE_BUTTON, SDL_MOUSE_BUTTON_MIDDLE,  false },
 			// Mouse Axis
-			{ "Axis X", MOUSE_X_AXIS, SDL_MOUSE_AXIS_X, true },
-			{ "Axis Y", MOUSE_Y_AXIS, SDL_MOUSE_AXIS_Y, true },
-			{ "Wheel", MOUSE_Z_AXIS + 1, SDL_MOUSE_AXIS_WHEEL, true },
+			{ "", "Axis X", MOUSE_X_AXIS, SDL_MOUSE_AXIS_X, true },
+			{ "", "Axis Y", MOUSE_Y_AXIS, SDL_MOUSE_AXIS_Y, true },
+			{ "", "Wheel", MOUSE_Z_AXIS + 1, SDL_MOUSE_AXIS_WHEEL, true },
 		};
 
 		for (int i = 0; i < SDL_arraysize(aTempBinding); i++)
@@ -445,31 +445,31 @@ bool GameInputMgr::EnableDevice(InputMgr* pInputMgr, const char* pDeviceName)
 		pTemplateBinding->pDeviceBinding = nullptr;
 		LTStrCpy(pTemplateBinding->szDevice, szDeviceName, sizeof(pTemplateBinding->szName));
 
-		// Name, DIK Code, SDL Code, Is Axis?
-		TempBinding aTempBinding[] = {
+		// Compare Name (Not used here!), Name, DIK Code, SDL Code, Is Axis?
+		const TempBinding aTempBinding[] = {
 			// Gamepad buttons - DIK codes can't be zero!!
-			{ "A", SDL_CONTROLLER_BUTTON_A + 1, SDL_CONTROLLER_BUTTON_A,  false },
-			{ "B", SDL_CONTROLLER_BUTTON_B + 1, SDL_CONTROLLER_BUTTON_B,  false },
-			{ "X", SDL_CONTROLLER_BUTTON_X + 1, SDL_CONTROLLER_BUTTON_X,  false },
-			{ "Y", SDL_CONTROLLER_BUTTON_Y + 1, SDL_CONTROLLER_BUTTON_Y,  false },
-			{ "Back", SDL_CONTROLLER_BUTTON_BACK + 1, SDL_CONTROLLER_BUTTON_BACK, false },
-			{ "Guide", SDL_CONTROLLER_BUTTON_GUIDE + 1, SDL_CONTROLLER_BUTTON_GUIDE, false },
-			{ "Start", SDL_CONTROLLER_BUTTON_START + 1, SDL_CONTROLLER_BUTTON_START, false },
-			{ "Left Stick", SDL_CONTROLLER_BUTTON_LEFTSTICK + 1, SDL_CONTROLLER_BUTTON_LEFTSTICK, false },
-			{ "Right Stick", SDL_CONTROLLER_BUTTON_RIGHTSTICK + 1, SDL_CONTROLLER_BUTTON_RIGHTSTICK, false },
-			{ "Left Shoulder", SDL_CONTROLLER_BUTTON_LEFTSHOULDER + 1, SDL_CONTROLLER_BUTTON_LEFTSHOULDER, false },
-			{ "Right Shoulder", SDL_CONTROLLER_BUTTON_RIGHTSHOULDER + 1, SDL_CONTROLLER_BUTTON_RIGHTSHOULDER, false },
-			{ "DPad Up", SDL_CONTROLLER_BUTTON_DPAD_UP + 1, SDL_CONTROLLER_BUTTON_DPAD_UP, false },
-			{ "DPad Down", SDL_CONTROLLER_BUTTON_DPAD_DOWN + 1, SDL_CONTROLLER_BUTTON_DPAD_DOWN, false },
-			{ "DPad Left", SDL_CONTROLLER_BUTTON_DPAD_LEFT + 1, SDL_CONTROLLER_BUTTON_DPAD_LEFT, false },
-			{ "DPad Right", SDL_CONTROLLER_BUTTON_DPAD_RIGHT + 1, SDL_CONTROLLER_BUTTON_DPAD_RIGHT, false },
+			{ "", "A", SDL_CONTROLLER_BUTTON_A + 1, SDL_CONTROLLER_BUTTON_A,  false },
+			{ "", "B", SDL_CONTROLLER_BUTTON_B + 1, SDL_CONTROLLER_BUTTON_B,  false },
+			{ "", "X", SDL_CONTROLLER_BUTTON_X + 1, SDL_CONTROLLER_BUTTON_X,  false },
+			{ "", "Y", SDL_CONTROLLER_BUTTON_Y + 1, SDL_CONTROLLER_BUTTON_Y,  false },
+			{ "", "Back", SDL_CONTROLLER_BUTTON_BACK + 1, SDL_CONTROLLER_BUTTON_BACK, false },
+			{ "", "Guide", SDL_CONTROLLER_BUTTON_GUIDE + 1, SDL_CONTROLLER_BUTTON_GUIDE, false },
+			{ "", "Start", SDL_CONTROLLER_BUTTON_START + 1, SDL_CONTROLLER_BUTTON_START, false },
+			{ "", "Left Stick", SDL_CONTROLLER_BUTTON_LEFTSTICK + 1, SDL_CONTROLLER_BUTTON_LEFTSTICK, false },
+			{ "", "Right Stick", SDL_CONTROLLER_BUTTON_RIGHTSTICK + 1, SDL_CONTROLLER_BUTTON_RIGHTSTICK, false },
+			{ "", "Left Shoulder", SDL_CONTROLLER_BUTTON_LEFTSHOULDER + 1, SDL_CONTROLLER_BUTTON_LEFTSHOULDER, false },
+			{ "", "Right Shoulder", SDL_CONTROLLER_BUTTON_RIGHTSHOULDER + 1, SDL_CONTROLLER_BUTTON_RIGHTSHOULDER, false },
+			{ "", "DPad Up", SDL_CONTROLLER_BUTTON_DPAD_UP + 1, SDL_CONTROLLER_BUTTON_DPAD_UP, false },
+			{ "", "DPad Down", SDL_CONTROLLER_BUTTON_DPAD_DOWN + 1, SDL_CONTROLLER_BUTTON_DPAD_DOWN, false },
+			{ "", "DPad Left", SDL_CONTROLLER_BUTTON_DPAD_LEFT + 1, SDL_CONTROLLER_BUTTON_DPAD_LEFT, false },
+			{ "", "DPad Right", SDL_CONTROLLER_BUTTON_DPAD_RIGHT + 1, SDL_CONTROLLER_BUTTON_DPAD_RIGHT, false },
 			// Gamepad axis - DIK codes still can't be zero!
-			{ "Left Axis X", SDL_CONTROLLER_AXIS_LEFTX + 1, SDL_CONTROLLER_AXIS_LEFTX, true },
-			{ "Left Axis Y", SDL_CONTROLLER_AXIS_LEFTY + 1, SDL_CONTROLLER_AXIS_LEFTY, true },
-			{ "Right Axis X", SDL_CONTROLLER_AXIS_RIGHTX + 1, SDL_CONTROLLER_AXIS_RIGHTX, true },
-			{ "Right Axis Y", SDL_CONTROLLER_AXIS_RIGHTY + 1, SDL_CONTROLLER_AXIS_RIGHTY, true },
-			{ "Left Trigger", SDL_CONTROLLER_AXIS_TRIGGERLEFT + 1, SDL_CONTROLLER_AXIS_TRIGGERLEFT, true },
-			{ "Right Trigger", SDL_CONTROLLER_AXIS_TRIGGERRIGHT + 1, SDL_CONTROLLER_AXIS_TRIGGERRIGHT, true },
+			{ "", "Left Axis X", SDL_CONTROLLER_AXIS_LEFTX + 1, SDL_CONTROLLER_AXIS_LEFTX, true },
+			{ "", "Left Axis Y", SDL_CONTROLLER_AXIS_LEFTY + 1, SDL_CONTROLLER_AXIS_LEFTY, true },
+			{ "", "Right Axis X", SDL_CONTROLLER_AXIS_RIGHTX + 1, SDL_CONTROLLER_AXIS_RIGHTX, true },
+			{ "", "Right Axis Y", SDL_CONTROLLER_AXIS_RIGHTY + 1, SDL_CONTROLLER_AXIS_RIGHTY, true },
+			{ "", "Left Trigger", SDL_CONTROLLER_AXIS_TRIGGERLEFT + 1, SDL_CONTROLLER_AXIS_TRIGGERLEFT, true },
+			{ "", "Right Trigger", SDL_CONTROLLER_AXIS_TRIGGERRIGHT + 1, SDL_CONTROLLER_AXIS_TRIGGERRIGHT, true },
 		};
 
 		for (int i = 0; i < SDL_arraysize(aTempBinding); i++)
@@ -624,66 +624,93 @@ bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, cons
 	{
 		pBinding->bHasDIK = false;
 
-		// TODO: This could be a map!
-		if (stricmp("##x-axis", pTriggerName) == 0)
-		{
-			pBinding->bIsAxis = true;
-			pBinding->nMouseAxis = SDL_MOUSE_AXIS_X;
-			pBinding->nDIK = (uint32_t)MOUSE_X_AXIS;
+		// Name, DIK Code, SDL Code, Is Axis?
+		const TempBinding aTempBinding[] = {
+			// Mouse Buttons
+			{ "##3", "Left", MOUSE_LEFT_BUTTON, SDL_MOUSE_BUTTON_LEFT,  false },
+			{ "##4", "Right", MOUSE_RIGHT_BUTTON, SDL_MOUSE_BUTTON_RIGHT,  false } ,
+			{ "##5", "Middle", MOUSE_MIDDLE_BUTTON, SDL_MOUSE_BUTTON_MIDDLE,  false },
+			// Mouse Axis
+			{ "##x-axis", "Axis X", MOUSE_X_AXIS, SDL_MOUSE_AXIS_X, true },
+			{ "##y-axis", "Axis Y", MOUSE_Y_AXIS, SDL_MOUSE_AXIS_Y, true },
+			{ "##z-axis", "Wheel", MOUSE_Z_AXIS + 1, SDL_MOUSE_AXIS_WHEEL, true },
+		};
 
-			const char szName[] = "Axis X";
-			LTStrCpy(pDeviceBinding->strTriggerName, szName, sizeof(pDeviceBinding->strTriggerName));
-			LTStrCpy(pBinding->szName, szName, sizeof(pBinding->szName));
+		for (int i = 0; i < SDL_arraysize(aTempBinding); i++)
+		{
+			if (stricmp(aTempBinding[i].szCompareName, pTriggerName) == 0)
+			{
+				LTStrCpy(pDeviceBinding->strTriggerName, aTempBinding[i].szName, sizeof(pDeviceBinding->strTriggerName));
+				LTStrCpy(pBinding->szName, aTempBinding[i].szName, sizeof(pBinding->szName));
+
+				pBinding->bIsAxis = aTempBinding[i].bIsAxis;
+				pBinding->nDIK = (uint32_t)aTempBinding[i].nDIK;
+
+				if (!aTempBinding[i].bIsAxis)
+				{
+					pBinding->nMouseButton = (SDL_MouseButton)aTempBinding[i].nSDL;
+				}
+				else
+				{
+					pBinding->nMouseAxis = (SDL_MouseAxis)aTempBinding[i].nSDL;
+				}
+				break;
+			}
 		}
-		else if (stricmp("##y-axis", pTriggerName) == 0)
-		{
-			pBinding->bIsAxis = true;
-			pBinding->nMouseAxis = SDL_MOUSE_AXIS_Y;
-			pBinding->nDIK = (uint32_t)MOUSE_Y_AXIS;
 
-			const char szName[] = "Axis Y";
-			LTStrCpy(pDeviceBinding->strTriggerName, szName, sizeof(pDeviceBinding->strTriggerName));
-			LTStrCpy(pBinding->szName, szName, sizeof(pBinding->szName));
-		}
-		else if (stricmp("##z-axis", pTriggerName) == 0)
-		{
-			pBinding->bIsAxis = true;
-			pBinding->nMouseAxis = SDL_MOUSE_AXIS_WHEEL;
-			pBinding->nDIK = (uint32_t)MOUSE_Z_AXIS;
+		pDeviceBinding->m_nObjectId = pBinding->nDIK;
+	}
+	else if (nDeviceType == DEVICE_TYPE_GAMEPAD)
+	{
+		pBinding->bHasDIK = false;
 
-			const char szName[] = "Wheel";
-			LTStrCpy(pDeviceBinding->strTriggerName, szName, sizeof(pDeviceBinding->strTriggerName));
-			LTStrCpy(pBinding->szName, szName, sizeof(pBinding->szName));
-		}
-		else if (stricmp("##3", pTriggerName) == 0)
-		{
-			pBinding->bIsAxis = false;
-			pBinding->nMouseButton = SDL_MOUSE_BUTTON_LEFT;
-			pBinding->nDIK = (uint32_t)MOUSE_LEFT_BUTTON;
+		// Compare Name , Name, DIK Code, SDL Code, Is Axis?
+		const TempBinding aTempBinding[] = {
+			// Gamepad buttons - DIK codes can't be zero!!
+			{ "##1", "A", SDL_CONTROLLER_BUTTON_A + 1, SDL_CONTROLLER_BUTTON_A,  false },
+			{ "##2", "B", SDL_CONTROLLER_BUTTON_B + 1, SDL_CONTROLLER_BUTTON_B,  false },
+			{ "##3", "X", SDL_CONTROLLER_BUTTON_X + 1, SDL_CONTROLLER_BUTTON_X,  false },
+			{ "##4", "Y", SDL_CONTROLLER_BUTTON_Y + 1, SDL_CONTROLLER_BUTTON_Y,  false },
+			{ "##5", "Back", SDL_CONTROLLER_BUTTON_BACK + 1, SDL_CONTROLLER_BUTTON_BACK, false },
+			{ "##6", "Guide", SDL_CONTROLLER_BUTTON_GUIDE + 1, SDL_CONTROLLER_BUTTON_GUIDE, false },
+			{ "##7", "Start", SDL_CONTROLLER_BUTTON_START + 1, SDL_CONTROLLER_BUTTON_START, false },
+			{ "##8", "Left Stick", SDL_CONTROLLER_BUTTON_LEFTSTICK + 1, SDL_CONTROLLER_BUTTON_LEFTSTICK, false },
+			{ "##9", "Right Stick", SDL_CONTROLLER_BUTTON_RIGHTSTICK + 1, SDL_CONTROLLER_BUTTON_RIGHTSTICK, false },
+			{ "##10", "Left Shoulder", SDL_CONTROLLER_BUTTON_LEFTSHOULDER + 1, SDL_CONTROLLER_BUTTON_LEFTSHOULDER, false },
+			{ "##11", "Right Shoulder", SDL_CONTROLLER_BUTTON_RIGHTSHOULDER + 1, SDL_CONTROLLER_BUTTON_RIGHTSHOULDER, false },
+			{ "##12", "DPad Up", SDL_CONTROLLER_BUTTON_DPAD_UP + 1, SDL_CONTROLLER_BUTTON_DPAD_UP, false },
+			{ "##13", "DPad Down", SDL_CONTROLLER_BUTTON_DPAD_DOWN + 1, SDL_CONTROLLER_BUTTON_DPAD_DOWN, false },
+			{ "##14", "DPad Left", SDL_CONTROLLER_BUTTON_DPAD_LEFT + 1, SDL_CONTROLLER_BUTTON_DPAD_LEFT, false },
+			{ "##15", "DPad Right", SDL_CONTROLLER_BUTTON_DPAD_RIGHT + 1, SDL_CONTROLLER_BUTTON_DPAD_RIGHT, false },
+			// Gamepad axis - DIK codes still can't be zero!
+			{ "##x-axis", "Left Axis X", SDL_CONTROLLER_AXIS_LEFTX + 1, SDL_CONTROLLER_AXIS_LEFTX, true },
+			{ "##y-axis", "Left Axis Y", SDL_CONTROLLER_AXIS_LEFTY + 1, SDL_CONTROLLER_AXIS_LEFTY, true },
+			{ "##rx-axis", "Right Axis X", SDL_CONTROLLER_AXIS_RIGHTX + 1, SDL_CONTROLLER_AXIS_RIGHTX, true },
+			{ "##ry-axis", "Right Axis Y", SDL_CONTROLLER_AXIS_RIGHTY + 1, SDL_CONTROLLER_AXIS_RIGHTY, true },
+			{ "##z-axis", "Left Trigger", SDL_CONTROLLER_AXIS_TRIGGERLEFT + 1, SDL_CONTROLLER_AXIS_TRIGGERLEFT, true },
+			{ "##rz-axis", "Right Trigger", SDL_CONTROLLER_AXIS_TRIGGERRIGHT + 1, SDL_CONTROLLER_AXIS_TRIGGERRIGHT, true },
+		};
 
-			const char szName[] = "Left";
-			LTStrCpy(pDeviceBinding->strTriggerName, szName, sizeof(pDeviceBinding->strTriggerName));
-			LTStrCpy(pBinding->szName, szName, sizeof(pBinding->szName));
-		}
-		else if (stricmp("##4", pTriggerName) == 0)
+		for (int i = 0; i < SDL_arraysize(aTempBinding); i++)
 		{
-			pBinding->bIsAxis = false;
-			pBinding->nMouseButton = SDL_MOUSE_BUTTON_RIGHT;
-			pBinding->nDIK = (uint32_t)MOUSE_RIGHT_BUTTON;
+			if (stricmp(aTempBinding[i].szCompareName, pTriggerName) == 0)
+			{
+				LTStrCpy(pDeviceBinding->strTriggerName, aTempBinding[i].szName, sizeof(pDeviceBinding->strTriggerName));
+				LTStrCpy(pBinding->szName, aTempBinding[i].szName, sizeof(pBinding->szName));
 
-			const char szName[] = "Right";
-			LTStrCpy(pDeviceBinding->strTriggerName, szName, sizeof(pDeviceBinding->strTriggerName));
-			LTStrCpy(pBinding->szName, szName, sizeof(pBinding->szName));
-		}
-		else if (stricmp("##5", pTriggerName) == 0)
-		{
-			pBinding->bIsAxis = false;
-			pBinding->nMouseButton = SDL_MOUSE_BUTTON_MIDDLE;
-			pBinding->nDIK = (uint32_t)MOUSE_MIDDLE_BUTTON;
+				pBinding->bIsAxis = aTempBinding[i].bIsAxis;
+				pBinding->nDIK = (uint32_t)aTempBinding[i].nDIK;
 
-			const char szName[] = "Middle";
-			LTStrCpy(pDeviceBinding->strTriggerName, szName, sizeof(pDeviceBinding->strTriggerName));
-			LTStrCpy(pBinding->szName, szName, sizeof(pBinding->szName));
+				if (!aTempBinding[i].bIsAxis)
+				{
+					pBinding->nGamepadButton = (SDL_GameControllerButton)aTempBinding[i].nSDL;
+				}
+				else
+				{
+					pBinding->nGamepadAxis = (SDL_GameControllerAxis)aTempBinding[i].nSDL;
+				}
+				break;
+			}
 		}
 
 		pDeviceBinding->m_nObjectId = pBinding->nDIK;
