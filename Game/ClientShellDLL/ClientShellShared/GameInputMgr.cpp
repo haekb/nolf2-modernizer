@@ -906,11 +906,23 @@ bool GameInputMgr::TrackDevice(DeviceInput* pInputAttay, uint32_t* pInOut)
 					nControlType = CONTROLTYPE_ZAXIS;
 				}
 			}
-			else if (pBinding->nDeviceType == DEVICE_TYPE_GAMEPAD && !pBinding->bIsAxis)
+			else if (pBinding->nDeviceType == DEVICE_TYPE_GAMEPAD)
 			{
-				nOn = pGamepadButtons.at((int)pBinding->nGamepadButton).nValue;
-				nControlType = CONTROLTYPE_BUTTON;
-
+				if (!pBinding->bIsAxis)
+				{
+					nOn = pGamepadButtons.at((int)pBinding->nGamepadButton).nValue;
+					nControlType = CONTROLTYPE_BUTTON;
+				}
+				if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_TRIGGERLEFT)
+				{
+					nOn = pGamepadAxis.at((int)pBinding->nGamepadAxis).fValue;
+					nControlType = CONTROLTYPE_ZAXIS;
+				}
+				if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_TRIGGERRIGHT)
+				{
+					nOn = pGamepadAxis.at((int)pBinding->nGamepadAxis).fValue;
+					nControlType = CONTROLTYPE_RZAXIS;
+				}
 			}
 
 			if (nOn)
@@ -928,9 +940,13 @@ bool GameInputMgr::TrackDevice(DeviceInput* pInputAttay, uint32_t* pInOut)
 				pInputAttay[*pInOut].m_InputValue = 1;
 
 				// ??? Maybe ???
-				if (nControlType == CONTROLTYPE_ZAXIS)
+				if (pBinding->nDeviceType == DEVICE_TYPE_MOUSE && nControlType == CONTROLTYPE_ZAXIS)
 				{
 					pInputAttay[*pInOut].m_InputValue = g_pGameInputMgr->GetWheelDelta();
+				}
+				else if (pBinding->nDeviceType == DEVICE_TYPE_GAMEPAD && (nControlType == CONTROLTYPE_ZAXIS || nControlType == CONTROLTYPE_RZAXIS))
+				{
+					pInputAttay[*pInOut].m_InputValue = pGamepadAxis.at((int)pBinding->nGamepadAxis).fValue;
 				}
 
 				(*pInOut)++;
@@ -1338,7 +1354,7 @@ std::vector<AxisValue> GameInputMgr::GetGamepadAxisValues()
 		return axisValues;
 	}
 
-	for (int i = SDL_CONTROLLER_AXIS_INVALID; i < SDL_CONTROLLER_AXIS_MAX; i++)
+	for (int i = SDL_CONTROLLER_AXIS_LEFTX; i < SDL_CONTROLLER_AXIS_MAX; i++)
 	{
 		SDL_GameControllerAxis nAxis = (SDL_GameControllerAxis)i;
 		auto nValue = SDL_GameControllerGetAxis(m_pGamepad, nAxis);
