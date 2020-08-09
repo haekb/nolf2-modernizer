@@ -169,8 +169,11 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 		SDL_GetRelativeMouseState(&nDeltaX, &nDeltaY);
 	}
 
+	SDL_PumpEvents();
 	auto pKeys = SDL_GetKeyboardState(nullptr);
 	auto pButtons = SDL_GetMouseState(nullptr, nullptr);
+	auto pGamepadButtons = g_pGameInputMgr->GetGamepadButtonValues();
+	auto pGamepadAxis = g_pGameInputMgr->GetGamepadAxisValues();
 
 	for (auto pBinding : g_pGameInputMgr->m_pBindingList)
 	{
@@ -226,6 +229,33 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 			// Z-Axis ???
 			fAxisOffsets[2] = 0.0f;
 		}
+		else if (pBinding->bIsAxis && pBinding->nDeviceType == DEVICE_TYPE_GAMEPAD)
+		{
+			//
+			// Handle Axis
+			//
+			static int nCurrentMouseX = 0;
+			static int nCurrentMouseY = 0;
+			static int nPreviousMouseX = 0;
+			static int nPreviousMouseY = 0;
+			float nScale = pDeviceBinding->nScale;
+
+			// X-Axis
+			if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_RIGHTX) // Action Code == -1
+			{
+				nCurrentMouseX += pGamepadAxis[SDL_CONTROLLER_AXIS_RIGHTX].fValue;
+				fAxisOffsets[0] = (float)(nCurrentMouseX - nPreviousMouseX) * nScale;
+				nPreviousMouseX = nCurrentMouseX;
+			}
+
+			// Y-Axis
+			if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_RIGHTY) // Action Code == -2
+			{
+				nCurrentMouseY += pGamepadAxis[SDL_CONTROLLER_AXIS_RIGHTX].fValue;
+				fAxisOffsets[1] = (float)(nCurrentMouseY - nPreviousMouseY) * nScale;
+				nPreviousMouseY = nCurrentMouseY;
+			}
+		}
 
 		// No special case, just direct DIK to SDL conversion!
 		uint8_t nOn = 0;
@@ -240,7 +270,7 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 		}
 		else if (pBinding->nDeviceType == DEVICE_TYPE_GAMEPAD)
 		{
-			// TODO: Implement SDL_GameControllerGetButton
+			nOn = pGamepadButtons.at((int)pBinding->nGamepadButton).nValue;
 		}
 
 		pActionsOn[pDeviceBinding->pActionHead->nActionCode] |= nOn;
@@ -249,11 +279,15 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 
 bool GameInputMgr::FlushInputBuffers(InputMgr* pInputMgr)
 {
+	SDL_PumpEvents();
+
 	return true;
 }
 
 LTRESULT GameInputMgr::ClearInput()
 {
+	SDL_PumpEvents();
+
 	return LT_OK;
 }
 
@@ -464,12 +498,12 @@ bool GameInputMgr::EnableDevice(InputMgr* pInputMgr, const char* pDeviceName)
 			{ "", "DPad Left", SDL_CONTROLLER_BUTTON_DPAD_LEFT + 1, SDL_CONTROLLER_BUTTON_DPAD_LEFT, false },
 			{ "", "DPad Right", SDL_CONTROLLER_BUTTON_DPAD_RIGHT + 1, SDL_CONTROLLER_BUTTON_DPAD_RIGHT, false },
 			// Gamepad axis - DIK codes still can't be zero!
-			{ "", "Left Axis X", SDL_CONTROLLER_AXIS_LEFTX + 1, SDL_CONTROLLER_AXIS_LEFTX, true },
-			{ "", "Left Axis Y", SDL_CONTROLLER_AXIS_LEFTY + 1, SDL_CONTROLLER_AXIS_LEFTY, true },
-			{ "", "Right Axis X", SDL_CONTROLLER_AXIS_RIGHTX + 1, SDL_CONTROLLER_AXIS_RIGHTX, true },
-			{ "", "Right Axis Y", SDL_CONTROLLER_AXIS_RIGHTY + 1, SDL_CONTROLLER_AXIS_RIGHTY, true },
-			{ "", "Left Trigger", SDL_CONTROLLER_AXIS_TRIGGERLEFT + 1, SDL_CONTROLLER_AXIS_TRIGGERLEFT, true },
-			{ "", "Right Trigger", SDL_CONTROLLER_AXIS_TRIGGERRIGHT + 1, SDL_CONTROLLER_AXIS_TRIGGERRIGHT, true },
+			{ "", "Left Axis X", SDL_CONTROLLER_AXIS_LEFTX + 16, SDL_CONTROLLER_AXIS_LEFTX, true },
+			{ "", "Left Axis Y", SDL_CONTROLLER_AXIS_LEFTY + 16, SDL_CONTROLLER_AXIS_LEFTY, true },
+			{ "", "Right Axis X", SDL_CONTROLLER_AXIS_RIGHTX + 16, SDL_CONTROLLER_AXIS_RIGHTX, true },
+			{ "", "Right Axis Y", SDL_CONTROLLER_AXIS_RIGHTY + 16, SDL_CONTROLLER_AXIS_RIGHTY, true },
+			{ "", "Left Trigger", SDL_CONTROLLER_AXIS_TRIGGERLEFT + 16, SDL_CONTROLLER_AXIS_TRIGGERLEFT, true },
+			{ "", "Right Trigger", SDL_CONTROLLER_AXIS_TRIGGERRIGHT + 16, SDL_CONTROLLER_AXIS_TRIGGERRIGHT, true },
 		};
 
 		for (int i = 0; i < SDL_arraysize(aTempBinding); i++)
@@ -683,12 +717,12 @@ bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, cons
 			{ "##14", "DPad Left", SDL_CONTROLLER_BUTTON_DPAD_LEFT + 1, SDL_CONTROLLER_BUTTON_DPAD_LEFT, false },
 			{ "##15", "DPad Right", SDL_CONTROLLER_BUTTON_DPAD_RIGHT + 1, SDL_CONTROLLER_BUTTON_DPAD_RIGHT, false },
 			// Gamepad axis - DIK codes still can't be zero!
-			{ "##x-axis", "Left Axis X", SDL_CONTROLLER_AXIS_LEFTX + 1, SDL_CONTROLLER_AXIS_LEFTX, true },
-			{ "##y-axis", "Left Axis Y", SDL_CONTROLLER_AXIS_LEFTY + 1, SDL_CONTROLLER_AXIS_LEFTY, true },
-			{ "##rx-axis", "Right Axis X", SDL_CONTROLLER_AXIS_RIGHTX + 1, SDL_CONTROLLER_AXIS_RIGHTX, true },
-			{ "##ry-axis", "Right Axis Y", SDL_CONTROLLER_AXIS_RIGHTY + 1, SDL_CONTROLLER_AXIS_RIGHTY, true },
-			{ "##z-axis", "Left Trigger", SDL_CONTROLLER_AXIS_TRIGGERLEFT + 1, SDL_CONTROLLER_AXIS_TRIGGERLEFT, true },
-			{ "##rz-axis", "Right Trigger", SDL_CONTROLLER_AXIS_TRIGGERRIGHT + 1, SDL_CONTROLLER_AXIS_TRIGGERRIGHT, true },
+			{ "##x-axis", "Left Axis X", SDL_CONTROLLER_AXIS_LEFTX + 16, SDL_CONTROLLER_AXIS_LEFTX, true },
+			{ "##y-axis", "Left Axis Y", SDL_CONTROLLER_AXIS_LEFTY + 16, SDL_CONTROLLER_AXIS_LEFTY, true },
+			{ "##rx-axis", "Right Axis X", SDL_CONTROLLER_AXIS_RIGHTX + 16, SDL_CONTROLLER_AXIS_RIGHTX, true },
+			{ "##ry-axis", "Right Axis Y", SDL_CONTROLLER_AXIS_RIGHTY + 16, SDL_CONTROLLER_AXIS_RIGHTY, true },
+			{ "##z-axis", "Left Trigger", SDL_CONTROLLER_AXIS_TRIGGERLEFT + 16, SDL_CONTROLLER_AXIS_TRIGGERLEFT, true },
+			{ "##rz-axis", "Right Trigger", SDL_CONTROLLER_AXIS_TRIGGERRIGHT + 16, SDL_CONTROLLER_AXIS_TRIGGERRIGHT, true },
 		};
 
 		for (int i = 0; i < SDL_arraysize(aTempBinding); i++)
@@ -715,7 +749,6 @@ bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, cons
 
 		pDeviceBinding->m_nObjectId = pBinding->nDIK;
 	}
-	// TODO: Gamepad!
 
 	pBinding->pDeviceBinding = pDeviceBinding;
 	g_pGameInputMgr->m_pBindingList.push_back(pBinding);
@@ -873,10 +906,11 @@ bool GameInputMgr::TrackDevice(DeviceInput* pInputAttay, uint32_t* pInOut)
 					nControlType = CONTROLTYPE_ZAXIS;
 				}
 			}
-			else if (pBinding->nDeviceType == DEVICE_TYPE_GAMEPAD)
+			else if (pBinding->nDeviceType == DEVICE_TYPE_GAMEPAD && !pBinding->bIsAxis)
 			{
 				nOn = pGamepadButtons.at((int)pBinding->nGamepadButton).nValue;
 				nControlType = CONTROLTYPE_BUTTON;
+
 			}
 
 			if (nOn)
