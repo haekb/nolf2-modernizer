@@ -656,10 +656,17 @@ LTBOOL CScreenConfigure::SetCurrentSelection (DeviceInput* pInput)
 		return CheckMouseWheel(pInput);
 	}
 
-	if (pInput->m_ControlType != CONTROLTYPE_BUTTON &&
-		pInput->m_ControlType != CONTROLTYPE_KEY)
-        return LTFALSE;
+	if (pInput->m_DeviceType == DEVICETYPE_GAMEPAD && pInput->m_ControlType == CONTROLTYPE_ZAXIS)
+	{
 
+	}
+
+	if (pInput->m_ControlType != CONTROLTYPE_BUTTON &&
+		pInput->m_ControlType != CONTROLTYPE_KEY &&
+		pInput->m_DeviceType != DEVICETYPE_GAMEPAD)
+	{
+		return LTFALSE;
+	}
 
 
 //	char sNewKey[256];
@@ -878,6 +885,41 @@ LTBOOL CScreenConfigure::CheckMouseWheel (DeviceInput* pInput)
 	UpdateControlList();
 
     return LTTRUE;
+}
+
+// TODO: Make into axis
+LTBOOL CScreenConfigure::CheckTrigger(DeviceInput* pInput)
+{
+	if (!g_pLTClient)
+	{
+		return LTFALSE;
+	}
+	if (pInput->m_DeviceType != DEVICETYPE_GAMEPAD || (pInput->m_ControlType != CONTROLTYPE_ZAXIS && pInput->m_ControlType != CONTROLTYPE_RZAXIS))
+	{
+		return LTFALSE;
+	}
+
+	LTBOOL bWheelUp = ((int)pInput->m_InputValue > 0);
+	char szCommand[64];
+
+	CLTGUIColumnCtrl* pCtrl = (CLTGUIColumnCtrl*)m_pList[m_nType]->GetSelectedControl();
+	int nCommand = pCtrl->GetParam1();
+	uint16 diCode = pInput->m_ControlCode;
+
+	if (bWheelUp)
+		strcpy(szCommand, "#U");
+	else
+		strcpy(szCommand, "#D");
+
+	UnBind(0, szCommand, pInput->m_DeviceType);
+
+	Bind(nCommand, pInput->m_nObjectId, 0, szCommand, pInput->m_DeviceType);
+
+	pCtrl->SetString(SCREEN_COLUMN_EQUALS, "");
+
+	UpdateControlList();
+
+	return LTTRUE;
 }
 
 

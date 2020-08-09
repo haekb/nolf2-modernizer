@@ -65,6 +65,8 @@ protected:
     LTBOOL  KeyRemappable (DeviceInput* pInput);
     LTBOOL  SetCurrentSelection (DeviceInput* pInput);
     LTBOOL  CheckMouseWheel (DeviceInput* pInput);
+    LTBOOL  CheckTrigger(DeviceInput* pInput);
+
 	int		GetCommand(int nType, int nIndex);
     void    Bind(int nCommand, uint32 nDeviceObjectId, uint16 nControlCode, char *lpszControlName, uint32 deviceType);
     void    UnBind( uint32 nDeviceObjectId, char const* pszControlName, uint32 deviceType);

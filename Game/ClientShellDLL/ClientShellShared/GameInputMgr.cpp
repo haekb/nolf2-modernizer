@@ -255,6 +255,18 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 				fAxisOffsets[1] = (float)(nCurrentMouseY - nPreviousMouseY) * nScale;
 				nPreviousMouseY = nCurrentMouseY;
 			}
+
+			// Left Trigger
+			if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_TRIGGERLEFT && pGamepadAxis[SDL_CONTROLLER_AXIS_TRIGGERLEFT].fValue > 100)
+			{
+				pActionsOn[pDeviceBinding->pActionHead->nActionCode] |= 1;
+			}
+
+			// Right Trigger
+			if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_TRIGGERRIGHT && pGamepadAxis[SDL_CONTROLLER_AXIS_TRIGGERRIGHT].fValue > 100)
+			{
+				pActionsOn[pDeviceBinding->pActionHead->nActionCode] |= 1;
+			}
 		}
 
 		// No special case, just direct DIK to SDL conversion!
@@ -268,7 +280,7 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 		{
 			nOn = (pButtons & SDL_BUTTON(pBinding->nMouseButton));
 		}
-		else if (pBinding->nDeviceType == DEVICE_TYPE_GAMEPAD)
+		else if (pBinding->nDeviceType == DEVICE_TYPE_GAMEPAD && !pBinding->bIsAxis)
 		{
 			nOn = pGamepadButtons.at((int)pBinding->nGamepadButton).nValue;
 		}
@@ -717,12 +729,12 @@ bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, cons
 			{ "##14", "DPad Left", SDL_CONTROLLER_BUTTON_DPAD_LEFT + 1, SDL_CONTROLLER_BUTTON_DPAD_LEFT, false },
 			{ "##15", "DPad Right", SDL_CONTROLLER_BUTTON_DPAD_RIGHT + 1, SDL_CONTROLLER_BUTTON_DPAD_RIGHT, false },
 			// Gamepad axis - DIK codes still can't be zero!
-			{ "##x-axis", "Left Axis X", SDL_CONTROLLER_AXIS_LEFTX + 16, SDL_CONTROLLER_AXIS_LEFTX, true },
-			{ "##y-axis", "Left Axis Y", SDL_CONTROLLER_AXIS_LEFTY + 16, SDL_CONTROLLER_AXIS_LEFTY, true },
-			{ "##rx-axis", "Right Axis X", SDL_CONTROLLER_AXIS_RIGHTX + 16, SDL_CONTROLLER_AXIS_RIGHTX, true },
-			{ "##ry-axis", "Right Axis Y", SDL_CONTROLLER_AXIS_RIGHTY + 16, SDL_CONTROLLER_AXIS_RIGHTY, true },
-			{ "##z-axis", "Left Trigger", SDL_CONTROLLER_AXIS_TRIGGERLEFT + 16, SDL_CONTROLLER_AXIS_TRIGGERLEFT, true },
-			{ "##rz-axis", "Right Trigger", SDL_CONTROLLER_AXIS_TRIGGERRIGHT + 16, SDL_CONTROLLER_AXIS_TRIGGERRIGHT, true },
+			{ "##16", "Left Axis X", SDL_CONTROLLER_AXIS_LEFTX + 16, SDL_CONTROLLER_AXIS_LEFTX, true },
+			{ "##17", "Left Axis Y", SDL_CONTROLLER_AXIS_LEFTY + 16, SDL_CONTROLLER_AXIS_LEFTY, true },
+			{ "##18", "Right Axis X", SDL_CONTROLLER_AXIS_RIGHTX + 16, SDL_CONTROLLER_AXIS_RIGHTX, true },
+			{ "##19", "Right Axis Y", SDL_CONTROLLER_AXIS_RIGHTY + 16, SDL_CONTROLLER_AXIS_RIGHTY, true },
+			{ "##20", "Left Trigger", SDL_CONTROLLER_AXIS_TRIGGERLEFT + 16, SDL_CONTROLLER_AXIS_TRIGGERLEFT, true },
+			{ "##21", "Right Trigger", SDL_CONTROLLER_AXIS_TRIGGERRIGHT + 16, SDL_CONTROLLER_AXIS_TRIGGERRIGHT, true },
 		};
 
 		for (int i = 0; i < SDL_arraysize(aTempBinding); i++)
@@ -939,11 +951,12 @@ bool GameInputMgr::TrackDevice(DeviceInput* pInputAttay, uint32_t* pInOut)
 
 				pInputAttay[*pInOut].m_InputValue = 1;
 
-				// ??? Maybe ???
+				// Pass over wheel delta
 				if (pBinding->nDeviceType == DEVICE_TYPE_MOUSE && nControlType == CONTROLTYPE_ZAXIS)
 				{
 					pInputAttay[*pInOut].m_InputValue = g_pGameInputMgr->GetWheelDelta();
 				}
+				// Pass over trigger amount
 				else if (pBinding->nDeviceType == DEVICE_TYPE_GAMEPAD && (nControlType == CONTROLTYPE_ZAXIS || nControlType == CONTROLTYPE_RZAXIS))
 				{
 					pInputAttay[*pInOut].m_InputValue = pGamepadAxis.at((int)pBinding->nGamepadAxis).fValue;
