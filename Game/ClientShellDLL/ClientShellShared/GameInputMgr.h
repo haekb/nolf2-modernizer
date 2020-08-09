@@ -17,7 +17,7 @@ struct ButtonValue {
 
 struct AxisValue {
 	SDL_GameControllerAxis nAxis;
-	float fValue;
+	int32_t nValue;
 };
 
 

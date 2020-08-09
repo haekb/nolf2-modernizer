@@ -243,7 +243,7 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 			// X-Axis
 			if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_RIGHTX) // Action Code == -1
 			{
-				nCurrentMouseX += pGamepadAxis[SDL_CONTROLLER_AXIS_RIGHTX].fValue;
+				nCurrentMouseX += pGamepadAxis[SDL_CONTROLLER_AXIS_RIGHTX].nValue;
 				fAxisOffsets[0] = (float)(nCurrentMouseX - nPreviousMouseX) * nScale;
 				nPreviousMouseX = nCurrentMouseX;
 			}
@@ -251,19 +251,19 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 			// Y-Axis
 			if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_RIGHTY) // Action Code == -2
 			{
-				nCurrentMouseY += pGamepadAxis[SDL_CONTROLLER_AXIS_RIGHTX].fValue;
+				nCurrentMouseY += pGamepadAxis[SDL_CONTROLLER_AXIS_RIGHTX].nValue;
 				fAxisOffsets[1] = (float)(nCurrentMouseY - nPreviousMouseY) * nScale;
 				nPreviousMouseY = nCurrentMouseY;
 			}
 
 			// Left Trigger
-			if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_TRIGGERLEFT && pGamepadAxis[SDL_CONTROLLER_AXIS_TRIGGERLEFT].fValue > 100)
+			if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_TRIGGERLEFT && pGamepadAxis[SDL_CONTROLLER_AXIS_TRIGGERLEFT].nValue > 100)
 			{
 				pActionsOn[pDeviceBinding->pActionHead->nActionCode] |= 1;
 			}
 
 			// Right Trigger
-			if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_TRIGGERRIGHT && pGamepadAxis[SDL_CONTROLLER_AXIS_TRIGGERRIGHT].fValue > 100)
+			if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_TRIGGERRIGHT && pGamepadAxis[SDL_CONTROLLER_AXIS_TRIGGERRIGHT].nValue > 100)
 			{
 				pActionsOn[pDeviceBinding->pActionHead->nActionCode] |= 1;
 			}
@@ -927,12 +927,12 @@ bool GameInputMgr::TrackDevice(DeviceInput* pInputAttay, uint32_t* pInOut)
 				}
 				if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_TRIGGERLEFT)
 				{
-					nOn = pGamepadAxis.at((int)pBinding->nGamepadAxis).fValue;
+					nOn = pGamepadAxis.at((int)pBinding->nGamepadAxis).nValue;
 					nControlType = CONTROLTYPE_ZAXIS;
 				}
 				if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_TRIGGERRIGHT)
 				{
-					nOn = pGamepadAxis.at((int)pBinding->nGamepadAxis).fValue;
+					nOn = pGamepadAxis.at((int)pBinding->nGamepadAxis).nValue;
 					nControlType = CONTROLTYPE_RZAXIS;
 				}
 			}
@@ -959,7 +959,7 @@ bool GameInputMgr::TrackDevice(DeviceInput* pInputAttay, uint32_t* pInOut)
 				// Pass over trigger amount
 				else if (pBinding->nDeviceType == DEVICE_TYPE_GAMEPAD && (nControlType == CONTROLTYPE_ZAXIS || nControlType == CONTROLTYPE_RZAXIS))
 				{
-					pInputAttay[*pInOut].m_InputValue = pGamepadAxis.at((int)pBinding->nGamepadAxis).fValue;
+					pInputAttay[*pInOut].m_InputValue = pGamepadAxis.at((int)pBinding->nGamepadAxis).nValue;
 				}
 
 				(*pInOut)++;
