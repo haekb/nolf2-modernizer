@@ -465,40 +465,232 @@ bool GameInputMgr::EnableDevice(InputMgr* pInputMgr, const char* pDeviceName)
 			}
 		}
 
-#if 0
 		// Create a template to hold basic constant info
 		GIMBinding* tempBinding = new GIMBinding();
 
 		// Create a binding we'll be pushing into our "Available Objects" list.
 		// This will be new'd on every additional object..don't worry we'll free them later.
-		GIMBinding* binding = nullptr;
+		GIMBinding* binding = new GIMBinding();
 
 		// These are constants
 		tempBinding->bIsEnabled = true;
-		tempBinding->bHasDIK = true;
+		tempBinding->bHasDIK = false;
 		tempBinding->nDeviceType = nDeviceType;
 		tempBinding->pDeviceBinding = nullptr;
-		LTStrCpy(tempBinding->szDevice, szDeviceName, sizeof(binding->szName));
+		LTStrCpy(tempBinding->szDevice, szDeviceName, sizeof(tempBinding->szName));
 
-		// Loop through our giant map of possible DInput -> SDL keys to generate our the available keyboard keys!
-		for (auto pItem : g_mDInputToSDL)
-		{
-			binding = new GIMBinding();
-			memcpy(binding, tempBinding, sizeof(GIMBinding));
+		// A Button
+		memcpy(binding, tempBinding, sizeof(GIMBinding));
+		LTStrCpy(binding->szName, "A", sizeof(binding->szName));
+		binding->nDIK = SDL_CONTROLLER_BUTTON_A + 1;
+		binding->nGamepadButton = SDL_CONTROLLER_BUTTON_A;
+		binding->bIsAxis = false;
 
-			auto nKeyCode = SDL_GetKeyFromScancode(pItem.second);
+		g_pGameInputMgr->m_pAvailableObjects.push_back(binding);
 
-			LTStrCpy(binding->szName, SDL_GetKeyName(nKeyCode), sizeof(binding->szName));
-			binding->nDIK = pItem.first;
-			binding->nKeyboardScancode = pItem.second;
-			binding->bIsAxis = false;
+		// B Button
+		binding = new GIMBinding();
+		memcpy(binding, tempBinding, sizeof(GIMBinding));
+		LTStrCpy(binding->szName, "B", sizeof(binding->szName));
+		binding->nDIK = SDL_CONTROLLER_BUTTON_B + 1;
+		binding->nGamepadButton = SDL_CONTROLLER_BUTTON_B;
+		binding->bIsAxis = false;
 
-			g_pGameInputMgr->m_pAvailableObjects.push_back(binding);
-		}
+		g_pGameInputMgr->m_pAvailableObjects.push_back(binding);
 
+		// X Button
+		binding = new GIMBinding();
+		memcpy(binding, tempBinding, sizeof(GIMBinding));
+		LTStrCpy(binding->szName, "X", sizeof(binding->szName));
+		binding->nDIK = SDL_CONTROLLER_BUTTON_X + 1;
+		binding->nGamepadButton = SDL_CONTROLLER_BUTTON_X;
+		binding->bIsAxis = false;
+
+		g_pGameInputMgr->m_pAvailableObjects.push_back(binding);
+
+		// Y Button
+		binding = new GIMBinding();
+		memcpy(binding, tempBinding, sizeof(GIMBinding));
+		LTStrCpy(binding->szName, "Y", sizeof(binding->szName));
+		binding->nDIK = SDL_CONTROLLER_BUTTON_Y + 1;
+		binding->nGamepadButton = SDL_CONTROLLER_BUTTON_Y;
+		binding->bIsAxis = false;
+
+		g_pGameInputMgr->m_pAvailableObjects.push_back(binding);
+
+		// Back Button
+		binding = new GIMBinding();
+		memcpy(binding, tempBinding, sizeof(GIMBinding));
+		LTStrCpy(binding->szName, "Back", sizeof(binding->szName));
+		binding->nDIK = SDL_CONTROLLER_BUTTON_BACK + 1;
+		binding->nGamepadButton = SDL_CONTROLLER_BUTTON_BACK;
+		binding->bIsAxis = false;
+
+		g_pGameInputMgr->m_pAvailableObjects.push_back(binding);
+
+		// Guide Button
+		binding = new GIMBinding();
+		memcpy(binding, tempBinding, sizeof(GIMBinding));
+		LTStrCpy(binding->szName, "Guide", sizeof(binding->szName));
+		binding->nDIK = SDL_CONTROLLER_BUTTON_GUIDE + 1;
+		binding->nGamepadButton = SDL_CONTROLLER_BUTTON_GUIDE;
+		binding->bIsAxis = false;
+
+		g_pGameInputMgr->m_pAvailableObjects.push_back(binding);
+
+		// Start Button
+		binding = new GIMBinding();
+		memcpy(binding, tempBinding, sizeof(GIMBinding));
+		LTStrCpy(binding->szName, "Start", sizeof(binding->szName));
+		binding->nDIK = SDL_CONTROLLER_BUTTON_START + 1;
+		binding->nGamepadButton = SDL_CONTROLLER_BUTTON_START;
+		binding->bIsAxis = false;
+
+		g_pGameInputMgr->m_pAvailableObjects.push_back(binding);
+
+		// Left Stick Button
+		binding = new GIMBinding();
+		memcpy(binding, tempBinding, sizeof(GIMBinding));
+		LTStrCpy(binding->szName, "Left Stick", sizeof(binding->szName));
+		binding->nDIK = SDL_CONTROLLER_BUTTON_LEFTSTICK + 1;
+		binding->nGamepadButton = SDL_CONTROLLER_BUTTON_LEFTSTICK;
+		binding->bIsAxis = false;
+
+		g_pGameInputMgr->m_pAvailableObjects.push_back(binding);
+
+		// Right Stick Button
+		binding = new GIMBinding();
+		memcpy(binding, tempBinding, sizeof(GIMBinding));
+		LTStrCpy(binding->szName, "Right Stick", sizeof(binding->szName));
+		binding->nDIK = SDL_CONTROLLER_BUTTON_RIGHTSTICK + 1;
+		binding->nGamepadButton = SDL_CONTROLLER_BUTTON_RIGHTSTICK;
+		binding->bIsAxis = false;
+
+		g_pGameInputMgr->m_pAvailableObjects.push_back(binding);
+
+		// Left Shoulder Button
+		binding = new GIMBinding();
+		memcpy(binding, tempBinding, sizeof(GIMBinding));
+		LTStrCpy(binding->szName, "Left Shoulder", sizeof(binding->szName));
+		binding->nDIK = SDL_CONTROLLER_BUTTON_LEFTSHOULDER + 1;
+		binding->nGamepadButton = SDL_CONTROLLER_BUTTON_LEFTSHOULDER;
+		binding->bIsAxis = false;
+
+		g_pGameInputMgr->m_pAvailableObjects.push_back(binding);
+
+		// Right Shoulder Button
+		binding = new GIMBinding();
+		memcpy(binding, tempBinding, sizeof(GIMBinding));
+		LTStrCpy(binding->szName, "Right Shoulder", sizeof(binding->szName));
+		binding->nDIK = SDL_CONTROLLER_BUTTON_RIGHTSHOULDER + 1;
+		binding->nGamepadButton = SDL_CONTROLLER_BUTTON_RIGHTSHOULDER;
+		binding->bIsAxis = false;
+
+		g_pGameInputMgr->m_pAvailableObjects.push_back(binding);
+
+		// DPad Up Button
+		binding = new GIMBinding();
+		memcpy(binding, tempBinding, sizeof(GIMBinding));
+		LTStrCpy(binding->szName, "DPad Up", sizeof(binding->szName));
+		binding->nDIK = SDL_CONTROLLER_BUTTON_DPAD_UP + 1;
+		binding->nGamepadButton = SDL_CONTROLLER_BUTTON_DPAD_UP;
+		binding->bIsAxis = false;
+
+		g_pGameInputMgr->m_pAvailableObjects.push_back(binding);
+
+		// DPad Down Button
+		binding = new GIMBinding();
+		memcpy(binding, tempBinding, sizeof(GIMBinding));
+		LTStrCpy(binding->szName, "DPad Down", sizeof(binding->szName));
+		binding->nDIK = SDL_CONTROLLER_BUTTON_DPAD_DOWN + 1;
+		binding->nGamepadButton = SDL_CONTROLLER_BUTTON_DPAD_DOWN;
+		binding->bIsAxis = false;
+
+		g_pGameInputMgr->m_pAvailableObjects.push_back(binding);
+
+		// DPad Left Button
+		binding = new GIMBinding();
+		memcpy(binding, tempBinding, sizeof(GIMBinding));
+		LTStrCpy(binding->szName, "DPad Left", sizeof(binding->szName));
+		binding->nDIK = SDL_CONTROLLER_BUTTON_DPAD_LEFT + 1;
+		binding->nGamepadButton = SDL_CONTROLLER_BUTTON_DPAD_LEFT;
+		binding->bIsAxis = false;
+
+		g_pGameInputMgr->m_pAvailableObjects.push_back(binding);
+
+		// DPad Right Button
+		binding = new GIMBinding();
+		memcpy(binding, tempBinding, sizeof(GIMBinding));
+		LTStrCpy(binding->szName, "DPad Right", sizeof(binding->szName));
+		binding->nDIK = SDL_CONTROLLER_BUTTON_DPAD_RIGHT + 1;
+		binding->nGamepadButton = SDL_CONTROLLER_BUTTON_DPAD_RIGHT;
+		binding->bIsAxis = false;
+
+		g_pGameInputMgr->m_pAvailableObjects.push_back(binding);
+
+		// Left X-Axis
+		binding = new GIMBinding();
+		memcpy(binding, tempBinding, sizeof(GIMBinding));
+		LTStrCpy(binding->szName, "Left Axis X", sizeof(binding->szName));
+		binding->nDIK = SDL_CONTROLLER_AXIS_LEFTX + 1;
+		binding->nGamepadAxis = SDL_CONTROLLER_AXIS_LEFTX;
+		binding->bIsAxis = true;
+
+		g_pGameInputMgr->m_pAvailableObjects.push_back(binding);
+
+		// Left Y-Axis
+		binding = new GIMBinding();
+		memcpy(binding, tempBinding, sizeof(GIMBinding));
+		LTStrCpy(binding->szName, "Left Axis Y", sizeof(binding->szName));
+		binding->nDIK = SDL_CONTROLLER_AXIS_LEFTY + 1;
+		binding->nGamepadAxis = SDL_CONTROLLER_AXIS_LEFTY;
+		binding->bIsAxis = true;
+
+		g_pGameInputMgr->m_pAvailableObjects.push_back(binding);
+
+		// Right X-Axis
+		binding = new GIMBinding();
+		memcpy(binding, tempBinding, sizeof(GIMBinding));
+		LTStrCpy(binding->szName, "Right Axis X", sizeof(binding->szName));
+		binding->nDIK = SDL_CONTROLLER_AXIS_RIGHTX + 1;
+		binding->nGamepadAxis = SDL_CONTROLLER_AXIS_RIGHTX;
+		binding->bIsAxis = true;
+
+		g_pGameInputMgr->m_pAvailableObjects.push_back(binding);
+
+		// Right Y-Axis
+		binding = new GIMBinding();
+		memcpy(binding, tempBinding, sizeof(GIMBinding));
+		LTStrCpy(binding->szName, "Right Axis Y", sizeof(binding->szName));
+		binding->nDIK = SDL_CONTROLLER_AXIS_RIGHTY + 1;
+		binding->nGamepadAxis = SDL_CONTROLLER_AXIS_RIGHTY;
+		binding->bIsAxis = true;
+
+		g_pGameInputMgr->m_pAvailableObjects.push_back(binding);
+
+		// Left Trigger
+		binding = new GIMBinding();
+		memcpy(binding, tempBinding, sizeof(GIMBinding));
+		LTStrCpy(binding->szName, "Left Trigger", sizeof(binding->szName));
+		binding->nDIK = SDL_CONTROLLER_AXIS_TRIGGERLEFT + 1;
+		binding->nGamepadAxis = SDL_CONTROLLER_AXIS_TRIGGERLEFT;
+		binding->bIsAxis = true;
+
+		g_pGameInputMgr->m_pAvailableObjects.push_back(binding);
+
+		// Right Trigger
+		binding = new GIMBinding();
+		memcpy(binding, tempBinding, sizeof(GIMBinding));
+		LTStrCpy(binding->szName, "Right Trigger", sizeof(binding->szName));
+		binding->nDIK = SDL_CONTROLLER_AXIS_TRIGGERRIGHT + 1;
+		binding->nGamepadAxis = SDL_CONTROLLER_AXIS_TRIGGERRIGHT;
+		binding->bIsAxis = true;
+
+		g_pGameInputMgr->m_pAvailableObjects.push_back(binding);
+
+		// Clear our template pointer
 		delete tempBinding;
 		tempBinding = nullptr;
-#endif
 
 		// Take ownership, and add gamepad to our list of enabled devices
 		g_pGameInputMgr->m_pGamepad = pGamepad;
@@ -774,6 +966,10 @@ bool GameInputMgr::StartDeviceTrack(InputMgr* pMgr, uint32_t nDevices, uint32_t 
 	{
 		g_pGameInputMgr->m_DeviceTrackingList.push_back(DEVICE_TYPE_MOUSE);
 	}
+	if (nDevices & DEVICE_TYPE_GAMEPAD)
+	{
+		g_pGameInputMgr->m_DeviceTrackingList.push_back(DEVICE_TYPE_GAMEPAD);
+	}
 
 	return true;
 }
@@ -786,6 +982,8 @@ bool GameInputMgr::TrackDevice(DeviceInput* pInputAttay, uint32_t* pInOut)
 	SDL_PumpEvents();
 	auto pKeys = SDL_GetKeyboardState(nullptr);
 	auto pButtons = SDL_GetMouseState(nullptr, nullptr);
+	auto pGamepadButtons = g_pGameInputMgr->GetGamepadButtonValues();
+	auto pGamepadAxis = g_pGameInputMgr->GetGamepadAxisValues();
 
 	for (auto nDeviceType : g_pGameInputMgr->m_DeviceTrackingList)
 	{
@@ -844,7 +1042,8 @@ bool GameInputMgr::TrackDevice(DeviceInput* pInputAttay, uint32_t* pInOut)
 			}
 			else if (pBinding->nDeviceType == DEVICE_TYPE_GAMEPAD)
 			{
-				// TODO: Implement SDL_GameControllerGetButton
+				nOn = pGamepadButtons.at((int)pBinding->nGamepadButton).nValue;
+				nControlType = CONTROLTYPE_BUTTON;
 			}
 
 			if (nOn)
@@ -990,6 +1189,55 @@ DeviceObject* GameInputMgr::GetDeviceObjects(uint32_t nDeviceFlags)
 		{
 			nDeviceType = DEVICE_TYPE_GAMEPAD;
 			g_pGameInputMgr->GetDeviceName(nDeviceType, szDeviceName, sizeof(szDeviceName));
+
+			LTStrCpy(pDeviceObject->m_DeviceName, szDeviceName, sizeof(pDeviceObject->m_DeviceName));
+			pDeviceObject->m_DeviceType = nDeviceType;
+			pDeviceObject->m_ObjectType = CONTROLTYPE_BUTTON;
+			LTStrCpy(pDeviceObject->m_ObjectName, pBinding->szName, sizeof(pDeviceObject->m_ObjectName));
+			pDeviceObject->m_nObjectId = pBinding->nDIK;
+			pDeviceObject->m_RangeLow = 0.0f;
+			pDeviceObject->m_RangeHigh = 0.0f;
+
+			// Special cases...
+			if (pBinding->bIsAxis)
+			{
+				if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_LEFTX)
+				{
+					pDeviceObject->m_RangeLow = -32768.0f;
+					pDeviceObject->m_RangeHigh = 32768.0f;
+					pDeviceObject->m_ObjectType = CONTROLTYPE_XAXIS;
+				}
+				else if (pBinding->nMouseAxis == SDL_CONTROLLER_AXIS_LEFTY)
+				{
+					pDeviceObject->m_RangeLow = -32768.0f;
+					pDeviceObject->m_RangeHigh = 32768.0f;
+					pDeviceObject->m_ObjectType = CONTROLTYPE_YAXIS;
+				}
+				if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_RIGHTX)
+				{
+					pDeviceObject->m_RangeLow = -32768.0f;
+					pDeviceObject->m_RangeHigh = 32768.0f;
+					pDeviceObject->m_ObjectType = CONTROLTYPE_RXAXIS;
+				}
+				else if (pBinding->nMouseAxis == SDL_CONTROLLER_AXIS_RIGHTY)
+				{
+					pDeviceObject->m_RangeLow = -32768.0f;
+					pDeviceObject->m_RangeHigh = 32768.0f;
+					pDeviceObject->m_ObjectType = CONTROLTYPE_RYAXIS;
+				}
+				else if (pBinding->nMouseAxis == SDL_CONTROLLER_AXIS_TRIGGERLEFT)
+				{
+					pDeviceObject->m_RangeLow = 0.0f;
+					pDeviceObject->m_RangeHigh = 32768.0f;
+					pDeviceObject->m_ObjectType = CONTROLTYPE_ZAXIS;
+				}
+				else if (pBinding->nMouseAxis == SDL_CONTROLLER_AXIS_TRIGGERLEFT)
+				{
+					pDeviceObject->m_RangeLow = 0.0f;
+					pDeviceObject->m_RangeHigh = 32768.0f;
+					pDeviceObject->m_ObjectType = CONTROLTYPE_RZAXIS;
+				}
+			}
 		}
 
 		// This binding isn't needed, so delete our object and continue
@@ -1184,6 +1432,11 @@ LT_DeviceType GameInputMgr::GetDeviceTypeFromName(const char* szDeviceName)
 		return DEVICE_TYPE_MOUSE;
 	}
 
+	if (stricmp("gamepad", szDeviceName) == 0 || stricmp("##gamepad", szDeviceName) == 0)
+	{
+		return DEVICE_TYPE_GAMEPAD;
+	}
+
 	return DEVICE_TYPE_UNKNOWN;
 }
 
@@ -1197,4 +1450,44 @@ int GameInputMgr::GetActionCodeFromBindString(const char* szTriggerName)
 	{
 		return -999;
 	}
+}
+
+std::vector<ButtonValue> GameInputMgr::GetGamepadButtonValues()
+{
+	std::vector<ButtonValue> buttonValues;
+
+	if (!m_pGamepad)
+	{
+		return buttonValues;
+	}
+
+	for (int i = SDL_CONTROLLER_BUTTON_A; i < SDL_CONTROLLER_BUTTON_MAX; i++)
+	{
+		SDL_GameControllerButton nButton = (SDL_GameControllerButton)i;
+		auto nValue = SDL_GameControllerGetButton(m_pGamepad, nButton);
+		ButtonValue buttonValue = { nButton, nValue };
+		buttonValues.push_back(buttonValue);
+	}
+
+	return buttonValues;
+}
+
+std::vector<AxisValue> GameInputMgr::GetGamepadAxisValues()
+{
+	std::vector<AxisValue> axisValues;
+
+	if (!m_pGamepad)
+	{
+		return axisValues;
+	}
+
+	for (int i = SDL_CONTROLLER_AXIS_INVALID; i < SDL_CONTROLLER_AXIS_MAX; i++)
+	{
+		SDL_GameControllerAxis nAxis = (SDL_GameControllerAxis)i;
+		auto nValue = SDL_GameControllerGetAxis(m_pGamepad, nAxis);
+		AxisValue buttonValue = { nAxis, (float)nValue };
+		axisValues.push_back(buttonValue);
+	}
+
+	return axisValues;
 }

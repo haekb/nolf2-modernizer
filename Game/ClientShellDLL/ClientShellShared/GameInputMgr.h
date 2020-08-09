@@ -6,7 +6,15 @@
 #include <SDL.h>
 #include "InputMgr.h"
 
+struct ButtonValue {
+	SDL_GameControllerButton nButton;
+	uint8_t nValue;
+};
 
+struct AxisValue {
+	SDL_GameControllerAxis nAxis;
+	float fValue;
+};
 
 // They didn't name the enum...
 enum LT_DeviceType {
@@ -195,6 +203,9 @@ public:
 
 	void SetWheelDelta(int nWheelDelta) { m_nWheelDelta = nWheelDelta; };
 	int GetWheelDelta() { return m_nWheelDelta; }
+
+	std::vector<ButtonValue> GetGamepadButtonValues();
+	std::vector<AxisValue> GetGamepadAxisValues();
 
 private:
 
