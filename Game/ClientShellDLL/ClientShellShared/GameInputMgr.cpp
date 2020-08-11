@@ -145,7 +145,6 @@ void GameInputMgr::ReplaceBindings()
 //
 // InputMgr functions
 //
-//static intptr_t** g_pSaveBindingsPtr = (intptr_t**)
 
 bool GameInputMgr::Init(InputMgr* pInputMgr, intptr_t* pState)
 {
@@ -304,12 +303,18 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 			bool bPassesDeadzone = nValue > 5000 || nValue < -5000;
 			bool bPassesTriggerDeadzone = nValue > 100;
 
+			static float fAxisXAccel = 0.0f;
+			static float fAxisYAccel = 0.0f;
+
 			// Handle axis
 			if (pDeviceBinding->pActionHead->nActionCode == -1 && bPassesDeadzone)
 			{
 				//g_pLTClient->CPrint("Axis-X RAW: %d", nValue);
+				fAxisXAccel += 0.0005f * g_pLTClient->GetFrameTime();
 
-				float fValue = (float)nValue * 0.0001f;
+				fAxisXAccel = Min(0.00025f, fAxisXAccel);
+
+				float fValue = (float)nValue * (0.0001f + fAxisXAccel);
 
 				nCurrentMouseX += fValue;
 				fAxisOffsets[0] = (float)(nCurrentMouseX - nPreviousMouseX) * nScale;
@@ -318,12 +323,20 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 				// Skip regular actions
 				continue;
 			}
+			else if (pDeviceBinding->pActionHead->nActionCode == -1)
+			{
+				fAxisXAccel = 0.0f;
+			}
 
 			if (pDeviceBinding->pActionHead->nActionCode == -2 && bPassesDeadzone)
 			{
 				//g_pLTClient->CPrint("Axis-Y RAW: %d", nValue);
+				fAxisYAccel += 0.0005f * g_pLTClient->GetFrameTime();
 
-				float fValue = (float)nValue * 0.0001f;
+				fAxisYAccel = Min(0.00025f, fAxisYAccel);
+
+
+				float fValue = (float)nValue * (0.0001f + fAxisYAccel);
 
 				nCurrentMouseY += fValue;
 				fAxisOffsets[1] = (float)(nCurrentMouseY - nPreviousMouseY) * nScale;
@@ -331,6 +344,10 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 
 				// Skip regular actions
 				continue;
+			}
+			else if (pDeviceBinding->pActionHead->nActionCode == -2)
+			{
+				fAxisYAccel = 0.0f;
 			}
 			
 			g_pLTClient->CPrint("fAxisOffset %f/%f/%f", fAxisOffsets[0], fAxisOffsets[1], fAxisOffsets[2]);
