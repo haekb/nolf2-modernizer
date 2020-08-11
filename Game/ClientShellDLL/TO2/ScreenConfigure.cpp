@@ -371,10 +371,21 @@ void CScreenConfigure::SetControlText(CLTGUICtrl *pCtrl)
 			strcat(strControls, m_pProfile->GetDeviceName(2));
 			strcat(strControls," ");
 
+			
+
 			g_pLTClient->GetDeviceObjectName( m_pProfile->GetDeviceName( 2 ), pData->nDeviceObjectId[2], 
 				szDeviceObjectName, ARRAY_LEN( szDeviceObjectName ));
 
 			strcat( strControls, szDeviceObjectName );
+
+			if (strstr(pData->strRealName[2], "P") != nullptr)
+			{
+				strcat(strControls, "+");
+			}
+			else if (strstr(pData->strRealName[2], "N") != nullptr)
+			{
+				strcat(strControls, "-");
+			}
 		}
 	}
 
@@ -656,9 +667,9 @@ LTBOOL CScreenConfigure::SetCurrentSelection (DeviceInput* pInput)
 		return CheckMouseWheel(pInput);
 	}
 
-	if (pInput->m_DeviceType == DEVICETYPE_GAMEPAD && pInput->m_ControlType == CONTROLTYPE_ZAXIS)
+	if (pInput->m_DeviceType == DEVICETYPE_GAMEPAD && pInput->m_ControlType != CONTROLTYPE_UNKNOWN && pInput->m_ControlType <= CONTROLTYPE_SLIDER)
 	{
-
+		return CheckControllerAxis(pInput);
 	}
 
 	if (pInput->m_ControlType != CONTROLTYPE_BUTTON &&
@@ -888,28 +899,39 @@ LTBOOL CScreenConfigure::CheckMouseWheel (DeviceInput* pInput)
 }
 
 // TODO: Make into axis
-LTBOOL CScreenConfigure::CheckTrigger(DeviceInput* pInput)
+LTBOOL CScreenConfigure::CheckControllerAxis(DeviceInput* pInput)
 {
 	if (!g_pLTClient)
 	{
 		return LTFALSE;
 	}
-	if (pInput->m_DeviceType != DEVICETYPE_GAMEPAD || (pInput->m_ControlType != CONTROLTYPE_ZAXIS && pInput->m_ControlType != CONTROLTYPE_RZAXIS))
+
+	// If it's not an axis, ignore it!
+	if (pInput->m_DeviceType != DEVICETYPE_GAMEPAD || pInput->m_ControlType == CONTROLTYPE_UNKNOWN || pInput->m_ControlType > CONTROLTYPE_SLIDER)
 	{
 		return LTFALSE;
 	}
 
-	LTBOOL bWheelUp = ((int)pInput->m_InputValue > 0);
+	auto nValue = (int)pInput->m_InputValue;
+	LTBOOL bPositive = ((int)nValue > 0);
 	char szCommand[64];
 
 	CLTGUIColumnCtrl* pCtrl = (CLTGUIColumnCtrl*)m_pList[m_nType]->GetSelectedControl();
 	int nCommand = pCtrl->GetParam1();
 	uint16 diCode = pInput->m_ControlCode;
 
-	if (bWheelUp)
-		strcpy(szCommand, "#U");
+	if (bPositive)
+	{
+		strcpy(szCommand, "#");
+		strcat(szCommand, "P");
+		strcat(szCommand, std::to_string(diCode).c_str());
+	}
 	else
-		strcpy(szCommand, "#D");
+	{
+		strcpy(szCommand, "#");
+		strcat(szCommand, "N");
+		strcat(szCommand, std::to_string(diCode).c_str());
+	}
 
 	UnBind(0, szCommand, pInput->m_DeviceType);
 

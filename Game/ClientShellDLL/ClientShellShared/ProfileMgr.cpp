@@ -828,6 +828,10 @@ void CUserProfile::ApplyBindings()
 	{
 		CBindingData *pWheelUp = LTNULL;
 		CBindingData *pWheelDown = LTNULL;
+
+		CBindingData* pLeftAxisPositive = LTNULL;
+		CBindingData* pLeftAxisNegative = LTNULL;
+
 		for (int c = 0; c < g_kNumCommands; c++)
 		{
 			CBindingData *pData = FindBinding(c);
@@ -841,6 +845,14 @@ void CUserProfile::ApplyBindings()
 				else if (devices[d] == DEVICETYPE_MOUSE && stricmp(pData->strRealName[d],"#D") == 0)
 				{
 					pWheelDown = pData;
+				}
+				else if (devices[d] == DEVICETYPE_GAMEPAD && strstr(pData->strRealName[d], "P") != nullptr)
+				{
+					pLeftAxisPositive = pData;
+				}
+				else if (devices[d] == DEVICETYPE_GAMEPAD && strstr(pData->strRealName[d], "N") != nullptr)
+				{
+					pLeftAxisNegative = pData;
 				}
 				else if (pData->strRealName[d][0] && pData->strRealName[d][0] != ' ')
 				{
@@ -876,6 +888,43 @@ void CUserProfile::ApplyBindings()
 				g_pLTClient->AddBinding(strDeviceName[d],"##z-axis",downStr,-0.10f,-255.0f);
 			}
 
+		}
+		else if (devices[d] == DEVICETYPE_GAMEPAD)
+		{
+			char tempStr[512] = "";
+			if (pLeftAxisPositive || pLeftAxisNegative)
+			{
+				std::string nRealName = "";
+
+				// Set the axis binding
+				char upStr[64] = "";
+				char upTrigger[64] = "";
+				if (pLeftAxisPositive)
+				{
+					LoadString(pLeftAxisPositive->nAction, upStr, sizeof(upStr));
+
+					std::string sRealName = pLeftAxisPositive->strRealName[d];
+					sRealName = sRealName.substr(2);
+					sRealName = "##" + sRealName;
+
+					LTStrCpy(upTrigger, sRealName.c_str(), sizeof(upTrigger));
+				}
+				char downStr[64] = "";
+				char downTrigger[64] = "";
+				if (pLeftAxisNegative)
+				{
+					LoadString(pLeftAxisNegative->nAction, downStr, sizeof(downStr));
+
+					std::string sRealName = pLeftAxisNegative->strRealName[d];
+					sRealName = sRealName.substr(2);
+					sRealName = "##" + sRealName;
+
+					LTStrCpy(downTrigger, sRealName.c_str(), sizeof(downTrigger));
+				}
+
+				g_pLTClient->AddBinding(strDeviceName[d], upTrigger, upStr, 1500.0f, 32768.0f);
+				g_pLTClient->AddBinding(strDeviceName[d], downTrigger, downStr, -1500.0f, -32768.0f);
+			}
 		}
 				
 	}
@@ -1199,6 +1248,7 @@ void CUserProfile::ApplyControls()
 
 void CUserProfile::ApplyJoystick()
 {
+	return;
 	uint32 devType = DEVICETYPE_UNKNOWN;
 	if (g_pGameClientShell->HasGamepad())
 		devType = DEVICETYPE_GAMEPAD;
