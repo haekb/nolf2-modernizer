@@ -226,6 +226,8 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 			continue;
 		}
 
+		uint8_t nOn = 0;
+
 		// Note: This stuff is all special cases.
 		// Only track mouse if relative mode is enabled
 		if (pBinding->bIsAxis && pBinding->nDeviceType == DEVICE_TYPE_MOUSE && g_pGameInputMgr->GetRelativeMode())
@@ -277,46 +279,92 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 			//
 			// Handle Axis
 			//
-			static int nCurrentMouseX = 0;
-			static int nCurrentMouseY = 0;
-			static int nPreviousMouseX = 0;
-			static int nPreviousMouseY = 0;
+			static float nCurrentMouseX = 0;
+			static float nCurrentMouseY = 0;
+			static float nPreviousMouseX = 0;
+			static float nPreviousMouseY = 0;
 			float nScale = pDeviceBinding->nScale;
 
-			// X-Axis
-			if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_RIGHTX) // Action Code == -1
+			auto nValue = pGamepadAxis[pBinding->nGamepadAxis].nValue;
+
+			bool bPassesDeadzone = nValue > 5000 || nValue < -5000;
+			bool bPassesTriggerDeadzone = nValue > 100;
+
+			// Handle axis
+			if (pDeviceBinding->pActionHead->nActionCode == -1 && bPassesDeadzone)
 			{
-				nCurrentMouseX += pGamepadAxis[SDL_CONTROLLER_AXIS_RIGHTX].nValue;
+				//g_pLTClient->CPrint("Axis-X RAW: %d", nValue);
+
+				float fValue = (float)nValue * 0.0001f;
+
+				nCurrentMouseX += fValue;
 				fAxisOffsets[0] = (float)(nCurrentMouseX - nPreviousMouseX) * nScale;
 				nPreviousMouseX = nCurrentMouseX;
+
+				// Skip regular actions
+				continue;
 			}
 
-			// Y-Axis
-			if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_RIGHTY) // Action Code == -2
+			if (pDeviceBinding->pActionHead->nActionCode == -2 && bPassesDeadzone)
 			{
-				nCurrentMouseY += pGamepadAxis[SDL_CONTROLLER_AXIS_RIGHTX].nValue;
+				//g_pLTClient->CPrint("Axis-Y RAW: %d", nValue);
+
+				float fValue = (float)nValue * 0.0001f;
+
+				nCurrentMouseY += fValue;
 				fAxisOffsets[1] = (float)(nCurrentMouseY - nPreviousMouseY) * nScale;
 				nPreviousMouseY = nCurrentMouseY;
+
+				// Skip regular actions
+				continue;
+			}
+			
+			g_pLTClient->CPrint("fAxisOffset %f/%f/%f", fAxisOffsets[0], fAxisOffsets[1], fAxisOffsets[2]);
+
+			// Left Axis X
+			if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_LEFTX && bPassesDeadzone)
+			{
+				nOn = 1;
+			}
+
+			// Left Axis Y
+			if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_LEFTY && bPassesDeadzone)
+			{
+				nOn = 1;
+			}
+
+			// Right Axis X
+			if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_RIGHTX && bPassesDeadzone)
+			{
+				nOn = 1;
+			}
+
+			// Right Axis Y
+			if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_RIGHTY && bPassesDeadzone)
+			{
+				nOn = 1;
 			}
 
 			// Left Trigger
-			if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_TRIGGERLEFT && pGamepadAxis[SDL_CONTROLLER_AXIS_TRIGGERLEFT].nValue > 100)
+			if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_TRIGGERLEFT && bPassesTriggerDeadzone)
 			{
-				pActionsOn[pDeviceBinding->pActionHead->nActionCode] |= 1;
+				nOn = 1;
 			}
 
 			// Right Trigger
-			if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_TRIGGERRIGHT && pGamepadAxis[SDL_CONTROLLER_AXIS_TRIGGERRIGHT].nValue > 100)
+			if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_TRIGGERRIGHT && bPassesTriggerDeadzone)
 			{
-				pActionsOn[pDeviceBinding->pActionHead->nActionCode] |= 1;
+				nOn = 1;
 			}
+
+
 		}
 
-		// No special case, just direct DIK to SDL conversion!
-		uint8_t nOn = 0;
+
 
 		if (pBinding->nDeviceType == DEVICE_TYPE_KEYBOARD)
 		{
+			continue;
 			nOn = pKeys[pBinding->nKeyboardScancode];
 		}
 		else if (pBinding->nDeviceType == DEVICE_TYPE_MOUSE && !pBinding->bIsAxis)
@@ -885,20 +933,53 @@ bool GameInputMgr::TrackDevice(DeviceInput* pInputAttay, uint32_t* pInOut)
 			}
 			else if (pBinding->nDeviceType == DEVICE_TYPE_GAMEPAD)
 			{
+				auto nButton = pGamepadButtons.at((int)pBinding->nGamepadButton).nValue;
+
 				if (!pBinding->bIsAxis)
 				{
-					nOn = pGamepadButtons.at((int)pBinding->nGamepadButton).nValue;
+					nOn = nButton;
 					nControlType = CONTROLTYPE_BUTTON;
 				}
-				if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_TRIGGERLEFT)
+				else
 				{
-					nOn = pGamepadAxis.at((int)pBinding->nGamepadAxis).nValue;
-					nControlType = CONTROLTYPE_ZAXIS;
-				}
-				if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_TRIGGERRIGHT)
-				{
-					nOn = pGamepadAxis.at((int)pBinding->nGamepadAxis).nValue;
-					nControlType = CONTROLTYPE_RZAXIS;
+					auto nAxis = pGamepadAxis.at((int)pBinding->nGamepadAxis).nValue;
+
+					// FIXME: This should be a deadzone value!
+					if (nAxis < 5000 && nAxis > -5000)
+					{
+						continue;
+					}
+
+					if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_TRIGGERLEFT)
+					{
+						nOn = nAxis;
+						nControlType = CONTROLTYPE_ZAXIS;
+					}
+					else if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_TRIGGERRIGHT)
+					{
+						nOn = nAxis;
+						nControlType = CONTROLTYPE_RZAXIS;
+					}
+					else if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_LEFTX)
+					{
+						nOn = nAxis;
+						nControlType = CONTROLTYPE_XAXIS;
+					}
+					else if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_LEFTY)
+					{
+						nOn = nAxis;
+						nControlType = CONTROLTYPE_YAXIS;
+					}
+					else if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_RIGHTX)
+					{
+						nOn = nAxis;
+						nControlType = CONTROLTYPE_RXAXIS;
+					}
+					else if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_RIGHTY)
+					{
+						nOn = nAxis;
+						nControlType = CONTROLTYPE_RYAXIS;
+					}
 				}
 			}
 
@@ -922,7 +1003,7 @@ bool GameInputMgr::TrackDevice(DeviceInput* pInputAttay, uint32_t* pInOut)
 					pInputAttay[*pInOut].m_InputValue = g_pGameInputMgr->GetWheelDelta();
 				}
 				// Pass over trigger amount
-				else if (pBinding->nDeviceType == DEVICE_TYPE_GAMEPAD && (nControlType == CONTROLTYPE_ZAXIS || nControlType == CONTROLTYPE_RZAXIS))
+				else if (pBinding->nDeviceType == DEVICE_TYPE_GAMEPAD && (nControlType != CONTROLTYPE_UNKNOWN && nControlType <= CONTROLTYPE_SLIDER))
 				{
 					pInputAttay[*pInOut].m_InputValue = pGamepadAxis.at((int)pBinding->nGamepadAxis).nValue;
 				}
@@ -1297,7 +1378,7 @@ int GameInputMgr::GetActionCodeFromBindString(const char* szTriggerName)
 	try {
 		return std::stoi(sDIK.substr(2));
 	}
-	catch (std::invalid_argument e)
+	catch (...)
 	{
 		return -999;
 	}
