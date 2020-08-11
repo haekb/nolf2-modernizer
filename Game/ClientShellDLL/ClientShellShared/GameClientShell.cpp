@@ -692,6 +692,9 @@ CGameClientShell::CGameClientShell()
 
 CGameClientShell::~CGameClientShell()
 {
+	delete m_pGameInputMgr;
+	m_pGameInputMgr = nullptr;
+
 	for (int i=0; i < kMaxDebugStrings; i++)
 	{
 		if (m_pLeftDebugString[i])

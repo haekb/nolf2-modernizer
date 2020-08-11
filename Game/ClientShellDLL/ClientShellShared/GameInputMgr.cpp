@@ -21,6 +21,7 @@ std::map < SDL_Scancode, DInputKey > g_mSDLToDInput;
 // If you're building the game code against a different engine version, 
 // you may have to find this again.
 constexpr auto ENGINE_INPUT_MGR_PTR = 0x0059abc8;
+constexpr auto ENGINE_SAVE_INPUT_PTR = 0x00597a30;
 
 // Config Name, Name, DIK Code, SDL Code, Is Axis?
 const TempBinding g_ControllerBindings[] = {
@@ -103,13 +104,15 @@ GameInputMgr::GameInputMgr()
 
 GameInputMgr::~GameInputMgr()
 {
-	// Engine will clean up
+	// Call Term here, because we're still in CShell scope
+	g_pGameInputMgr->Term((InputMgr*)g_pGameInputMgr);
 }
 
 void GameInputMgr::ReplaceBindings()
 {
 	BIND_FUNC(Init);
-	BIND_FUNC(Term);
+	// Don't bind Term as CShell is no longer in scope
+	//BIND_FUNC(Term);
 	BIND_FUNC(IsInitted);
 	BIND_FUNC(ListDevices);
 	BIND_FUNC(PlayJoystickEffect);
@@ -133,15 +136,22 @@ void GameInputMgr::ReplaceBindings()
 	BIND_FUNC(IsDeviceEnabled);
 	BIND_FUNC(ShowDeviceObjects);
 	BIND_FUNC(ShowInputDevices);
+
+	// Not sure if I'm replacing this function pointer correctly, but it works well enough!
+	intptr_t** pEngineSaveInput = (intptr_t**)ENGINE_SAVE_INPUT_PTR;
+	*pEngineSaveInput = (intptr_t*)&GameInputMgr::SaveBindings;
 }
 
 //
 // InputMgr functions
 //
+//static intptr_t** g_pSaveBindingsPtr = (intptr_t**)
 
 bool GameInputMgr::Init(InputMgr* pInputMgr, intptr_t* pState)
 {
 	g_pGameInputMgr->GenerateReverseMap();
+	
+	g_pLTClient->ReadConfigFile("controls.cfg");
 
 	return true;
 }
@@ -152,6 +162,9 @@ void GameInputMgr::Term(InputMgr* pInputMgr)
 	{
 		return;
 	}
+
+	// Save our autoexec.cfg. This will also create a controls.cfg!
+	g_pLTClient->WriteConfigFile("autoexec.cfg");
 
 	for (auto pBinding : g_pGameInputMgr->m_pBindingList)
 	{
@@ -183,6 +196,7 @@ void GameInputMgr::Term(InputMgr* pInputMgr)
 		}
 	}
 	g_pGameInputMgr->m_EnabledDevices.clear();
+
 
 }
 
@@ -1293,6 +1307,117 @@ bool GameInputMgr::ShowDeviceObjects(const char* szDeviceName)
 bool GameInputMgr::ShowInputDevices()
 {
 	return true;
+}
+
+//
+// I assume there's differences in c-std with FILE* that's preventing me from using it...
+// So we're going to make a new config file!
+//
+void GameInputMgr::SaveBindings(FILE* pFileIgnore)
+{
+
+#if 1
+	FILE* pFile;
+	long size;
+
+	pFile = fopen("controls.cfg", "w");
+	if (pFile == NULL)
+	{
+		// Die silently
+	}
+	else
+	{
+		for (auto pAction : g_pGameInputMgr->m_pActionList)
+		{
+			fprintf(pFile, "AddAction %s %d\n", pAction->strActionName, pAction->nActionCode);
+		}
+
+		// Use this map to keep track of enabled device lines
+		// You should only have one enabledevice line per device!
+		std::map<std::string, bool> mEnabledDevices = {};
+		std::map<int, std::string> mDeviceNames = {
+			{ DEVICE_TYPE_KEYBOARD, "##keyboard" },
+			{ DEVICE_TYPE_MOUSE, "##mouse" },
+			{ DEVICE_TYPE_GAMEPAD, "##gamepad" },
+			{ DEVICE_TYPE_JOYSTICK, "##joystick" },
+			{ DEVICE_TYPE_UNKNOWN, "##helloImABugPlzReportMe" }, // Hopefully this never pops up! 
+		};
+		std::string sEnableDeviceFormat = "enabledevice \"%s\"\n";
+
+		// Note a bind can have multiple actions tied!
+		// You must cap this off with \n!
+		std::string sBindFormat = "rangebind \"%s\" \"%s\"";
+		std::string sBindActionFormat = " %f %f \"%s\"";
+
+		// Only if scale != 1.0
+		std::string sScaleFormat = "scale \"%s\" \"%s\" %f\n";
+		for (auto pBinding : g_pGameInputMgr->m_pBindingList)
+		{
+			auto sDeviceName = mDeviceNames[pBinding->nDeviceType];
+			// Add enabledevice line if needed
+			if (!mEnabledDevices[sDeviceName])
+			{
+				fprintf(pFile, sEnableDeviceFormat.c_str(), sDeviceName.c_str());
+				mEnabledDevices[sDeviceName] = true;
+			}
+
+			if (!pBinding->pDeviceBinding)
+			{
+				continue;
+			}
+
+			// rangebind "<device>" "<DIK Code>"
+			std::string nDIK = "##" + std::to_string((int)pBinding->nDIK);
+			fprintf(pFile, sBindFormat.c_str(), sDeviceName.c_str(), nDIK.c_str());
+
+			auto pAction = pBinding->pDeviceBinding->pActionHead;
+			while (pAction)
+			{
+				
+				// 0.0 0.0 "<Action>"
+				fprintf(pFile, sBindActionFormat.c_str(), pAction->nRangeLow, pAction->nRangeHigh, pAction->strActionName);
+
+				pAction = pAction->pNext;
+			}
+			fprintf(pFile, "\n");
+
+			if (pBinding->pDeviceBinding->nScale != 1.0f)
+			{
+				fprintf(pFile, sScaleFormat.c_str(), sDeviceName.c_str(), nDIK.c_str(), pBinding->pDeviceBinding->nScale);
+			}
+
+		}
+
+		fclose(pFile);
+	}
+#else
+
+	for (auto pAction : g_pGameInputMgr->m_pActionList)
+	{
+		fprintf(pFile, "AddAction %s %d\n", pAction->strActionName, pAction->nActionCode);
+	}
+
+	// Use this map to keep track of enabled device lines
+	// You should only have one enabledevice line per device!
+	std::map<std::string, bool> mEnabledDevices = {};
+	std::string sEnableDeviceFormat = "enabledevice \"%s\"\n";
+
+	// Note a bind can have multiple actions tied!
+	// You must cap this off with \n!
+	std::string sBindFormat = "rangebind \"%s\" \"%s\"";
+	std::string sBindActionFormat = " %f %f \"%s\"";
+
+	// Only if scale != 1.0
+	std::string sScaleFormat = "scale \"%s\" \"%s\" %f\n";
+	for (auto pBinding : g_pGameInputMgr->m_pBindingList)
+	{
+		if (!mEnabledDevices[pBinding->szDevice])
+		{
+			fprintf(pFile, sEnableDeviceFormat.c_str(), pBinding->szDevice);
+		}
+	}
+#endif
+	bool bEnd = true;
 }
 
 //

@@ -184,6 +184,11 @@ public:
 	static bool ShowInputDevices();
 
 	//
+	// Sort-of related...
+	//
+	static void SaveBindings(FILE* pFile);
+
+	//
 	// Non-interface functions
 	//
 
