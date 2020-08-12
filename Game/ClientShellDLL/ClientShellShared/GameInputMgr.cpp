@@ -231,6 +231,13 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 	auto pGamepadButtons = g_pGameInputMgr->GetGamepadButtonValues();
 	auto pGamepadAxis = g_pGameInputMgr->GetGamepadAxisValues();
 
+
+
+
+	fAxisOffsets[0] = 0.0f;
+	fAxisOffsets[1] = 0.0f;
+	fAxisOffsets[2] = 0.0f;
+
 	for (auto pBinding : g_pGameInputMgr->m_pBindingList)
 	{
 		auto pDeviceBinding = pBinding->pDeviceBinding;
@@ -298,13 +305,13 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 			static float nPreviousMouseY = 0;
 			float nScale = pDeviceBinding->nScale;
 
-			auto nValue = pGamepadAxis[pBinding->nGamepadAxis].nValue;
-
-			bool bPassesDeadzone = nValue > 5000 || nValue < -5000;
-			bool bPassesTriggerDeadzone = nValue > 100;
-
 			static float fAxisXAccel = 0.0f;
 			static float fAxisYAccel = 0.0f;
+
+			auto nValue = pGamepadAxis[pBinding->nGamepadAxis].nValue;
+
+			bool bPassesDeadzone = nValue > 10000 || nValue < -10000;
+			bool bPassesTriggerDeadzone = nValue > 100;
 
 			// Handle axis
 			if (pDeviceBinding->pActionHead->nActionCode == -1 && bPassesDeadzone)
@@ -312,7 +319,7 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 				//g_pLTClient->CPrint("Axis-X RAW: %d", nValue);
 				fAxisXAccel += 0.0005f * g_pLTClient->GetFrameTime();
 
-				fAxisXAccel = Min(0.00025f, fAxisXAccel);
+				fAxisXAccel = Min(0.001f, fAxisXAccel);
 
 				float fValue = (float)nValue * (0.0001f + fAxisXAccel);
 
@@ -327,13 +334,13 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 			{
 				fAxisXAccel = 0.0f;
 			}
-
+			
 			if (pDeviceBinding->pActionHead->nActionCode == -2 && bPassesDeadzone)
 			{
 				//g_pLTClient->CPrint("Axis-Y RAW: %d", nValue);
 				fAxisYAccel += 0.0005f * g_pLTClient->GetFrameTime();
 
-				fAxisYAccel = Min(0.00025f, fAxisYAccel);
+				fAxisYAccel = Min(0.001f, fAxisYAccel);
 
 
 				float fValue = (float)nValue * (0.0001f + fAxisYAccel);
@@ -1522,6 +1529,20 @@ int GameInputMgr::GetActionCodeFromBindString(const char* szTriggerName)
 	}
 	catch (...)
 	{
+		// Hardcoded fun
+		if (stricmp("x-axis", szTriggerName) == 0)
+		{
+			return -1;
+		}
+		else if (stricmp("y-axis", szTriggerName) == 0)
+		{
+			return -2;
+		}
+		else if (stricmp("z-axis", szTriggerName) == 0)
+		{
+			return -3;
+		}
+
 		return -999;
 	}
 }
