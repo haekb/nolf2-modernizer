@@ -59,7 +59,7 @@ const TempBinding g_MouseBindings[] = {
 	// Mouse Axis
 	{ "##x-axis", "Axis X", MOUSE_X_AXIS, SDL_MOUSE_AXIS_X, true },
 	{ "##y-axis", "Axis Y", MOUSE_Y_AXIS, SDL_MOUSE_AXIS_Y, true },
-	{ "##z-axis", "Wheel", MOUSE_Z_AXIS + 1, SDL_MOUSE_AXIS_WHEEL, true },
+	{ "##z-axis", "Wheel",  MOUSE_Z_AXIS, SDL_MOUSE_AXIS_WHEEL, true },
 };
 
 //#define USE_OLD_INPUT
@@ -357,7 +357,7 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 				fAxisYAccel = 0.0f;
 			}
 			
-			g_pLTClient->CPrint("fAxisOffset %f/%f/%f", fAxisOffsets[0], fAxisOffsets[1], fAxisOffsets[2]);
+			//g_pLTClient->CPrint("fAxisOffset %f/%f/%f", fAxisOffsets[0], fAxisOffsets[1], fAxisOffsets[2]);
 
 			// Left Axis X
 			if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_LEFTX && bPassesDeadzone)
@@ -449,6 +449,8 @@ void GameInputMgr::AddAction(InputMgr* pInputMgr, const char* pActionName, int n
 	{
 		return;
 	}
+
+	g_pLTClient->CPrint("[GameInputMgr::AddAction] ActionName: [%s] ", pActionName);
 
 	LTStrCpy(pAction->strActionName, pActionName, sizeof(pAction->strActionName));
 	pAction->nActionCode = nActionCode;
@@ -686,30 +688,70 @@ bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, cons
 		return false;
 	}
 
-	auto pDeviceBinding = new DeviceBinding();
-	
-	if (!pDeviceBinding)
+	auto nDeviceType = g_pGameInputMgr->GetDeviceTypeFromName(pDeviceName);
+
+	DeviceBinding* pDeviceBinding = nullptr;
+	GIMBinding* pBinding = nullptr;
+
+	g_pLTClient->CPrint("[GameInputMgr::AddBinding] Device: [%s] | BindName: [%s] | ActionName: [%s] | RangeLow/RangeHigh: [%f/%f]", pDeviceName, pTriggerName, pActionName, fRangeLow, fRangeHigh);
+
+	for (auto pSearchBinding : g_pGameInputMgr->m_pBindingList)
 	{
-		g_pLTClient->CPrint("[GameInputMgr::AddBinding] Failed to create bind [%s] on device [%s]", pActionName, pTriggerName, pDeviceName);
-		return false;
+		if (pSearchBinding->nDeviceType != nDeviceType)
+		{
+			continue;
+		}
+
+		if (stricmp(pSearchBinding->pDeviceBinding->strRealName, pTriggerName) != 0)
+		{
+			continue;
+		}
+
+		// Oh we found it! Update a values, and move on.
+		g_pLTClient->CPrint("[GameInputMgr::AddBinding] Duplicate found [%s] for action [%s]", pTriggerName, pActionName);
+
+		pBinding = pSearchBinding;
+		pDeviceBinding = pBinding->pDeviceBinding;
+
+		pBinding->bIsEnabled = true;
+		pAction->nRangeHigh = fRangeHigh;
+		pAction->nRangeLow = fRangeLow;
+		pAction->pNext = pBinding->pDeviceBinding->pActionHead;
+		pBinding->pDeviceBinding->pActionHead = pAction;
+
+
+		return true;
 	}
 
-	auto pBinding = new GIMBinding();
-
+	// If we couldn't find the binding, create a new one!
 	if (!pBinding)
 	{
-		g_pLTClient->CPrint("[GameInputMgr::AddBinding] Failed to create bind [%s] on device [%s]", pActionName, pTriggerName, pDeviceName);
+		pDeviceBinding = new DeviceBinding();
 
-		delete pDeviceBinding;
-		pDeviceBinding = nullptr;
+		if (!pDeviceBinding)
+		{
+			g_pLTClient->CPrint("[GameInputMgr::AddBinding] Failed to create bind [%s] on device [%s]", pActionName, pTriggerName, pDeviceName);
+			return false;
+		}
 
-		return false;
+		pBinding = new GIMBinding();
+
+		if (!pBinding)
+		{
+			g_pLTClient->CPrint("[GameInputMgr::AddBinding] Failed to create bind [%s] on device [%s]", pActionName, pTriggerName, pDeviceName);
+
+			delete pDeviceBinding;
+			pDeviceBinding = nullptr;
+
+			return false;
+		}
 	}
 
 	pBinding->bIsEnabled = true;
 
 	pAction->nRangeHigh = fRangeHigh;
 	pAction->nRangeLow  = fRangeLow;
+	pAction->pNext = pDeviceBinding->pActionHead;
 
 	pDeviceBinding->pNext = nullptr;
 	pDeviceBinding->pActionHead = pAction;
@@ -728,7 +770,6 @@ bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, cons
 	LTStrCpy(pDeviceBinding->strRealName, pTriggerName, sizeof(pDeviceBinding->strRealName));
 
 
-	auto nDeviceType = g_pGameInputMgr->GetDeviceTypeFromName(pDeviceName);
 	pBinding->nDeviceType = nDeviceType;
 
 	if (nDeviceType == DEVICE_TYPE_KEYBOARD)
@@ -768,7 +809,7 @@ bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, cons
 				LTStrCpy(pBinding->szName, g_MouseBindings[i].szName, sizeof(pBinding->szName));
 
 				pBinding->bIsAxis = g_MouseBindings[i].bIsAxis;
-				pBinding->nDIK = (uint32_t)g_MouseBindings[i].nDIK;
+				pBinding->nDIK = g_MouseBindings[i].nDIK;
 
 				if (!g_MouseBindings[i].bIsAxis)
 				{
@@ -1339,10 +1380,10 @@ bool GameInputMgr::ShowInputDevices()
 //
 void GameInputMgr::SaveBindings(FILE* pFileIgnore)
 {
-
-#if 1
 	FILE* pFile;
 	long size;
+
+
 
 	pFile = fopen("controls.cfg", "w");
 	if (pFile == NULL)
@@ -1365,6 +1406,12 @@ void GameInputMgr::SaveBindings(FILE* pFileIgnore)
 			{ DEVICE_TYPE_GAMEPAD, "##gamepad" },
 			{ DEVICE_TYPE_JOYSTICK, "##joystick" },
 			{ DEVICE_TYPE_UNKNOWN, "##helloImABugPlzReportMe" }, // Hopefully this never pops up! 
+		};
+		// Some special DIK codes need to be translated to specific strings
+		std::map<int, std::string> mSpecialKeyTranslation = {
+			{-1, "x-axis"},
+			{-2, "y-axis"},
+			{-3, "z-axis"}
 		};
 		std::string sEnableDeviceFormat = "enabledevice \"%s\"\n";
 
@@ -1391,7 +1438,15 @@ void GameInputMgr::SaveBindings(FILE* pFileIgnore)
 			}
 
 			// rangebind "<device>" "<DIK Code>"
-			std::string nDIK = "##" + std::to_string((int)pBinding->nDIK);
+			std::string nDIK = "";
+
+			auto sBindKey = mSpecialKeyTranslation[(int)pBinding->nDIK];
+			if (sBindKey.empty())
+			{
+				sBindKey = std::to_string((int)pBinding->nDIK);
+			}
+			nDIK = "##" + sBindKey;
+
 			fprintf(pFile, sBindFormat.c_str(), sDeviceName.c_str(), nDIK.c_str());
 
 			auto pAction = pBinding->pDeviceBinding->pActionHead;
@@ -1414,34 +1469,6 @@ void GameInputMgr::SaveBindings(FILE* pFileIgnore)
 
 		fclose(pFile);
 	}
-#else
-
-	for (auto pAction : g_pGameInputMgr->m_pActionList)
-	{
-		fprintf(pFile, "AddAction %s %d\n", pAction->strActionName, pAction->nActionCode);
-	}
-
-	// Use this map to keep track of enabled device lines
-	// You should only have one enabledevice line per device!
-	std::map<std::string, bool> mEnabledDevices = {};
-	std::string sEnableDeviceFormat = "enabledevice \"%s\"\n";
-
-	// Note a bind can have multiple actions tied!
-	// You must cap this off with \n!
-	std::string sBindFormat = "rangebind \"%s\" \"%s\"";
-	std::string sBindActionFormat = " %f %f \"%s\"";
-
-	// Only if scale != 1.0
-	std::string sScaleFormat = "scale \"%s\" \"%s\" %f\n";
-	for (auto pBinding : g_pGameInputMgr->m_pBindingList)
-	{
-		if (!mEnabledDevices[pBinding->szDevice])
-		{
-			fprintf(pFile, sEnableDeviceFormat.c_str(), pBinding->szDevice);
-		}
-	}
-#endif
-	bool bEnd = true;
 }
 
 //
@@ -1530,15 +1557,15 @@ int GameInputMgr::GetActionCodeFromBindString(const char* szTriggerName)
 	catch (...)
 	{
 		// Hardcoded fun
-		if (stricmp("x-axis", szTriggerName) == 0)
+		if (stricmp("##x-axis", szTriggerName) == 0)
 		{
 			return -1;
 		}
-		else if (stricmp("y-axis", szTriggerName) == 0)
+		else if (stricmp("##y-axis", szTriggerName) == 0)
 		{
 			return -2;
 		}
-		else if (stricmp("z-axis", szTriggerName) == 0)
+		else if (stricmp("##z-axis", szTriggerName) == 0)
 		{
 			return -3;
 		}

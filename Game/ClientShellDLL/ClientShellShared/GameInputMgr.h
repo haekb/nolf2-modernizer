@@ -71,8 +71,8 @@ struct GIMBinding {
 	char szDevice[INPUTNAME_LEN];
 	bool bIsEnabled;
 
-	// DirectInput Keycode
-	uint32_t nDIK;
+	// DirectInput Keycode - This is int32_t because the "special" codes are negatives...
+	int32_t nDIK;
 	// Whether or not nDIK is filled with useful info
 	bool bHasDIK;
 
