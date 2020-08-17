@@ -138,14 +138,14 @@ public:
 	static bool EnableDevice(InputMgr* pInputMgr, const char* pDeviceName);
 	
 	// Clear a particular binding
-	static bool ClearBindings(InputMgr* pInputMgr, const char* pDeviceName, const char* pTriggerName);
+	static bool ClearBindings(InputMgr* pInputMgr, const char* pDeviceName, const char* pRealName);
 	
 	// Add a binding
 	// Bindings are button commands that trigger actions. (Hence binding!)
-	static bool AddBinding(InputMgr* pInputMgr, const char* pDeviceName, const char* pTriggerName, const char* pActionName, float fRangeLow, float fRangeHigh);
+	static bool AddBinding(InputMgr* pInputMgr, const char* pDeviceName, const char* pRealName, const char* pActionName, float fRangeLow, float fRangeHigh);
 	
 	// Whether or not to apply a "scale" to a binding. Mainly for axis.
-	static bool ScaleTrigger(InputMgr* pInputMgr, const char* pDeviceName, const char* pTriggerName, float fScale, float fRangeScaleMin, float fRangeScaleMax, float fRangeScalePreCenterOffset);
+	static bool ScaleTrigger(InputMgr* pInputMgr, const char* pDeviceName, const char* pRealName, float fScale, float fRangeScaleMin, float fRangeScaleMax, float fRangeScalePreCenterOffset);
 	
 	// Let the game code have a lookie at our bindings
 	static DeviceBinding* GetDeviceBindings(uint32_t nDevice);

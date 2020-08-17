@@ -148,7 +148,7 @@ void GameInputMgr::ReplaceBindings()
 
 bool GameInputMgr::Init(InputMgr* pInputMgr, intptr_t* pState)
 {
-	g_pGameInputMgr->GenerateReverseMap();
+	//g_pGameInputMgr->GenerateReverseMap();
 	
 	g_pLTClient->ReadConfigFile("controls.cfg");
 
@@ -213,6 +213,175 @@ uint32_t GameInputMgr::PlayJoystickEffect(InputMgr* pInputMgr, const char* szEff
 {
 	return 0;
 }
+
+void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAxisOffsets[3])
+{
+
+}
+
+bool GameInputMgr::FlushInputBuffers(InputMgr* pInputMgr)
+{
+
+}
+
+LTRESULT GameInputMgr::ClearInput()
+{
+
+}
+
+void GameInputMgr::AddAction(InputMgr* pInputMgr, const char* pActionName, int nActionCode)
+{
+
+}
+
+bool GameInputMgr::EnableDevice(InputMgr* pInputMgr, const char* pDeviceName)
+{
+
+}
+
+bool GameInputMgr::ClearBindings(InputMgr* pInputMgr, const char* pDeviceName, const char* pRealName)
+{
+
+}
+
+bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, const char* pRealName, const char* pActionName, float fRangeLow, float fRangeHigh)
+{
+
+}
+
+bool GameInputMgr::ScaleTrigger(InputMgr* pInputMgr, const char* pDeviceName, const char* pRealName, float fScale, float fRangeScaleMin, float fRangeScaleMax, float fRangeScalePreCenterOffset)
+{
+
+}
+
+DeviceBinding* GameInputMgr::GetDeviceBindings(uint32_t nDevice)
+{
+
+}
+
+void GameInputMgr::FreeDeviceBindings(DeviceBinding* pBindings)
+{
+
+}
+
+bool GameInputMgr::StartDeviceTrack(InputMgr* pMgr, uint32_t nDevices, uint32_t nBufferSize)
+{
+
+}
+
+bool GameInputMgr::TrackDevice(DeviceInput* pInputAttay, uint32_t* pInOut)
+{
+
+}
+
+bool GameInputMgr::EndDeviceTrack()
+{
+
+}
+
+DeviceObject* GameInputMgr::GetDeviceObjects(uint32_t nDeviceFlags)
+{
+
+}
+
+void GameInputMgr::FreeDeviceObjects(DeviceObject* pList)
+{
+
+}
+
+bool GameInputMgr::GetDeviceName(uint32_t nDeviceType, char* szBuffer, uint32_t nBufferSize)
+{
+
+}
+
+bool GameInputMgr::GetDeviceObjectName(const char* szDeviceName, uint32_t nDeviceObjectID, char* szDeviceObjectName, uint32_t nDeviceObjectNameLength)
+{
+
+}
+
+bool GameInputMgr::IsDeviceEnabled(const char* szDeviceName)
+{
+
+}
+
+bool GameInputMgr::ShowDeviceObjects(const char* szDeviceName)
+{
+
+}
+
+bool GameInputMgr::ShowInputDevices()
+{
+
+}
+
+void GameInputMgr::SaveBindings(FILE* pFileIgnore)
+{
+
+}
+
+
+void GameInputMgr::SetRelativeMode(bool bOn)
+{
+	m_bRelativeMode = bOn;
+
+	if (bOn)
+	{
+		auto nSupported = SDL_SetRelativeMouseMode(SDL_TRUE);
+		auto error = SDL_GetError();
+
+		if (nSupported != 0)
+		{
+			g_pLTClient->CPrint("Error: %s", error);
+			g_pLTClient->CPrint("!! WARNING !! Relative Mouse Mode isn't supported!");
+		}
+
+		return;
+	}
+
+	SDL_SetRelativeMouseMode(SDL_FALSE);
+}
+
+std::vector<ButtonValue> GameInputMgr::GetGamepadButtonValues()
+{
+	std::vector<ButtonValue> buttonValues;
+
+	if (!m_pGamepad)
+	{
+		return buttonValues;
+	}
+
+	for (int i = SDL_CONTROLLER_BUTTON_A; i < SDL_CONTROLLER_BUTTON_MAX; i++)
+	{
+		SDL_GameControllerButton nButton = (SDL_GameControllerButton)i;
+		auto nValue = SDL_GameControllerGetButton(m_pGamepad, nButton);
+		ButtonValue buttonValue = { nButton, nValue };
+		buttonValues.push_back(buttonValue);
+	}
+
+	return buttonValues;
+}
+
+std::vector<AxisValue> GameInputMgr::GetGamepadAxisValues()
+{
+	std::vector<AxisValue> axisValues;
+
+	if (!m_pGamepad)
+	{
+		return axisValues;
+	}
+
+	for (int i = SDL_CONTROLLER_AXIS_LEFTX; i < SDL_CONTROLLER_AXIS_MAX; i++)
+	{
+		SDL_GameControllerAxis nAxis = (SDL_GameControllerAxis)i;
+		auto nValue = SDL_GameControllerGetAxis(m_pGamepad, nAxis);
+		AxisValue buttonValue = { nAxis, (float)nValue };
+		axisValues.push_back(buttonValue);
+	}
+
+	return axisValues;
+}
+
+#if 0
 
 void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAxisOffsets[3])
 {
@@ -310,7 +479,7 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 
 			auto nValue = pGamepadAxis[pBinding->nGamepadAxis].nValue;
 
-			bool bPassesDeadzone = nValue > 10000 || nValue < -10000;
+			bool bPassesDeadzone = nValue > 4000 || nValue < -4000;
 			bool bPassesTriggerDeadzone = nValue > 100;
 
 			// Handle axis
@@ -357,40 +526,17 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 				fAxisYAccel = 0.0f;
 			}
 			
-			//g_pLTClient->CPrint("fAxisOffset %f/%f/%f", fAxisOffsets[0], fAxisOffsets[1], fAxisOffsets[2]);
+			g_pLTClient->CPrint("fAxisOffset %f/%f/%f", fAxisOffsets[0], fAxisOffsets[1], fAxisOffsets[2]);
 
-			// Left Axis X
-			if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_LEFTX && bPassesDeadzone)
+			if (
+				(
+					pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_TRIGGERLEFT || pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_TRIGGERRIGHT) 
+					&& bPassesTriggerDeadzone
+				)
 			{
 				nOn = 1;
 			}
-
-			// Left Axis Y
-			if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_LEFTY && bPassesDeadzone)
-			{
-				nOn = 1;
-			}
-
-			// Right Axis X
-			if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_RIGHTX && bPassesDeadzone)
-			{
-				nOn = 1;
-			}
-
-			// Right Axis Y
-			if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_RIGHTY && bPassesDeadzone)
-			{
-				nOn = 1;
-			}
-
-			// Left Trigger
-			if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_TRIGGERLEFT && bPassesTriggerDeadzone)
-			{
-				nOn = 1;
-			}
-
-			// Right Trigger
-			if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_TRIGGERRIGHT && bPassesTriggerDeadzone)
+			else if (bPassesDeadzone)
 			{
 				nOn = 1;
 			}
@@ -651,6 +797,7 @@ bool GameInputMgr::EnableDevice(InputMgr* pInputMgr, const char* pDeviceName)
 // Important note: pTriggerName is "RealName"
 bool GameInputMgr::ClearBindings(InputMgr* pInputMgr, const char* pDeviceName, const char* pTriggerName)
 {
+	g_pLTClient->CPrint("[GameInputMgr::ClearBindings] Device: [%s] | BindName: [%s]", pDeviceName, pTriggerName);
 	for (int i = 0; i < g_pGameInputMgr->m_pBindingList.size(); i++)
 	{
 		auto pBinding = g_pGameInputMgr->m_pBindingList.at(i);
@@ -666,6 +813,31 @@ bool GameInputMgr::ClearBindings(InputMgr* pInputMgr, const char* pDeviceName, c
 		{
 			g_pGameInputMgr->m_pBindingList.erase(g_pGameInputMgr->m_pBindingList.begin() + i);
 
+			/*
+			if (pBinding->pDeviceBinding)
+			{
+				// Delete our local actions
+				auto pAction = pBinding->pDeviceBinding->pActionHead;
+				while (pAction)
+				{
+					auto pNext = pAction->pNext;
+					delete pAction;
+					pAction = pNext;
+				}
+				pBinding->pDeviceBinding->pActionHead = nullptr;
+
+				// Delete our device binding
+				auto pDeviceBinding = pBinding->pDeviceBinding;
+				while (pDeviceBinding)
+				{
+					auto pNext = pDeviceBinding->pNext;
+					delete pDeviceBinding;
+					pDeviceBinding = pNext;
+				}
+				pBinding->pDeviceBinding = nullptr;
+			}
+			*/
+
 			// Delete our Binding
 			delete pBinding;
 			pBinding = nullptr;
@@ -677,16 +849,33 @@ bool GameInputMgr::ClearBindings(InputMgr* pInputMgr, const char* pDeviceName, c
 	return false;
 }
 
+//
+// TODO: You need to wrap actions, and i hate it.
+//
+
 // Important note: pTriggerName is "RealName"
 bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, const char* pTriggerName, const char* pActionName, float fRangeLow, float fRangeHigh)
 {
-	auto pAction = g_pGameInputMgr->FindAction(pActionName);
+	// We need to check if we have an action
+	auto pActionTemp = g_pGameInputMgr->FindAction(pActionName);
 
-	if (!pAction)
+	if (!pActionTemp)
 	{
 		g_pLTClient->CPrint("[GameInputMgr::AddBinding] Could not find action [%s] to create bind [%s] on device [%s]", pActionName, pTriggerName, pDeviceName);
 		return false;
 	}
+
+	// Copy the action, this copy will just be for us! 
+	auto pAction = new GameAction();
+
+	if (!pAction)
+	{
+		g_pLTClient->CPrint("[GameInputMgr::AddBinding] Could copy action [%s] to create bind [%s] on device [%s]", pActionName, pTriggerName, pDeviceName);
+		return false;
+	}
+
+	memcpy(pAction, pActionTemp, sizeof(GameAction));
+
 
 	auto nDeviceType = g_pGameInputMgr->GetDeviceTypeFromName(pDeviceName);
 
@@ -708,7 +897,7 @@ bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, cons
 		}
 
 		// Oh we found it! Update a values, and move on.
-		g_pLTClient->CPrint("[GameInputMgr::AddBinding] Duplicate found [%s] for action [%s]", pTriggerName, pActionName);
+		g_pLTClient->CPrint("[GameInputMgr::AddBinding] Duplicate found [%s] for action [%s] | Device [%s]", pTriggerName, pActionName, pDeviceName);
 
 		pBinding = pSearchBinding;
 		pDeviceBinding = pBinding->pDeviceBinding;
@@ -898,6 +1087,21 @@ DeviceBinding* GameInputMgr::GetDeviceBindings(uint32_t nDevice)
 		DeviceBinding* pDeviceBinding = new DeviceBinding();
 		memcpy(pDeviceBinding, pBinding->pDeviceBinding, sizeof(DeviceBinding));
 
+
+		// Ok we also need to copy over actions
+		GameAction* pAction = nullptr;
+		auto pActionTemp = pDeviceBinding->pActionHead;
+		while (pActionTemp)
+		{
+			auto pNext = new GameAction();
+			memcpy(pNext, pActionTemp, sizeof(GameAction));
+
+			pNext->pNext = pAction;
+			pAction = pNext;
+
+			pActionTemp = pActionTemp->pNext;
+		}
+
 		if (pDeviceBindings)
 		{
 			pDeviceBinding->pNext = pDeviceBindings;
@@ -914,10 +1118,20 @@ void GameInputMgr::FreeDeviceBindings(DeviceBinding* pBindings)
 	DeviceBinding* pBinding = pBindings;
 	while (pBinding)
 	{
+		
+		auto pAction = pBinding->pActionHead;
+		while (pAction)
+		{
+			auto pNextAction = pAction->pNext;
+			delete pAction;
+
+			pAction = pNextAction;
+		}
+		
+
 		auto pNext = pBinding->pNext;
 
 		delete pBinding;
-		pBinding = nullptr;
 
 		pBinding = pNext;
 	}
@@ -1613,3 +1827,4 @@ std::vector<AxisValue> GameInputMgr::GetGamepadAxisValues()
 
 	return axisValues;
 }
+#endif
