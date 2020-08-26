@@ -218,7 +218,201 @@ uint32_t GameInputMgr::PlayJoystickEffect(InputMgr* pInputMgr, const char* szEff
 
 void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAxisOffsets[3])
 {
+	const int nActionMaxIterations = 255;
+	int nActionIterations = 0;
 
+	auto pBinding = g_pGameInputMgr->m_pBindingList;
+	int nDeltaX = 0, nDeltaY = 0;
+
+	// Only track mouse if relative mode is enabled
+	if (g_pGameInputMgr->GetRelativeMode())
+	{
+		SDL_GetRelativeMouseState(&nDeltaX, &nDeltaY);
+	}
+
+	SDL_PumpEvents();
+	auto pKeys = SDL_GetKeyboardState(nullptr);
+	auto pButtons = SDL_GetMouseState(nullptr, nullptr);
+	auto pGamepadButtons = g_pGameInputMgr->GetGamepadButtonValues();
+	auto pGamepadAxis = g_pGameInputMgr->GetGamepadAxisValues();
+
+	fAxisOffsets[0] = 0.0f;
+	fAxisOffsets[1] = 0.0f;
+	fAxisOffsets[2] = 0.0f;
+
+	for (auto pBinding : g_pGameInputMgr->m_pBindingList)
+	{
+		auto pDeviceBinding = pBinding->pDeviceBinding;
+		if (!pDeviceBinding)
+		{
+			continue;
+		}
+
+		nActionIterations = 0;
+		GameAction* pAction = pDeviceBinding->pActionHead;
+
+		while (pAction)
+		{
+			uint8_t nOn = 0;
+
+			nActionIterations++;
+
+			if (nActionIterations > nActionMaxIterations)
+			{
+				// ERROR: An infinite loop has occured!
+				__debugbreak();
+			}
+
+			// Note: This stuff is all special cases.
+			// Only track mouse if relative mode is enabled
+			if (pBinding->bIsAxis && pBinding->nDeviceType == DEVICE_TYPE_MOUSE && g_pGameInputMgr->GetRelativeMode())
+			{
+				//
+				// Handle Axis
+				//
+				static int nCurrentMouseX = 0;
+				static int nCurrentMouseY = 0;
+				static int nPreviousMouseX = 0;
+				static int nPreviousMouseY = 0;
+				float nScale = pDeviceBinding->nScale;
+
+				// Only thing that's not SDL2!
+				if (pBinding->nMouseAxis == SDL_MOUSE_AXIS_WHEEL)
+				{
+					auto nWheelDelta = g_pGameInputMgr->GetWheelDelta();
+					if (nWheelDelta >= WHEEL_DELTA && pAction->nRangeLow > 0.0)
+					{
+						pActionsOn[pAction->nActionCode] |= 1;
+					}
+					else if (nWheelDelta <= -WHEEL_DELTA && pAction->nRangeLow < 0.0)
+					{
+						pActionsOn[pAction->nActionCode] |= 1;
+					}
+				}
+
+				// X-Axis
+				if (pBinding->nMouseAxis == SDL_MOUSE_AXIS_X) // Action Code == -1
+				{
+					nCurrentMouseX += nDeltaX;
+					fAxisOffsets[0] = (float)(nCurrentMouseX - nPreviousMouseX) * nScale;
+					nPreviousMouseX = nCurrentMouseX;
+				}
+
+				// Y-Axis
+				if (pBinding->nMouseAxis == SDL_MOUSE_AXIS_Y) // Action Code == -2
+				{
+					nCurrentMouseY += nDeltaY;
+					fAxisOffsets[1] = (float)(nCurrentMouseY - nPreviousMouseY) * nScale;
+					nPreviousMouseY = nCurrentMouseY;
+				}
+
+				// Z-Axis ???
+				fAxisOffsets[2] = 0.0f;
+			}
+			else if (pBinding->bIsAxis && pBinding->nDeviceType == DEVICE_TYPE_GAMEPAD)
+			{
+				//
+				// Handle Axis
+				//
+				static float nCurrentMouseX = 0;
+				static float nCurrentMouseY = 0;
+				static float nPreviousMouseX = 0;
+				static float nPreviousMouseY = 0;
+				float nScale = pDeviceBinding->nScale;
+
+				static float fAxisXAccel = 0.0f;
+				static float fAxisYAccel = 0.0f;
+
+				auto nValue = pGamepadAxis[pBinding->nGamepadAxis].nValue;
+
+				bool bPassesDeadzone = nValue > 4000 || nValue < -4000;
+				bool bPassesTriggerDeadzone = nValue > 100;
+
+				// Handle axis
+				if (pAction->nActionCode == -1 && bPassesDeadzone)
+				{
+					//g_pLTClient->CPrint("Axis-X RAW: %d", nValue);
+					fAxisXAccel += 0.0005f * g_pLTClient->GetFrameTime();
+
+					fAxisXAccel = Min(0.001f, fAxisXAccel);
+
+					float fValue = (float)nValue * (0.0001f + fAxisXAccel);
+
+					nCurrentMouseX += fValue;
+					fAxisOffsets[0] = (float)(nCurrentMouseX - nPreviousMouseX) * nScale;
+					nPreviousMouseX = nCurrentMouseX;
+
+					// Move onto the next action!
+					pAction = pAction->pNext;
+
+					// Skip regular actions
+					continue;
+				}
+				else if (pAction->nActionCode == -1)
+				{
+					fAxisXAccel = 0.0f;
+				}
+
+				if (pAction->nActionCode == -2 && bPassesDeadzone)
+				{
+					//g_pLTClient->CPrint("Axis-Y RAW: %d", nValue);
+					fAxisYAccel += 0.0005f * g_pLTClient->GetFrameTime();
+
+					fAxisYAccel = Min(0.001f, fAxisYAccel);
+
+
+					float fValue = (float)nValue * (0.0001f + fAxisYAccel);
+
+					nCurrentMouseY += fValue;
+					fAxisOffsets[1] = (float)(nCurrentMouseY - nPreviousMouseY) * nScale;
+					nPreviousMouseY = nCurrentMouseY;
+
+					// Move onto the next action!
+					pAction = pAction->pNext;
+
+					// Skip regular actions
+					continue;
+				}
+				else if (pAction->nActionCode == -2)
+				{
+					fAxisYAccel = 0.0f;
+				}
+
+				g_pLTClient->CPrint("fAxisOffset %f/%f/%f", fAxisOffsets[0], fAxisOffsets[1], fAxisOffsets[2]);
+
+				if (
+					(
+						pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_TRIGGERLEFT || pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_TRIGGERRIGHT)
+					&& bPassesTriggerDeadzone
+					)
+				{
+					nOn = 1;
+				}
+				else if (bPassesDeadzone)
+				{
+					nOn = 1;
+				}
+			}
+
+			if (pBinding->nDeviceType == DEVICE_TYPE_KEYBOARD)
+			{
+				nOn = pKeys[pBinding->nKeyboardScancode];
+			}
+			else if (pBinding->nDeviceType == DEVICE_TYPE_MOUSE && !pBinding->bIsAxis)
+			{
+				nOn = (pButtons & SDL_BUTTON(pBinding->nMouseButton));
+			}
+			else if (pBinding->nDeviceType == DEVICE_TYPE_GAMEPAD && !pBinding->bIsAxis)
+			{
+				nOn = pGamepadButtons.at((int)pBinding->nGamepadButton).nValue;
+			}
+
+			pActionsOn[pAction->nActionCode] |= nOn;
+
+			// Move onto the next action!
+			pAction = pAction->pNext;
+		}
+	}
 }
 
 bool GameInputMgr::FlushInputBuffers(InputMgr* pInputMgr)
@@ -458,25 +652,6 @@ bool GameInputMgr::ClearBindings(InputMgr* pInputMgr, const char* pDeviceName, c
 		{
 			g_pGameInputMgr->m_pBindingList.erase(g_pGameInputMgr->m_pBindingList.begin() + i);
 
-			
-			if (pBinding->pDeviceBinding)
-			{
-				// Don't delete actions!
-
-				// Delete our device binding
-				/*
-				auto pDeviceBinding = pBinding->pDeviceBinding;
-				while (pDeviceBinding)
-				{
-					auto pNext = pDeviceBinding->pNext;
-					delete pDeviceBinding;
-					pDeviceBinding = pNext;
-				}
-				pBinding->pDeviceBinding = nullptr;
-				*/
-			}
-			
-
 			// Delete our Binding
 			delete pBinding;
 			pBinding = nullptr;
@@ -688,6 +863,22 @@ bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, cons
 
 bool GameInputMgr::ScaleTrigger(InputMgr* pInputMgr, const char* pDeviceName, const char* pRealName, float fScale, float fRangeScaleMin, float fRangeScaleMax, float fRangeScalePreCenterOffset)
 {
+	for (auto pBinding : g_pGameInputMgr->m_pBindingList)
+	{
+		if (pBinding->nDeviceType != g_pGameInputMgr->GetDeviceTypeFromName(pDeviceName))
+		{
+			continue;
+		}
+
+		if (stricmp(pBinding->pDeviceBinding->strRealName, pRealName) == 0)
+		{
+			pBinding->pDeviceBinding->nScale = fScale;
+			pBinding->pDeviceBinding->nRangeScaleMin = fRangeScaleMin;
+			pBinding->pDeviceBinding->nRangeScaleMax = fRangeScaleMax;
+			pBinding->pDeviceBinding->nRangeScalePreCenterOffset = fRangeScalePreCenterOffset;
+		}
+	}
+
 	return true;
 }
 
@@ -1013,7 +1204,93 @@ bool GameInputMgr::ShowInputDevices()
 
 void GameInputMgr::SaveBindings(FILE* pFileIgnore)
 {
+	FILE* pFile;
+	long size;
 
+	pFile = fopen("controls.cfg", "w");
+	if (pFile == NULL)
+	{
+		// Die silently
+	}
+	else
+	{
+		for (auto pAction : g_pGameInputMgr->m_pActionList)
+		{
+			fprintf(pFile, "AddAction %s %d\n", pAction->strActionName, pAction->nActionCode);
+		}
+
+		// Use this map to keep track of enabled device lines
+		// You should only have one enabledevice line per device!
+		std::map<std::string, bool> mEnabledDevices = {};
+		std::map<int, std::string> mDeviceNames = {
+			{ DEVICE_TYPE_KEYBOARD, "##keyboard" },
+			{ DEVICE_TYPE_MOUSE, "##mouse" },
+			{ DEVICE_TYPE_GAMEPAD, "##gamepad" },
+			{ DEVICE_TYPE_JOYSTICK, "##joystick" },
+			{ DEVICE_TYPE_UNKNOWN, "##helloImABugPlzReportMe" }, // Hopefully this never pops up! 
+		};
+		// Some special DIK codes need to be translated to specific strings
+		std::map<int, std::string> mSpecialKeyTranslation = {
+			{-1, "x-axis"},
+			{-2, "y-axis"},
+			{-3, "z-axis"}
+		};
+		std::string sEnableDeviceFormat = "enabledevice \"%s\"\n";
+
+		// Note a bind can have multiple actions tied!
+		// You must cap this off with \n!
+		std::string sBindFormat = "rangebind \"%s\" \"%s\"";
+		std::string sBindActionFormat = " %f %f \"%s\"";
+
+		// Only if scale != 1.0
+		std::string sScaleFormat = "scale \"%s\" \"%s\" %f\n";
+		for (auto pBinding : g_pGameInputMgr->m_pBindingList)
+		{
+			auto sDeviceName = mDeviceNames[pBinding->nDeviceType];
+			// Add enabledevice line if needed
+			if (!mEnabledDevices[sDeviceName])
+			{
+				fprintf(pFile, sEnableDeviceFormat.c_str(), sDeviceName.c_str());
+				mEnabledDevices[sDeviceName] = true;
+			}
+
+			if (!pBinding->pDeviceBinding)
+			{
+				continue;
+			}
+
+			// rangebind "<device>" "<DIK Code>"
+			std::string nDIK = "";
+
+			auto sBindKey = mSpecialKeyTranslation[(int)pBinding->nDIK];
+			if (sBindKey.empty())
+			{
+				sBindKey = std::to_string((int)pBinding->nDIK);
+			}
+			nDIK = "##" + sBindKey;
+
+			fprintf(pFile, sBindFormat.c_str(), sDeviceName.c_str(), nDIK.c_str());
+
+			auto pAction = pBinding->pDeviceBinding->pActionHead;
+			while (pAction)
+			{
+
+				// 0.0 0.0 "<Action>"
+				fprintf(pFile, sBindActionFormat.c_str(), pAction->nRangeLow, pAction->nRangeHigh, pAction->strActionName);
+
+				pAction = pAction->pNext;
+			}
+			fprintf(pFile, "\n");
+
+			if (pBinding->pDeviceBinding->nScale != 1.0f)
+			{
+				fprintf(pFile, sScaleFormat.c_str(), sDeviceName.c_str(), nDIK.c_str(), pBinding->pDeviceBinding->nScale);
+			}
+
+		}
+
+		fclose(pFile);
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
