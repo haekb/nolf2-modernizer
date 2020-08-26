@@ -152,6 +152,7 @@ bool GameInputMgr::Init(InputMgr* pInputMgr, intptr_t* pState)
 {
 	//g_pGameInputMgr->GenerateReverseMap();
 	
+	// Load up our controls!
 	g_pLTClient->ReadConfigFile("controls.cfg");
 
 	return true;
@@ -1385,12 +1386,14 @@ void GameInputMgr::SaveBindings(FILE* pFileIgnore)
 		// Use this map to keep track of enabled device lines
 		// You should only have one enabledevice line per device!
 		std::map<std::string, bool> mEnabledDevices = {};
-		std::map<int, std::string> mDeviceNames = {
-			{ DEVICE_TYPE_KEYBOARD, "##keyboard" },
+
+		// This is a copy, it can't be global because of silly scope reasons
+		const std::map<LT_DeviceType, const char*> mDeviceNames = {
 			{ DEVICE_TYPE_MOUSE, "##mouse" },
+			{ DEVICE_TYPE_KEYBOARD, "##keyboard" },
 			{ DEVICE_TYPE_GAMEPAD, "##gamepad" },
 			{ DEVICE_TYPE_JOYSTICK, "##joystick" },
-			{ DEVICE_TYPE_UNKNOWN, "##helloImABugPlzReportMe" }, // Hopefully this never pops up! 
+			{ DEVICE_TYPE_UNKNOWN, "##unknown" },
 		};
 		// Some special DIK codes need to be translated to specific strings
 		std::map<int, std::string> mSpecialKeyTranslation = {
@@ -1409,7 +1412,7 @@ void GameInputMgr::SaveBindings(FILE* pFileIgnore)
 		std::string sScaleFormat = "scale \"%s\" \"%s\" %f\n";
 		for (auto pBinding : g_pGameInputMgr->m_pBindingList)
 		{
-			auto sDeviceName = mDeviceNames[pBinding->nDeviceType];
+			std::string sDeviceName = mDeviceNames.at(pBinding->nDeviceType);
 			// Add enabledevice line if needed
 			if (!mEnabledDevices[sDeviceName])
 			{
