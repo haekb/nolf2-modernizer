@@ -255,13 +255,15 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 		{
 			uint8_t nOn = 0;
 
+#ifdef _DEBUG
+			// I never actually needed this, but just in case...
 			nActionIterations++;
-
 			if (nActionIterations > nActionMaxIterations)
 			{
 				// ERROR: An infinite loop has occured!
 				__debugbreak();
 			}
+#endif
 
 			// Note: This stuff is all special cases.
 			// Only track mouse if relative mode is enabled
@@ -378,7 +380,7 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 					fAxisYAccel = 0.0f;
 				}
 
-				g_pLTClient->CPrint("fAxisOffset %f/%f/%f", fAxisOffsets[0], fAxisOffsets[1], fAxisOffsets[2]);
+				//g_pLTClient->CPrint("fAxisOffset %f/%f/%f", fAxisOffsets[0], fAxisOffsets[1], fAxisOffsets[2]);
 
 				if (
 					(
@@ -952,16 +954,177 @@ void GameInputMgr::FreeDeviceBindings(DeviceBinding* pBindings)
 
 bool GameInputMgr::StartDeviceTrack(InputMgr* pMgr, uint32_t nDevices, uint32_t nBufferSize)
 {
+	if (nDevices & DEVICE_TYPE_KEYBOARD)
+	{
+		g_pGameInputMgr->m_DeviceTrackingList.push_back(DEVICE_TYPE_KEYBOARD);
+	}
+	if (nDevices & DEVICE_TYPE_MOUSE)
+	{
+		g_pGameInputMgr->m_DeviceTrackingList.push_back(DEVICE_TYPE_MOUSE);
+	}
+	if (nDevices & DEVICE_TYPE_GAMEPAD)
+	{
+		g_pGameInputMgr->m_DeviceTrackingList.push_back(DEVICE_TYPE_GAMEPAD);
+	}
+
 	return true;
 }
 
 bool GameInputMgr::TrackDevice(DeviceInput* pInputAttay, uint32_t* pInOut)
 {
+	int nArraySize = *pInOut;
+	*pInOut = 0;
+
+	SDL_PumpEvents();
+	auto pKeys = SDL_GetKeyboardState(nullptr);
+	auto pButtons = SDL_GetMouseState(nullptr, nullptr);
+	auto pGamepadButtons = g_pGameInputMgr->GetGamepadButtonValues();
+	auto pGamepadAxis = g_pGameInputMgr->GetGamepadAxisValues();
+
+	for (auto nDeviceType : g_pGameInputMgr->m_DeviceTrackingList)
+	{
+		if (*pInOut > nArraySize)
+		{
+			break;
+		}
+
+		char szDeviceName[INPUTNAME_LEN];
+		g_pGameInputMgr->GetDeviceName(nDeviceType, szDeviceName, sizeof(szDeviceName));
+
+		if (!g_pGameInputMgr->IsDeviceEnabled(szDeviceName))
+		{
+			g_pGameInputMgr->EnableDevice((InputMgr*)g_pGameInputMgr, szDeviceName);
+		}
+
+		for (auto pBinding : g_pGameInputMgr->m_pAvailableObjects)
+		{
+			if (*pInOut > nArraySize)
+			{
+				break;
+			}
+			// We only care about this device's binds.
+			if (nDeviceType != pBinding->nDeviceType)
+			{
+				continue;
+			}
+
+			// No special case, just direct DIK to SDL conversion!
+			uint8_t nOn = 0;
+			uint32_t nControlType = CONTROLTYPE_UNKNOWN;
+
+			if (pBinding->nDeviceType == DEVICE_TYPE_KEYBOARD)
+			{
+				nOn = pKeys[pBinding->nKeyboardScancode];
+				nControlType = CONTROLTYPE_KEY;
+			}
+			else if (pBinding->nDeviceType == DEVICE_TYPE_MOUSE)
+			{
+				nOn = (pButtons & SDL_BUTTON(pBinding->nMouseButton));
+				nControlType = CONTROLTYPE_BUTTON;
+
+				if (pBinding->bIsAxis && pBinding->nMouseAxis == SDL_MOUSE_AXIS_X)
+				{
+					nControlType = CONTROLTYPE_XAXIS;
+				}
+				else if (pBinding->bIsAxis && pBinding->nMouseAxis == SDL_MOUSE_AXIS_Y)
+				{
+					nControlType = CONTROLTYPE_YAXIS;
+				}
+				else if (pBinding->bIsAxis && pBinding->nMouseAxis == SDL_MOUSE_AXIS_WHEEL)
+				{
+					nOn = g_pGameInputMgr->GetWheelDelta();
+					nControlType = CONTROLTYPE_ZAXIS;
+				}
+			}
+			else if (pBinding->nDeviceType == DEVICE_TYPE_GAMEPAD)
+			{
+				auto nButton = pGamepadButtons.at((int)pBinding->nGamepadButton).nValue;
+
+				if (!pBinding->bIsAxis)
+				{
+					nOn = nButton;
+					nControlType = CONTROLTYPE_BUTTON;
+				}
+				else
+				{
+					auto nAxis = pGamepadAxis.at((int)pBinding->nGamepadAxis).nValue;
+
+					// FIXME: This should be a deadzone value!
+					if (nAxis < 5000 && nAxis > -5000)
+					{
+						continue;
+					}
+
+					if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_TRIGGERLEFT)
+					{
+						nOn = nAxis;
+						nControlType = CONTROLTYPE_ZAXIS;
+					}
+					else if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_TRIGGERRIGHT)
+					{
+						nOn = nAxis;
+						nControlType = CONTROLTYPE_RZAXIS;
+					}
+					else if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_LEFTX)
+					{
+						nOn = nAxis;
+						nControlType = CONTROLTYPE_XAXIS;
+					}
+					else if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_LEFTY)
+					{
+						nOn = nAxis;
+						nControlType = CONTROLTYPE_YAXIS;
+					}
+					else if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_RIGHTX)
+					{
+						nOn = nAxis;
+						nControlType = CONTROLTYPE_RXAXIS;
+					}
+					else if (pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_RIGHTY)
+					{
+						nOn = nAxis;
+						nControlType = CONTROLTYPE_RYAXIS;
+					}
+				}
+			}
+
+			if (nOn)
+			{
+				pInputAttay[*pInOut].m_DeviceType = nDeviceType;
+
+				LTStrCpy(pInputAttay[*pInOut].m_DeviceName, szDeviceName, sizeof(pInputAttay[*pInOut].m_DeviceName));
+
+				pInputAttay[*pInOut].m_ControlType = nControlType;
+				LTStrCpy(pInputAttay[*pInOut].m_ControlName, pBinding->szName, sizeof(pInputAttay[*pInOut].m_ControlName));
+
+				pInputAttay[*pInOut].m_ControlCode = pBinding->nDIK;
+				pInputAttay[*pInOut].m_nObjectId = pBinding->nDIK;
+
+				pInputAttay[*pInOut].m_InputValue = 1;
+
+				// Pass over wheel delta
+				if (pBinding->nDeviceType == DEVICE_TYPE_MOUSE && nControlType == CONTROLTYPE_ZAXIS)
+				{
+					pInputAttay[*pInOut].m_InputValue = g_pGameInputMgr->GetWheelDelta();
+				}
+				// Pass over trigger amount
+				else if (pBinding->nDeviceType == DEVICE_TYPE_GAMEPAD && (nControlType != CONTROLTYPE_UNKNOWN && nControlType <= CONTROLTYPE_SLIDER))
+				{
+					pInputAttay[*pInOut].m_InputValue = pGamepadAxis.at((int)pBinding->nGamepadAxis).nValue;
+				}
+
+				(*pInOut)++;
+			}
+		}
+	}
+
 	return true;
 }
 
 bool GameInputMgr::EndDeviceTrack()
 {
+	g_pGameInputMgr->m_DeviceTrackingList.clear();
+
 	return true;
 }
 
@@ -1274,7 +1437,6 @@ void GameInputMgr::SaveBindings(FILE* pFileIgnore)
 			auto pAction = pBinding->pDeviceBinding->pActionHead;
 			while (pAction)
 			{
-
 				// 0.0 0.0 "<Action>"
 				fprintf(pFile, sBindActionFormat.c_str(), pAction->nRangeLow, pAction->nRangeHigh, pAction->strActionName);
 
