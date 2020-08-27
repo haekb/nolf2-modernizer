@@ -149,9 +149,7 @@ void GameInputMgr::ReplaceBindings()
 //
 
 bool GameInputMgr::Init(InputMgr* pInputMgr, intptr_t* pState)
-{
-	//g_pGameInputMgr->GenerateReverseMap();
-	
+{	
 	// Load up our controls!
 	g_pLTClient->ReadConfigFile("controls.cfg");
 
@@ -250,6 +248,12 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 
 	for (auto pBinding : g_pGameInputMgr->m_pBindingList)
 	{
+		// Uhhh..don't actually read non-enabled bindings!
+		if (!pBinding->bIsEnabled)
+		{
+			continue;
+		}
+
 		auto pDeviceBinding = pBinding->pDeviceBinding;
 		if (!pDeviceBinding)
 		{
@@ -269,7 +273,7 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 			if (nActionIterations > nActionMaxIterations)
 			{
 				// ERROR: An infinite loop has occured!
-				//__debugbreak();
+				__debugbreak();
 			}
 #endif
 
@@ -619,6 +623,11 @@ bool GameInputMgr::EnableDevice(InputMgr* pInputMgr, const char* pDeviceName)
 			}
 		}
 
+		if (!pGamepad)
+		{
+			return false;
+		}
+
 		// Create a template to hold basic constant info
 		GIMBinding* pTemplateBinding = new GIMBinding();
 
@@ -719,6 +728,7 @@ bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, cons
 	memcpy(pAction, pActionTemp, sizeof(GameAction));
 
 	auto nDeviceType = g_pGameInputMgr->GetDeviceTypeFromName(pDeviceName);
+	auto bEnabled = IsDeviceEnabled(pDeviceName);
 
 	DeviceBinding* pDeviceBinding = nullptr;
 	GIMBinding* pBinding = nullptr;
@@ -761,7 +771,7 @@ bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, cons
 			pCheckAction = pCheckAction->pNext;
 		}
 
-		pBinding->bIsEnabled = true;
+		pBinding->bIsEnabled = bEnabled;
 		pAction->nRangeHigh = fRangeHigh;
 		pAction->nRangeLow = fRangeLow;
 		pAction->pNext = pBinding->pDeviceBinding->pActionHead;
@@ -798,7 +808,7 @@ bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, cons
 		}
 	}
 
-	pBinding->bIsEnabled = true;
+	pBinding->bIsEnabled = bEnabled;
 
 	pAction->nRangeHigh = fRangeHigh;
 	pAction->nRangeLow = fRangeLow;
