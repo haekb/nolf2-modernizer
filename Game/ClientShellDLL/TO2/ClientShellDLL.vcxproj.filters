@@ -415,5 +415,6 @@
     <ClInclude Include="ScreenJukebox.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="InfoFromSE.h" />
   </ItemGroup>
 </Project>

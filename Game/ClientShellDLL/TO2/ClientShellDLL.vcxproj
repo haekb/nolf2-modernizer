@@ -638,6 +638,7 @@
     <ClInclude Include="HUDProgressBar.h" />
     <ClInclude Include="HUDRadio.h" />
     <ClInclude Include="HUDRespawn.h" />
+    <ClInclude Include="InfoFromSE.h" />
     <ClInclude Include="ScreenAudio.h" />
     <ClInclude Include="ScreenConfigure.h" />
     <ClInclude Include="ScreenControls.h" />

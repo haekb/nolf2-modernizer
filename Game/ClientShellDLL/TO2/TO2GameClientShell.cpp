@@ -18,6 +18,8 @@
 #include "clientmultiplayermgr.h"
 #include "iserverdir.h"
 
+#include "InfoFromSE.h"
+
 VarTrack			g_vtMaxFPS;						// MaxFramerate				<0...>
 VarTrack			g_vtLockFPS;					// FramerateLock			<0-1>
 VarTrack			g_vtShowFPS;					// ShowFramerate			<0-1>
@@ -25,13 +27,25 @@ VarTrack			g_vtShowFPS;					// ShowFramerate			<0-1>
 // Sample rate
 int g_nSampleRate = 22050;
 
-
-LONG WINAPI UncaughtExceptionHandler(EXCEPTION_POINTERS* /*ExceptionInfo*/)
+LONG WINAPI UncaughtExceptionHandler(EXCEPTION_POINTERS* ExceptionInfo)
 {
 	g_pLTClient->CPrint("!! CRASH DETECTED !! Dumping console log to debug.log!");
 	g_pLTClient->RunConsoleString("WriteToDebugLog");
 
-	return EXCEPTION_CONTINUE_SEARCH;// g_showCrashDialog ? EXCEPTION_CONTINUE_SEARCH : EXCEPTION_EXECUTE_HANDLER;
+	// We've done the essentials, the rest is gravy.
+
+	ShowCursor(true);
+
+	auto info = InfoFromSE::information(ExceptionInfo);
+
+	info += "\nPlease check debug.log for more information!";
+
+	auto pWindow = SDL_CreateWindow("Error", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 0, 0, 0);
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "!! Crash Detected !!", info.c_str(), pWindow);
+	SDL_DestroyWindow(pWindow);
+	pWindow = nullptr;
+
+	return EXCEPTION_CONTINUE_SEARCH;
 }
 
 // ----------------------------------------------------------------------- //
