@@ -336,7 +336,7 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 				auto nValue = pGamepadAxis[pBinding->nGamepadAxis].nValue;
 
 				bool bPassesSpecialDeadzone = nValue > 4000 || nValue < -4000;
-				bool bPassesDeadzone = nValue > pAction->nRangeLow; //nValue > 4000 || nValue < -4000;
+				bool bPassesDeadzone = nValue > pAction->nRangeLow;
 				bool bPassesTriggerDeadzone = nValue > 100;
 
 				// Oh, it's a negative range value? Then check it again.
@@ -346,56 +346,72 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 				}
 
 				// Handle axis
-				if (pAction->nActionCode == -1 && bPassesSpecialDeadzone)
+				if (pAction->nActionCode == -1)
 				{
-					//g_pLTClient->CPrint("Axis-X RAW: %d", nValue);
-					fAxisXAccel += 0.0005f * g_pLTClient->GetFrameTime();
+					if (bPassesSpecialDeadzone)
+					{
+						//g_pLTClient->CPrint("Axis-X RAW: %d", nValue);
+						fAxisXAccel += 0.0005f * g_pLTClient->GetFrameTime();
 
-					fAxisXAccel = Min(0.001f, fAxisXAccel);
+						fAxisXAccel = Min(0.001f, fAxisXAccel);
 
-					float fValue = (float)nValue * (0.0001f + fAxisXAccel);
+						float fValue = (float)nValue * (0.0001f + fAxisXAccel);
 
-					nCurrentMouseX += fValue;
-					fAxisOffsets[0] = (float)(nCurrentMouseX - nPreviousMouseX) * nScale;
-					nPreviousMouseX = nCurrentMouseX;
+						nCurrentMouseX += fValue;
+						fAxisOffsets[0] = (float)(nCurrentMouseX - nPreviousMouseX) * nScale;
+						nPreviousMouseX = nCurrentMouseX;
+					}
+					else
+					{
+						fAxisXAccel = 0.0f;
+					}
 
 					// Move onto the next action!
 					pAction = pAction->pNext;
 
 					// Skip regular actions
 					continue;
-				}
-				else if (pAction->nActionCode == -1)
-				{
-					fAxisXAccel = 0.0f;
-				}
 
-				if (pAction->nActionCode == -2 && bPassesSpecialDeadzone)
-				{
-					//g_pLTClient->CPrint("Axis-Y RAW: %d", nValue);
-					fAxisYAccel += 0.0005f * g_pLTClient->GetFrameTime();
-
-					fAxisYAccel = Min(0.001f, fAxisYAccel);
-
-
-					float fValue = (float)nValue * (0.0001f + fAxisYAccel);
-
-					nCurrentMouseY += fValue;
-					fAxisOffsets[1] = (float)(nCurrentMouseY - nPreviousMouseY) * nScale;
-					nPreviousMouseY = nCurrentMouseY;
-
-					// Move onto the next action!
-					pAction = pAction->pNext;
-
-					// Skip regular actions
-					continue;
 				}
 				else if (pAction->nActionCode == -2)
 				{
-					fAxisYAccel = 0.0f;
-				}
+					if (bPassesSpecialDeadzone)
+					{
+						//g_pLTClient->CPrint("Axis-Y RAW: %d", nValue);
+						fAxisYAccel += 0.0005f * g_pLTClient->GetFrameTime();
 
-				//g_pLTClient->CPrint("fAxisOffset %f/%f/%f", fAxisOffsets[0], fAxisOffsets[1], fAxisOffsets[2]);
+						fAxisYAccel = Min(0.001f, fAxisYAccel);
+
+						float fValue = (float)nValue * (0.0001f + fAxisYAccel);
+
+						nCurrentMouseY += fValue;
+						fAxisOffsets[1] = (float)(nCurrentMouseY - nPreviousMouseY) * nScale;
+						nPreviousMouseY = nCurrentMouseY;
+					}
+					else
+					{
+						fAxisYAccel = 0.0f;
+					}
+
+					// Move onto the next action!
+					pAction = pAction->pNext;
+
+					// Skip regular actions
+					continue;
+				}
+				// pActionsOn is a UNSIGNED 8-bit int. It seems to overflow and bleed into another console-related array
+				// That's no good! So just eat any values below 0, and log 'em if we're in debug mode.
+				else if (pAction->nActionCode < 0)
+				{
+#ifdef _DEBUG
+					SDL_Log("Unknown special action code called! Eating it, so we don't crash!!! The action code %d. Passes trigger? %d Passes deadzone? %d", pAction->nActionCode, bPassesTriggerDeadzone, bPassesDeadzone);
+#endif
+					// Move onto the next action!
+					pAction = pAction->pNext;
+
+					// Skip regular actions
+					continue;
+				}
 
 				if (
 					(
