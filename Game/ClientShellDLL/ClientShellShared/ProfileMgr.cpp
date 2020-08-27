@@ -922,8 +922,8 @@ void CUserProfile::ApplyBindings()
 					LTStrCpy(downTrigger, sRealName.c_str(), sizeof(downTrigger));
 				}
 
-				g_pLTClient->AddBinding(strDeviceName[d], upTrigger, upStr, 2500.0f, 32768.0f);
-				g_pLTClient->AddBinding(strDeviceName[d], downTrigger, downStr, -2500.0f, -32768.0f);
+				g_pLTClient->AddBinding(strDeviceName[d], upTrigger, upStr, 4500.0f, 32768.0f);
+				g_pLTClient->AddBinding(strDeviceName[d], downTrigger, downStr, -4500.0f, -32768.0f);
 			}
 		}
 				
