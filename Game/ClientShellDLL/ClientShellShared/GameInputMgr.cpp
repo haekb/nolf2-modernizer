@@ -219,6 +219,13 @@ uint32_t GameInputMgr::PlayJoystickEffect(InputMgr* pInputMgr, const char* szEff
 
 void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAxisOffsets[3])
 {
+	// If we're reading input during loading, some funky crashes occasionally happen
+	// So just ignore this until the world is good and loaded!
+	if (!g_pGameClientShell->IsWorldLoaded())
+	{
+		return;
+	}
+
 	const int nActionMaxIterations = 255;
 	int nActionIterations = 0;
 
@@ -262,7 +269,7 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 			if (nActionIterations > nActionMaxIterations)
 			{
 				// ERROR: An infinite loop has occured!
-				__debugbreak();
+				//__debugbreak();
 			}
 #endif
 
@@ -328,11 +335,18 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 
 				auto nValue = pGamepadAxis[pBinding->nGamepadAxis].nValue;
 
-				bool bPassesDeadzone = nValue > 4000 || nValue < -4000;
+				bool bPassesSpecialDeadzone = nValue > 4000 || nValue < -4000;
+				bool bPassesDeadzone = nValue > pAction->nRangeLow; //nValue > 4000 || nValue < -4000;
 				bool bPassesTriggerDeadzone = nValue > 100;
 
+				// Oh, it's a negative range value? Then check it again.
+				if (pAction->nRangeLow < 0)
+				{
+					bPassesDeadzone = nValue < pAction->nRangeLow;
+				}
+
 				// Handle axis
-				if (pAction->nActionCode == -1 && bPassesDeadzone)
+				if (pAction->nActionCode == -1 && bPassesSpecialDeadzone)
 				{
 					//g_pLTClient->CPrint("Axis-X RAW: %d", nValue);
 					fAxisXAccel += 0.0005f * g_pLTClient->GetFrameTime();
@@ -356,7 +370,7 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 					fAxisXAccel = 0.0f;
 				}
 
-				if (pAction->nActionCode == -2 && bPassesDeadzone)
+				if (pAction->nActionCode == -2 && bPassesSpecialDeadzone)
 				{
 					//g_pLTClient->CPrint("Axis-Y RAW: %d", nValue);
 					fAxisYAccel += 0.0005f * g_pLTClient->GetFrameTime();
@@ -713,6 +727,23 @@ bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, cons
 		pBinding = pSearchBinding;
 		pDeviceBinding = pBinding->pDeviceBinding;
 		
+		// Okay check the actions for this device binding, make sure we don't already have it in the list
+		GameAction* pCheckAction = pDeviceBinding->pActionHead;
+		while (pCheckAction)
+		{
+
+			if (stricmp(pCheckAction->strActionName, pActionName) == 0)
+			{
+				g_pLTClient->CPrint("[GameInputMgr::AddBinding] REAL duplicate found [%s] for action [%s] | Device [%s]", pRealName, pActionName, pDeviceName);
+				// Ok we don't even need to update the list, just continue.
+				// Clean up pAction tho..
+				delete pAction;
+
+				return true;
+			}
+
+			pCheckAction = pCheckAction->pNext;
+		}
 
 		pBinding->bIsEnabled = true;
 		pAction->nRangeHigh = fRangeHigh;
