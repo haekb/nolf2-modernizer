@@ -55,7 +55,7 @@ steps:
   inputs:
     SourceFolder: 'Assets'
     Contents: |
-      dinput8.dll
+      controls.cfg
       Lithtech.exe
       JServerInfo.txt
     TargetFolder: '$(Pipeline.Workspace)\\Artifacts'
