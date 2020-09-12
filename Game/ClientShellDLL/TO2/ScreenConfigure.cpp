@@ -152,6 +152,8 @@ LTBOOL CScreenConfigure::Build()
 	pCtrl = AddTextItem(IDS_MISC_CONTROLS,CMD_MISC_COM,LTNULL);
 	pCtrl->SetFixedWidth(nWidth);
 
+	pCtrl = AddTextItem(IDS_CTRL_CONTROLS, CMD_CTRL_COM, LTNULL);
+	pCtrl->SetFixedWidth(nWidth);
 	
 	LTIntPt pos(m_ListRect.left,m_ListRect.top);
 	int nHt = m_ListRect.bottom - m_ListRect.top;
@@ -188,6 +190,9 @@ LTBOOL CScreenConfigure::Build()
 			break;
 		case COM_MISC:
 			pCtrl = CreateTextItem(IDS_MISC_CONTROLS,LTNULL,LTNULL,kDefaultPos,LTTRUE);
+			break;
+		case COM_CTRL:
+			pCtrl = CreateTextItem(IDS_CTRL_CONTROLS, LTNULL, LTNULL, kDefaultPos, LTTRUE);
 			break;
 		}
 
@@ -547,7 +552,9 @@ uint32 CScreenConfigure::OnCommand(uint32 dwCommand, uint32 dwParam1, uint32 dwP
 	case CMD_MISC_COM:
 		SetCurrentType(COM_MISC);
 		break;
-
+	case CMD_CTRL_COM:
+		SetCurrentType(COM_CTRL);
+		break;
 
 	case CMD_CHANGE_CONTROL:
 		{

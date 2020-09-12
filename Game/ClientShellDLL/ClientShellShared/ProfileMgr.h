@@ -76,6 +76,7 @@ enum CommandType
 	COM_INV,
 	COM_VIEW,
 	COM_MISC,
+	COM_CTRL,
 	kNumCommandTypes
 };
 

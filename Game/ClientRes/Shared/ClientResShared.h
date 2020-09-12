@@ -1027,6 +1027,11 @@
 #define IDS_SETTING_16X                 2213
 #define IDS_WINDOWED_MODE               2214
 #define IDS_HELP_WINDOWED_MODE          2215
+#define IDS_CONTROL_AXIS_X              2216
+#define IDS_CONTROL_AXIS_Y              2217
+#define IDS_ACTIONSTRING_AXIS_X         2218
+#define IDS_ACTIONSTRING_AXIS_Y         2219
+#define IDS_CTRL_CONTROLS               2220
 
 // Next default values for new objects
 // 

@@ -1347,6 +1347,11 @@ BEGIN
     IDS_SETTING_16X         "16x"
     IDS_WINDOWED_MODE       "Windowed Mode"
     IDS_HELP_WINDOWED_MODE  "Enable or disable windowed mode."
+    IDS_CONTROL_AXIS_X      "X-Axis"
+    IDS_CONTROL_AXIS_Y      "Y-Axis"
+    IDS_ACTIONSTRING_AXIS_X "Axis1"
+    IDS_ACTIONSTRING_AXIS_Y "Axis2"
+    IDS_CTRL_CONTROLS       "Controller"
 END
 
 #endif    // English (United States) resources
