@@ -668,7 +668,11 @@ bool GameInputMgr::EnableDevice(InputMgr* pInputMgr, const char* pDeviceName)
 		}
 		else // Otherwise enable our selected one!
 		{
-			g_pGameInputMgr->SetGamepad(szGamepadName);
+			// If the controller in the config is not connected, then select the first available one!
+			if (!g_pGameInputMgr->SetGamepad(szGamepadName))
+			{
+				g_pGameInputMgr->SetGamepad(vGamepads.at(0));
+			}
 		}
 
 		// Create a template to hold basic constant info
@@ -1674,7 +1678,7 @@ std::vector<std::string> GameInputMgr::GetListOfGamepads()
 	return vGamepadList;
 }
 
-void GameInputMgr::SetGamepad(std::string sGamepad)
+bool GameInputMgr::SetGamepad(std::string sGamepad)
 {
 	SDL_GameController* pGamepad = nullptr;
 
@@ -1698,6 +1702,11 @@ void GameInputMgr::SetGamepad(std::string sGamepad)
 		}
 	}
 
+	if (!pGamepad)
+	{
+		return false;
+	}
+
 	// Set our gamepad name
 	if (g_vtGamepadName.IsInitted())
 	{
@@ -1706,6 +1715,8 @@ void GameInputMgr::SetGamepad(std::string sGamepad)
 
 	m_sActiveGamepad = sGamepad;
 	m_pGamepad = pGamepad;
+
+	return true;
 }
 
 GameAction* GameInputMgr::FindAction(const char* szActionName)

@@ -231,7 +231,7 @@ public:
 	std::vector<std::string> GetListOfGamepads();
 
 	// Using GetListOfGamepads pass in a string to set the active gamepad
-	void SetGamepad(std::string sGamepad);
+	bool SetGamepad(std::string sGamepad);
 
 private:
 
