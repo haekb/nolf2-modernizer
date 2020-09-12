@@ -167,6 +167,13 @@ void GameInputMgr::Term(InputMgr* pInputMgr)
 	// Save our autoexec.cfg. This will also create a controls.cfg!
 	g_pLTClient->WriteConfigFile("autoexec.cfg");
 
+	// Close up the controller
+	if (g_pGameInputMgr->m_pGamepad)
+	{
+		SDL_GameControllerClose(g_pGameInputMgr->m_pGamepad);
+		g_pGameInputMgr->m_pGamepad = nullptr;
+	}
+
 	for (auto pBinding : g_pGameInputMgr->m_pBindingList)
 	{
 		delete pBinding;
