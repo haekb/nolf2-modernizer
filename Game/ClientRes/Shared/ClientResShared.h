@@ -1032,6 +1032,8 @@
 #define IDS_ACTIONSTRING_AXIS_X         2218
 #define IDS_ACTIONSTRING_AXIS_Y         2219
 #define IDS_CTRL_CONTROLS               2220
+#define IDS_GAMEPAD_NAME                2221
+#define IDS_ACTIVE_GAMEPAD              2221
 
 // Next default values for new objects
 // 

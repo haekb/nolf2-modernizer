@@ -1352,6 +1352,7 @@ BEGIN
     IDS_ACTIONSTRING_AXIS_X "Axis1"
     IDS_ACTIONSTRING_AXIS_Y "Axis2"
     IDS_CTRL_CONTROLS       "Controller"
+    IDS_ACTIVE_GAMEPAD      "Active Gamepad"
 END
 
 #endif    // English (United States) resources

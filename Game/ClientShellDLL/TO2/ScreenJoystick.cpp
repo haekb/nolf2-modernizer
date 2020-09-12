@@ -15,12 +15,15 @@
 #include "GameSettings.h"
 #include "InterfaceMgr.h"
 
+#include "GameInputMgr.h"
+
 namespace
 {
 	int kGap = 200;
 	int kWidth = 200;
 }
 
+extern GameInputMgr* g_pGameInputMgr;
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -46,7 +49,18 @@ LTBOOL CScreenJoystick::Build()
 	kGap = g_pLayoutMgr->GetScreenCustomInt(SCREEN_ID_JOYSTICK,"ColumnWidth");
 	uint8 nLarge = g_pLayoutMgr->GetScreenCustomInt(SCREEN_ID_JOYSTICK,"HeaderFontSize");
 
+	auto vGamepads = g_pGameInputMgr->GetListOfGamepads();
+
+	CLTGUICycleCtrl* pCtrl = AddCycle(IDS_ACTIVE_GAMEPAD, NULL, kGap, NULL, kDefaultPos, LTTRUE);
+	for (auto sGamepad : vGamepads)
+	{
+		pCtrl->AddString(sGamepad.c_str());
+	}
+	pCtrl->SetFont(NULL, nLarge);
+
+	vGamepads.clear();
 	
+	/*
 	CLTGUICycleCtrl *pCtrl = AddCycle(IDS_JOYSTICK_AXIS, NULL, kGap, NULL, kDefaultPos, LTTRUE );
 	pCtrl->AddString(LoadTempString(IDS_JOYSTICK_ACTION));
 	pCtrl->SetFont(NULL,nLarge);
@@ -94,6 +108,7 @@ LTBOOL CScreenJoystick::Build()
 		pCtrl->AddString(LoadTempString(IDS_POV_MOVE));
 	}
 
+	*/
 
 	// Make sure to call the base class
 	if (! CBaseScreen::Build()) return LTFALSE;
