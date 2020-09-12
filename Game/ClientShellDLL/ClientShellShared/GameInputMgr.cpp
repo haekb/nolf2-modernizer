@@ -1624,13 +1624,36 @@ std::vector<std::string> GameInputMgr::GetListOfGamepads()
 	SDL_GameController* pGamepad = nullptr;
 	std::vector<std::string> vGamepadList;
 
+	std::map<std::string, int> mGamepadDuplicateRef;
+
 	for (int i = 0; i < SDL_NumJoysticks(); ++i) {
 		if (SDL_IsGameController(i)) {
 			
 			pGamepad = SDL_GameControllerOpen(i);
 
 			if (pGamepad) {
-				vGamepadList.push_back(SDL_GameControllerName(pGamepad));
+
+				auto szName = SDL_GameControllerName(pGamepad);
+				std::string sName = szName;
+
+				// Okay we're gonna check to see if any the controllers have duplicate names
+				// If it's in the map already, append the count to the name.
+				auto reference = mGamepadDuplicateRef.find(szName);
+
+				if (reference != mGamepadDuplicateRef.end())
+				{
+					// Increment the references
+					reference->second++;
+					sName += "(" + std::to_string(reference->second) + ")";
+				}
+				else 
+				{
+					mGamepadDuplicateRef.insert({ sName, 1 });
+				}
+				
+			
+
+				vGamepadList.push_back(sName);
 				SDL_GameControllerClose(pGamepad);
 				pGamepad = nullptr;
 
@@ -1647,13 +1670,18 @@ std::vector<std::string> GameInputMgr::GetListOfGamepads()
 void GameInputMgr::SetGamepad(std::string sGamepad)
 {
 	SDL_GameController* pGamepad = nullptr;
+
+	// We compare against this list because it handle duplicates names
+	// it should HOPEFULLY be in the same order as this...
+	auto vGamepadList = GetListOfGamepads();
+
 	for (int i = 0; i < SDL_NumJoysticks(); ++i) {
 		if (SDL_IsGameController(i)) {
 
 			pGamepad = SDL_GameControllerOpen(i);
 
 			// We found our gamepad!
-			if (pGamepad && stricmp(SDL_GameControllerName(pGamepad), sGamepad.c_str()) == 0) {
+			if (pGamepad && stricmp(vGamepadList.at(i).c_str(), sGamepad.c_str()) == 0) {
 				break;
 			}
 

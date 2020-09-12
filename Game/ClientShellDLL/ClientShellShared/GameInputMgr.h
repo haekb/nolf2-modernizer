@@ -235,6 +235,8 @@ public:
 
 private:
 
+	
+
 	int m_nWheelDelta;
 	bool m_bRelativeMode;
 
