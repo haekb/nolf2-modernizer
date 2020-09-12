@@ -225,6 +225,8 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 		return;
 	}
 
+	int nUseJoystick = GetConsoleInt("UseJoystick", 0);
+
 	const int nActionMaxIterations = 255;
 	int nActionIterations = 0;
 
@@ -251,6 +253,11 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 	{
 		// Uhhh..don't actually read non-enabled bindings!
 		if (!pBinding->bIsEnabled)
+		{
+			continue;
+		}
+
+		if (nUseJoystick == 0 && pBinding->nDeviceType == DEVICE_TYPE_GAMEPAD)
 		{
 			continue;
 		}
@@ -1027,6 +1034,8 @@ void GameInputMgr::FreeDeviceBindings(DeviceBinding* pBindings)
 
 bool GameInputMgr::StartDeviceTrack(InputMgr* pMgr, uint32_t nDevices, uint32_t nBufferSize)
 {
+	int nUseJoystick = GetConsoleInt("UseJoystick", 0);
+
 	if (nDevices & DEVICE_TYPE_KEYBOARD)
 	{
 		g_pGameInputMgr->m_DeviceTrackingList.push_back(DEVICE_TYPE_KEYBOARD);
@@ -1035,7 +1044,7 @@ bool GameInputMgr::StartDeviceTrack(InputMgr* pMgr, uint32_t nDevices, uint32_t 
 	{
 		g_pGameInputMgr->m_DeviceTrackingList.push_back(DEVICE_TYPE_MOUSE);
 	}
-	if (nDevices & DEVICE_TYPE_GAMEPAD)
+	if (nUseJoystick == 1 && nDevices & DEVICE_TYPE_GAMEPAD)
 	{
 		g_pGameInputMgr->m_DeviceTrackingList.push_back(DEVICE_TYPE_GAMEPAD);
 	}
