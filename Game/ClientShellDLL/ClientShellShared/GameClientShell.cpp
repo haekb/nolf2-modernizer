@@ -1407,7 +1407,14 @@ uint32 CGameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
 	// Boot up Jukebox Manager.
 	m_pJukeboxButeMgr = debug_new(CJukeboxButeMgr);
 	m_pJukeboxButeMgr->Init();
-	
+
+	// Enable gamepad
+	EnableGamepad();
+
+	// Reload our controls!
+	g_pLTClient->ReadConfigFile("controls.cfg");
+
+
 	return LT_OK;
 }
 
