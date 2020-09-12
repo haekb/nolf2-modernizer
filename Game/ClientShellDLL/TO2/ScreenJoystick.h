@@ -33,6 +33,8 @@ protected:
 	void	ClearBindings();
     uint32  OnCommand(uint32 dwCommand, uint32 dwParam1, uint32 dwParam2);
 
+
+	CLTGUICycleCtrl* m_pActiveController;
 	uint8	m_nAxis[kMaxDeviceAxis];
 	uint8	m_nPOV[kMaxDevicePOV];
 };

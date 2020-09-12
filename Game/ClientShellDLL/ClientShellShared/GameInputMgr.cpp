@@ -651,7 +651,7 @@ bool GameInputMgr::EnableDevice(InputMgr* pInputMgr, const char* pDeviceName)
 
 		if (g_vtGamepadName.IsInitted())
 		{
-			g_vtGamepadName.GetStr(szGamepadName);
+			LTStrCpy(szGamepadName, g_vtGamepadName.GetStr(), sizeof(szGamepadName));
 		}
 
 		// If it's blank, just enable the first one

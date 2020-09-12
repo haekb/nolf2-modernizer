@@ -33,7 +33,7 @@ CScreenJoystick::CScreenJoystick()
 {
 	memset(m_nAxis,0,sizeof(m_nAxis));
 	memset(m_nPOV,0,sizeof(m_nPOV));
-
+	m_pActiveController = nullptr;
 }
 
 CScreenJoystick::~CScreenJoystick()
@@ -50,13 +50,13 @@ LTBOOL CScreenJoystick::Build()
 	uint8 nLarge = g_pLayoutMgr->GetScreenCustomInt(SCREEN_ID_JOYSTICK,"HeaderFontSize");
 
 	auto vGamepads = g_pGameInputMgr->GetListOfGamepads();
-
-	CLTGUICycleCtrl* pCtrl = AddCycle(IDS_ACTIVE_GAMEPAD, NULL, kGap, NULL, kDefaultPos, LTTRUE);
+	m_pActiveController = AddCycle(IDS_ACTIVE_GAMEPAD, NULL, kGap, NULL, kDefaultPos, LTTRUE);
 	for (auto sGamepad : vGamepads)
 	{
-		pCtrl->AddString(sGamepad.c_str());
+		m_pActiveController->AddString(sGamepad.c_str());
 	}
-	pCtrl->SetFont(NULL, nLarge);
+	m_pActiveController->SetFont(NULL, nLarge);
+	m_pActiveController->Enable(true);
 
 	vGamepads.clear();
 	
@@ -154,6 +154,20 @@ void CScreenJoystick::OnFocus(LTBOOL bFocus)
 			m_nPOV[POV] = pProfile->m_nPOV[POV];
 		}
 
+		// Get our active controller, and set our selected index
+		char szActiveController[128] = "";
+		GetConsoleString("GamepadName", szActiveController, "");
+		for (int i = 0; i < m_pActiveController->GetNumStrings(); i++)
+		{
+			auto pString = m_pActiveController->GetString(i);
+			auto sString = pString->GetText();
+
+			if (stricmp(szActiveController, sString) == 0)
+			{
+				m_pActiveController->SetSelIndex(i);
+			}
+		}
+
 	
         UpdateData(LTFALSE);
 	}
@@ -169,6 +183,11 @@ void CScreenJoystick::OnFocus(LTBOOL bFocus)
 		{
 			pProfile->m_nPOV[POV] = m_nPOV[POV];
 		};
+
+		// Get our selected index string, and set it as the active controller
+		auto pString = m_pActiveController->GetString(m_pActiveController->GetSelIndex());
+		auto sString = pString->GetText();
+		g_pGameInputMgr->SetGamepad(sString);
 
 		pProfile->ApplyJoystick();
 		pProfile->Save();
