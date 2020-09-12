@@ -626,6 +626,19 @@ bool GameInputMgr::EnableDevice(InputMgr* pInputMgr, const char* pDeviceName)
 			SDL_Init(SDL_INIT_GAMECONTROLLER | SDL_INIT_HAPTIC);
 		}
 
+		g_pLTClient->CPrint("Checking for custom mappings in gamecontrollerdb.txt");
+
+		int nMappings = SDL_GameControllerAddMappingsFromFile("gamecontrollerdb.txt");
+
+		if (nMappings != -1)
+		{
+			g_pLTClient->CPrint("Custom game controller mappings found. Loaded %d new mappings", nMappings);
+		}
+		else
+		{
+			g_pLTClient->CPrint("Could not find gamecontrollerdb.txt, default mappings are applied");
+		}
+
 		// Open it! 
 		auto vGamepads = g_pGameInputMgr->GetListOfGamepads();
 
