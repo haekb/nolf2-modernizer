@@ -225,11 +225,13 @@ public:
 
 	std::vector<ButtonValue> GetGamepadButtonValues();
 	std::vector<AxisValue> GetGamepadAxisValues();
-
+	
+	std::vector<std::string> GetListOfGamepads();
+	void SetGamepad(std::string sGamepad);
 
 private:
 
-
+	std::string m_sActiveGamepad;
 	int m_nWheelDelta;
 	bool m_bRelativeMode;
 

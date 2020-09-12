@@ -1582,6 +1582,54 @@ std::vector<AxisValue> GameInputMgr::GetGamepadAxisValues()
 	return axisValues;
 }
 
+std::vector<std::string> GameInputMgr::GetListOfGamepads()
+{
+	SDL_GameController* pGamepad = nullptr;
+	std::vector<std::string> vGamepadList;
+
+	for (int i = 0; i < SDL_NumJoysticks(); ++i) {
+		if (SDL_IsGameController(i)) {
+			
+			pGamepad = SDL_GameControllerOpen(i);
+
+			if (pGamepad) {
+				vGamepadList.push_back(SDL_GameControllerName(pGamepad));
+				SDL_GameControllerClose(pGamepad);
+				pGamepad = nullptr;
+
+				continue;
+			}
+			
+			g_pLTClient->CPrint("[GameInputMgr::GetListOfGamepads] Could not open gamepad [%d] due to error [%s]", i, SDL_GetError());	
+		}
+	}
+
+	return vGamepadList;
+}
+
+void GameInputMgr::SetGamepad(std::string sGamepad)
+{
+	SDL_GameController* pGamepad = nullptr;
+	for (int i = 0; i < SDL_NumJoysticks(); ++i) {
+		if (SDL_IsGameController(i)) {
+
+			pGamepad = SDL_GameControllerOpen(i);
+
+			// We found our gamepad!
+			if (pGamepad && stricmp(SDL_GameControllerName(pGamepad), sGamepad.c_str()) == 0) {
+				break;
+			}
+
+			// Clean up so we can check the next controller
+			SDL_GameControllerClose(pGamepad);
+			pGamepad = nullptr;
+		}
+	}
+
+	m_sActiveGamepad = sGamepad;
+	m_pGamepad = pGamepad;
+}
+
 GameAction* GameInputMgr::FindAction(const char* szActionName)
 {
 	for (auto pAction : m_pActionList)
