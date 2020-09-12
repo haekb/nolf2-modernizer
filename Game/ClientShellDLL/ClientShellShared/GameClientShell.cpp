@@ -112,6 +112,13 @@ VarTrack			g_vtShowSDLMouse;
 VarTrack			g_vtEnableRagdolls;
 VarTrack			g_vtRagdollYAdjustment;
 
+// Game Input Specific
+// Slightly afraid of initting VarTrack in GameInputMgr, so it's gonna happen here
+
+VarTrack			g_vtGamepadName;
+
+//
+
 // SDL Logging
 std::fstream 		g_SDLLogFile;
 SDL_Window*			g_SDLWindow = NULL;
@@ -1022,6 +1029,10 @@ uint32 CGameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
 	g_vtEnableRagdolls.Init(g_pLTClient, "EnableRagdolls", NULL, 0.0f);
 	// Amount that we push the position up. This corrects the hitbox being under the ground on death.
 	g_vtRagdollYAdjustment.Init(g_pLTClient, "RagdollYAdjustment", NULL, 40.0f);
+
+	// Game Input Mgr
+	g_vtGamepadName.Init(g_pLTClient, "GamepadName", NULL, 0.0f);
+	//
 
 	m_cheatMgr.Init();
 	m_LightScaleMgr.Init();
@@ -2197,6 +2208,7 @@ void CGameClientShell::OnKeyDown(int key, int rep)
 		//but don't process anything else
 		return;
 	}
+
 
 	if (key == VK_TOGGLE_SCREENSHOTMODE)
 	{

@@ -206,6 +206,7 @@ public:
 
 	// Gamepad handle
 	SDL_GameController* m_pGamepad;
+	std::string m_sActiveGamepad;
 
 	bool GetRelativeMode() { return m_bRelativeMode; }
 	void SetRelativeMode(bool bOn);
@@ -226,12 +227,14 @@ public:
 	std::vector<ButtonValue> GetGamepadButtonValues();
 	std::vector<AxisValue> GetGamepadAxisValues();
 	
+	// Retrieve a vector of gamepad names
 	std::vector<std::string> GetListOfGamepads();
+
+	// Using GetListOfGamepads pass in a string to set the active gamepad
 	void SetGamepad(std::string sGamepad);
 
 private:
 
-	std::string m_sActiveGamepad;
 	int m_nWheelDelta;
 	bool m_bRelativeMode;
 

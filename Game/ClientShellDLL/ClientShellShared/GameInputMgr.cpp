@@ -6,7 +6,7 @@
 #include <dinput.h>
 #include "SDLDInput8Conversion.h"
 	
-
+extern VarTrack g_vtGamepadName;
 
 GameInputMgr* g_pGameInputMgr = nullptr;
 
@@ -83,6 +83,7 @@ GameInputMgr::GameInputMgr()
 	m_nWheelDelta = 0;
 	m_bRelativeMode = false;
 	m_pGamepad = nullptr;
+	m_sActiveGamepad = "";
 
 #ifdef USE_OLD_INPUT
 	return;
@@ -497,12 +498,21 @@ bool GameInputMgr::EnableDevice(InputMgr* pInputMgr, const char* pDeviceName)
 	char szDeviceName[INPUTNAME_LEN];
 	auto nDeviceType = g_pGameInputMgr->GetDeviceTypeFromName(pDeviceName);
 
+	// Don't enable gamepad until we have our cshell.dll setup!!
+	// Easiest way to detect that here, is by checking is gamepadname is init
+	if (!g_vtGamepadName.IsInitted() && nDeviceType == DEVICE_TYPE_GAMEPAD)
+	{
+		return false;
+	}
+
 	bool bAlreadyEnabled = g_pGameInputMgr->IsDeviceEnabled(pDeviceName);
 
 	if (bAlreadyEnabled)
 	{
 		return true;
 	}
+
+
 
 	g_pLTClient->CPrint("[GameInputMgr::EnableDevice] Enabling device [%s]", pDeviceName);
 
@@ -610,22 +620,28 @@ bool GameInputMgr::EnableDevice(InputMgr* pInputMgr, const char* pDeviceName)
 		}
 
 		// Open it! 
-		SDL_GameController* pGamepad = nullptr;
-		for (int i = 0; i < SDL_NumJoysticks(); ++i) {
-			if (SDL_IsGameController(i)) {
-				pGamepad = SDL_GameControllerOpen(i);
-				if (pGamepad) {
-					break;
-				}
-				else {
-					g_pLTClient->CPrint("[GameInputMgr::EnableDevice] Could not open gamepad [%d] due to error [%s]", i, SDL_GetError());
-				}
-			}
-		}
+		auto vGamepads = g_pGameInputMgr->GetListOfGamepads();
 
-		if (!pGamepad)
+		if (vGamepads.size() == 0)
 		{
 			return false;
+		}
+
+		char szGamepadName[128] = "";
+
+		if (g_vtGamepadName.IsInitted())
+		{
+			g_vtGamepadName.GetStr(szGamepadName);
+		}
+
+		// If it's blank, just enable the first one
+		if (stricmp(szGamepadName, "") == 0)
+		{
+			g_pGameInputMgr->SetGamepad(vGamepads.at(0));
+		}
+		else // Otherwise enable our selected one!
+		{
+			g_pGameInputMgr->SetGamepad(szGamepadName);
 		}
 
 		// Create a template to hold basic constant info
@@ -664,8 +680,7 @@ bool GameInputMgr::EnableDevice(InputMgr* pInputMgr, const char* pDeviceName)
 		delete pTemplateBinding;
 		pTemplateBinding = nullptr;
 
-		// Take ownership, and add gamepad to our list of enabled devices
-		g_pGameInputMgr->m_pGamepad = pGamepad;
+		// Add gamepad to our list of enabled devices
 		g_pGameInputMgr->m_EnabledDevices.push_back(nDeviceType);
 
 		return true;
@@ -1624,6 +1639,12 @@ void GameInputMgr::SetGamepad(std::string sGamepad)
 			SDL_GameControllerClose(pGamepad);
 			pGamepad = nullptr;
 		}
+	}
+
+	// Set our gamepad name
+	if (g_vtGamepadName.IsInitted())
+	{
+		g_vtGamepadName.SetStr(sGamepad.c_str());
 	}
 
 	m_sActiveGamepad = sGamepad;
