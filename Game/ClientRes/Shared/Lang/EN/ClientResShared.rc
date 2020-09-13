@@ -1360,8 +1360,8 @@ END
 STRINGTABLE
 BEGIN
     IDS_GAMEPAD_AXIS_ACCEL  "Axis Acceleration"
-    IDS_GAMEPAD_DEADZONE_X  "Deadzone (X-Axis)"
-    IDS_GAMEPAD_DEADZONE_Y  "Deadzone (Y-Axis)"
+    IDS_GAMEPAD_DEADZONE_X  "Deadzone (Left Analog Stick)"
+    IDS_GAMEPAD_DEADZONE_Y  "Deadzone (Right Analog Stick)"
     IDS_GAMEPAD_DEADZONE_TRIGGERS "Deadzone (Triggers)"
     IDS_HELP_GAMEPAD_SENSE  "Set the sensitivity of the stick/trigger."
     IDS_HELP_GAMEPAD_DEADZONE 

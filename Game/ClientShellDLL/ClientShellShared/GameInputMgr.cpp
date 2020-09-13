@@ -882,7 +882,6 @@ bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, cons
 
 	LTStrCpy(pBinding->szDevice, pDeviceName, sizeof(pBinding->szDevice));
 	LTStrCpy(pDeviceBinding->strDeviceName, pDeviceName, sizeof(pDeviceBinding->strDeviceName));
-	// I will never stop cursing this betrayal.
 	LTStrCpy(pDeviceBinding->strRealName, pRealName, sizeof(pDeviceBinding->strRealName));
 
 

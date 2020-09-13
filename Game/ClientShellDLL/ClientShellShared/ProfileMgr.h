@@ -223,8 +223,8 @@ public:
 	int			m_nGamepadSensitivityX;
 	int			m_nGamepadSensitivityY;
 	int			m_nAxisAcceleration;
-	int			m_nDeadzoneX;
-	int			m_nDeadzoneY;
+	int			m_nDeadzoneLeftAnalog;
+	int			m_nDeadzoneRightAnalog;
 	int			m_nTriggerDeadzone;
 
 	//****************** multiplayer

@@ -45,8 +45,8 @@ CScreenJoystick::CScreenJoystick()
 	m_nSensitivityX = 0;
 	m_nSensitivityY = 0;
 	m_nAxisAcceleration = 0;
-	m_nDeadzoneX = 0;
-	m_nDeadzoneY = 0;
+	m_nDeadzoneLeftAnalog = 0;
+	m_nDeadzoneRightAnalog = 0;
 	m_nTriggerDeadzone = 0;
 
 }
@@ -93,11 +93,11 @@ LTBOOL CScreenJoystick::Build()
 	m_pSensitivityYCtrl->SetSliderIncrement(1);
 
 	// Axis deadzone
-	m_pSensitivityYCtrl = AddSlider(IDS_GAMEPAD_DEADZONE_X, IDS_HELP_GAMEPAD_DEADZONE, kGap, kWidth, -1, &m_nDeadzoneX);
+	m_pSensitivityYCtrl = AddSlider(IDS_GAMEPAD_DEADZONE_X, IDS_HELP_GAMEPAD_DEADZONE, kGap, kWidth, -1, &m_nDeadzoneLeftAnalog);
 	m_pSensitivityYCtrl->SetSliderRange(nMin, nMax);
 	m_pSensitivityYCtrl->SetSliderIncrement(1);
 
-	m_pSensitivityYCtrl = AddSlider(IDS_GAMEPAD_DEADZONE_Y, IDS_HELP_GAMEPAD_DEADZONE, kGap, kWidth, -1, &m_nDeadzoneY);
+	m_pSensitivityYCtrl = AddSlider(IDS_GAMEPAD_DEADZONE_Y, IDS_HELP_GAMEPAD_DEADZONE, kGap, kWidth, -1, &m_nDeadzoneRightAnalog);
 	m_pSensitivityYCtrl->SetSliderRange(nMin, nMax);
 	m_pSensitivityYCtrl->SetSliderIncrement(1);
 
@@ -168,8 +168,8 @@ void CScreenJoystick::OnFocus(LTBOOL bFocus)
 
 		m_nAxisAcceleration = pProfile->m_nAxisAcceleration;
 
-		m_nDeadzoneX = pProfile->m_nDeadzoneX;
-		m_nDeadzoneY = pProfile->m_nDeadzoneY;
+		m_nDeadzoneLeftAnalog = pProfile->m_nDeadzoneLeftAnalog;
+		m_nDeadzoneRightAnalog = pProfile->m_nDeadzoneRightAnalog;
 		m_nTriggerDeadzone = pProfile->m_nTriggerDeadzone;
 
 	
@@ -198,8 +198,8 @@ void CScreenJoystick::OnFocus(LTBOOL bFocus)
 
 		pProfile->m_nAxisAcceleration = m_nAxisAcceleration;
 
-		pProfile->m_nDeadzoneX = m_nDeadzoneX;
-		pProfile->m_nDeadzoneY = m_nDeadzoneY;
+		pProfile->m_nDeadzoneLeftAnalog = m_nDeadzoneLeftAnalog;
+		pProfile->m_nDeadzoneRightAnalog = m_nDeadzoneRightAnalog;
 		pProfile->m_nTriggerDeadzone = m_nTriggerDeadzone;
 
 		pProfile->ApplyJoystick();

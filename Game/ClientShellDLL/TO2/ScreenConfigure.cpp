@@ -383,11 +383,11 @@ void CScreenConfigure::SetControlText(CLTGUICtrl *pCtrl)
 
 			strcat( strControls, szDeviceObjectName );
 
-			if (strstr(pData->strRealName[2], "P") != nullptr)
+			if (strstr(pData->strRealName[2], "#P") != nullptr)
 			{
 				strcat(strControls, "+");
 			}
-			else if (strstr(pData->strRealName[2], "N") != nullptr)
+			else if (strstr(pData->strRealName[2], "#N") != nullptr)
 			{
 				strcat(strControls, "-");
 			}
