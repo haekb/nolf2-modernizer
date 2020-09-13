@@ -1353,6 +1353,21 @@ BEGIN
     IDS_ACTIONSTRING_AXIS_Y "Axis2"
     IDS_CTRL_CONTROLS       "Controller"
     IDS_ACTIVE_GAMEPAD      "Active Gamepad"
+    IDS_GAMEPAD_SENSITIVITY_X "Sensitivity (X-Axis)"
+    IDS_GAMEPAD_SENSITIVITY_Y "Sensitivity (Y-Axis)"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_GAMEPAD_AXIS_ACCEL  "Axis Acceleration"
+    IDS_GAMEPAD_DEADZONE_X  "Deadzone (X-Axis)"
+    IDS_GAMEPAD_DEADZONE_Y  "Deadzone (Y-Axis)"
+    IDS_GAMEPAD_DEADZONE_TRIGGERS "Deadzone (Triggers)"
+    IDS_HELP_GAMEPAD_SENSE  "Set the sensitivity of the stick/trigger."
+    IDS_HELP_GAMEPAD_DEADZONE 
+                            "Determines how far you need to move the analog stick/trigger before the input is recorded in-game."
+    IDS_HELP_GAMEPAD_AXIS_ACCEL 
+                            "Speeds up the analog stick the longer you hold it in a direction."
 END
 
 #endif    // English (United States) resources

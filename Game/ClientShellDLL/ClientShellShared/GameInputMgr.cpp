@@ -358,6 +358,13 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 				bool bPassesDeadzone = nValue > pAction->nRangeLow;
 				bool bPassesTriggerDeadzone = nValue > 100;
 
+				float fAxisAccelScale = (float)GetConsoleInt("GamepadAxisAcceleration", 1);
+				// Scale it down
+				if (fAxisAccelScale > 0)
+				{
+					fAxisAccelScale /= 5000.0;
+				}
+
 				// Oh, it's a negative range value? Then check it again.
 				if (pAction->nRangeLow < 0)
 				{
@@ -369,8 +376,10 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 				{
 					if (bPassesSpecialDeadzone)
 					{
+
+
 						//g_pLTClient->CPrint("Axis-X RAW: %d", nValue);
-						fAxisXAccel += 0.0005f * g_pLTClient->GetFrameTime();
+						fAxisXAccel += fAxisAccelScale * g_pLTClient->GetFrameTime();
 
 						fAxisXAccel = Min(0.001f, fAxisXAccel);
 
@@ -397,7 +406,7 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 					if (bPassesSpecialDeadzone)
 					{
 						//g_pLTClient->CPrint("Axis-Y RAW: %d", nValue);
-						fAxisYAccel += 0.0005f * g_pLTClient->GetFrameTime();
+						fAxisYAccel += fAxisAccelScale * g_pLTClient->GetFrameTime();
 
 						fAxisYAccel = Min(0.001f, fAxisYAccel);
 

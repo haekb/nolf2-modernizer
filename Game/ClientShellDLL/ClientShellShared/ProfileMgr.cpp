@@ -225,6 +225,13 @@ CUserProfile::CUserProfile()
 	m_bUseJoystick = LTFALSE;
 	memset(m_nAxis,0,sizeof(m_nAxis));
 
+	m_nGamepadSensitivityX = 0;
+	m_nGamepadSensitivityY = 0;
+	m_nAxisAcceleration = 0;
+	m_nDeadzoneX = 0;
+	m_nDeadzoneY = 0;
+	m_nTriggerDeadzone = 0;
+
 	//game options
 	m_nDifficulty = 1;
     m_nSubtitles  = 0;
@@ -459,6 +466,17 @@ void CUserProfile::LoadControls()
 	m_nVehicleTurn = m_buteMgr.GetInt(s_aTagName,"VehicleTurnRate",100);
 
 	m_bUseJoystick = (LTBOOL)m_buteMgr.GetInt(s_aTagName,"UseJoystick",0);
+
+	// Gamepad stuff
+	m_nGamepadSensitivityX = m_buteMgr.GetInt(s_aTagName, "GamepadSensitivityX", 5);
+	m_nGamepadSensitivityY = m_buteMgr.GetInt(s_aTagName, "GamepadSensitivityY", 4);
+
+	m_nAxisAcceleration = m_buteMgr.GetInt(s_aTagName, "GamepadAxisAcceleration", 3);
+
+	m_nDeadzoneX = m_buteMgr.GetInt(s_aTagName, "GamepadDeadzoneX", 4);
+	m_nDeadzoneY = m_buteMgr.GetInt(s_aTagName, "GamepadDeadzoneY", 4);
+
+	m_nTriggerDeadzone = m_buteMgr.GetInt(s_aTagName, "GamepadDeadzoneTrigger", 1);
 
 	for (int a = 0; a < g_pProfileMgr->GetNumAxis(); a++)
 	{
@@ -926,8 +944,11 @@ void CUserProfile::ApplyBindings()
 					LTStrCpy(downTrigger, sRealName.c_str(), sizeof(downTrigger));
 				}
 
-				g_pLTClient->AddBinding(strDeviceName[d], upTrigger, upStr, 4500.0f, 32768.0f);
-				g_pLTClient->AddBinding(strDeviceName[d], downTrigger, downStr, -4500.0f, -32768.0f);
+				float fDeadzoneX = (float)GetConsoleInt("GamepadDeadzoneX", 4) * 1000.0f;
+				float fDeadzoneY = (float)GetConsoleInt("GamepadDeadzoneY", 4) * -1000.0f;
+
+				g_pLTClient->AddBinding(strDeviceName[d], upTrigger, upStr, fDeadzoneX, 32768.0f);
+				g_pLTClient->AddBinding(strDeviceName[d], downTrigger, downStr, fDeadzoneY, -32768.0f);
 			}
 		}
 				
@@ -1250,10 +1271,31 @@ void CUserProfile::ApplyControls()
 	WriteConsoleInt("UseJoystick",(int)m_bUseJoystick);
 }
 
-// This function is no longer needed
 void CUserProfile::ApplyJoystick()
 {
+
+	WriteConsoleInt("GamepadSensitivityX", m_nGamepadSensitivityX);
+	WriteConsoleInt("GamepadSensitivityY", m_nGamepadSensitivityY);
+
+	WriteConsoleInt("GamepadAxisAcceleration", m_nAxisAcceleration);
+
+	WriteConsoleInt("GamepadDeadzoneX", m_nDeadzoneX);
+	WriteConsoleInt("GamepadDeadzoneY", m_nDeadzoneY);
+	WriteConsoleInt("GamepadDeadzoneTrigger", m_nTriggerDeadzone);
+
+	if (!m_bUseJoystick)
+	{
+		WriteConsoleInt("UseJoystick", 0);
+		return;
+	}
+
+	WriteConsoleInt("UseJoystick", 1);
+
+	ApplyBindings();
+
 	return;
+	// This function is no longer needed
+
 	uint32 devType = DEVICETYPE_UNKNOWN;
 	if (g_pGameClientShell->HasGamepad())
 		devType = DEVICETYPE_GAMEPAD;

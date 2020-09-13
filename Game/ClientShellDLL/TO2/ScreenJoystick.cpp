@@ -34,6 +34,21 @@ CScreenJoystick::CScreenJoystick()
 	memset(m_nAxis,0,sizeof(m_nAxis));
 	memset(m_nPOV,0,sizeof(m_nPOV));
 	m_pActiveController = nullptr;
+
+	m_pSensitivityXCtrl = nullptr;
+	m_pSensitivityYCtrl = nullptr;
+	m_pAxisAccelerationCtrl = nullptr;
+	m_pDeadzoneXCtrl = nullptr;
+	m_pDeadzoneYCtrl = nullptr;
+	m_pTriggerDeadzoneCtrl = nullptr;
+
+	m_nSensitivityX = 0;
+	m_nSensitivityY = 0;
+	m_nAxisAcceleration = 0;
+	m_nDeadzoneX = 0;
+	m_nDeadzoneY = 0;
+	m_nTriggerDeadzone = 0;
+
 }
 
 CScreenJoystick::~CScreenJoystick()
@@ -50,65 +65,45 @@ LTBOOL CScreenJoystick::Build()
 	uint8 nLarge = g_pLayoutMgr->GetScreenCustomInt(SCREEN_ID_JOYSTICK,"HeaderFontSize");
 
 	auto vGamepads = g_pGameInputMgr->GetListOfGamepads();
-	m_pActiveController = AddCycle(IDS_ACTIVE_GAMEPAD, NULL, kGap, NULL, kDefaultPos, LTTRUE);
+	m_pActiveController = AddCycle(IDS_ACTIVE_GAMEPAD, NULL, kGap, NULL, kDefaultPos, LTFALSE);
 	for (auto sGamepad : vGamepads)
 	{
 		m_pActiveController->AddString(sGamepad.c_str());
 	}
-	m_pActiveController->SetFont(NULL, nLarge);
 	m_pActiveController->Enable(true);
 
 	vGamepads.clear();
-	
-	/*
-	CLTGUICycleCtrl *pCtrl = AddCycle(IDS_JOYSTICK_AXIS, NULL, kGap, NULL, kDefaultPos, LTTRUE );
-	pCtrl->AddString(LoadTempString(IDS_JOYSTICK_ACTION));
-	pCtrl->SetFont(NULL,nLarge);
-	m_nextPos.y += 8;
 
-	for (int axis = 0; axis < g_pProfileMgr->GetNumAxis(); axis++)
-	{
-		CDeviceAxisData *pAxisData = g_pProfileMgr->GetAxisData(axis);
-		if (!pAxisData || !strlen(pAxisData->m_sName)) continue;
+	// Gamepad sensitivity
+	int nMin = 0;// int(g_vtMouseMinSensitivity.GetFloat());
+	int nMax = 10;// int(g_vtMouseMaxSensitivity.GetFloat());
 
-		CLTGUICycleCtrl *pCtrl = AddCycle(pAxisData->m_sName, IDS_HELP_AXIS, kGap, &m_nAxis[axis] );
-		pCtrl->SetParam1(axis);
-		pCtrl->AddString(LoadTempString(IDS_JOYSTICK_AXISNONE));
+	// Axis sensitivity
+	m_pSensitivityXCtrl = AddSlider(IDS_GAMEPAD_SENSITIVITY_X, IDS_HELP_GAMEPAD_SENSE, kGap, kWidth, -1, &m_nSensitivityX);
+	m_pSensitivityXCtrl->SetSliderRange(nMin, nMax);
+	m_pSensitivityXCtrl->SetSliderIncrement(1);
 
-		switch (pAxisData->m_nType)
-		{
-			case CONTROLTYPE_XAXIS:
-			case CONTROLTYPE_RXAXIS:
-			case CONTROLTYPE_ZAXIS:
-				pCtrl->AddString(LoadTempString(IDS_JOYSTICK_TURN));
-				pCtrl->AddString(LoadTempString(IDS_JOYSTICK_STRAFE));
-				break;
-			case CONTROLTYPE_YAXIS:
-			case CONTROLTYPE_RYAXIS:
-			case CONTROLTYPE_RZAXIS:
-				pCtrl->AddString(LoadTempString(IDS_JOYSTICK_LOOK));
-				pCtrl->AddString(LoadTempString(IDS_JOYSTICK_MOVE));
-				pCtrl->AddString(LoadTempString(IDS_JOYSTICK_INVERT));
-				break;
-		}
+	m_pSensitivityYCtrl = AddSlider(IDS_GAMEPAD_SENSITIVITY_Y, IDS_HELP_GAMEPAD_SENSE, kGap, kWidth, -1, &m_nSensitivityY);
+	m_pSensitivityYCtrl->SetSliderRange(nMin, nMax);
+	m_pSensitivityYCtrl->SetSliderIncrement(1);
 
-//		pCtrl->NotifyOnChange(CMD_UPDATE,this);
-	}
+	// Axis accel
+	m_pSensitivityYCtrl = AddSlider(IDS_GAMEPAD_AXIS_ACCEL, IDS_HELP_GAMEPAD_AXIS_ACCEL, kGap, kWidth, -1, &m_nAxisAcceleration);
+	m_pSensitivityYCtrl->SetSliderRange(nMin, nMax);
+	m_pSensitivityYCtrl->SetSliderIncrement(1);
 
-	for (int POV = 0; POV < g_pProfileMgr->GetNumPOV(); POV++)
-	{
-		CDevicePOVData *pPOVData = g_pProfileMgr->GetPOVData(POV);
-		if (!pPOVData || !strlen(pPOVData->m_sName)) continue;
+	// Axis deadzone
+	m_pSensitivityYCtrl = AddSlider(IDS_GAMEPAD_DEADZONE_X, IDS_HELP_GAMEPAD_DEADZONE, kGap, kWidth, -1, &m_nDeadzoneX);
+	m_pSensitivityYCtrl->SetSliderRange(nMin, nMax);
+	m_pSensitivityYCtrl->SetSliderIncrement(1);
 
-		CLTGUICycleCtrl *pCtrl = AddCycle(pPOVData->m_sName, IDS_HELP_POV, kGap, &m_nPOV[POV] );
-		pCtrl->SetParam1(POV);
-		pCtrl->AddString(LoadTempString(IDS_JOYSTICK_AXISNONE));
+	m_pSensitivityYCtrl = AddSlider(IDS_GAMEPAD_DEADZONE_Y, IDS_HELP_GAMEPAD_DEADZONE, kGap, kWidth, -1, &m_nDeadzoneY);
+	m_pSensitivityYCtrl->SetSliderRange(nMin, nMax);
+	m_pSensitivityYCtrl->SetSliderIncrement(1);
 
-		pCtrl->AddString(LoadTempString(IDS_POV_LOOK));
-		pCtrl->AddString(LoadTempString(IDS_POV_MOVE));
-	}
-
-	*/
+	m_pSensitivityYCtrl = AddSlider(IDS_GAMEPAD_DEADZONE_TRIGGERS, IDS_HELP_GAMEPAD_DEADZONE, kGap, kWidth, -1, &m_nTriggerDeadzone);
+	m_pSensitivityYCtrl->SetSliderRange(nMin, nMax);
+	m_pSensitivityYCtrl->SetSliderIncrement(1);
 
 	// Make sure to call the base class
 	if (! CBaseScreen::Build()) return LTFALSE;
@@ -168,6 +163,15 @@ void CScreenJoystick::OnFocus(LTBOOL bFocus)
 			}
 		}
 
+		m_nSensitivityX = pProfile->m_nGamepadSensitivityX;
+		m_nSensitivityY = pProfile->m_nGamepadSensitivityY;
+
+		m_nAxisAcceleration = pProfile->m_nAxisAcceleration;
+
+		m_nDeadzoneX = pProfile->m_nDeadzoneX;
+		m_nDeadzoneY = pProfile->m_nDeadzoneY;
+		m_nTriggerDeadzone = pProfile->m_nTriggerDeadzone;
+
 	
         UpdateData(LTFALSE);
 	}
@@ -188,6 +192,15 @@ void CScreenJoystick::OnFocus(LTBOOL bFocus)
 		auto pString = m_pActiveController->GetString(m_pActiveController->GetSelIndex());
 		auto sString = pString->GetText();
 		g_pGameInputMgr->SetGamepad(sString);
+
+		pProfile->m_nGamepadSensitivityX = m_nSensitivityX;
+		pProfile->m_nGamepadSensitivityY = m_nSensitivityY;
+
+		pProfile->m_nAxisAcceleration = m_nAxisAcceleration;
+
+		pProfile->m_nDeadzoneX = m_nDeadzoneX;
+		pProfile->m_nDeadzoneY = m_nDeadzoneY;
+		pProfile->m_nTriggerDeadzone = m_nTriggerDeadzone;
 
 		pProfile->ApplyJoystick();
 		pProfile->Save();
