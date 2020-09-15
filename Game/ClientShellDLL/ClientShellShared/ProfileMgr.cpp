@@ -476,7 +476,7 @@ void CUserProfile::LoadControls()
 	m_nDeadzoneLeftAnalog = m_buteMgr.GetInt(s_aTagName, "GamepadDeadzoneLeftAnalog", 4);
 	m_nDeadzoneRightAnalog = m_buteMgr.GetInt(s_aTagName, "GamepadDeadzoneRightAnalog", 4);
 
-	m_nTriggerDeadzone = m_buteMgr.GetInt(s_aTagName, "GamepadDeadzoneTrigger", 1);
+	m_nTriggerDeadzone = m_buteMgr.GetInt(s_aTagName, "GamepadDeadzoneTriggers", 1);
 
 	for (int a = 0; a < g_pProfileMgr->GetNumAxis(); a++)
 	{
@@ -682,7 +682,9 @@ void CUserProfile::Save(bool bForceClose /*= false*/)
 void CUserProfile::SaveControls()
 {
 	//************************ save bindings
-	strcpy(s_aTagName,"Bindings");
+	//strcpy(s_aTagName,"Bindings");
+	LTStrCpy(s_aTagName, "Bindings", 30);
+
 	for (int c = 0; c < g_kNumCommands; c++)
 	{
 		if ( g_CommandArray[c].nCommandID < 0 )
@@ -714,7 +716,8 @@ void CUserProfile::SaveControls()
 	}
 
 	//************************ save controls
-	strcpy(s_aTagName,"Controls");
+	//strcpy(s_aTagName,"Controls");
+	LTStrCpy(s_aTagName, "Controls", 30);
 
 	//save mouse
 	m_buteMgr.SetInt(s_aTagName,"InvertMouse",(int)m_bInvertY);
@@ -731,6 +734,18 @@ void CUserProfile::SaveControls()
 
 	m_buteMgr.SetInt(s_aTagName,"UseJoystick",(int)m_bUseJoystick);
 
+	// Gamepad stuff
+	m_buteMgr.SetInt(s_aTagName, "GamepadSensitivityX", m_nGamepadSensitivityX);
+	m_buteMgr.SetInt(s_aTagName, "GamepadSensitivityY", m_nGamepadSensitivityY);
+
+	m_buteMgr.SetInt(s_aTagName, "GamepadAxisAcceleration", m_nAxisAcceleration);
+
+	m_buteMgr.SetInt(s_aTagName, "GamepadDeadzoneLeftAnalog", m_nDeadzoneLeftAnalog);
+	m_buteMgr.SetInt(s_aTagName, "GamepadDeadzoneRightAnalog", m_nDeadzoneRightAnalog);
+
+	m_buteMgr.SetInt(s_aTagName, "GamepadDeadzoneTriggers", m_nTriggerDeadzone);
+
+	/*
 	for (int a = 0; a < g_pProfileMgr->GetNumAxis(); a++)
 	{
 		char szAxis[8] = "";
@@ -738,6 +753,7 @@ void CUserProfile::SaveControls()
 		m_buteMgr.SetInt(s_aTagName,szAxis,(int)m_nAxis[a]);
 		
 	}
+	*/
 }
 
 
@@ -928,11 +944,13 @@ void CUserProfile::ApplyBindings()
 
 					std::string sRealName = pLeftAxisPositive->strRealName[d];
 					sRealName = sRealName.substr(2);
+					pLeftAxisPositive->nDeviceObjectId[d] = atoi(sRealName.c_str());
 					sRealName = "##" + sRealName;
 
 					LTStrCpy(upTrigger, sRealName.c_str(), sizeof(upTrigger));
 
 					// Grab deadzone...this could be done a lot better.
+
 
 					// Left Axis
 					if (pLeftAxisPositive->nDeviceObjectId[d] == 16 || pLeftAxisPositive->nDeviceObjectId[d] == 17)
@@ -958,22 +976,23 @@ void CUserProfile::ApplyBindings()
 
 					std::string sRealName = pLeftAxisNegative->strRealName[d];
 					sRealName = sRealName.substr(2);
+					pLeftAxisNegative->nDeviceObjectId[d] = atoi(sRealName.c_str());
 					sRealName = "##" + sRealName;
 
 					LTStrCpy(downTrigger, sRealName.c_str(), sizeof(downTrigger));
 
 					// Left Axis
-					if (pLeftAxisPositive->nDeviceObjectId[d] == 16 || pLeftAxisPositive->nDeviceObjectId[d] == 17)
+					if (pLeftAxisNegative->nDeviceObjectId[d] == 16 || pLeftAxisNegative->nDeviceObjectId[d] == 17)
 					{
 						fDeadzone = (float)GetConsoleInt("GamepadDeadzoneLeftAnalog", 4) * 1000.0f;
 					}
 					// Right Axis
-					else if (pLeftAxisPositive->nDeviceObjectId[d] == 18 || pLeftAxisPositive->nDeviceObjectId[d] == 19)
+					else if (pLeftAxisNegative->nDeviceObjectId[d] == 18 || pLeftAxisNegative->nDeviceObjectId[d] == 19)
 					{
 						fDeadzone = (float)GetConsoleInt("GamepadDeadzoneRightAnalog", 4) * 1000.0f;
 					}
 					// Triggers
-					else if (pLeftAxisPositive->nDeviceObjectId[d] == 20 || pLeftAxisPositive->nDeviceObjectId[d] == 21)
+					else if (pLeftAxisNegative->nDeviceObjectId[d] == 20 || pLeftAxisNegative->nDeviceObjectId[d] == 21)
 					{
 						fDeadzone = (float)GetConsoleInt("GamepadDeadzoneTriggers", 4) * 1000.0f;
 					}
@@ -1313,7 +1332,7 @@ void CUserProfile::ApplyJoystick()
 
 	WriteConsoleInt("GamepadDeadzoneLeftAnalog", m_nDeadzoneLeftAnalog);
 	WriteConsoleInt("GamepadDeadzoneRightAnalog", m_nDeadzoneRightAnalog);
-	WriteConsoleInt("GamepadDeadzoneTrigger", m_nTriggerDeadzone);
+	WriteConsoleInt("GamepadDeadzoneTriggers", m_nTriggerDeadzone);
 
 	if (!m_bUseJoystick)
 	{

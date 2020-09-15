@@ -196,6 +196,13 @@ void CScreenJoystick::OnFocus(LTBOOL bFocus)
 		pProfile->m_nGamepadSensitivityX = m_nSensitivityX;
 		pProfile->m_nGamepadSensitivityY = m_nSensitivityY;
 
+		char strConsole[128];
+		sprintf(strConsole, "scale \"%s\" \"%s\" %f", "##gamepad", "##18", m_nSensitivityX / 800.0f);//fBaseScale + ((float)nMouseSensitivity * fScaleIncrement));
+		g_pLTClient->RunConsoleString(strConsole);
+
+		sprintf(strConsole, "scale \"%s\" \"%s\" %f", "##gamepad", "##19", m_nSensitivityY / 800.0f);//fBaseScale + ((float)nMouseSensitivity * fScaleIncrement));
+		g_pLTClient->RunConsoleString(strConsole);
+
 		pProfile->m_nAxisAcceleration = m_nAxisAcceleration;
 
 		pProfile->m_nDeadzoneLeftAnalog = m_nDeadzoneLeftAnalog;
