@@ -354,9 +354,20 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 
 				auto nValue = pGamepadAxis[pBinding->nGamepadAxis].nValue;
 
-				bool bPassesSpecialDeadzone = nValue > 4000 || nValue < -4000;
 				bool bPassesDeadzone = nValue > pAction->nRangeLow;
-				bool bPassesTriggerDeadzone = nValue > 100;
+
+				// Oh we're negative? Do the check again!
+				
+				if (pAction->nRangeHigh < 0)
+				{
+					bPassesDeadzone = nValue < pAction->nRangeLow;
+				}
+				// Also do the check if we're Axis1 or Axis2. It's hacky, but ehhhh.
+				else if (!bPassesDeadzone && (pAction->nActionCode == -1 || pAction->nActionCode == -2))
+				{
+					// Since Axis1/Axis2 only have one deadzone value..uhh flip the sign on our range
+					bPassesDeadzone = nValue < -pAction->nRangeLow;
+				}
 
 				float fAxisAccelScale = (float)GetConsoleInt("GamepadAxisAcceleration", 1);
 				// Scale it down
@@ -365,20 +376,12 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 					fAxisAccelScale /= 5000.0;
 				}
 
-				// Oh, it's a negative range value? Then check it again.
-				if (pAction->nRangeLow < 0)
-				{
-					bPassesDeadzone = nValue < pAction->nRangeLow;
-				}
-
 				// Handle axis
 				if (pAction->nActionCode == -1)
 				{
-					if (bPassesSpecialDeadzone)
+					if (bPassesDeadzone)
 					{
-
-
-						//g_pLTClient->CPrint("Axis-X RAW: %d", nValue);
+						g_pLTClient->CPrint("Axis-X RAW: %d", nValue);
 						fAxisXAccel += fAxisAccelScale * g_pLTClient->GetFrameTime();
 
 						fAxisXAccel = Min(0.001f, fAxisXAccel);
@@ -403,9 +406,9 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 				}
 				else if (pAction->nActionCode == -2)
 				{
-					if (bPassesSpecialDeadzone)
+					if (bPassesDeadzone)
 					{
-						//g_pLTClient->CPrint("Axis-Y RAW: %d", nValue);
+						g_pLTClient->CPrint("Axis-Y RAW: %d", nValue);
 						fAxisYAccel += fAxisAccelScale * g_pLTClient->GetFrameTime();
 
 						fAxisYAccel = Min(0.001f, fAxisYAccel);
@@ -432,7 +435,7 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 				else if (pAction->nActionCode < 0)
 				{
 #ifdef _DEBUG
-					SDL_Log("Unknown special action code called! Eating it, so we don't crash!!! The action code %d. Passes trigger? %d Passes deadzone? %d", pAction->nActionCode, bPassesTriggerDeadzone, bPassesDeadzone);
+					SDL_Log("Unknown special action code called! Eating it, so we don't crash!!! The action code %d. Passes trigger? %d Passes deadzone? %d", pAction->nActionCode, bPassesDeadzone, bPassesDeadzone);
 #endif
 					// Move onto the next action!
 					pAction = pAction->pNext;
@@ -441,15 +444,7 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 					continue;
 				}
 
-				if (
-					(
-						pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_TRIGGERLEFT || pBinding->nGamepadAxis == SDL_CONTROLLER_AXIS_TRIGGERRIGHT)
-					&& bPassesTriggerDeadzone
-					)
-				{
-					nOn = 1;
-				}
-				else if (bPassesDeadzone)
+				if (bPassesDeadzone)
 				{
 					nOn = 1;
 				}
