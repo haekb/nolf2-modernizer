@@ -145,63 +145,91 @@ void CGameSettings::ImplementSoundQuality()
 
 void CGameSettings::ImplementMouseSensitivity()
 {
+	ImplementSensitivity(DEVICETYPE_MOUSE, GetFloatVar("MouseSensitivity"), GetFloatVar("MouseSensitivity"), g_vtMouseScaleBase.GetFloat(), g_vtMouseScaleInc.GetFloat());
+}
+
+
+void CGameSettings::ImplementGamepadSensitivity()
+{
+	ImplementSensitivity(DEVICETYPE_GAMEPAD, GetFloatVar("GamepadSensitivityX"), GetFloatVar("GamepadSensitivityY"), g_vtMouseScaleBase.GetFloat(), g_vtMouseScaleInc.GetFloat());
+}
+
+void CGameSettings::ImplementSensitivity(int nDeviceType, float fSensitivityX, float fSensitivityY, float fBaseScale, float fIncrements)
+{
 	if (!m_pClientDE) return;
-
-	float nMouseSensitivity = GetFloatVar("MouseSensitivity");
-
-	// get the mouse device name
-
+	
 	char strDevice[128];
-	memset (strDevice, 0, 128);
-    LTRESULT result = m_pClientDE->GetDeviceName (DEVICETYPE_MOUSE, strDevice, 127);
+	memset(strDevice, 0, 128);
+	LTRESULT result = m_pClientDE->GetDeviceName(nDeviceType, strDevice, 127);
 	if (result == LT_OK)
 	{
-		// get mouse x- and y- axis names
+		// get x- and y- axis names
 
 		char strXAxis[32];
-		memset (strXAxis, 0, 32);
+		memset(strXAxis, 0, 32);
 		char strYAxis[32];
-		memset (strYAxis, 0, 32);
+		memset(strYAxis, 0, 32);
 
-        LTBOOL bFoundXAxis = LTFALSE;
-        LTBOOL bFoundYAxis = LTFALSE;
+		LTBOOL bFoundXAxis = LTFALSE;
+		LTBOOL bFoundYAxis = LTFALSE;
 
-		DeviceObject* pList = m_pClientDE->GetDeviceObjects (DEVICETYPE_MOUSE);
-		DeviceObject* ptr = pList;
+		auto pList = m_pClientDE->GetDeviceBindings(nDeviceType);
+		auto ptr = pList;
+
 		while (ptr)
 		{
-			if (ptr->m_ObjectType == CONTROLTYPE_XAXIS)
+			// No action? Skip! (I don't think this is possible, but let's cover our butts.)
+			if (!ptr->pActionHead)
 			{
-				SAFE_STRCPY(strXAxis, "##x-axis");
-                bFoundXAxis = LTTRUE;
+				continue;
 			}
 
-			if (ptr->m_ObjectType == CONTROLTYPE_YAXIS)
+			auto pAction = ptr->pActionHead;
+
+			// We'll need to loop through all the actions, 
+			// in case there's a multi-bind!
+			while (pAction)
 			{
-				SAFE_STRCPY(strYAxis, "##y-axis");
-                bFoundYAxis = LTTRUE;
+				if (stricmp(pAction->strActionName, "Axis1") == 0)
+				{
+					SAFE_STRCPY(strXAxis, ptr->strRealName);
+					bFoundXAxis = LTTRUE;
+				}
+				else if (stricmp(pAction->strActionName, "Axis2") == 0)
+				{
+					SAFE_STRCPY(strYAxis, ptr->strRealName);
+					bFoundYAxis = LTTRUE;
+				}
+				pAction = pAction->pNext;
 			}
 
-			ptr = ptr->m_pNext;
+			// We found everything? Cool, let's get outta here!
+			if (bFoundXAxis && bFoundYAxis)
+			{
+				break;
+			}
+
+			ptr = ptr->pNext;
 		}
-		if (pList) m_pClientDE->FreeDeviceObjects (pList);
+
+		if (pList)
+		{
+			m_pClientDE->FreeDeviceBindings(pList);
+		}
 
 		if (bFoundXAxis && bFoundYAxis)
 		{
 			// run the console string
 
 			char strConsole[64];
-			float fBaseScale = g_vtMouseScaleBase.GetFloat();
-			float fScaleIncrement = g_vtMouseScaleInc.GetFloat();
 
-			sprintf (strConsole, "scale \"%s\" \"%s\" %f", strDevice, strXAxis, fBaseScale + ((float)nMouseSensitivity * fScaleIncrement));
-			m_pClientDE->RunConsoleString (strConsole);
-			sprintf (strConsole, "scale \"%s\" \"%s\" %f", strDevice, strYAxis, fBaseScale + ((float)nMouseSensitivity * fScaleIncrement));
-			m_pClientDE->RunConsoleString (strConsole);
+			sprintf(strConsole, "scale \"%s\" \"%s\" %f", strDevice, strXAxis, fBaseScale + ((float)fSensitivityX * fIncrements));
+			m_pClientDE->RunConsoleString(strConsole);
+			sprintf(strConsole, "scale \"%s\" \"%s\" %f", strDevice, strYAxis, fBaseScale + ((float)fSensitivityY * fIncrements));
+			m_pClientDE->RunConsoleString(strConsole);
 		}
 	}
 }
-
 
 
 
