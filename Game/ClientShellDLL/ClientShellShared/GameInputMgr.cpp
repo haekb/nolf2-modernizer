@@ -1479,6 +1479,11 @@ bool GameInputMgr::ShowInputDevices()
 	return true;
 }
 
+// Sort by device type
+bool BindingListSort(const GIMBinding* b1, const GIMBinding* b2) {
+	return b1->nDeviceType < b2->nDeviceType;
+}
+
 void GameInputMgr::SaveBindings(FILE* pFileIgnore)
 {
 	FILE* pFile;
@@ -1523,7 +1528,12 @@ void GameInputMgr::SaveBindings(FILE* pFileIgnore)
 
 		// Only if scale != 1.0
 		std::string sScaleFormat = "scale \"%s\" \"%s\" %f\n";
-		for (auto pBinding : g_pGameInputMgr->m_pBindingList)
+
+		// Sort it, because that's nice, and the nice people deserve it.
+		std::vector<GIMBinding*> vSortedBindingList = g_pGameInputMgr->m_pBindingList;
+		sort(vSortedBindingList.begin(), vSortedBindingList.end(), BindingListSort);
+
+		for (auto pBinding : vSortedBindingList)
 		{
 			std::string sDeviceName = mDeviceNames.at(pBinding->nDeviceType);
 			// Add enabledevice line if needed
