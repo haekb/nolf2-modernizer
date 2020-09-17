@@ -98,6 +98,7 @@ public:
 	void		ImplementSoundQuality();
 	void		ImplementMouseSensitivity();
 	void		ImplementGamepadSensitivity();
+	void		ImplementGamepadDeadzones();
 
 
 private:

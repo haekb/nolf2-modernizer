@@ -16,6 +16,7 @@
 #include "InterfaceMgr.h"
 
 #include "GameInputMgr.h"
+#include "VarTrack.h"
 
 namespace
 {
@@ -24,6 +25,8 @@ namespace
 }
 
 extern GameInputMgr* g_pGameInputMgr;
+extern VarTrack g_vtMouseMinSensitivity;
+extern VarTrack g_vtMouseMaxSensitivity;
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -75,16 +78,16 @@ LTBOOL CScreenJoystick::Build()
 	vGamepads.clear();
 
 	// Gamepad sensitivity
-	int nMin = 0;// int(g_vtMouseMinSensitivity.GetFloat());
-	int nMax = 10;// int(g_vtMouseMaxSensitivity.GetFloat());
+	int nMin = int(g_vtMouseMinSensitivity.GetFloat());
+	int nMax = int(g_vtMouseMaxSensitivity.GetFloat());
 
 	// Axis sensitivity
 	m_pSensitivityXCtrl = AddSlider(IDS_GAMEPAD_SENSITIVITY_X, IDS_HELP_GAMEPAD_SENSE, kGap, kWidth, -1, &m_nSensitivityX);
-	m_pSensitivityXCtrl->SetSliderRange(nMin, nMax);
+	m_pSensitivityXCtrl->SetSliderRange(nMin + 1, nMax + 1); // We don't want 0!
 	m_pSensitivityXCtrl->SetSliderIncrement(1);
 
 	m_pSensitivityYCtrl = AddSlider(IDS_GAMEPAD_SENSITIVITY_Y, IDS_HELP_GAMEPAD_SENSE, kGap, kWidth, -1, &m_nSensitivityY);
-	m_pSensitivityYCtrl->SetSliderRange(nMin, nMax);
+	m_pSensitivityYCtrl->SetSliderRange(nMin + 1, nMax + 1); // We don't want 0!
 	m_pSensitivityYCtrl->SetSliderIncrement(1);
 
 	// Axis accel

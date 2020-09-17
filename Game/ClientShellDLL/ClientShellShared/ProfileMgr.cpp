@@ -1346,6 +1346,7 @@ void CUserProfile::ApplyJoystick()
 
 	CGameSettings* pSettings = g_pInterfaceMgr->GetSettings();
 	pSettings->ImplementGamepadSensitivity();
+	pSettings->ImplementGamepadDeadzones();
 
 	return;
 	// This function is no longer needed

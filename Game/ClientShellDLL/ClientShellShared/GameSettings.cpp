@@ -154,6 +154,78 @@ void CGameSettings::ImplementGamepadSensitivity()
 	ImplementSensitivity(DEVICETYPE_GAMEPAD, GetFloatVar("GamepadSensitivityX"), GetFloatVar("GamepadSensitivityY"), g_vtMouseScaleBase.GetFloat(), g_vtMouseScaleInc.GetFloat());
 }
 
+void CGameSettings::ImplementGamepadDeadzones()
+{
+	auto pList = m_pClientDE->GetDeviceBindings(DEVICETYPE_GAMEPAD);
+	auto ptr = pList;
+
+	/*
+	{ "##16", "Left Axis X", SDL_CONTROLLER_AXIS_LEFTX + 16, SDL_CONTROLLER_AXIS_LEFTX, true },
+	{ "##17", "Left Axis Y", SDL_CONTROLLER_AXIS_LEFTY + 16, SDL_CONTROLLER_AXIS_LEFTY, true },
+	{ "##18", "Right Axis X", SDL_CONTROLLER_AXIS_RIGHTX + 16, SDL_CONTROLLER_AXIS_RIGHTX, true },
+	{ "##19", "Right Axis Y", SDL_CONTROLLER_AXIS_RIGHTY + 16, SDL_CONTROLLER_AXIS_RIGHTY, true },
+	{ "##20", "Left Trigger", SDL_CONTROLLER_AXIS_TRIGGERLEFT + 16, SDL_CONTROLLER_AXIS_TRIGGERLEFT, true },
+	{ "##21", "Right Trigger", SDL_CONTROLLER_AXIS_TRIGGERRIGHT + 16, SDL_CONTROLLER_AXIS_TRIGGERRIGHT, true },
+	*/
+
+	float fDeadzoneLeftAnalog = GetFloatVar("GamepadDeadzoneLeftAnalog") * 1000.0f;
+	float fDeadzoneRightAnalog = GetFloatVar("GamepadDeadzoneRightAnalog") * 1000.0f;
+	float fDeadzoneTriggers = GetFloatVar("GamepadDeadzoneTriggers") * 1000.0f;
+
+	while (ptr)
+	{
+		// No action? Skip! (I don't think this is possible, but let's cover our butts.)
+		if (!ptr->pActionHead)
+		{
+			continue;
+		}
+
+		float fDeadzoneAmount = -1.0f;
+
+		if (ptr->m_nObjectId == 16 || ptr->m_nObjectId == 17) // Left
+		{
+			fDeadzoneAmount = fDeadzoneLeftAnalog;
+		}
+		else if (ptr->m_nObjectId == 18 || ptr->m_nObjectId == 19) // Right
+		{
+			fDeadzoneAmount = fDeadzoneRightAnalog;
+		}
+		else if(ptr->m_nObjectId == 20 || ptr->m_nObjectId == 21) // Triggers
+		{
+			fDeadzoneAmount = fDeadzoneTriggers;
+		}
+
+		// If we've been set a non-default value, let's set some DEADZONES.
+		if (fDeadzoneAmount != -1.0f)
+		{
+			// Clear the binding
+			m_pClientDE->ClearBinding("##gamepad", ptr->strRealName);
+			auto pAction = ptr->pActionHead;
+
+			while (pAction)
+			{
+				// Make sure we copy over the sign info
+				float fSign = 1.0f;
+				if (pAction->nRangeHigh < 0)
+				{
+					fSign = -1.0f;
+				}
+
+				m_pClientDE->AddBinding("##gamepad", ptr->strRealName, pAction->strActionName, fSign * fDeadzoneAmount, fSign * 32768.0f);
+
+				pAction = pAction->pNext;
+			}
+		}
+		
+		ptr = ptr->pNext;
+	}
+
+	if (pList)
+	{
+		m_pClientDE->FreeDeviceBindings(pList);
+	}
+}
+
 void CGameSettings::ImplementSensitivity(int nDeviceType, float fSensitivityX, float fSensitivityY, float fBaseScale, float fIncrements)
 {
 	if (!m_pClientDE) return;
