@@ -17,6 +17,9 @@ std::map < SDL_Scancode, DInputKey > g_mSDLToDInput;
 // Helper macro
 #define BIND_FUNC(x) m_pInputMgr->x = GameInputMgr::x
 
+// Feature isn't working great right now
+#define DISABLE_AXIS_ACCEL
+
 // Pointer to the Input struct in the engine.
 // If you're building the game code against a different engine version, 
 // you may have to find this again.
@@ -252,6 +255,8 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 	auto pGamepadButtons = g_pGameInputMgr->GetGamepadButtonValues();
 	auto pGamepadAxis = g_pGameInputMgr->GetGamepadAxisValues();
 
+	auto vRotationAxisValues = g_pGameInputMgr->GetRotationalAxisValues(pGamepadAxis);
+
 	fAxisOffsets[0] = 0.0f;
 	fAxisOffsets[1] = 0.0f;
 	fAxisOffsets[2] = 0.0f;
@@ -379,15 +384,18 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 				// Handle axis
 				if (pAction->nActionCode == -1)
 				{
-					if (bPassesDeadzone)
+					if (vRotationAxisValues.x != 0.0f)
 					{
-						g_pLTClient->CPrint("Axis-X RAW: %d", nValue);
+#ifndef DISABLE_AXIS_ACCEL
+						//g_pLTClient->CPrint("Axis-X RAW: %d", nValue);
 						fAxisXAccel += fAxisAccelScale * g_pLTClient->GetFrameTime();
 
 						fAxisXAccel = Min(0.001f, fAxisXAccel);
 
-						float fValue = (float)nValue * (0.0001f + fAxisXAccel);
-
+						float fValue = (float)nValue; *(0.0001f + fAxisXAccel);
+#else
+						float fValue = vRotationAxisValues.x;
+#endif
 						nCurrentMouseX += fValue;
 						fAxisOffsets[0] = (float)(nCurrentMouseX - nPreviousMouseX) * nScale;
 						nPreviousMouseX = nCurrentMouseX;
@@ -406,15 +414,17 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 				}
 				else if (pAction->nActionCode == -2)
 				{
-					if (bPassesDeadzone)
-					{
-						g_pLTClient->CPrint("Axis-Y RAW: %d", nValue);
+					if (vRotationAxisValues.y != 0.0f)
+#ifndef DISABLE_AXIS_ACCEL
+						//g_pLTClient->CPrint("Axis-Y RAW: %d", nValue);
 						fAxisYAccel += fAxisAccelScale * g_pLTClient->GetFrameTime();
 
 						fAxisYAccel = Min(0.001f, fAxisYAccel);
 
 						float fValue = (float)nValue * (0.0001f + fAxisYAccel);
-
+#else
+						float fValue = vRotationAxisValues.y;
+#endif
 						nCurrentMouseY += fValue;
 						fAxisOffsets[1] = (float)(nCurrentMouseY - nPreviousMouseY) * nScale;
 						nPreviousMouseY = nCurrentMouseY;
@@ -1730,6 +1740,66 @@ bool GameInputMgr::SetGamepad(std::string sGamepad)
 	m_pGamepad = pGamepad;
 
 	return true;
+}
+
+LTVector GameInputMgr::GetRotationalAxisValues(std::vector<AxisValue> pGamepadAxisData)
+{
+	LTVector vAxisValues{ 0.0f, 0.0f, 0.0f };
+	float fDeadzone = 0.0f;
+
+	// Okay, we need to find out two rotation axis values (-1 and -2)
+	// Then throw into a vector and calculate the length against our threshold
+	for (auto pBinding : g_pGameInputMgr->m_pBindingList)
+	{
+		auto pDeviceBinding = pBinding->pDeviceBinding;
+		if (!pDeviceBinding)
+		{
+			continue;
+		}
+
+		GameAction* pAction = pDeviceBinding->pActionHead;
+		if (!pAction)
+		{
+			continue;
+		}
+
+		while (pAction)
+		{
+			if (pAction->nActionCode == -1)
+			{
+				vAxisValues.x = pGamepadAxisData[pBinding->nGamepadAxis].nValue / pAction->nRangeHigh;
+				fDeadzone += pAction->nRangeLow;
+			}
+			else if (pAction->nActionCode == -2)
+			{
+				vAxisValues.y = pGamepadAxisData[pBinding->nGamepadAxis].nValue / pAction->nRangeHigh;
+				fDeadzone += pAction->nRangeLow;
+			}
+			pAction = pAction->pNext;
+		}
+	}
+
+	// Average out - These should always be the same, but just in case...
+	fDeadzone /= 2.0f;
+	fDeadzone /= 32767.0f;
+
+	// .Normalize mutates
+	auto vNormalizedAxisValues = vAxisValues;
+	vNormalizedAxisValues.Normalize();
+
+	LTVector vRet = (vNormalizedAxisValues * ((vAxisValues.Length()  - fDeadzone) / (1.0f - fDeadzone)));
+
+	//g_pLTClient->CPrint("vAxisValues = { %f, %f, %f }", vRet.x, vRet.y, vRet.z);
+	//g_pLTClient->CPrint("vAxisValues.Length = %f / fDeadzone = %f", vAxisValues.Length(), fDeadzone);
+
+	// Deadzone check
+	if (vAxisValues.Length() > fDeadzone)
+	{
+		return vRet;
+	}
+	
+	// 0.0f?!
+	return { 0.0f, 0.0f, 0.0f };
 }
 
 GameAction* GameInputMgr::FindAction(const char* szActionName)

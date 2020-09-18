@@ -25,8 +25,8 @@ namespace
 }
 
 extern GameInputMgr* g_pGameInputMgr;
-extern VarTrack g_vtMouseMinSensitivity;
-extern VarTrack g_vtMouseMaxSensitivity;
+extern VarTrack g_vtGamepadMinSensitivity;
+extern VarTrack g_vtGamepadMaxSensitivity;
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -78,34 +78,36 @@ LTBOOL CScreenJoystick::Build()
 	vGamepads.clear();
 
 	// Gamepad sensitivity
-	int nMin = int(g_vtMouseMinSensitivity.GetFloat());
-	int nMax = int(g_vtMouseMaxSensitivity.GetFloat());
+	int nMin = int(g_vtGamepadMinSensitivity.GetFloat());
+	int nMax = int(g_vtGamepadMaxSensitivity.GetFloat());
 
 	// Axis sensitivity
 	m_pSensitivityXCtrl = AddSlider(IDS_GAMEPAD_SENSITIVITY_X, IDS_HELP_GAMEPAD_SENSE, kGap, kWidth, -1, &m_nSensitivityX);
-	m_pSensitivityXCtrl->SetSliderRange(nMin + 1, nMax + 1); // We don't want 0!
-	m_pSensitivityXCtrl->SetSliderIncrement(1);
+	m_pSensitivityXCtrl->SetSliderRange(nMin, nMax); // We don't want 0!
+	m_pSensitivityXCtrl->SetSliderIncrement(5);
+	m_pSensitivityXCtrl->SetNumericDisplay(LTTRUE);
 
 	m_pSensitivityYCtrl = AddSlider(IDS_GAMEPAD_SENSITIVITY_Y, IDS_HELP_GAMEPAD_SENSE, kGap, kWidth, -1, &m_nSensitivityY);
-	m_pSensitivityYCtrl->SetSliderRange(nMin + 1, nMax + 1); // We don't want 0!
-	m_pSensitivityYCtrl->SetSliderIncrement(1);
+	m_pSensitivityYCtrl->SetSliderRange(nMin, nMax); // We don't want 0!
+	m_pSensitivityYCtrl->SetSliderIncrement(5);
+	m_pSensitivityYCtrl->SetNumericDisplay(LTTRUE);
 
 	// Axis accel
 	m_pSensitivityYCtrl = AddSlider(IDS_GAMEPAD_AXIS_ACCEL, IDS_HELP_GAMEPAD_AXIS_ACCEL, kGap, kWidth, -1, &m_nAxisAcceleration);
-	m_pSensitivityYCtrl->SetSliderRange(nMin, nMax);
+	m_pSensitivityYCtrl->SetSliderRange(1, 10);
 	m_pSensitivityYCtrl->SetSliderIncrement(1);
 
 	// Axis deadzone
 	m_pSensitivityYCtrl = AddSlider(IDS_GAMEPAD_DEADZONE_X, IDS_HELP_GAMEPAD_DEADZONE, kGap, kWidth, -1, &m_nDeadzoneLeftAnalog);
-	m_pSensitivityYCtrl->SetSliderRange(nMin, nMax);
+	m_pSensitivityYCtrl->SetSliderRange(1, 20);
 	m_pSensitivityYCtrl->SetSliderIncrement(1);
 
 	m_pSensitivityYCtrl = AddSlider(IDS_GAMEPAD_DEADZONE_Y, IDS_HELP_GAMEPAD_DEADZONE, kGap, kWidth, -1, &m_nDeadzoneRightAnalog);
-	m_pSensitivityYCtrl->SetSliderRange(nMin, nMax);
+	m_pSensitivityYCtrl->SetSliderRange(1, 20);
 	m_pSensitivityYCtrl->SetSliderIncrement(1);
 
 	m_pSensitivityYCtrl = AddSlider(IDS_GAMEPAD_DEADZONE_TRIGGERS, IDS_HELP_GAMEPAD_DEADZONE, kGap, kWidth, -1, &m_nTriggerDeadzone);
-	m_pSensitivityYCtrl->SetSliderRange(nMin, nMax);
+	m_pSensitivityYCtrl->SetSliderRange(1, 20);
 	m_pSensitivityYCtrl->SetSliderIncrement(1);
 
 	// Make sure to call the base class

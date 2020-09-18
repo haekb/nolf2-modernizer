@@ -233,6 +233,9 @@ public:
 	// Using GetListOfGamepads pass in a string to set the active gamepad
 	bool SetGamepad(std::string sGamepad);
 
+	// Only used for gamepad rotation right now...
+	LTVector GetRotationalAxisValues(std::vector<AxisValue> pGamepadAxisData);
+
 private:
 
 	

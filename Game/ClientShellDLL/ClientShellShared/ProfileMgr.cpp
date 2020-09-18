@@ -42,6 +42,8 @@ VarTrack	g_vtMouseMaxSensitivity;
 VarTrack	g_vtMouseMinInputRate;
 VarTrack	g_vtMouseMaxInputRate;
 
+VarTrack	g_vtGamepadMinSensitivity;
+VarTrack	g_vtGamepadMaxSensitivity;
 
 CProfileMgr* g_pProfileMgr = LTNULL;
 
@@ -322,6 +324,9 @@ LTBOOL CUserProfile::Init(const std::string& profileName, LTBOOL bCreate)
 	g_vtMouseMaxSensitivity.Init(g_pLTClient, "MouseSensitivityMax", NULL, 10.0);
 	g_vtMouseMinInputRate.Init(g_pLTClient, "MouseInputRateMin", NULL, 0.0);
 	g_vtMouseMaxInputRate.Init(g_pLTClient, "MouseInputRateMax", NULL, 40.0);
+
+	g_vtGamepadMinSensitivity.Init(g_pLTClient, "GamepadSensitivityMin", NULL, 1.0f);
+	g_vtGamepadMaxSensitivity.Init(g_pLTClient, "GamepadSensitivityMax", NULL, 41.0f);
 
 	LTBOOL bRet = LTFALSE;
 
