@@ -415,6 +415,7 @@ void GameInputMgr::ReadInput(InputMgr* pInputMgr, uint8_t* pActionsOn, float fAx
 				else if (pAction->nActionCode == -2)
 				{
 					if (vRotationAxisValues.y != 0.0f)
+					{
 #ifndef DISABLE_AXIS_ACCEL
 						//g_pLTClient->CPrint("Axis-Y RAW: %d", nValue);
 						fAxisYAccel += fAxisAccelScale * g_pLTClient->GetFrameTime();
