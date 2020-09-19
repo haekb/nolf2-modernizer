@@ -30,8 +30,31 @@ public:
     void OnFocus(LTBOOL bFocus);
 
 protected:
-	void	ClearBindings();
     uint32  OnCommand(uint32 dwCommand, uint32 dwParam1, uint32 dwParam2);
+
+
+	CLTGUICycleCtrl* m_pActiveController;
+
+	CLTGUISlider* m_pSensitivityXCtrl;
+	CLTGUISlider* m_pSensitivityYCtrl;
+
+	CLTGUISlider* m_pAxisAccelerationCtrl;
+
+	CLTGUISlider* m_pDeadzoneXCtrl;
+	CLTGUISlider* m_pDeadzoneYCtrl;
+
+	CLTGUISlider* m_pTriggerDeadzoneCtrl;
+
+	int m_nSensitivityX;
+	int m_nSensitivityY;
+
+	int m_nAxisAcceleration;
+
+	int m_nDeadzoneLeftAnalog;
+	int m_nDeadzoneRightAnalog;
+	int m_nTriggerDeadzone;
+
+	// old
 
 	uint8	m_nAxis[kMaxDeviceAxis];
 	uint8	m_nPOV[kMaxDevicePOV];

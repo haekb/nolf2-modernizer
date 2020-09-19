@@ -15,12 +15,18 @@
 #include "GameSettings.h"
 #include "InterfaceMgr.h"
 
+#include "GameInputMgr.h"
+#include "VarTrack.h"
+
 namespace
 {
 	int kGap = 200;
 	int kWidth = 200;
 }
 
+extern GameInputMgr* g_pGameInputMgr;
+extern VarTrack g_vtGamepadMinSensitivity;
+extern VarTrack g_vtGamepadMaxSensitivity;
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -30,6 +36,21 @@ CScreenJoystick::CScreenJoystick()
 {
 	memset(m_nAxis,0,sizeof(m_nAxis));
 	memset(m_nPOV,0,sizeof(m_nPOV));
+	m_pActiveController = nullptr;
+
+	m_pSensitivityXCtrl = nullptr;
+	m_pSensitivityYCtrl = nullptr;
+	m_pAxisAccelerationCtrl = nullptr;
+	m_pDeadzoneXCtrl = nullptr;
+	m_pDeadzoneYCtrl = nullptr;
+	m_pTriggerDeadzoneCtrl = nullptr;
+
+	m_nSensitivityX = 0;
+	m_nSensitivityY = 0;
+	m_nAxisAcceleration = 0;
+	m_nDeadzoneLeftAnalog = 0;
+	m_nDeadzoneRightAnalog = 0;
+	m_nTriggerDeadzone = 0;
 
 }
 
@@ -46,54 +67,48 @@ LTBOOL CScreenJoystick::Build()
 	kGap = g_pLayoutMgr->GetScreenCustomInt(SCREEN_ID_JOYSTICK,"ColumnWidth");
 	uint8 nLarge = g_pLayoutMgr->GetScreenCustomInt(SCREEN_ID_JOYSTICK,"HeaderFontSize");
 
-	
-	CLTGUICycleCtrl *pCtrl = AddCycle(IDS_JOYSTICK_AXIS, NULL, kGap, NULL, kDefaultPos, LTTRUE );
-	pCtrl->AddString(LoadTempString(IDS_JOYSTICK_ACTION));
-	pCtrl->SetFont(NULL,nLarge);
-	m_nextPos.y += 8;
-
-	for (int axis = 0; axis < g_pProfileMgr->GetNumAxis(); axis++)
+	auto vGamepads = g_pGameInputMgr->GetListOfGamepads();
+	m_pActiveController = AddCycle(IDS_ACTIVE_GAMEPAD, NULL, kGap, NULL, kDefaultPos, LTFALSE);
+	for (auto sGamepad : vGamepads)
 	{
-		CDeviceAxisData *pAxisData = g_pProfileMgr->GetAxisData(axis);
-		if (!pAxisData || !strlen(pAxisData->m_sName)) continue;
-
-		CLTGUICycleCtrl *pCtrl = AddCycle(pAxisData->m_sName, IDS_HELP_AXIS, kGap, &m_nAxis[axis] );
-		pCtrl->SetParam1(axis);
-		pCtrl->AddString(LoadTempString(IDS_JOYSTICK_AXISNONE));
-
-		switch (pAxisData->m_nType)
-		{
-			case CONTROLTYPE_XAXIS:
-			case CONTROLTYPE_RXAXIS:
-			case CONTROLTYPE_ZAXIS:
-				pCtrl->AddString(LoadTempString(IDS_JOYSTICK_TURN));
-				pCtrl->AddString(LoadTempString(IDS_JOYSTICK_STRAFE));
-				break;
-			case CONTROLTYPE_YAXIS:
-			case CONTROLTYPE_RYAXIS:
-			case CONTROLTYPE_RZAXIS:
-				pCtrl->AddString(LoadTempString(IDS_JOYSTICK_LOOK));
-				pCtrl->AddString(LoadTempString(IDS_JOYSTICK_MOVE));
-				pCtrl->AddString(LoadTempString(IDS_JOYSTICK_INVERT));
-				break;
-		}
-
-//		pCtrl->NotifyOnChange(CMD_UPDATE,this);
+		m_pActiveController->AddString(sGamepad.c_str());
 	}
+	m_pActiveController->Enable(true);
 
-	for (int POV = 0; POV < g_pProfileMgr->GetNumPOV(); POV++)
-	{
-		CDevicePOVData *pPOVData = g_pProfileMgr->GetPOVData(POV);
-		if (!pPOVData || !strlen(pPOVData->m_sName)) continue;
+	vGamepads.clear();
 
-		CLTGUICycleCtrl *pCtrl = AddCycle(pPOVData->m_sName, IDS_HELP_POV, kGap, &m_nPOV[POV] );
-		pCtrl->SetParam1(POV);
-		pCtrl->AddString(LoadTempString(IDS_JOYSTICK_AXISNONE));
+	// Gamepad sensitivity
+	int nMin = int(g_vtGamepadMinSensitivity.GetFloat());
+	int nMax = int(g_vtGamepadMaxSensitivity.GetFloat());
 
-		pCtrl->AddString(LoadTempString(IDS_POV_LOOK));
-		pCtrl->AddString(LoadTempString(IDS_POV_MOVE));
-	}
+	// Axis sensitivity
+	m_pSensitivityXCtrl = AddSlider(IDS_GAMEPAD_SENSITIVITY_X, IDS_HELP_GAMEPAD_SENSE, kGap, kWidth, -1, &m_nSensitivityX);
+	m_pSensitivityXCtrl->SetSliderRange(nMin, nMax); // We don't want 0!
+	m_pSensitivityXCtrl->SetSliderIncrement(5);
+	//m_pSensitivityXCtrl->SetNumericDisplay(LTTRUE);
 
+	m_pSensitivityYCtrl = AddSlider(IDS_GAMEPAD_SENSITIVITY_Y, IDS_HELP_GAMEPAD_SENSE, kGap, kWidth, -1, &m_nSensitivityY);
+	m_pSensitivityYCtrl->SetSliderRange(nMin, nMax); // We don't want 0!
+	m_pSensitivityYCtrl->SetSliderIncrement(5);
+	//m_pSensitivityYCtrl->SetNumericDisplay(LTTRUE);
+
+	// Axis accel - Disabled for now, needs a re-write
+	//m_pSensitivityYCtrl = AddSlider(IDS_GAMEPAD_AXIS_ACCEL, IDS_HELP_GAMEPAD_AXIS_ACCEL, kGap, kWidth, -1, &m_nAxisAcceleration);
+	//m_pSensitivityYCtrl->SetSliderRange(1, 10);
+	//m_pSensitivityYCtrl->SetSliderIncrement(1);
+
+	// Axis deadzone
+	m_pSensitivityYCtrl = AddSlider(IDS_GAMEPAD_DEADZONE_X, IDS_HELP_GAMEPAD_DEADZONE, kGap, kWidth, -1, &m_nDeadzoneLeftAnalog);
+	m_pSensitivityYCtrl->SetSliderRange(1, 20);
+	m_pSensitivityYCtrl->SetSliderIncrement(1);
+
+	m_pSensitivityYCtrl = AddSlider(IDS_GAMEPAD_DEADZONE_Y, IDS_HELP_GAMEPAD_DEADZONE, kGap, kWidth, -1, &m_nDeadzoneRightAnalog);
+	m_pSensitivityYCtrl->SetSliderRange(1, 20);
+	m_pSensitivityYCtrl->SetSliderIncrement(1);
+
+	m_pSensitivityYCtrl = AddSlider(IDS_GAMEPAD_DEADZONE_TRIGGERS, IDS_HELP_GAMEPAD_DEADZONE, kGap, kWidth, -1, &m_nTriggerDeadzone);
+	m_pSensitivityYCtrl->SetSliderRange(1, 20);
+	m_pSensitivityYCtrl->SetSliderIncrement(1);
 
 	// Make sure to call the base class
 	if (! CBaseScreen::Build()) return LTFALSE;
@@ -139,6 +154,29 @@ void CScreenJoystick::OnFocus(LTBOOL bFocus)
 			m_nPOV[POV] = pProfile->m_nPOV[POV];
 		}
 
+		// Get our active controller, and set our selected index
+		char szActiveController[128] = "";
+		GetConsoleString("GamepadName", szActiveController, "");
+		for (int i = 0; i < m_pActiveController->GetNumStrings(); i++)
+		{
+			auto pString = m_pActiveController->GetString(i);
+			auto sString = pString->GetText();
+
+			if (stricmp(szActiveController, sString) == 0)
+			{
+				m_pActiveController->SetSelIndex(i);
+			}
+		}
+
+		m_nSensitivityX = pProfile->m_nGamepadSensitivityX;
+		m_nSensitivityY = pProfile->m_nGamepadSensitivityY;
+
+		m_nAxisAcceleration = pProfile->m_nAxisAcceleration;
+
+		m_nDeadzoneLeftAnalog = pProfile->m_nDeadzoneLeftAnalog;
+		m_nDeadzoneRightAnalog = pProfile->m_nDeadzoneRightAnalog;
+		m_nTriggerDeadzone = pProfile->m_nTriggerDeadzone;
+
 	
         UpdateData(LTFALSE);
 	}
@@ -154,6 +192,20 @@ void CScreenJoystick::OnFocus(LTBOOL bFocus)
 		{
 			pProfile->m_nPOV[POV] = m_nPOV[POV];
 		};
+
+		// Get our selected index string, and set it as the active controller
+		auto pString = m_pActiveController->GetString(m_pActiveController->GetSelIndex());
+		auto sString = pString->GetText();
+		g_pGameInputMgr->SetGamepad(sString);
+
+		pProfile->m_nGamepadSensitivityX = m_nSensitivityX;
+		pProfile->m_nGamepadSensitivityY = m_nSensitivityY;
+
+		pProfile->m_nAxisAcceleration = m_nAxisAcceleration;
+
+		pProfile->m_nDeadzoneLeftAnalog = m_nDeadzoneLeftAnalog;
+		pProfile->m_nDeadzoneRightAnalog = m_nDeadzoneRightAnalog;
+		pProfile->m_nTriggerDeadzone = m_nTriggerDeadzone;
 
 		pProfile->ApplyJoystick();
 		pProfile->Save();

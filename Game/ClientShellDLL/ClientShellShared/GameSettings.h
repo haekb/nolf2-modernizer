@@ -97,9 +97,13 @@ public:
 	void		ImplementSoundVolume();
 	void		ImplementSoundQuality();
 	void		ImplementMouseSensitivity();
+	void		ImplementGamepadSensitivity();
+	void		ImplementGamepadDeadzones();
 
 
 private:
+
+	void		ImplementSensitivity(int nDeviceType, float fSensitivityX, float fSensitivityY, float fBaseScale, float fIncrements);
 
     ILTClient*          m_pClientDE;
 	CGameClientShell*	m_pClientShell;

@@ -7,6 +7,7 @@ CRes.dll
 CShell.dll
 # There's no pre-built libs in Final Release, so just ignore it all
 Final_Release
+*.recipe
 *.opendb
 *.log
 # *.dll

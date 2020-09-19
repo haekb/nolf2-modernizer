@@ -9,6 +9,12 @@
       <UniqueIdentifier>{cc22cae7-ddf6-40af-baa8-4659f1081fbf}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl</Extensions>
     </Filter>
+    <Filter Include="Source Files\InputSystem">
+      <UniqueIdentifier>{7d076c5b-444b-40fd-b8c5-cd99895ed960}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\InputSystem">
+      <UniqueIdentifier>{cab65deb-4bb2-4127-85c1-4899840afa9e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ActivateObjectFX.cpp">
@@ -671,11 +677,11 @@
     <ClCompile Include="JukeboxButeMgr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GameInputMgr.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="HUDTakeDamage.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameInputMgr.cpp">
+      <Filter>Source Files\InputSystem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1312,11 +1318,17 @@
     <ClInclude Include="JukeboxButeMgr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GameInputMgr.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="HUDTakeDamage.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SDLDInput8Conversion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameInputMgr.h">
+      <Filter>Header Files\InputSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="InputMgr.h">
+      <Filter>Header Files\InputSystem</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

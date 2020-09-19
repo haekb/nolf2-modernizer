@@ -22,6 +22,8 @@ VarTrack	g_vtCursorHack;
 
 CCursorMgr * g_pCursorMgr = LTNULL;
 
+extern GameInputMgr* g_pGameInputMgr;
+
 // ----------------------------------------------------------------------- //
 //
 //	ROUTINE:	CCursorMgr constructor and destructor
@@ -208,6 +210,8 @@ void CCursorMgr::UseCursor(LTBOOL bUseCursor, LTBOOL bLockCursorToCenter)
 			g_pLTClient->RunConsoleString("CursorCenter 1");
 		}
 		else {
+			g_pGameInputMgr->SetRelativeMode(true);
+			/*
 			SDL_SetRelativeMouseMode(SDL_FALSE);
 			auto nSupported = SDL_SetRelativeMouseMode(SDL_TRUE);
 
@@ -219,7 +223,7 @@ void CCursorMgr::UseCursor(LTBOOL bUseCursor, LTBOOL bLockCursorToCenter)
 			{
 				g_pLTClient->CPrint("!! WARNING !! Relative Mouse Mode isn't supported!");
 			}
-			
+			*/
 		}
 	}
 	else
@@ -228,7 +232,9 @@ void CCursorMgr::UseCursor(LTBOOL bUseCursor, LTBOOL bLockCursorToCenter)
 			g_pLTClient->RunConsoleString("CursorCenter 0");
 		}
 		else {
-			SDL_SetRelativeMouseMode(SDL_FALSE);
+			g_pGameInputMgr->SetRelativeMode(false);
+
+			//SDL_SetRelativeMouseMode(SDL_FALSE);
 		}
 	}
 }

@@ -117,6 +117,7 @@ enum eScreenCmds
 	CMD_INV_COM,
 	CMD_VIEW_COM,
 	CMD_MISC_COM,
+	CMD_CTRL_COM,
 	CMD_CHANGE_CONTROL,
 
 // profile

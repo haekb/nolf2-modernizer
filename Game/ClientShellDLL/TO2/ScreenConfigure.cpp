@@ -152,6 +152,8 @@ LTBOOL CScreenConfigure::Build()
 	pCtrl = AddTextItem(IDS_MISC_CONTROLS,CMD_MISC_COM,LTNULL);
 	pCtrl->SetFixedWidth(nWidth);
 
+	//pCtrl = AddTextItem(IDS_CTRL_CONTROLS, CMD_CTRL_COM, LTNULL);
+	//pCtrl->SetFixedWidth(nWidth);
 	
 	LTIntPt pos(m_ListRect.left,m_ListRect.top);
 	int nHt = m_ListRect.bottom - m_ListRect.top;
@@ -188,6 +190,9 @@ LTBOOL CScreenConfigure::Build()
 			break;
 		case COM_MISC:
 			pCtrl = CreateTextItem(IDS_MISC_CONTROLS,LTNULL,LTNULL,kDefaultPos,LTTRUE);
+			break;
+		case COM_CTRL:
+			//pCtrl = CreateTextItem(IDS_CTRL_CONTROLS, LTNULL, LTNULL, kDefaultPos, LTTRUE);
 			break;
 		}
 
@@ -364,15 +369,28 @@ void CScreenConfigure::SetControlText(CLTGUICtrl *pCtrl)
 
 		if (strlen(pData->strTriggerName[2]) != 0 )
 		{
-			if (numControls)
-				strcat(strControls,", ");
-			strcat(strControls,strDeviceNiceName[2]);
+			if (numControls) {
+				strcat(strControls, ", ");
+			}
+			// This is what I call, a superhack!
+			strcat(strControls, "Gamepad");//m_pProfile->GetDeviceName(2));
 			strcat(strControls," ");
+
+			
 
 			g_pLTClient->GetDeviceObjectName( m_pProfile->GetDeviceName( 2 ), pData->nDeviceObjectId[2], 
 				szDeviceObjectName, ARRAY_LEN( szDeviceObjectName ));
 
 			strcat( strControls, szDeviceObjectName );
+
+			if (strstr(pData->strRealName[2], "#P") != nullptr)
+			{
+				strcat(strControls, "+");
+			}
+			else if (strstr(pData->strRealName[2], "#N") != nullptr)
+			{
+				strcat(strControls, "-");
+			}
 		}
 	}
 
@@ -534,7 +552,9 @@ uint32 CScreenConfigure::OnCommand(uint32 dwCommand, uint32 dwParam1, uint32 dwP
 	case CMD_MISC_COM:
 		SetCurrentType(COM_MISC);
 		break;
-
+	case CMD_CTRL_COM:
+		SetCurrentType(COM_CTRL);
+		break;
 
 	case CMD_CHANGE_CONTROL:
 		{
@@ -654,10 +674,17 @@ LTBOOL CScreenConfigure::SetCurrentSelection (DeviceInput* pInput)
 		return CheckMouseWheel(pInput);
 	}
 
-	if (pInput->m_ControlType != CONTROLTYPE_BUTTON &&
-		pInput->m_ControlType != CONTROLTYPE_KEY)
-        return LTFALSE;
+	if (pInput->m_DeviceType == DEVICETYPE_GAMEPAD && pInput->m_ControlType != CONTROLTYPE_UNKNOWN && pInput->m_ControlType <= CONTROLTYPE_SLIDER)
+	{
+		return CheckControllerAxis(pInput);
+	}
 
+	if (pInput->m_ControlType != CONTROLTYPE_BUTTON &&
+		pInput->m_ControlType != CONTROLTYPE_KEY &&
+		pInput->m_DeviceType != DEVICETYPE_GAMEPAD)
+	{
+		return LTFALSE;
+	}
 
 
 //	char sNewKey[256];
@@ -876,6 +903,51 @@ LTBOOL CScreenConfigure::CheckMouseWheel (DeviceInput* pInput)
 	UpdateControlList();
 
     return LTTRUE;
+}
+
+LTBOOL CScreenConfigure::CheckControllerAxis(DeviceInput* pInput)
+{
+	if (!g_pLTClient)
+	{
+		return LTFALSE;
+	}
+
+	// If it's not an axis, ignore it!
+	if (pInput->m_DeviceType != DEVICETYPE_GAMEPAD || pInput->m_ControlType == CONTROLTYPE_UNKNOWN || pInput->m_ControlType > CONTROLTYPE_SLIDER)
+	{
+		return LTFALSE;
+	}
+
+	auto nValue = (int)pInput->m_InputValue;
+	LTBOOL bPositive = ((int)nValue > 0);
+	char szCommand[64];
+
+	CLTGUIColumnCtrl* pCtrl = (CLTGUIColumnCtrl*)m_pList[m_nType]->GetSelectedControl();
+	int nCommand = pCtrl->GetParam1();
+	uint16 diCode = pInput->m_ControlCode;
+
+	if (bPositive)
+	{
+		strcpy(szCommand, "#");
+		strcat(szCommand, "P");
+		strcat(szCommand, std::to_string(diCode).c_str());
+	}
+	else
+	{
+		strcpy(szCommand, "#");
+		strcat(szCommand, "N");
+		strcat(szCommand, std::to_string(diCode).c_str());
+	}
+
+	UnBind(0, szCommand, pInput->m_DeviceType);
+
+	Bind(nCommand, pInput->m_nObjectId, 0, szCommand, pInput->m_DeviceType);
+
+	pCtrl->SetString(SCREEN_COLUMN_EQUALS, "");
+
+	UpdateControlList();
+
+	return LTTRUE;
 }
 
 

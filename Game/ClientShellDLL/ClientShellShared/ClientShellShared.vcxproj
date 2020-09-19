@@ -1428,6 +1428,7 @@
     <ClInclude Include="HUDSubtitles.h" />
     <ClInclude Include="HUDTakeDamage.h" />
     <ClInclude Include="HUDTransmission.h" />
+    <ClInclude Include="InputMgr.h" />
     <ClInclude Include="IntelItemList.h" />
     <ClInclude Include="InterfaceMgr.h" />
     <ClInclude Include="InterfaceResMgr.h" />
@@ -1507,6 +1508,7 @@
     <ClInclude Include="ScreenPreload.h" />
     <ClInclude Include="ScreenSpriteMgr.h" />
     <ClInclude Include="ScreenTintMgr.h" />
+    <ClInclude Include="SDLDInput8Conversion.h" />
     <ClInclude Include="Searcher.h" />
     <ClInclude Include="SearchLightFX.h" />
     <ClInclude Include="SFXMgr.h" />

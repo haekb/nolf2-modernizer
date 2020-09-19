@@ -55,10 +55,19 @@ steps:
   inputs:
     SourceFolder: 'Assets'
     Contents: |
-      dinput8.dll
+      controls.cfg
       Lithtech.exe
       JServerInfo.txt
+      "Modernizer Readme.txt"
     TargetFolder: '$(Pipeline.Workspace)\\Artifacts'
+
+# Profile Stuff
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: 'Assets\\Profiles'
+    Contents: |
+      Default.prf
+    TargetFolder: '$(Pipeline.Workspace)\\Artifacts\\Profiles'
 
 # SDL2
 - task: CopyFiles@2

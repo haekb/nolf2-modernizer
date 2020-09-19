@@ -8,7 +8,8 @@ The goal of NOLF 2 Modernizer is to help fix some long standing bugs, and update
 
  - Widescreen support
  - Re-implemented several graphic effects including anti-aliasing
- - Fixed weird mouse behaviour
+ - Rewrote the entire input system
+ - Marginally better controller support
  - Jukebox to play some of your favourite in-game tunes
  - Several original game crashes have been fixed
  - Fixed dynamic music transitions on framerates higher than 100fps
@@ -28,6 +29,11 @@ If you experience any issues, feel free to open an issue.
 Simply fork and submit a PR (preferbly with a matching issue ticket!) 
 
 Try to keep to the original coding style, with descriptive commit messages.
+
+## Custom Controller Mappings
+
+The new input system was written to take advantage of SDL2's game controller api. This enables non-xinput devices to work as if they were xinput devices. If your controller won't work you could try community bindings located [here](https://github.com/gabomdq/SDL_GameControllerDB/).
+Simply drop the `gamecontrollerdb.txt` file into your NOLF 2 game folder and Modernizer will attempt to load it on start-up.
 
 ## Localization
 

@@ -42,6 +42,8 @@ VarTrack	g_vtMouseMaxSensitivity;
 VarTrack	g_vtMouseMinInputRate;
 VarTrack	g_vtMouseMaxInputRate;
 
+VarTrack	g_vtGamepadMinSensitivity;
+VarTrack	g_vtGamepadMaxSensitivity;
 
 CProfileMgr* g_pProfileMgr = LTNULL;
 
@@ -124,6 +126,10 @@ CommandData g_CommandArray[] =
 
 	{ IDS_CONTROL_SAY,				COMMAND_ID_MESSAGE,			IDS_ACTIONSTRING_SAY,				COM_MISC },
 	{ IDS_CONTROL_TEAM_SAY,			COMMAND_ID_TEAM_MESSAGE,	IDS_ACTIONSTRING_TEAM_SAY,			COM_MISC },
+
+	{ IDS_CONTROL_AXIS_X,			COMMAND_ID_AXIS_X,			IDS_ACTIONSTRING_AXIS_X,			COM_CTRL },
+	{ IDS_CONTROL_AXIS_Y,			COMMAND_ID_AXIS_Y,			IDS_ACTIONSTRING_AXIS_Y,			COM_CTRL },
+
 
 	// This control must always remain as the last one in the array
 	{ IDS_CONTROL_UNASSIGNED,		COMMAND_ID_UNASSIGNED,		IDS_ACTIONSTRING_UNASSIGNED,		COM_MISC }
@@ -221,6 +227,13 @@ CUserProfile::CUserProfile()
 	m_bUseJoystick = LTFALSE;
 	memset(m_nAxis,0,sizeof(m_nAxis));
 
+	m_nGamepadSensitivityX = 0;
+	m_nGamepadSensitivityY = 0;
+	m_nAxisAcceleration = 0;
+	m_nDeadzoneLeftAnalog = 0;
+	m_nDeadzoneRightAnalog = 0;
+	m_nTriggerDeadzone = 0;
+
 	//game options
 	m_nDifficulty = 1;
     m_nSubtitles  = 0;
@@ -312,6 +325,9 @@ LTBOOL CUserProfile::Init(const std::string& profileName, LTBOOL bCreate)
 	g_vtMouseMinInputRate.Init(g_pLTClient, "MouseInputRateMin", NULL, 0.0);
 	g_vtMouseMaxInputRate.Init(g_pLTClient, "MouseInputRateMax", NULL, 40.0);
 
+	g_vtGamepadMinSensitivity.Init(g_pLTClient, "GamepadSensitivityMin", NULL, 1.0f);
+	g_vtGamepadMaxSensitivity.Init(g_pLTClient, "GamepadSensitivityMax", NULL, 81.0f);
+
 	LTBOOL bRet = LTFALSE;
 
 	m_buteMgr.Term();
@@ -390,11 +406,6 @@ void CUserProfile::Load()
 	LoadMultiplayer();
 	LoadGameOptions();
 	LoadSound(true);
-
-	// Load the bindings!
-	if (g_pGameInputMgr) {
-		g_pGameInputMgr->ReadDeviceBindings();
-	}
 }
 
 void CUserProfile::LoadControls()
@@ -460,6 +471,17 @@ void CUserProfile::LoadControls()
 	m_nVehicleTurn = m_buteMgr.GetInt(s_aTagName,"VehicleTurnRate",100);
 
 	m_bUseJoystick = (LTBOOL)m_buteMgr.GetInt(s_aTagName,"UseJoystick",0);
+
+	// Gamepad stuff
+	m_nGamepadSensitivityX = m_buteMgr.GetInt(s_aTagName, "GamepadSensitivityX", 56);
+	m_nGamepadSensitivityY = m_buteMgr.GetInt(s_aTagName, "GamepadSensitivityY", 51);
+
+	m_nAxisAcceleration = m_buteMgr.GetInt(s_aTagName, "GamepadAxisAcceleration", 3);
+
+	m_nDeadzoneLeftAnalog = m_buteMgr.GetInt(s_aTagName, "GamepadDeadzoneLeftAnalog", 4);
+	m_nDeadzoneRightAnalog = m_buteMgr.GetInt(s_aTagName, "GamepadDeadzoneRightAnalog", 4);
+
+	m_nTriggerDeadzone = m_buteMgr.GetInt(s_aTagName, "GamepadDeadzoneTriggers", 1);
 
 	for (int a = 0; a < g_pProfileMgr->GetNumAxis(); a++)
 	{
@@ -654,11 +676,6 @@ void CUserProfile::Save(bool bForceClose /*= false*/)
 	std::string fn = GetProfileFile( m_sName.c_str( ));
 	m_buteMgr.Save(fn.c_str());
 
-	// Now let's reload our input bindings
-	if (g_pGameInputMgr) {
-		g_pGameInputMgr->ReadDeviceBindings();
-	}
-
 	if (bForceClose)
 	{
 		std::string name = m_sName.c_str( );
@@ -670,7 +687,9 @@ void CUserProfile::Save(bool bForceClose /*= false*/)
 void CUserProfile::SaveControls()
 {
 	//************************ save bindings
-	strcpy(s_aTagName,"Bindings");
+	//strcpy(s_aTagName,"Bindings");
+	LTStrCpy(s_aTagName, "Bindings", 30);
+
 	for (int c = 0; c < g_kNumCommands; c++)
 	{
 		if ( g_CommandArray[c].nCommandID < 0 )
@@ -702,7 +721,8 @@ void CUserProfile::SaveControls()
 	}
 
 	//************************ save controls
-	strcpy(s_aTagName,"Controls");
+	//strcpy(s_aTagName,"Controls");
+	LTStrCpy(s_aTagName, "Controls", 30);
 
 	//save mouse
 	m_buteMgr.SetInt(s_aTagName,"InvertMouse",(int)m_bInvertY);
@@ -719,6 +739,18 @@ void CUserProfile::SaveControls()
 
 	m_buteMgr.SetInt(s_aTagName,"UseJoystick",(int)m_bUseJoystick);
 
+	// Gamepad stuff
+	m_buteMgr.SetInt(s_aTagName, "GamepadSensitivityX", m_nGamepadSensitivityX);
+	m_buteMgr.SetInt(s_aTagName, "GamepadSensitivityY", m_nGamepadSensitivityY);
+
+	m_buteMgr.SetInt(s_aTagName, "GamepadAxisAcceleration", m_nAxisAcceleration);
+
+	m_buteMgr.SetInt(s_aTagName, "GamepadDeadzoneLeftAnalog", m_nDeadzoneLeftAnalog);
+	m_buteMgr.SetInt(s_aTagName, "GamepadDeadzoneRightAnalog", m_nDeadzoneRightAnalog);
+
+	m_buteMgr.SetInt(s_aTagName, "GamepadDeadzoneTriggers", m_nTriggerDeadzone);
+
+	/*
 	for (int a = 0; a < g_pProfileMgr->GetNumAxis(); a++)
 	{
 		char szAxis[8] = "";
@@ -726,6 +758,7 @@ void CUserProfile::SaveControls()
 		m_buteMgr.SetInt(s_aTagName,szAxis,(int)m_nAxis[a]);
 		
 	}
+	*/
 }
 
 
@@ -834,10 +867,14 @@ void CUserProfile::ApplyBindings()
 {
 	g_pProfileMgr->ClearBindings();
 
+	std::vector< CBindingData*> pGamepadPositiveData;
+	std::vector< CBindingData*> pGamepadNegativeData;
+
 	for (int d = 0; d < 3; d++)
 	{
 		CBindingData *pWheelUp = LTNULL;
 		CBindingData *pWheelDown = LTNULL;
+
 		for (int c = 0; c < g_kNumCommands; c++)
 		{
 			CBindingData *pData = FindBinding(c);
@@ -852,6 +889,14 @@ void CUserProfile::ApplyBindings()
 				{
 					pWheelDown = pData;
 				}
+				else if (devices[d] == DEVICETYPE_GAMEPAD && strstr(pData->strRealName[d], "#P") != nullptr)
+				{
+					pGamepadPositiveData.push_back(pData);
+				}
+				else if (devices[d] == DEVICETYPE_GAMEPAD && strstr(pData->strRealName[d], "#N") != nullptr)
+				{
+					pGamepadNegativeData.push_back(pData);
+				}
 				else if (pData->strRealName[d][0] && pData->strRealName[d][0] != ' ')
 				{
 					char tempStr[64];
@@ -862,9 +907,9 @@ void CUserProfile::ApplyBindings()
 
 				}
 			}
-
-
 		}
+
+
 		if (devices[d] == DEVICETYPE_MOUSE)
 		{
 			char tempStr[512] = "";
@@ -886,6 +931,82 @@ void CUserProfile::ApplyBindings()
 				g_pLTClient->AddBinding(strDeviceName[d],"##z-axis",downStr,-0.10f,-255.0f);
 			}
 
+		}
+		else if (devices[d] == DEVICETYPE_GAMEPAD)
+		{
+			char tempStr[512] = "";
+			if (pGamepadPositiveData.size() > 0 || pGamepadNegativeData.size() > 0)
+			{
+				std::string nRealName = "";
+				float fDeadzone = 0.0f;
+
+				// Set the axis binding
+				for (auto pAxis : pGamepadPositiveData)
+				{
+					char upStr[64] = "";
+					char upTrigger[64] = "";
+					LoadString(pAxis->nAction, upStr, sizeof(upStr));
+
+					std::string sRealName = pAxis->strRealName[d];
+					sRealName = sRealName.substr(2);
+					pAxis->nDeviceObjectId[d] = atoi(sRealName.c_str());
+					sRealName = "##" + sRealName;
+
+					LTStrCpy(upTrigger, sRealName.c_str(), sizeof(upTrigger));
+
+					// Grab deadzone...this could be done a lot better.
+
+
+					// Left Axis
+					if (pAxis->nDeviceObjectId[d] == 16 || pAxis->nDeviceObjectId[d] == 17)
+					{
+						fDeadzone = (float)GetConsoleInt("GamepadDeadzoneLeftAnalog", 4) * 1000.0f;
+					}
+					// Right Axis
+					else if (pAxis->nDeviceObjectId[d] == 18 || pAxis->nDeviceObjectId[d] == 19)
+					{
+						fDeadzone = (float)GetConsoleInt("GamepadDeadzoneRightAnalog", 4) * 1000.0f;
+					}
+					// Triggers
+					else if (pAxis->nDeviceObjectId[d] == 20 || pAxis->nDeviceObjectId[d] == 21)
+					{
+						fDeadzone = (float)GetConsoleInt("GamepadDeadzoneTriggers", 4) * 1000.0f;
+					}
+					g_pLTClient->AddBinding(strDeviceName[d], upTrigger, upStr, fDeadzone, 32768.0f);
+				}
+				
+				for (auto pAxis : pGamepadNegativeData)
+				{
+					char downStr[64] = "";
+					char downTrigger[64] = "";
+					LoadString(pAxis->nAction, downStr, sizeof(downStr));
+
+					std::string sRealName = pAxis->strRealName[d];
+					sRealName = sRealName.substr(2);
+					pAxis->nDeviceObjectId[d] = atoi(sRealName.c_str());
+					sRealName = "##" + sRealName;
+
+					LTStrCpy(downTrigger, sRealName.c_str(), sizeof(downTrigger));
+
+					// Left Axis
+					if (pAxis->nDeviceObjectId[d] == 16 || pAxis->nDeviceObjectId[d] == 17)
+					{
+						fDeadzone = (float)GetConsoleInt("GamepadDeadzoneLeftAnalog", 4) * 1000.0f;
+					}
+					// Right Axis
+					else if (pAxis->nDeviceObjectId[d] == 18 || pAxis->nDeviceObjectId[d] == 19)
+					{
+						fDeadzone = (float)GetConsoleInt("GamepadDeadzoneRightAnalog", 4) * 1000.0f;
+					}
+					// Triggers
+					else if (pAxis->nDeviceObjectId[d] == 20 || pAxis->nDeviceObjectId[d] == 21)
+					{
+						fDeadzone = (float)GetConsoleInt("GamepadDeadzoneTriggers", 4) * 1000.0f;
+					}
+					g_pLTClient->AddBinding(strDeviceName[d], downTrigger, downStr, -fDeadzone, -32768.0f);
+				}
+
+			}
 		}
 				
 	}
@@ -1209,6 +1330,33 @@ void CUserProfile::ApplyControls()
 
 void CUserProfile::ApplyJoystick()
 {
+
+	WriteConsoleInt("GamepadSensitivityX", m_nGamepadSensitivityX);
+	WriteConsoleInt("GamepadSensitivityY", m_nGamepadSensitivityY);
+
+	WriteConsoleInt("GamepadAxisAcceleration", m_nAxisAcceleration);
+
+	WriteConsoleInt("GamepadDeadzoneLeftAnalog", m_nDeadzoneLeftAnalog);
+	WriteConsoleInt("GamepadDeadzoneRightAnalog", m_nDeadzoneRightAnalog);
+	WriteConsoleInt("GamepadDeadzoneTriggers", m_nTriggerDeadzone);
+
+	if (!m_bUseJoystick)
+	{
+		WriteConsoleInt("UseJoystick", 0);
+		return;
+	}
+
+	WriteConsoleInt("UseJoystick", 1);
+
+	ApplyBindings();
+
+	CGameSettings* pSettings = g_pInterfaceMgr->GetSettings();
+	pSettings->ImplementGamepadDeadzones();
+	pSettings->ImplementGamepadSensitivity();
+
+	return;
+	// This function is no longer needed
+
 	uint32 devType = DEVICETYPE_UNKNOWN;
 	if (g_pGameClientShell->HasGamepad())
 		devType = DEVICETYPE_GAMEPAD;
@@ -1376,6 +1524,7 @@ void CUserProfile::SetBindings()
 
 
 				CBindingData *pData = FindBinding(com);
+
 				if (pData)
 				{
 					uint32 contType = g_pProfileMgr->GetControlType(devType, ptr->m_nObjectId );
@@ -1399,6 +1548,24 @@ void CUserProfile::SetBindings()
 							strcpy(pData->strRealName[dev],"#D");
 							strcpy(pData->strTriggerName[dev],szWheelDown);
 						}
+					}
+					else if (devType == DEVICETYPE_GAMEPAD)
+					{
+						if (pAction->nRangeHigh > 0)
+						{
+							strcpy(pData->strRealName[dev], "#P");
+							strcat(pData->strRealName[dev], std::to_string(pData->nDeviceObjectId[dev]).c_str());
+
+							strcpy(pData->strTriggerName[dev], pData->strRealName[dev]);
+						}
+						else if (pAction->nRangeHigh < 0)
+						{
+							strcpy(pData->strRealName[dev], "#N");
+							strcat(pData->strRealName[dev], std::to_string(pData->nDeviceObjectId[dev]).c_str());
+
+							strcpy(pData->strTriggerName[dev], pData->strRealName[dev]);
+						}
+						
 					}
 				}
 	

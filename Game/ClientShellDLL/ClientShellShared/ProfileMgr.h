@@ -76,6 +76,7 @@ enum CommandType
 	COM_INV,
 	COM_VIEW,
 	COM_MISC,
+	COM_CTRL,
 	kNumCommandTypes
 };
 
@@ -212,10 +213,19 @@ public:
 	int	  		m_nVehicleTurn;
 
 	//joystick
-	LTBOOL				m_bUseJoystick;
-	uint8				m_nAxis[kMaxDeviceAxis];
-	uint8				m_nPOV[kMaxDevicePOV];
+	LTBOOL		m_bUseJoystick;
 
+	// deprecated
+	uint8		m_nAxis[kMaxDeviceAxis];
+	uint8		m_nPOV[kMaxDevicePOV];
+
+	//gamepad
+	int			m_nGamepadSensitivityX;
+	int			m_nGamepadSensitivityY;
+	int			m_nAxisAcceleration;
+	int			m_nDeadzoneLeftAnalog;
+	int			m_nDeadzoneRightAnalog;
+	int			m_nTriggerDeadzone;
 
 	//****************** multiplayer
 	std::string		m_sPlayerName;

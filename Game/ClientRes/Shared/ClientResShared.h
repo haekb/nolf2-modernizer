@@ -1027,6 +1027,21 @@
 #define IDS_SETTING_16X                 2213
 #define IDS_WINDOWED_MODE               2214
 #define IDS_HELP_WINDOWED_MODE          2215
+#define IDS_CONTROL_AXIS_X              2216
+#define IDS_CONTROL_AXIS_Y              2217
+#define IDS_ACTIONSTRING_AXIS_X         2218
+#define IDS_ACTIONSTRING_AXIS_Y         2219
+#define IDS_CTRL_CONTROLS               2220
+#define IDS_ACTIVE_GAMEPAD              2221
+#define IDS_GAMEPAD_SENSITIVITY_X       2222
+#define IDS_GAMEPAD_SENSITIVITY_Y       2223
+#define IDS_GAMEPAD_AXIS_ACCEL          2224
+#define IDS_GAMEPAD_DEADZONE_X          2225
+#define IDS_GAMEPAD_DEADZONE_Y          2226
+#define IDS_GAMEPAD_DEADZONE_TRIGGERS   2227
+#define IDS_HELP_GAMEPAD_SENSE          2228
+#define IDS_HELP_GAMEPAD_DEADZONE       2229
+#define IDS_HELP_GAMEPAD_AXIS_ACCEL     2230
 
 // Next default values for new objects
 // 

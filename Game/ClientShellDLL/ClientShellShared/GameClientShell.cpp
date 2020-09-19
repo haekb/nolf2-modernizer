@@ -112,6 +112,13 @@ VarTrack			g_vtShowSDLMouse;
 VarTrack			g_vtEnableRagdolls;
 VarTrack			g_vtRagdollYAdjustment;
 
+// Game Input Specific
+// Slightly afraid of initting VarTrack in GameInputMgr, so it's gonna happen here
+
+VarTrack			g_vtGamepadName;
+
+//
+
 // SDL Logging
 std::fstream 		g_SDLLogFile;
 SDL_Window*			g_SDLWindow = NULL;
@@ -166,47 +173,6 @@ LTRESULT proxyUnregisterConsoleProgram(const char* pName)
 	return result;
 }
 
-void proxyGetAxisOffsets(LTFLOAT* offsets)
-{
-	offsets[0] = g_pGameClientShell->GetInputAxis()[0];
-	offsets[1] = g_pGameClientShell->GetInputAxis()[1];
-	offsets[2] = g_pGameClientShell->GetInputAxis()[2];
-}
-
-bool proxyIsCommandOn(int commandNum)
-{
-	if (g_pGameInputMgr)
-	{
-		// Ignore if the command isn't on in the input manager
-		if (g_pGameInputMgr->IsCommandOn(commandNum))
-		{
-			return true;
-		}
-	}
-
-	return g_pIsCommandOn(commandNum);
-}
-//
-// Proxy ClearInput
-// Through testing I found ClearInput must re-init DirectInput's RawInput listener. 
-// So here we're flagging our system to re-init OUR RawInput listener (through SDL) after it does this.
-//
-// Note: If anyone is doing engine work and have already replaced the odd DirectInput implementation, 
-// you can remove this along with all the SDL code in this mod.
-//
-LTRESULT proxyClearInput()
-{
-	// Request PostUpdate() to re-register SDL2's relative mouse mode
-	g_pGameClientShell->SetReRegisterRawInput(true);
-
-	// Clear our InputAxis offsets
-	float fAxisOffsets[3] = { 0.0f, 0.0f, 0.0f };
-	g_pGameClientShell->SetInputAxis(fAxisOffsets);
-
-	// Actually run the engine's ClearInput
-	return g_pClearInput();
-}
-
 void SDLLog(void* userdata, int category, SDL_LogPriority priority, const char* message)
 {
 	if (!g_pLTClient) {
@@ -242,14 +208,6 @@ void InitClientShell()
 
 	g_pUnregisterConsoleProgram = g_pLTClient->UnregisterConsoleProgram;
 	g_pLTClient->UnregisterConsoleProgram = proxyUnregisterConsoleProgram;
-
-	g_pLTClient->GetAxisOffsets = proxyGetAxisOffsets;
-
-	g_pClearInput = g_pLTClient->ClearInput;
-	g_pLTClient->ClearInput = proxyClearInput;
-
-	g_pIsCommandOn = g_pLTClient->IsCommandOn;
-	g_pLTClient->IsCommandOn = proxyIsCommandOn;
 
 	// Init our LT subsystems
 
@@ -725,6 +683,9 @@ CGameClientShell::CGameClientShell()
 	//g_SDLLogFile.close();
 
 	SDL_Log("-- Hello World, We're all set here. Enjoy the show!");
+
+	// Create GameInputMgr sometime before we load our profile..
+	m_pGameInputMgr = debug_new(GameInputMgr);
 }
 
 
@@ -738,6 +699,9 @@ CGameClientShell::CGameClientShell()
 
 CGameClientShell::~CGameClientShell()
 {
+	delete m_pGameInputMgr;
+	m_pGameInputMgr = nullptr;
+
 	for (int i=0; i < kMaxDebugStrings; i++)
 	{
 		if (m_pLeftDebugString[i])
@@ -1030,9 +994,6 @@ uint32 CGameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
 		return LT_ERROR;
 	}
 
-	// Create GameInputMgr sometime before we load our profile..
-	m_pGameInputMgr = debug_new(GameInputMgr);
-
 	// Initialize global console variables...
 
 	g_vtShowSDLMouse.Init(g_pLTClient, "ShowSDLMouse", NULL, 0.0f);
@@ -1068,6 +1029,10 @@ uint32 CGameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
 	g_vtEnableRagdolls.Init(g_pLTClient, "EnableRagdolls", NULL, 0.0f);
 	// Amount that we push the position up. This corrects the hitbox being under the ground on death.
 	g_vtRagdollYAdjustment.Init(g_pLTClient, "RagdollYAdjustment", NULL, 40.0f);
+
+	// Game Input Mgr
+	g_vtGamepadName.Init(g_pLTClient, "GamepadName", NULL, 0.0f);
+	//
 
 	m_cheatMgr.Init();
 	m_LightScaleMgr.Init();
@@ -1442,7 +1407,14 @@ uint32 CGameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
 	// Boot up Jukebox Manager.
 	m_pJukeboxButeMgr = debug_new(CJukeboxButeMgr);
 	m_pJukeboxButeMgr->Init();
-	
+
+	// Enable gamepad
+	EnableGamepad();
+
+	// Reload our controls!
+	g_pLTClient->ReadConfigFile("controls.cfg");
+
+
 	return LT_OK;
 }
 
@@ -1951,27 +1923,8 @@ void CGameClientShell::PostUpdate()
 
 	GetInterfaceMgr( )->PostUpdate();
 
-	m_pGameInputMgr->Update();
-
-	// This should maybe be in CursorMgr, but it's here.
-	// This basically checks to see if we need to re-register raw input
-	// DirectInput has its own RawInput listener that will steal ours. (So rude!)
-	// So on WM_ActivateApp or ClearInput() we re-register so we can use it.
-	if (GetReRegisterRawInput())
-	{
-		auto bInRelativeMode = SDL_GetRelativeMouseMode();
-
-		SDL_SetRelativeMouseMode(SDL_FALSE);
-
-		if (bInRelativeMode)
-		{
-			SDL_SetRelativeMouseMode(SDL_TRUE);
-		}
-
-		SetReRegisterRawInput(false);
-	}
-
-	GetPlayerMgr()->UpdateRotationAxis();
+	// Clear wheel delta
+	g_pGameInputMgr->SetWheelDelta(0);
 }
 
 // ----------------------------------------------------------------------- //
@@ -2262,6 +2215,7 @@ void CGameClientShell::OnKeyDown(int key, int rep)
 		//but don't process anything else
 		return;
 	}
+
 
 	if (key == VK_TOGGLE_SCREENSHOTMODE)
 	{
@@ -4655,10 +4609,6 @@ LRESULT CALLBACK HookedWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lP
 	
 	if (uMsg == WM_ACTIVATEAPP && g_pGameClientShell)
 	{
-		// DirectInput probably has a similar WM_ACTIVATEAPP on focus call. 
-		// So we gotta compete against that.
-		g_pGameClientShell->SetReRegisterRawInput(true);
-
 		// Jake: For some odd reason the renderer will just be black when maximizing on fullscreen mode
 		// So for now, only allow run in background for windowed mode!
 		LTBOOL bWindowed = LTFALSE;
@@ -4689,52 +4639,41 @@ void CGameClientShell::OnChar(HWND hWnd, char c, int rep)
 
 void CGameClientShell::OnLButtonUp(HWND hWnd, int x, int y, UINT keyFlags)
 {
-	g_pGameInputMgr->OnMouseUp(GIB_LEFT_MOUSE);
-
 	g_pInterfaceMgr->OnLButtonUp(x,y);
 }
 
 void CGameClientShell::OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 {
-	g_pGameInputMgr->OnMouseDown(GIB_LEFT_MOUSE);
-
 	g_pInterfaceMgr->OnLButtonDown(x,y);
 }
 
 void CGameClientShell::OnLButtonDblClick(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 {
 	// Handle double clicks like regular clicks.
-	g_pGameInputMgr->OnMouseDown(GIB_LEFT_MOUSE);
-
 	g_pInterfaceMgr->OnLButtonDblClick(x,y);
 }
 
 void CGameClientShell::OnRButtonUp(HWND hwnd, int x, int y, UINT keyFlags)
 {
-	g_pGameInputMgr->OnMouseUp(GIB_RIGHT_MOUSE);
-
-
 	g_pInterfaceMgr->OnRButtonUp(x,y);
 }
 
 void CGameClientShell::OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 {
-	g_pGameInputMgr->OnMouseDown(GIB_RIGHT_MOUSE);
-
 	g_pInterfaceMgr->OnRButtonDown(x,y);
 }
 
 void CGameClientShell::OnRButtonDblClick(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 {
 	// Handle double clicks like regular clicks.
-	g_pGameInputMgr->OnMouseDown(GIB_RIGHT_MOUSE);
-
 	g_pInterfaceMgr->OnRButtonDblClick(x,y);
 }
 
 void CGameClientShell::OnMouseWheel(HWND hwnd, int x, int y, int zDelta, UINT fwKeys)
 {
-	g_pGameInputMgr->OnMouseWheel(zDelta);
+
+	g_pGameInputMgr->SetWheelDelta(zDelta);
+
 	g_pInterfaceMgr->OnMouseWheel(x, y, zDelta);
 }
 
