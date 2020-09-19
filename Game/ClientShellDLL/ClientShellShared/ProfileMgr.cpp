@@ -473,8 +473,8 @@ void CUserProfile::LoadControls()
 	m_bUseJoystick = (LTBOOL)m_buteMgr.GetInt(s_aTagName,"UseJoystick",0);
 
 	// Gamepad stuff
-	m_nGamepadSensitivityX = m_buteMgr.GetInt(s_aTagName, "GamepadSensitivityX", 5);
-	m_nGamepadSensitivityY = m_buteMgr.GetInt(s_aTagName, "GamepadSensitivityY", 4);
+	m_nGamepadSensitivityX = m_buteMgr.GetInt(s_aTagName, "GamepadSensitivityX", 56);
+	m_nGamepadSensitivityY = m_buteMgr.GetInt(s_aTagName, "GamepadSensitivityY", 51);
 
 	m_nAxisAcceleration = m_buteMgr.GetInt(s_aTagName, "GamepadAxisAcceleration", 3);
 

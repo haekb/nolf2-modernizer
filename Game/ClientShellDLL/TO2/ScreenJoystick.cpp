@@ -85,12 +85,12 @@ LTBOOL CScreenJoystick::Build()
 	m_pSensitivityXCtrl = AddSlider(IDS_GAMEPAD_SENSITIVITY_X, IDS_HELP_GAMEPAD_SENSE, kGap, kWidth, -1, &m_nSensitivityX);
 	m_pSensitivityXCtrl->SetSliderRange(nMin, nMax); // We don't want 0!
 	m_pSensitivityXCtrl->SetSliderIncrement(5);
-	m_pSensitivityXCtrl->SetNumericDisplay(LTTRUE);
+	//m_pSensitivityXCtrl->SetNumericDisplay(LTTRUE);
 
 	m_pSensitivityYCtrl = AddSlider(IDS_GAMEPAD_SENSITIVITY_Y, IDS_HELP_GAMEPAD_SENSE, kGap, kWidth, -1, &m_nSensitivityY);
 	m_pSensitivityYCtrl->SetSliderRange(nMin, nMax); // We don't want 0!
 	m_pSensitivityYCtrl->SetSliderIncrement(5);
-	m_pSensitivityYCtrl->SetNumericDisplay(LTTRUE);
+	//m_pSensitivityYCtrl->SetNumericDisplay(LTTRUE);
 
 	// Axis accel - Disabled for now, needs a re-write
 	//m_pSensitivityYCtrl = AddSlider(IDS_GAMEPAD_AXIS_ACCEL, IDS_HELP_GAMEPAD_AXIS_ACCEL, kGap, kWidth, -1, &m_nAxisAcceleration);

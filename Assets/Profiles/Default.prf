@@ -1,0 +1,125 @@
+[Controls]
+GamepadDeadzoneLeftAnalog = 7
+GamepadSensitivityX = 56
+GamepadSensitivityY = 51
+GamepadAxisAcceleration = 1
+GamepadDeadzoneRightAnalog = 7
+GamepadDeadzoneTriggers = 6
+InvertMouse			= 0
+MouseLook			= 1
+InputRate			= 12
+Sensitivity			= 2
+NormalTurn			= 15
+FastTurn			= 23
+LookUp				= 25
+VehicleTurnRate		= 100
+AutoCenter			= 0
+UseJoystick			= 0
+Axis0 = 2
+Axis1 = 1
+Axis2 = 0
+Axis3 = 0
+Axis4 = 0
+Axis5 = 0
+POV0 = 2
+POV1 = 1
+POV2 = 0
+POV3 = 0
+
+
+
+
+[Bindings]
+Axis1 = " @ @P18"
+Axis2 = " @ @P19"
+Forward = "##17@ @#N17"
+Backward = "##31@ @#P17"
+StrafeLeft = "##30@ @#N16"
+StrafeRight = "##32@ @#P16"
+Left = "##203@ @ "
+Right = "##205@ @ "
+Strafe = "##56@ @ "
+Speed = "##42@ @ "
+Jump = "##57@ @##1"
+Duck = "##46@ @ "
+TurnAround = "##14@ @ "
+LeanLeft = "##16@ @##10"
+LeanRight = "##18@ @##11"
+RunLock = "##58@ @##8"
+DuckLock = "##29@ @##2"
+Fire = " @##3@#P21"
+Activate = "##28@##4@#P20"
+Reload = "##19@ @ "
+NextAmmo = "##33@ @##3"
+NextWeapon = "##26@#U@##15"
+PrevWeapon = "##27@#D@##14"
+HolsterWeapon = "##35@ @ "
+LastWeapon = "##45@ @ "
+MoveBody = "##34@ @##4"
+Flashlight = "##38@ @##5"
+LookUp = "##200@ @ "
+LookDown = "##208@ @ "
+ZoomIn = "##44@ @ "
+CenterView = "##207@ @ "
+Inventory = "##50@ @ "
+ViewKeys = "##49@ @ "
+ViewIntel = "##23@ @ "
+Score = "##25@ @ "
+Mission = "##15@ @ "
+CompassToggle = "##40@ @ "
+Radio = "##47@ @ "
+SendMessage = "##20@ @ "
+TeamMessage = "##21@ @ "
+
+
+[Game]
+CrosshairAlpha = 127
+CrosshairRed = 31
+CrosshairGreen = 255
+CrosshairBlue = 255
+CrosshairDynamic = 1
+UseCrosshair = 1
+CrosshairStyle = 0
+Subtitles = 0
+FadeBodies = 0
+HUDLayout = 0
+MessageDur = 10
+HeadBob = 10
+Difficulty = 1
+AlwaysRun = 1
+Gore = 1
+WeaponSway = 10
+AutoWeaponSwitch = 1
+LoadScreenTips = 1
+VehicleContour = 1
+
+
+[Sound]
+sound16bit = 1
+musicvolume = 1250
+soundvolume = 75
+
+
+[Multiplayer]
+MaxPlayers = 4
+Port = 27888
+UsePassword = FALSE
+MPDifficulty = 1
+SkillAllowance = 10000
+FriendlyFire = TRUE
+MPPlayerDiffFactor = 0.1f
+BandwidthClient = 3
+BandwidthServer = 3
+BandwidthServerCustom = 1500
+BandwidthClientCustom = 1500
+PlayerSkills0 = -1
+PlayerSkills1 = -1
+PlayerSkills2 = -1
+PlayerSkills3 = -1
+PlayerSkills4 = -1
+PlayerSkills5 = -1
+PlayerSkills6 = -1
+PlayerSkills7 = -1
+PlayerSkills8 = -1
+
+
