@@ -78,7 +78,7 @@ BEGIN
     IDS_TITLE_SOUND         "SOUND"
     IDS_TITLE_KEYBOARD      "KEYBOARD"
     IDS_TITLE_MOUSE         "MOUSE"
-    IDS_TITLE_JOYSTICK      "JOYSTICK"
+    IDS_TITLE_JOYSTICK      "GAMEPAD"
     IDS_TITLE_BRIEFING      "MISSION"
     IDS_NO_DM_MAPS          "No maps available for this game mode."
     IDS_TITLE_ENDMISSION    "MISSION SUMMARY"
@@ -236,7 +236,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_JOYSTICK            "Configure joystick/gamepad"
+    IDS_JOYSTICK            "Configure gamepad"
     IDS_RESTOREDEFAULTS     "Restore defaults"
     IDS_CONFIGURE           "Configure controls"
     IDS_BRIEFING            "Briefing:"
@@ -1347,11 +1347,11 @@ BEGIN
     IDS_SETTING_16X         "16x"
     IDS_WINDOWED_MODE       "Windowed Mode"
     IDS_HELP_WINDOWED_MODE  "Enable or disable windowed mode."
-    IDS_CONTROL_AXIS_X      "X-Axis"
-    IDS_CONTROL_AXIS_Y      "Y-Axis"
+    IDS_CONTROL_AXIS_X      "View X-Axis"
+    IDS_CONTROL_AXIS_Y      "View Y-Axis"
     IDS_ACTIONSTRING_AXIS_X "Axis1"
     IDS_ACTIONSTRING_AXIS_Y "Axis2"
-    IDS_CTRL_CONTROLS       "Controller"
+    IDS_CTRL_CONTROLS       "Gamepad Specific"
     IDS_ACTIVE_GAMEPAD      "Active Gamepad"
     IDS_GAMEPAD_SENSITIVITY_X "Sensitivity (X-Axis)"
     IDS_GAMEPAD_SENSITIVITY_Y "Sensitivity (Y-Axis)"
@@ -1363,7 +1363,7 @@ BEGIN
     IDS_GAMEPAD_DEADZONE_X  "Deadzone (Left Analog Stick)"
     IDS_GAMEPAD_DEADZONE_Y  "Deadzone (Right Analog Stick)"
     IDS_GAMEPAD_DEADZONE_TRIGGERS "Deadzone (Triggers)"
-    IDS_HELP_GAMEPAD_SENSE  "Set the sensitivity of the stick/trigger."
+    IDS_HELP_GAMEPAD_SENSE  "Set the sensitivity of the view analog stick"
     IDS_HELP_GAMEPAD_DEADZONE 
                             "Determines how far you need to move the analog stick/trigger before the input is recorded in-game."
     IDS_HELP_GAMEPAD_AXIS_ACCEL 

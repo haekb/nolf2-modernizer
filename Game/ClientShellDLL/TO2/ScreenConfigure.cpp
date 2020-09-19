@@ -905,7 +905,6 @@ LTBOOL CScreenConfigure::CheckMouseWheel (DeviceInput* pInput)
     return LTTRUE;
 }
 
-// TODO: Make into axis
 LTBOOL CScreenConfigure::CheckControllerAxis(DeviceInput* pInput)
 {
 	if (!g_pLTClient)
