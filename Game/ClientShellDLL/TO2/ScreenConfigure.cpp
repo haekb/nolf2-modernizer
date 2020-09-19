@@ -152,8 +152,8 @@ LTBOOL CScreenConfigure::Build()
 	pCtrl = AddTextItem(IDS_MISC_CONTROLS,CMD_MISC_COM,LTNULL);
 	pCtrl->SetFixedWidth(nWidth);
 
-	pCtrl = AddTextItem(IDS_CTRL_CONTROLS, CMD_CTRL_COM, LTNULL);
-	pCtrl->SetFixedWidth(nWidth);
+	//pCtrl = AddTextItem(IDS_CTRL_CONTROLS, CMD_CTRL_COM, LTNULL);
+	//pCtrl->SetFixedWidth(nWidth);
 	
 	LTIntPt pos(m_ListRect.left,m_ListRect.top);
 	int nHt = m_ListRect.bottom - m_ListRect.top;
@@ -192,7 +192,7 @@ LTBOOL CScreenConfigure::Build()
 			pCtrl = CreateTextItem(IDS_MISC_CONTROLS,LTNULL,LTNULL,kDefaultPos,LTTRUE);
 			break;
 		case COM_CTRL:
-			pCtrl = CreateTextItem(IDS_CTRL_CONTROLS, LTNULL, LTNULL, kDefaultPos, LTTRUE);
+			//pCtrl = CreateTextItem(IDS_CTRL_CONTROLS, LTNULL, LTNULL, kDefaultPos, LTTRUE);
 			break;
 		}
 
@@ -372,8 +372,8 @@ void CScreenConfigure::SetControlText(CLTGUICtrl *pCtrl)
 			if (numControls) {
 				strcat(strControls, ", ");
 			}
-			//strcat(strControls,strDeviceNiceName[2]);
-			strcat(strControls, m_pProfile->GetDeviceName(2));
+			// This is what I call, a superhack!
+			strcat(strControls, "Gamepad");//m_pProfile->GetDeviceName(2));
 			strcat(strControls," ");
 
 			
