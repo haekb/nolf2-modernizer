@@ -867,13 +867,13 @@ void CUserProfile::ApplyBindings()
 {
 	g_pProfileMgr->ClearBindings();
 
+	std::vector< CBindingData*> pGamepadPositiveData;
+	std::vector< CBindingData*> pGamepadNegativeData;
+
 	for (int d = 0; d < 3; d++)
 	{
 		CBindingData *pWheelUp = LTNULL;
 		CBindingData *pWheelDown = LTNULL;
-
-		CBindingData* pLeftAxisPositive = LTNULL;
-		CBindingData* pLeftAxisNegative = LTNULL;
 
 		for (int c = 0; c < g_kNumCommands; c++)
 		{
@@ -891,11 +891,11 @@ void CUserProfile::ApplyBindings()
 				}
 				else if (devices[d] == DEVICETYPE_GAMEPAD && strstr(pData->strRealName[d], "#P") != nullptr)
 				{
-					pLeftAxisPositive = pData;
+					pGamepadPositiveData.push_back(pData);
 				}
 				else if (devices[d] == DEVICETYPE_GAMEPAD && strstr(pData->strRealName[d], "#N") != nullptr)
 				{
-					pLeftAxisNegative = pData;
+					pGamepadNegativeData.push_back(pData);
 				}
 				else if (pData->strRealName[d][0] && pData->strRealName[d][0] != ' ')
 				{
@@ -907,9 +907,9 @@ void CUserProfile::ApplyBindings()
 
 				}
 			}
-
-
 		}
+
+
 		if (devices[d] == DEVICETYPE_MOUSE)
 		{
 			char tempStr[512] = "";
@@ -935,21 +935,21 @@ void CUserProfile::ApplyBindings()
 		else if (devices[d] == DEVICETYPE_GAMEPAD)
 		{
 			char tempStr[512] = "";
-			if (pLeftAxisPositive || pLeftAxisNegative)
+			if (pGamepadPositiveData.size() > 0 || pGamepadNegativeData.size() > 0)
 			{
 				std::string nRealName = "";
 				float fDeadzone = 0.0f;
 
 				// Set the axis binding
-				char upStr[64] = "";
-				char upTrigger[64] = "";
-				if (pLeftAxisPositive)
+				for (auto pAxis : pGamepadPositiveData)
 				{
-					LoadString(pLeftAxisPositive->nAction, upStr, sizeof(upStr));
+					char upStr[64] = "";
+					char upTrigger[64] = "";
+					LoadString(pAxis->nAction, upStr, sizeof(upStr));
 
-					std::string sRealName = pLeftAxisPositive->strRealName[d];
+					std::string sRealName = pAxis->strRealName[d];
 					sRealName = sRealName.substr(2);
-					pLeftAxisPositive->nDeviceObjectId[d] = atoi(sRealName.c_str());
+					pAxis->nDeviceObjectId[d] = atoi(sRealName.c_str());
 					sRealName = "##" + sRealName;
 
 					LTStrCpy(upTrigger, sRealName.c_str(), sizeof(upTrigger));
@@ -958,53 +958,54 @@ void CUserProfile::ApplyBindings()
 
 
 					// Left Axis
-					if (pLeftAxisPositive->nDeviceObjectId[d] == 16 || pLeftAxisPositive->nDeviceObjectId[d] == 17)
+					if (pAxis->nDeviceObjectId[d] == 16 || pAxis->nDeviceObjectId[d] == 17)
 					{
 						fDeadzone = (float)GetConsoleInt("GamepadDeadzoneLeftAnalog", 4) * 1000.0f;
 					}
 					// Right Axis
-					else if (pLeftAxisPositive->nDeviceObjectId[d] == 18 || pLeftAxisPositive->nDeviceObjectId[d] == 19)
+					else if (pAxis->nDeviceObjectId[d] == 18 || pAxis->nDeviceObjectId[d] == 19)
 					{
 						fDeadzone = (float)GetConsoleInt("GamepadDeadzoneRightAnalog", 4) * 1000.0f;
 					}
 					// Triggers
-					else if (pLeftAxisPositive->nDeviceObjectId[d] == 20 || pLeftAxisPositive->nDeviceObjectId[d] == 21)
+					else if (pAxis->nDeviceObjectId[d] == 20 || pAxis->nDeviceObjectId[d] == 21)
 					{
 						fDeadzone = (float)GetConsoleInt("GamepadDeadzoneTriggers", 4) * 1000.0f;
 					}
+					g_pLTClient->AddBinding(strDeviceName[d], upTrigger, upStr, fDeadzone, 32768.0f);
 				}
-				char downStr[64] = "";
-				char downTrigger[64] = "";
-				if (pLeftAxisNegative)
+				
+				for (auto pAxis : pGamepadNegativeData)
 				{
-					LoadString(pLeftAxisNegative->nAction, downStr, sizeof(downStr));
+					char downStr[64] = "";
+					char downTrigger[64] = "";
+					LoadString(pAxis->nAction, downStr, sizeof(downStr));
 
-					std::string sRealName = pLeftAxisNegative->strRealName[d];
+					std::string sRealName = pAxis->strRealName[d];
 					sRealName = sRealName.substr(2);
-					pLeftAxisNegative->nDeviceObjectId[d] = atoi(sRealName.c_str());
+					pAxis->nDeviceObjectId[d] = atoi(sRealName.c_str());
 					sRealName = "##" + sRealName;
 
 					LTStrCpy(downTrigger, sRealName.c_str(), sizeof(downTrigger));
 
 					// Left Axis
-					if (pLeftAxisNegative->nDeviceObjectId[d] == 16 || pLeftAxisNegative->nDeviceObjectId[d] == 17)
+					if (pAxis->nDeviceObjectId[d] == 16 || pAxis->nDeviceObjectId[d] == 17)
 					{
 						fDeadzone = (float)GetConsoleInt("GamepadDeadzoneLeftAnalog", 4) * 1000.0f;
 					}
 					// Right Axis
-					else if (pLeftAxisNegative->nDeviceObjectId[d] == 18 || pLeftAxisNegative->nDeviceObjectId[d] == 19)
+					else if (pAxis->nDeviceObjectId[d] == 18 || pAxis->nDeviceObjectId[d] == 19)
 					{
 						fDeadzone = (float)GetConsoleInt("GamepadDeadzoneRightAnalog", 4) * 1000.0f;
 					}
 					// Triggers
-					else if (pLeftAxisNegative->nDeviceObjectId[d] == 20 || pLeftAxisNegative->nDeviceObjectId[d] == 21)
+					else if (pAxis->nDeviceObjectId[d] == 20 || pAxis->nDeviceObjectId[d] == 21)
 					{
 						fDeadzone = (float)GetConsoleInt("GamepadDeadzoneTriggers", 4) * 1000.0f;
 					}
+					g_pLTClient->AddBinding(strDeviceName[d], downTrigger, downStr, -fDeadzone, -32768.0f);
 				}
 
-				g_pLTClient->AddBinding(strDeviceName[d], upTrigger, upStr, fDeadzone, 32768.0f);
-				g_pLTClient->AddBinding(strDeviceName[d], downTrigger, downStr, -fDeadzone, -32768.0f);
 			}
 		}
 				
