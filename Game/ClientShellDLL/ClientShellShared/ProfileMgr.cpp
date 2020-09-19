@@ -326,7 +326,7 @@ LTBOOL CUserProfile::Init(const std::string& profileName, LTBOOL bCreate)
 	g_vtMouseMaxInputRate.Init(g_pLTClient, "MouseInputRateMax", NULL, 40.0);
 
 	g_vtGamepadMinSensitivity.Init(g_pLTClient, "GamepadSensitivityMin", NULL, 1.0f);
-	g_vtGamepadMaxSensitivity.Init(g_pLTClient, "GamepadSensitivityMax", NULL, 41.0f);
+	g_vtGamepadMaxSensitivity.Init(g_pLTClient, "GamepadSensitivityMax", NULL, 81.0f);
 
 	LTBOOL bRet = LTFALSE;
 
