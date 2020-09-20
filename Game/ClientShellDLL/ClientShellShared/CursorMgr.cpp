@@ -201,8 +201,6 @@ void CCursorMgr::UseCursor(LTBOOL bUseCursor, LTBOOL bLockCursorToCenter)
 	// Jake: HACK
 	bool m_bOldMouseLook = false;
 
-	g_pLTClient->CPrint("UseCursor ( UseCursor: %d, LockCursorToCenter: %d )", bUseCursor, bLockCursorToCenter);
-
 	// Lock or don't lock the cursor to the center of the screen
 	if(bLockCursorToCenter)
 	{
@@ -211,19 +209,6 @@ void CCursorMgr::UseCursor(LTBOOL bUseCursor, LTBOOL bLockCursorToCenter)
 		}
 		else {
 			g_pGameInputMgr->SetRelativeMode(true);
-			/*
-			SDL_SetRelativeMouseMode(SDL_FALSE);
-			auto nSupported = SDL_SetRelativeMouseMode(SDL_TRUE);
-
-			auto error = SDL_GetError();
-
-			g_pLTClient->CPrint("Error: %s", error);
-
-			if (nSupported != 0)
-			{
-				g_pLTClient->CPrint("!! WARNING !! Relative Mouse Mode isn't supported!");
-			}
-			*/
 		}
 	}
 	else
@@ -233,8 +218,6 @@ void CCursorMgr::UseCursor(LTBOOL bUseCursor, LTBOOL bLockCursorToCenter)
 		}
 		else {
 			g_pGameInputMgr->SetRelativeMode(false);
-
-			//SDL_SetRelativeMouseMode(SDL_FALSE);
 		}
 	}
 }
