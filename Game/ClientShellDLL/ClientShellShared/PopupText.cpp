@@ -83,6 +83,11 @@ void CPopupText::DisplayPopup(uint8 nPopupId, char *pText, uint32 nTextId)
 	POPUP* pPopup = g_pPopupMgr->GetPopup(nPopupId);
 	if (!pPopup) return;
 
+	// Recreate our text, this prevents the weird text corruption bug..
+	// There's probably a very scary underlying condition, but hey this works!
+	m_Text.Destroy();
+	m_Text.Create(" ", 0, 0, g_pInterfaceResMgr->GetFont(0), 8, LTNULL);
+
 	CUIFont *pFont = g_pInterfaceResMgr->GetFont(pPopup->nFont);
 
 	LTIntPt pos;
