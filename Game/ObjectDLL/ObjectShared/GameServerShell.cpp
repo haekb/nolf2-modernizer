@@ -3498,6 +3498,14 @@ void CGameServerShell::Update(LTFLOAT timeElapsed)
 	auto fCurrentTime = CWinUtil::GetTime();
 	m_fUnrestrictedFrametime = fCurrentTime - m_fLastFrametime;
 	m_fLastFrametime = fCurrentTime;
+
+	// Server is paused, don't update our frame time!
+	// This should fix multiple intel pickups overriding each other.
+	if (timeElapsed == 0.0f)
+	{
+		m_fUnrestrictedFrametime = 0.0f;
+	}
+
 #endif
 
 	// Update the switching worlds state machine.
