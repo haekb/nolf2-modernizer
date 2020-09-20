@@ -122,6 +122,10 @@ void CHUDCrosshair::Render()
 		if (!g_pPlayerMgr->UsingCamera()) {
 			RenderScope();
 		}
+		else
+		{
+			RenderCamera();
+		}
 		return;
 	}
 
@@ -446,6 +450,32 @@ void CHUDCrosshair::RenderScope()
 		g_pDrawPrim->DrawPrim(&m_Poly[2], 1);
 
 	}
+}
+
+void CHUDCrosshair::RenderCamera()
+{
+	// Black bars if we need it!
+	if (!g_pInterfaceResMgr->Get4x3Offset()) {
+		return;
+	}
+
+	// This will return stuff like 0.75f, we want an additive scale..
+	auto fInvScale = g_pLayoutMgr->GetMaskScale(OVM_CAMERA);
+	// Flip that inverse scale!
+	auto fScale = (1.0f - fInvScale) + 1.0f;
+
+	int width = g_pInterfaceResMgr->Get4x3Offset() * fScale;
+	int height = g_pInterfaceResMgr->GetScreenHeight();
+
+	int screenWidth = g_pInterfaceResMgr->GetScreenWidth();
+
+	g_pDrawPrim->SetRGBA(&m_Poly[2], argbBlack);
+
+	g_pDrawPrim->SetXYWH(&m_Poly[2], 0, 0, width, height);
+	g_pDrawPrim->DrawPrim(&m_Poly[2], 1);
+
+	g_pDrawPrim->SetXYWH(&m_Poly[2], screenWidth - width, 0, width, height);
+	g_pDrawPrim->DrawPrim(&m_Poly[2], 1);
 }
 
 

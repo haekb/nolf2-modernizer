@@ -32,6 +32,7 @@ public:
 	void	UpdateLayout();
 
 	void	RenderScope();
+	void	RenderCamera();
 
 	void	Toggle() {m_bEnabled = !m_bEnabled;}
 
