@@ -1748,6 +1748,11 @@ LTVector GameInputMgr::GetRotationalAxisValues(std::vector<AxisValue> pGamepadAx
 	LTVector vAxisValues{ 0.0f, 0.0f, 0.0f };
 	float fDeadzone = 0.0f;
 
+	if (pGamepadAxisData.size() == 0)
+	{
+		return vAxisValues;
+	}
+
 	// Okay, we need to find out two rotation axis values (-1 and -2)
 	// Then throw into a vector and calculate the length against our threshold
 	for (auto pBinding : g_pGameInputMgr->m_pBindingList)
