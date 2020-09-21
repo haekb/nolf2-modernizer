@@ -192,7 +192,7 @@ FX0					= "MainBackFX"
 LoopFX0			= "MainLoopFX"
 
 [ScreenJukebox]
-SongListRect		= (240,148,505,365)
+SongListRect		= (360,148,600,365)
 PageRect			= (76,160,585,385)
 FontSize			= 16
 ColumnWidth			= 280

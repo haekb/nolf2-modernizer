@@ -2,7 +2,8 @@
 /*
 ** Jukebox Attribute File
 ** Created by Jake Breen for NOLF Modernizer
-** Fun fact: I made up all these song names.
+** Special thanks to Nathan Grigg, and Monolith Mark for name suggestions!
+** My only regret is that some of them were just toooooo loooooong.
 */
 
 
@@ -12,220 +13,234 @@
 ** Directory - What directory (under Music/) 
 ** ControlFile - What control file is to be used
 ** RequiresGOTY - Since not every copy contains these files, gate it off.
-**
+** IsMp3 - Whether or not it's a wav or mp3..I named this before checking the theme songs...
 **
 */
 
 [Theme0]
-Name            = "Main Theme"
-Directory       = "ISLAND"
-ControlFile     = "ISLAND.txt"
+Name            = "Themes from No One Lives Forever"
+Directory       = ""
+ControlFile     = ""
 RequiresGOTY    = FALSE
+IsMp3           = TRUE
 
 [Theme1]
-Name            = "India"
+Name            = "Double Cross"
 Directory       = "INDIA"
 ControlFile     = "INDIA.txt"
 RequiresGOTY    = FALSE
+IsMp3           = FALSE
 
 [Theme2]
-Name            = "Island"
+Name            = "Khios"
 Directory       = "ISLAND"
 ControlFile     = "ISLANDL.txt"
 RequiresGOTY    = FALSE
+IsMp3           = FALSE
 
 [Theme3]
-Name            = "Japan"
+Name            = "The Ninjas of Itakomura"
 Directory       = "JAPAN"
 ControlFile     = "JAPAN.txt"
 RequiresGOTY    = FALSE
+IsMp3           = FALSE
 
 [Theme4]
-Name            = "Ohio"
+Name            = "Melvin"
 Directory       = "JAPAN"
 ControlFile     = "OHIO.txt"
 RequiresGOTY    = FALSE
+IsMp3           = FALSE
 
 [Theme5]
-Name            = "Siberia"
+Name            = "Project: Omega"
 Directory       = "SIBERIA"
 ControlFile     = "SIBERIA.txt"
 RequiresGOTY    = FALSE
+IsMp3           = FALSE
 
 [Theme6]
 Name            = "Antarctica"
 Directory       = "UNDERWATER"
 ControlFile     = "ANTARCTICA.txt"
 RequiresGOTY    = FALSE
+IsMp3           = FALSE
 
 [Theme7]
-Name            = "Underwater"
+Name            = "Secret Underwater H.A.R.M. Base"
 Directory       = "UNDERWATER"
 ControlFile     = "UNDERWATER.txt"
 RequiresGOTY    = FALSE
+IsMp3           = FALSE
 
 [Theme8]
-Name            = "Unity"
+Name            = "The Interlopers"
 Directory       = "UNITY"
 ControlFile     = "UNITY.txt"
 RequiresGOTY    = FALSE
+IsMp3           = FALSE
 
 /*
 ** [Song0-9] - Section for all the individual songs
 ** Name - Localize this!
 ** IntensityLevel - The intensity required to play this song
 ** Theme - Categorizes the song. Use the numbers from above! (Ex/ Theme=0 is an Ambush song.)
-**
+** Path - Path to mp3 or wav file, only used if the theme's IsMp3 is TRUE
 */
 
 /*
-** MAIN THEME SONGS
+** THEME SONGS
 */
 [Song0]
-Name="Main Theme"
-IntensityLevel=2
+Name="The Operative"
 Theme=0
+Path="MUSIC/NOLF1THEME.WAV"
+
+[Song1]
+Name="A Spy In H.A.R.M.'s Way"
+Theme=0
+Path="MUSIC/CREDITSTHEME.WAV"
 
 /*
 ** INDIA SONGS
 */
-[Song1]
-Name="Exploration"
+[Song2]
+Name="Mulligatawny"
 IntensityLevel=2
 Theme=1
 
-[Song2]
-Name="Warning"
+[Song3]
+Name="Don't Make Harij Angry"
 IntensityLevel=5
 Theme=1
 
-[Song3]
-Name="Combat"
+[Song4]
+Name="A Spy In H.A.R.M.'s Way: Bollywood Variation"
 IntensityLevel=17
 Theme=1
 
 /*
 ** ISLANDL SONGS
 */
-[Song4]
-Name="Exploration"
+[Song5]
+Name="Code: Foxhunt"
 IntensityLevel=2
 Theme=2
 
-[Song5]
-Name="Warning"
+[Song6]
+Name="Preemptive Strike"
 IntensityLevel=21
 Theme=2
 
-[Song6]
-Name="Combat"
+[Song7]
+Name="The Fate of Khios"
 IntensityLevel=31
 Theme=2
 
 /*
 ** JAPAN SONGS
 */
-[Song7]
-Name="Exploration"
+[Song8]
+Name="The Katakuri Ninja Clan"
 IntensityLevel=2
 Theme=3
 
-[Song8]
-Name="Warning"
+[Song9]
+Name="I Have A Bad Feeling About Tonight"
 IntensityLevel=13
 Theme=3
 
-[Song9]
-Name="Combat"
+[Song10]
+Name="Cate Archer Must Die"
 IntensityLevel=23
 Theme=3
 
 /*
 ** OHIO SONGS
 */
-[Song10]
-Name="Exploration"
+[Song11]
+Name="You Can't Rush Art"
 IntensityLevel=41
 Theme=4
 
-[Song11]
-Name="Warning"
+[Song12]
+Name="I Have A Bad Feeling About Tonight"
 IntensityLevel=13
 Theme=4
 
-[Song12]
-Name="Combat"
+[Song13]
+Name="Cate Archer Must Die"
 IntensityLevel=23
 Theme=4
 
 /*
 ** SIBERIA SONGS
 */
-[Song13]
-Name="Exploration"
+[Song14]
+Name="Welcome to Siberia"
 IntensityLevel=2
 Theme=5
 
-[Song14]
-Name="Warning"
+[Song15]
+Name="This is the U.S.S.R. People Don't Just Disappear For No Reason"
 IntensityLevel=31
 Theme=5
 
-[Song15]
-Name="Combat"
+[Song16]
+Name="This Prisoner Is Too Devious"
 IntensityLevel=51
 Theme=5
 
 /*
 ** ANTARCTICA SONGS
 */
-[Song16]
-Name="Exploration"
+[Song17]
+Name="Ice Station Evil"
 IntensityLevel=51
 Theme=6
 
-[Song17]
-Name="Warning"
+[Song18]
+Name="Terror In The Deep"
 IntensityLevel=10
 Theme=6
 
-[Song18]
-Name="Combat"
+[Song19]
+Name="Abigail!"
 IntensityLevel=31
 Theme=6
 
 /*
 ** UNDERWATER SONGS
 */
-[Song19]
-Name="Exploration"
+[Song20]
+Name="The Aegean Sea"
 IntensityLevel=2
 Theme=7
 
-[Song20]
-Name="Warning"
+[Song21]
+Name="Terror In The Deep"
 IntensityLevel=10
 Theme=7
 
-[Song21]
-Name="Combat"
+[Song22]
+Name="Abigail!"
 IntensityLevel=31
 Theme=7
 
 /*
 ** UNITY SONGS
 */
-[Song22]
-Name="Exploration"
+[Song23]
+Name="UNITY Headquarters"
 IntensityLevel=2
 Theme=8
 
-[Song23]
-Name="Warning"
+[Song24]
+Name="Kill, Mime, and Destroy"
 IntensityLevel=21
 Theme=8
 
-[Song24]
-Name="Combat"
+[Song25]
+Name="Get Pierre!"
 IntensityLevel=41
 Theme=8

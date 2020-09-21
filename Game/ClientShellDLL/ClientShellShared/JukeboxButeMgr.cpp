@@ -9,12 +9,13 @@ CJukeboxButeMgr* g_pJukeboxButeMgr = nullptr;
 #define JBM_THEME_DIRECTORY "Directory"
 #define JBM_THEME_CONTROL_FILE "ControlFile"
 #define JBM_THEME_REQUIRES_GOTY "RequiresGOTY"
+#define JBM_THEME_IS_MP3 "IsMp3"
 
 #define JBM_SONG "Song"
 #define JBM_SONG_NAME "Name"
 #define JBM_SONG_INTENSITY "IntensityLevel"
 #define JBM_SONG_THEME "Theme"
-
+#define JBM_SONG_PATH "Path"
 
 CJukeboxButeMgr::CJukeboxButeMgr()
 {
@@ -112,6 +113,15 @@ bool CJukeboxButeMgr::GetThemeRequiresGOTY(int nThemeID)
 	return m_buteMgr.GetBool(sTagName.c_str(), JBM_THEME_REQUIRES_GOTY);
 }
 
+bool CJukeboxButeMgr::GetThemeIsMp3(int nThemeID)
+{
+	if (nThemeID < 0 || nThemeID > m_nThemeIDCount) return false;
+
+	std::string sTagName = JBM_THEME + std::to_string(nThemeID);
+
+	return m_buteMgr.GetBool(sTagName.c_str(), JBM_THEME_IS_MP3);
+}
+
 //
 // Song stuff
 //
@@ -142,4 +152,14 @@ int CJukeboxButeMgr::GetSongThemeID(int nSongID)
 	std::string sTagName = JBM_SONG + std::to_string(nSongID);
 
 	return m_buteMgr.GetInt(sTagName.c_str(), JBM_SONG_THEME);
+}
+
+void CJukeboxButeMgr::GetSongPath(int nSongID, char* pBuf, uint16 nBufLen)
+{
+	pBuf[0] = LTNULL;
+
+	if (nSongID < 0 || nSongID > m_nSongIDCount) return;
+
+	std::string sTagName = JBM_SONG + std::to_string(nSongID);
+	m_buteMgr.GetString(sTagName.c_str(), JBM_SONG_PATH, "", pBuf, nBufLen);
 }

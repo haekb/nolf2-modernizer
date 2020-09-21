@@ -39,6 +39,8 @@ CScreenJukebox::CScreenJukebox()
 	m_CurrentSongList = nullptr;
 	m_PreviousMusicState.Clear();
 
+	m_hSoundHandle = nullptr;
+
 	m_nWidth = 0;
 }
 
@@ -71,13 +73,14 @@ LTBOOL CScreenJukebox::Build()
 	LTFLOAT yr = g_pInterfaceResMgr->GetYRatio();
 	kGap *= yr;
 
-	AddTextItem(IDS_JUKEBOX_THEMES, 0, 0);
+	auto pSingleText = AddTextItem(IDS_JUKEBOX_THEMES, 0, 0);
+	pSingleText->SetFont(g_pInterfaceResMgr->GetFont(0), 24);
 
 	int nThemeCount = g_pJukeboxButeMgr->GetNumThemes();
 
 	for (int i = 0; i < nThemeCount; i++)
 	{
-		char szName[64] = "";
+		char szName[128] = "";
 		g_pJukeboxButeMgr->GetThemeName(i, szName, 64);
 
 		AddTextItem(szName, CMD_CUSTOM + i, 0);// 0, GetMediumFont());
@@ -85,7 +88,7 @@ LTBOOL CScreenJukebox::Build()
 		// Let's start off a map, 
 		// because everything here is pretty static we can safely assume the position in the vector relates to the theme id.
 		// Sorry for anyone who has to change this...(But also like why?)
-		std::map<std::string, int> SongMap;
+		std::map<std::string, JukeboxData> SongMap;
 		m_Songs.push_back(SongMap);
 	}
 
@@ -93,10 +96,11 @@ LTBOOL CScreenJukebox::Build()
 
 	for (int i = 0; i < nSongCount; i++)
 	{
-		char szName[64] = "";
+		char szName[128] = "";
 		g_pJukeboxButeMgr->GetSongName(i, szName, 64);
 		auto nIntensityLevel = g_pJukeboxButeMgr->GetSongIntensityLevel(i);
 		auto nThemeID = g_pJukeboxButeMgr->GetSongThemeID(i);
+		bool bIsMP3 = g_pJukeboxButeMgr->GetThemeIsMp3(nThemeID);
 
 		// If the ID is in the "to skip" list, then skip this song!
 		// This is needed if the player doesn't have the required files installed.
@@ -105,8 +109,13 @@ LTBOOL CScreenJukebox::Build()
 			continue;
 		}
 
+		JukeboxData data;
+		data.nIndex = i;
+		data.nIntensity = nIntensityLevel;
+		data.bIsMP3 = bIsMP3;
+
 		// Insert the song into its proper theme map.
-		m_Songs[nThemeID].insert(std::pair<std::string, int>(szName, nIntensityLevel));
+		m_Songs[nThemeID].insert(std::pair<std::string, JukeboxData>(szName, data));
 	}
 
 	// Create our beautiful frame
@@ -156,14 +165,28 @@ uint32 CScreenJukebox::OnCommand(uint32 dwCommand, uint32 dwParam1, uint32 dwPar
 	else if (dwCommand == PLAY_SONG)
 	{
 		UpdateData(LTTRUE);
-
+		
 		auto pCtrl = (CLTGUITextCtrl*)m_pSongListCtrl->GetSelectedControl();
 		std::string key = pCtrl->GetString()->GetText();
 
 		m_sCurrentSong = key;
 
-		int intensity = (*m_CurrentSongList).at(key);
-		g_pGameClientShell->GetMusic()->Play(intensity);
+		const auto& data = (*m_CurrentSongList).at(key);
+
+		if (m_hSoundHandle)
+		{
+			g_pLTClient->SoundMgr()->KillSound(m_hSoundHandle);
+			m_hSoundHandle = nullptr;
+		}
+
+		if (data.bIsMP3)
+		{
+			PlayMp3(data.nIndex);
+		}
+		else
+		{
+			g_pGameClientShell->GetMusic()->Play(data.nIntensity);
+		}
 
 		UpdateHelpText();
 
@@ -212,6 +235,12 @@ LTBOOL CScreenJukebox::PlayScore(int scoreId)
 	// so let's make sure we're stopped before it unloads the "level" and loads our new "level" theme.
 	g_pGameClientShell->GetMusic()->Stop();
 
+	if (m_hSoundHandle)
+	{
+		g_pLTClient->SoundMgr()->KillSound(m_hSoundHandle);
+		m_hSoundHandle = nullptr;
+	}
+
 	// excuse my mixed naming convetion here...
 	std::string directory = "Music\\";
 	std::string controlFile;
@@ -224,29 +253,33 @@ LTBOOL CScreenJukebox::PlayScore(int scoreId)
 		return LTFALSE;
 	}
 
-	char szDirectory[256] = "";
-	char szControlFile[64] = "";
-	g_pJukeboxButeMgr->GetThemeDirectory(nThemeID, szDirectory, 256);
-	g_pJukeboxButeMgr->GetThemeControlFile(nThemeID, szControlFile, 64);
+	if (!g_pJukeboxButeMgr->GetThemeIsMp3(nThemeID))
+	{
+		char szDirectory[256] = "";
+		char szControlFile[64] = "";
+		g_pJukeboxButeMgr->GetThemeDirectory(nThemeID, szDirectory, 256);
+		g_pJukeboxButeMgr->GetThemeControlFile(nThemeID, szControlFile, 64);
+
+		directory += szDirectory;
+		controlFile = szControlFile;
+
+		CMusicState MusicState;
+		strcpy(MusicState.szDirectory, (char*)(LPCSTR)directory.c_str());
+		strcpy(MusicState.szControlFile, (char*)(LPCSTR)controlFile.c_str());
+
+		if (!g_pGameClientShell->GetMusic()->RestoreMusicState(MusicState))
+		{
+			return LTFALSE;
+		}
+	}
 
 	m_CurrentSongList = &m_Songs[nThemeID];
-	directory += szDirectory;
-	controlFile = szControlFile;
-
-	CMusicState MusicState;
-	strcpy(MusicState.szDirectory, (char*)(LPCSTR)directory.c_str());
-	strcpy(MusicState.szControlFile, (char*)(LPCSTR)controlFile.c_str());
-
-	if (!g_pGameClientShell->GetMusic()->RestoreMusicState(MusicState))
-	{
-		return LTFALSE;
-	}
 
 	UpdateData(LTTRUE);
 
 	// Update the song list based on the newly selected theme!
 	m_pSongListCtrl->RemoveAll();
-	std::map<std::string, int>::iterator it = (*m_CurrentSongList).begin();
+	std::map<std::string, JukeboxData>::iterator it = (*m_CurrentSongList).begin();
 	while (it != (*m_CurrentSongList).end()) {
 
 		// Add the string to the control
@@ -265,6 +298,16 @@ LTBOOL CScreenJukebox::PlayScore(int scoreId)
 	// Display the frame and list controls.
 	m_pSongFrame->Show(LTTRUE);
 	m_pSongListCtrl->Show(LTTRUE);
+
+	return LTTRUE;
+}
+
+LTBOOL CScreenJukebox::PlayMp3(int scoreId)
+{
+	char szSongPath[256] = "";
+	g_pJukeboxButeMgr->GetSongPath(scoreId, szSongPath, 256);
+
+	m_hSoundHandle = g_pClientSoundMgr->PlaySoundLocal(szSongPath, SOUNDPRIORITYMOD_HIGH, PLAYSOUND_LOOP);
 
 	return LTTRUE;
 }

@@ -29,11 +29,13 @@ public:
 	void		GetThemeDirectory(int nThemeID, char* pBuf, uint16 nBufLen);
 	void		GetThemeControlFile(int nThemeID, char* pBuf, uint16 nBufLen);
 	bool		GetThemeRequiresGOTY(int nThemeID);
+	bool		GetThemeIsMp3(int nThemeID);
 
 	// Songs
 	void		GetSongName(int nSongID, char* pBuf, uint16 nBufLen);
 	int			GetSongIntensityLevel(int nSongID);
 	int			GetSongThemeID(int nSongID);
+	void        GetSongPath(int nSongID, char* pBuf, uint16 nBufLen);
 
 private:
 
