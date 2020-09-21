@@ -433,26 +433,15 @@ void CHUDCrosshair::RenderScope()
 	g_pDrawPrim->SetXYWH(&m_Poly[2],x,y,2.0f,(vR-vGap));
 	g_pDrawPrim->DrawPrim(&m_Poly[2],1);
 
-	// Black bars if we need it!
-	if (g_pInterfaceResMgr->Get4x3Offset()) {
-
-		int width = g_pInterfaceResMgr->Get4x3Offset();
-		int height = g_pInterfaceResMgr->GetScreenHeight();
-
-		int screenWidth = g_pInterfaceResMgr->GetScreenWidth();
-
-		g_pDrawPrim->SetRGBA(&m_Poly[2], argbBlack);
-
-		g_pDrawPrim->SetXYWH(&m_Poly[2], 0, 0, width, height);
-		g_pDrawPrim->DrawPrim(&m_Poly[2], 1);
-
-		g_pDrawPrim->SetXYWH(&m_Poly[2], screenWidth - width, 0, width, height);
-		g_pDrawPrim->DrawPrim(&m_Poly[2], 1);
-
-	}
+	RenderBlackBars(OVM_SCOPE);
 }
 
 void CHUDCrosshair::RenderCamera()
+{
+	RenderBlackBars(OVM_CAMERA);
+}
+
+void CHUDCrosshair::RenderBlackBars(eOverlayMask eMask)
 {
 	// Black bars if we need it!
 	if (!g_pInterfaceResMgr->Get4x3Offset()) {
@@ -460,7 +449,7 @@ void CHUDCrosshair::RenderCamera()
 	}
 
 	// This will return stuff like 0.75f, we want an additive scale..
-	auto fInvScale = g_pLayoutMgr->GetMaskScale(OVM_CAMERA);
+	auto fInvScale = g_pLayoutMgr->GetMaskScale(eMask);
 	// Flip that inverse scale!
 	auto fScale = (1.0f - fInvScale) + 1.0f;
 

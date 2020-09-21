@@ -11,6 +11,7 @@
 #ifndef __HUD_CROSSHAIR_H
 #define __HUD_CROSSHAIR_H
 
+#include "Overlays.h"
 #include "HUDItem.h"
 
 
@@ -33,6 +34,7 @@ public:
 
 	void	RenderScope();
 	void	RenderCamera();
+	void	RenderBlackBars(eOverlayMask eMask);
 
 	void	Toggle() {m_bEnabled = !m_bEnabled;}
 
