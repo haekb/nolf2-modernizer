@@ -32,7 +32,7 @@ RequiresGOTY    = FALSE
 IsMp3           = FALSE
 
 [Theme2]
-Name            = "Khios"
+Name            = "Island of Khios"
 Directory       = "ISLAND"
 ControlFile     = "ISLANDL.txt"
 RequiresGOTY    = FALSE
@@ -46,7 +46,7 @@ RequiresGOTY    = FALSE
 IsMp3           = FALSE
 
 [Theme4]
-Name            = "Melvin"
+Name            = "The House Where Melvin Used To Live"
 Directory       = "JAPAN"
 ControlFile     = "OHIO.txt"
 RequiresGOTY    = FALSE

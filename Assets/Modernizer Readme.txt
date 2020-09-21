@@ -20,9 +20,13 @@ Features:
 Known Issues:
     The following might not be fixable:
      - Anti-aliasing causes a 1 pixel offset at the edges of 2d elements
+     - Jukebox Singles take a full second to load
 
     The following can be fixed in a future patch:
      - Jukebox can occasionally crash while switching songs
+     - Jukebox songs are sorted in alphabetical order
+     - Some Jukebox Singles have duplicate songs
+     - Some cutscenes (with 4:3 mode disabled) contain overlays that don't have black bars
      - Controller support is only supported during gameplay, it doesn't work on menus
 
 Misc Notes:
@@ -58,3 +62,10 @@ this is based off of the basic Xbox 360/One controller. However a PS4 or other c
 Custom Controller Mappings:
 The new input system was written to take advantage of SDL2's game controller api. This enables non-xinput devices to work as if they were xinput devices. If your controller won't work you could try community bindings located [here](https://github.com/gabomdq/SDL_GameControllerDB/).
 Simply drop the `gamecontrollerdb.txt` file into your NOLF 2 game folder and Modernizer will attempt to load it on start-up.
+
+Special Thanks:
+    My Partner - For putting up with quite a few late nights
+    Nathan Grigg & Monolith Mark - For getting me some wonderful song title suggestions
+    SPAWN - For his immense help with testing & organizing the multiplayer community
+    Everyone at LithFAQ - Because they're all such a helpful bunch
+    <Space Intentionally Left Blank> - To whoever actually brings NOLF back from legal hell
