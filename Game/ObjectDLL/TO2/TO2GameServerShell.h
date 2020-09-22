@@ -36,6 +36,7 @@ class CTO2GameServerShell : public CGameServerShell
 	protected:
 	    virtual LTRESULT OnServerInitialized();
 		virtual void OnServerTerm();
+		virtual void OnMessage(HCLIENT hSender, ILTMessage_Read* pMsg);
         virtual void Update(LTFLOAT timeElapsed);
 
 	private:
@@ -45,6 +46,11 @@ class CTO2GameServerShell : public CGameServerShell
 		CTO2MissionButeMgr	m_MissionButeMgr;	// Same as g_pMissionButeMgr
 
 		uint32	m_nLastPublishTime;
+
+		LTBOOL				m_bLockFramerate;
+		LARGE_INTEGER		m_lTimerFrequency;
+		LONGLONG			m_lNextUpdate;
+		LONGLONG			m_lFrametime;
 };
 
 

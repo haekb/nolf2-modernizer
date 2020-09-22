@@ -236,6 +236,9 @@ enum LoadGameType
 #define MID_REMOVE_GOAL                         253 // Client to server
 #define MID_OBJECT_ALPHA                        254 // Client to server
 
+// NEW! Send a signal to not lock the server framerate
+#define MID_DONT_LOCK_SERVER_FPS				255
+
 
 // Object <-> Object messages...
 

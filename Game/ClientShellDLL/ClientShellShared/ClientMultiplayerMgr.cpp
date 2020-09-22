@@ -172,6 +172,16 @@ bool ClientMultiplayerMgr::InitMultiPlayer()
 	//force server to update performance settings
 	pProfile->SendPerformanceMsg();
 
+	if (IsHosting()) {
+		CAutoMessage cMsgHosting;
+
+		// Send a signal to not lock server framerate. 
+		// Dedicated servers don't send this, so it's a nice hack without backporting the dedicated server...
+		cMsgHosting.Writeuint8(MID_DONT_LOCK_SERVER_FPS);
+		cMsgHosting.Writeuint8((uint8)LTTRUE);
+
+		g_pLTClient->SendToServer(cMsgHosting.Read(), MESSAGE_GUARANTEED);
+	}
 
 
 	return true;

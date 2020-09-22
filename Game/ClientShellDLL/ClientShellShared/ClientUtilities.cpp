@@ -475,6 +475,15 @@ bool IsMultiplayerGame()
     return true;
 }
 
+bool IsHosting()
+{
+	int nGameMode = 0;
+	g_pLTClient->GetGameMode(&nGameMode);
+	if (nGameMode == STARTGAME_HOST || nGameMode == STARTGAME_HOSTTCP) return true;
+
+	return false;
+}
+
 
 
 // ----------------------------------------------------------------------- //

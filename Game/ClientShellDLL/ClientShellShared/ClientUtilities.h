@@ -115,6 +115,7 @@ char* LoadTempString(int messageCode);
 
 
 bool IsMultiplayerGame();
+bool IsHosting();
 
 // Helper for finding the normal and point of intersection beneath a given point
 bool GetIntersectionUnderPoint( LTVector &vInPt, HOBJECT *pFilterList, LTVector &vOutNormal, LTVector &vOutPt );
