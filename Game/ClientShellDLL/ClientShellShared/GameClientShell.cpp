@@ -119,6 +119,9 @@ VarTrack			g_vtGamepadName;
 
 //
 
+VarTrack			g_vtLockCinematicAspectRatio;   // RestrictCinematicsTo4x3	<0-1>
+
+
 // SDL Logging
 std::fstream 		g_SDLLogFile;
 SDL_Window*			g_SDLWindow = NULL;
@@ -1033,6 +1036,8 @@ uint32 CGameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
 	// Game Input Mgr
 	g_vtGamepadName.Init(g_pLTClient, "GamepadName", NULL, 0.0f);
 	//
+
+	g_vtLockCinematicAspectRatio.Init(g_pLTClient, "RestrictCinematicsTo4x3", NULL, 1.0f);
 
 	m_cheatMgr.Init();
 	m_LightScaleMgr.Init();

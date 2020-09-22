@@ -1368,6 +1368,8 @@ BEGIN
                             "Determines how far you need to move the analog stick/trigger before the input is recorded in-game."
     IDS_HELP_GAMEPAD_AXIS_ACCEL 
                             "Speeds up the analog stick the longer you hold it in a direction."
+    IDS_4X3_CINEMATICS      "Restrict Cinematics to 4:3"
+    IDS_HELP_4X3_CINEMATICS "Adds black bars to the sides of your screen to help hide imperfections during cinematics."
 END
 
 #endif    // English (United States) resources

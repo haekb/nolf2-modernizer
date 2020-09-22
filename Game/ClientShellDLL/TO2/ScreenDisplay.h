@@ -94,6 +94,7 @@ private:
 	LTBOOL							m_bRunInBackground;
 	int								m_nAntiAliasing;
 	LTBOOL							m_bWindowed;
+	LTBOOL							m_b4x3Cinematics;
 
 	CLTGUICycleCtrl					*m_pResolutionCtrl;		// The resolution control
 

@@ -1042,6 +1042,8 @@
 #define IDS_HELP_GAMEPAD_SENSE          2228
 #define IDS_HELP_GAMEPAD_DEADZONE       2229
 #define IDS_HELP_GAMEPAD_AXIS_ACCEL     2230
+#define IDS_4X3_CINEMATICS              2231
+#define IDS_HELP_4X3_CINEMATICS         2232
 
 // Next default values for new objects
 // 

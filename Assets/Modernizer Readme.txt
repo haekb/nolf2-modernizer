@@ -28,6 +28,7 @@ Known Issues:
      - Some Jukebox Singles have duplicate songs
      - Some cutscenes (with 4:3 mode disabled) contain overlays that don't have black bars
      - Controller support is only supported during gameplay, it doesn't work on menus
+     - Crosshair can be off-centered when switching to specific resolutions. A restart will fix this.
 
 Misc Notes:
  - Controller support is pretty bare bones, this will be touched up in a future patch

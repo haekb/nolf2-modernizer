@@ -39,6 +39,7 @@
 CInterfaceMgr*  g_pInterfaceMgr = LTNULL;
 
 extern ConsoleMgr* g_pConsoleMgr;
+extern VarTrack g_vtLockCinematicAspectRatio;
 
 #define IM_SPLASH_SOUND		"Interface\\Menu\\Snd\\theme_mp3.wav"
 
@@ -5103,6 +5104,20 @@ void CInterfaceMgr::UpdateLetterBox()
 	rcDest.Init(0, dwHeight - nBorderSize, dwWidth, dwHeight);
  	g_pLTClient->ScaleSurfaceToSurfaceTransparent(hScreen, m_hLetterBoxSurface,
 	   &rcDest, &rcSrc, hTransColor);
+
+	if (g_vtLockCinematicAspectRatio.GetFloat())
+	{
+		int offsetX = g_pInterfaceResMgr->Get4x3Offset();
+
+		rcDest.Init(0, 0, offsetX, dwHeight);
+		g_pLTClient->ScaleSurfaceToSurfaceTransparent(hScreen, m_hLetterBoxSurface,
+			&rcDest, &rcSrc, hTransColor);
+
+		rcDest.Init(dwWidth - offsetX, 0, dwWidth + offsetX, dwHeight);
+		g_pLTClient->ScaleSurfaceToSurfaceTransparent(hScreen, m_hLetterBoxSurface,
+			&rcDest, &rcSrc, hTransColor);
+
+	}
 /*
 	if (m_nBorderSize == 0)
 	{

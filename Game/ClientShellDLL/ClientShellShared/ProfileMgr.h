@@ -286,6 +286,7 @@ public:
 	LTBOOL	m_bRunInBackground;
 	uint32	m_nAntiAliasing;
 	LTBOOL  m_bWindowed;
+	LTBOOL	m_b4x3Cinematics;
 
 	//****************** display
 	sPerformCfg m_sPerformance;

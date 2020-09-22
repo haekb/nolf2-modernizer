@@ -205,6 +205,7 @@ FX0					= "MainBackFX"
 LoopFX0				= "MainLoopFX"
 
 [ScreenDisplay]
+FontSize			= 16
 ColumnWidth			= 200
 SliderWidth			= 240
 FrameRect			= (273,176,563,400)

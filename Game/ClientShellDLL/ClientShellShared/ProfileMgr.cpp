@@ -1185,6 +1185,8 @@ void CUserProfile::ApplyDisplay()
 
 	WriteConsoleInt("Windowed", m_bWindowed);
 
+	WriteConsoleInt("RestrictCinematicsTo4x3", m_b4x3Cinematics);
+
 	bool bWindowedModeChanged = previousWindowed != m_bWindowed;
 	bool bRestart = (initVS != m_bVSync) || (previousAA != m_nAntiAliasing);
 //	if (bRestart)
@@ -1709,6 +1711,8 @@ void CUserProfile::SetDisplay()
 
 	m_bRunInBackground = GetConsoleInt("RunInBackground", 0);
 	m_nAntiAliasing = GetConsoleInt("AntiAliasFSOverSample", 0);
+
+	m_b4x3Cinematics = GetConsoleInt("RestrictCinematicsTo4x3", 1);
 
 	m_bWindowed = GetConsoleInt("Windowed", 0);
 

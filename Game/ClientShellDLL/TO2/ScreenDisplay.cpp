@@ -169,6 +169,7 @@ CScreenDisplay::CScreenDisplay()
 	m_bRunInBackground = LTFALSE;
 	m_nAntiAliasing = 0;
 	m_bWindowed = LTFALSE;
+	m_b4x3Cinematics = LTFALSE;
 }
 
 CScreenDisplay::~CScreenDisplay()
@@ -255,6 +256,9 @@ LTBOOL CScreenDisplay::Build()
 	m_pAntiAliasing->AddString(LoadTempString(IDS_SETTING_4X));
 	m_pAntiAliasing->AddString(LoadTempString(IDS_SETTING_8X));
 	m_pAntiAliasing->AddString(LoadTempString(IDS_SETTING_16X));
+
+	AddToggle(IDS_4X3_CINEMATICS, IDS_HELP_4X3_CINEMATICS, kGap, &m_b4x3Cinematics);
+
 
  	// Make sure to call the base class
 	if (!CBaseScreen::Build()) return LTFALSE;
@@ -499,6 +503,8 @@ void CScreenDisplay::OnFocus(LTBOOL bFocus)
 
 		m_bWindowed = pProfile->m_bWindowed;
 
+		m_b4x3Cinematics = pProfile->m_b4x3Cinematics;
+
 		// Only enable run in background if windowed mode is true!
 		m_pRunInBackground->Enable(m_bWindowed);
 
@@ -544,6 +550,7 @@ void CScreenDisplay::OnFocus(LTBOOL bFocus)
 			// Grab the actual variable value from our AA levels list.
 			m_nAntiAliasing = nAntiAliasLevels[m_pAntiAliasing->GetSelIndex()];
 
+			pProfile->m_b4x3Cinematics = m_b4x3Cinematics;
 			pProfile->m_bWindowed = m_bWindowed;
 			pProfile->m_nAntiAliasing = m_nAntiAliasing;
 			pProfile->m_bRunInBackground = m_bRunInBackground;
