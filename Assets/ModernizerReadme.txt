@@ -6,6 +6,10 @@ The beta releases are meant to get this mod out the door sooner!
 However there's sure to be bugs, and probably bugs in the base game that I didn't catch. 
 Before commenting about a crash, please check the known issues section for more information!
 
+Requirements:
+You'll need to install VC++2019 Redist before playing, if you have Windows 10 you should be good, but just in case you can check here:
+https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads
+
 Install Instructions:
  - Extract all files to your NOLF 2 directory
  - Run NOLF2.exe
@@ -20,6 +24,7 @@ Features:
  - Marginally better controller support
  - Jukebox to play some of your favourite in-game tunes
  - Several original game crashes have been fixed
+ - Game updates are automatically checked in the Multiplayer Menu
 
 Known Issues:
     What's a beta without known issues? Please take a look, and 
@@ -27,8 +32,10 @@ Known Issues:
     The following might not be fixable:
      - Anti-aliasing causes a ~1 pixel offset at the edges of 2d elements
      - Jukebox Singles take a full second to load
+     - Due to how the input system was re-written, all controls are now saved in controls.cfg. This doesn't work with the base game so it's not compatiable with any other mods!
 
     The following can be fixed in a future patch:
+     - Cate's missing from the main menu, we don't know where she went!
      - Jukebox can occasionally crash while switching songs
      - Jukebox songs are sorted in alphabetical order
      - Some Jukebox Singles have duplicate songs
@@ -37,6 +44,8 @@ Known Issues:
      - Crosshair can be off-centered when switching to specific resolutions. A restart will fix this
      - Switching to a lower resolution from a fullscreen windowed mode can make the window get stuck in borderless mode
      - Almost certainly there's a multiplayer browser crash in there somewhere!
+     - Music can sometimes be a little jumpy (I've been told the base game had this issue too, but I'm looking into it!)
+     - Dedicated Server doesn't work (A new version will be released in a future release)
 
 Misc Notes:
  - Controller support is pretty bare bones, this will be touched up in a future patch
@@ -79,3 +88,4 @@ Special Thanks:
     SPAWN - For his immense help with testing & organizing the multiplayer community
     Everyone at LithFAQ - Because they're all such a helpful bunch
     <Space Intentionally Left Blank> - To whoever actually brings NOLF back from legal hell
+    And You - For enjoying such a fantastic forgotten gem

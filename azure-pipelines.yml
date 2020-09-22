@@ -58,7 +58,7 @@ steps:
       controls.cfg
       Lithtech.exe
       JServerInfo.txt
-      "Modernizer Readme.txt"
+      ModernizerReadme.txt
     TargetFolder: '$(Pipeline.Workspace)\\Artifacts'
 
 # Profile Stuff
@@ -68,6 +68,14 @@ steps:
     Contents: |
       Default.prf
     TargetFolder: '$(Pipeline.Workspace)\\Artifacts\\Profiles'
+
+# Open Source Licenses
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: ''
+    Contents: |
+      osslicenses.txt
+    TargetFolder: '$(Pipeline.Workspace)\\Artifacts'
 
 # SDL2
 - task: CopyFiles@2
