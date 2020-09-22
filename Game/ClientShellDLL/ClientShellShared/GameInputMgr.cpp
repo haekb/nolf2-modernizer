@@ -739,7 +739,7 @@ bool GameInputMgr::EnableDevice(InputMgr* pInputMgr, const char* pDeviceName)
 
 bool GameInputMgr::ClearBindings(InputMgr* pInputMgr, const char* pDeviceName, const char* pRealName)
 {
-	g_pLTClient->CPrint("[GameInputMgr::ClearBindings] Device: [%s] | BindName: [%s]", pDeviceName, pRealName);
+	//g_pLTClient->CPrint("[GameInputMgr::ClearBindings] Device: [%s] | BindName: [%s]", pDeviceName, pRealName);
 	for (int i = 0; i < g_pGameInputMgr->m_pBindingList.size(); i++)
 	{
 		auto pBinding = g_pGameInputMgr->m_pBindingList.at(i);
@@ -794,7 +794,7 @@ bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, cons
 	DeviceBinding* pDeviceBinding = nullptr;
 	GIMBinding* pBinding = nullptr;
 
-	g_pLTClient->CPrint("[GameInputMgr::AddBinding] Device: [%s] | BindName: [%s] | ActionName: [%s] | RangeLow/RangeHigh: [%f/%f]", pDeviceName, pRealName, pActionName, fRangeLow, fRangeHigh);
+	//g_pLTClient->CPrint("[GameInputMgr::AddBinding] Device: [%s] | BindName: [%s] | ActionName: [%s] | RangeLow/RangeHigh: [%f/%f]", pDeviceName, pRealName, pActionName, fRangeLow, fRangeHigh);
 
 	for (auto pSearchBinding : g_pGameInputMgr->m_pBindingList)
 	{
@@ -809,7 +809,7 @@ bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, cons
 		}
 
 		// Oh we found it! Update a values, and move on.
-		g_pLTClient->CPrint("[GameInputMgr::AddBinding] Duplicate found [%s] for action [%s] | Device [%s]", pRealName, pActionName, pDeviceName);
+		//g_pLTClient->CPrint("[GameInputMgr::AddBinding] Duplicate found [%s] for action [%s] | Device [%s]", pRealName, pActionName, pDeviceName);
 
 		pBinding = pSearchBinding;
 		pDeviceBinding = pBinding->pDeviceBinding;
@@ -821,7 +821,7 @@ bool GameInputMgr::AddBinding(InputMgr* pInputMgr, const char* pDeviceName, cons
 
 			if (stricmp(pCheckAction->strActionName, pActionName) == 0)
 			{
-				g_pLTClient->CPrint("[GameInputMgr::AddBinding] REAL duplicate found [%s] for action [%s] | Device [%s]", pRealName, pActionName, pDeviceName);
+				//g_pLTClient->CPrint("[GameInputMgr::AddBinding] REAL duplicate found [%s] for action [%s] | Device [%s]", pRealName, pActionName, pDeviceName);
 				// Ok we don't even need to update the list, just continue.
 				// Clean up pAction tho..
 				delete pAction;

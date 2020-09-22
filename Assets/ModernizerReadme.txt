@@ -27,8 +27,6 @@ Features:
  - Game updates are automatically checked in the Multiplayer Menu
 
 Known Issues:
-    What's a beta without known issues? Please take a look, and 
-
     The following might not be fixable:
      - Anti-aliasing causes a ~1 pixel offset at the edges of 2d elements
      - Jukebox Singles take a full second to load
@@ -83,9 +81,9 @@ The new input system was written to take advantage of SDL2's game controller api
 Simply drop the `gamecontrollerdb.txt` file into your NOLF 2 game folder and Modernizer will attempt to load it on start-up.
 
 Special Thanks:
-    My Partner - For putting up with quite a few late nights
-    Nathan Grigg & Monolith Mark - For getting me some wonderful song title suggestions
-    SPAWN - For his immense help with testing & organizing the multiplayer community
-    Everyone at LithFAQ - Because they're all such a helpful bunch
-    <Space Intentionally Left Blank> - To whoever actually brings NOLF back from legal hell
-    And You - For enjoying such a fantastic forgotten gem
+ - My Partner - For putting up with quite a few late nights
+ - Nathan Grigg & Monolith Mark - For getting me some wonderful song title suggestions
+ - SPAWN - For his immense help with testing & organizing the multiplayer community (Check out his site https://www.spawnsite.net)
+ - Everyone at LithFAQ - Because they're all such a helpful bunch
+ - <Space Intentionally Left Blank> - To whoever actually brings NOLF back from legal hell
+ - And You - For enjoying such a fantastic forgotten gem
