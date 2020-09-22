@@ -1,6 +1,10 @@
-No One Lives Forever 2 Modernizer
+No One Lives Forever 2 Modernizer - Beta 1
 ---------------------------------
 The goal of NOLF 2 Modernizer is to help fix some long standing bugs, and update some more outdated features of the game.
+
+The beta releases are meant to get this mod out the door sooner! 
+However there's sure to be bugs, and probably bugs in the base game that I didn't catch. 
+Before commenting about a crash, please check the known issues section for more information!
 
 Install Instructions:
  - Extract all files to your NOLF 2 directory
@@ -18,8 +22,10 @@ Features:
  - Several original game crashes have been fixed
 
 Known Issues:
+    What's a beta without known issues? Please take a look, and 
+
     The following might not be fixable:
-     - Anti-aliasing causes a 1 pixel offset at the edges of 2d elements
+     - Anti-aliasing causes a ~1 pixel offset at the edges of 2d elements
      - Jukebox Singles take a full second to load
 
     The following can be fixed in a future patch:
@@ -28,10 +34,13 @@ Known Issues:
      - Some Jukebox Singles have duplicate songs
      - Some cutscenes (with 4:3 mode disabled) contain overlays that don't have black bars
      - Controller support is only supported during gameplay, it doesn't work on menus
-     - Crosshair can be off-centered when switching to specific resolutions. A restart will fix this.
+     - Crosshair can be off-centered when switching to specific resolutions. A restart will fix this
+     - Switching to a lower resolution from a fullscreen windowed mode can make the window get stuck in borderless mode
+     - Almost certainly there's a multiplayer browser crash in there somewhere!
 
 Misc Notes:
  - Controller support is pretty bare bones, this will be touched up in a future patch
+ - Controller support is not entirely "supported" during the beta releases
  - Most of the controller is rebindable except for the rotation/view axis (Right Stick), you'll have to do that manually in controls.cfg!
 
 Controller Code Labels:

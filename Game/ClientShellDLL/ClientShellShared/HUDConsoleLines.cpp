@@ -14,6 +14,8 @@
 
 extern ConsoleMgr *g_pConsoleMgr;
 
+VarTrack g_vtEnableConsoleLines;
+
 //******************************************************************************************
 //**
 //** HUD Show Framerate
@@ -37,6 +39,8 @@ LTBOOL CHUDConsoleLines::Init()
 
 	m_pStr->SetColors(argbWhite, argbWhite, argbWhite, argbWhite);
 
+	g_vtEnableConsoleLines.Init(g_pLTClient, "EnableConsoleLines", LTNULL, 0.0f);
+
 	return LTTRUE;
 }
 
@@ -51,6 +55,11 @@ void CHUDConsoleLines::Term()
 
 void CHUDConsoleLines::Render()
 {
+	if (g_vtEnableConsoleLines.GetFloat() == 0.0f)
+	{
+		return;
+	}
+
 	if (!m_pStr) {
 		return;
 	}
@@ -62,6 +71,11 @@ void CHUDConsoleLines::Render()
 
 void CHUDConsoleLines::Update()
 {
+	if (g_vtEnableConsoleLines.GetFloat() == 0.0f)
+	{
+		return;
+	}
+
 	int nNumConsoleLines = GetConsoleInt("NumConsoleLines", 0);
 	if (!m_pStr || !nNumConsoleLines) {
 		return;
