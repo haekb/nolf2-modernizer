@@ -105,7 +105,7 @@ uint32 CTO2GameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
 	m_bLockFramerate = LTTRUE;
 
 	g_vtLockFPS.Init(g_pLTClient, "LockFramerate", LTNULL, 1.0f);
-	g_vtShowFPS.Init(g_pLTClient, "ShowFramerate", LTNULL, 1.0f);
+	g_vtShowFPS.Init(g_pLTClient, "ShowFramerate", LTNULL, 0.0f);
 	g_vtMaxFPS.Init(g_pLTClient, "MaxFramerate", LTNULL, 60.0f);
 
 	// If we can't get timer frequency, we can't limit the framerate!
