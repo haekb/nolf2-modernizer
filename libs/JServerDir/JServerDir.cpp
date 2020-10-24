@@ -1046,12 +1046,13 @@ void JServerDir::PublishServer(Peer peerParam)
 	UDPSocket* uSock = new UDPSocket();
 
 	Peer peer = peerParam;
+	int nPort = peer.m_PortData.nHostPort;
 
 	ConnectionData selfConnectionData = { "0.0.0.0", 27889 };
 	ConnectionData masterConnectionData = { m_MasterServerInfo.szServer, (unsigned short)m_MasterServerInfo.nPortUDP };
 	ConnectionData incomingConnectionData = { "0.0.0.0", 0 };
 
-	std::string heartbeat = getHeartbeat(m_iQueryNum, false);
+	std::string heartbeat = getHeartbeat(m_iQueryNum, nPort, false);
 	std::string gameInfo = encodeGameInfoToString(&peer);
 
 	if (!m_bBoundConnection) {
@@ -1078,6 +1079,8 @@ void JServerDir::PublishServer(Peer peerParam)
 		}
 
 	}
+
+	std::string initialResponse = uSock->Recieve(incomingConnectionData);
 
 	auto nCurrentTime = getTimestamp();
 	auto nLastHeartbeat = getTimestamp();
@@ -1124,7 +1127,7 @@ void JServerDir::PublishServer(Peer peerParam)
 
 			// After 60 seconds, poke the master server
 			if (bStateChanged || nCurrentTime - nLastHeartbeat > 60) {
-				uSock->Query(getHeartbeat(m_iQueryNum, bStateChanged), masterConnectionData);
+				uSock->Query(getHeartbeat(m_iQueryNum, nPort, bStateChanged), masterConnectionData);
 				nLastHeartbeat = nCurrentTime;
 			}
 
@@ -1145,7 +1148,7 @@ void JServerDir::PublishServer(Peer peerParam)
 			// TODO: This kinda sucks. Feed it into the main loop up there.
 			// Also it seems QTracker will just drop it, if we don't send it anything after a statechange. I'lllll take it!
 			try {
-				uSock->Query(getHeartbeat(m_iQueryNum, true), masterConnectionData);
+				uSock->Query(getHeartbeat(m_iQueryNum, nPort, true), masterConnectionData);
 			}
 			catch (...)
 			{

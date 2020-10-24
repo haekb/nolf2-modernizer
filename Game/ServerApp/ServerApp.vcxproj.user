@@ -4,6 +4,6 @@
     <LocalDebuggerWorkingDirectory>D:\Games\No One Lives Forever 2 - Dev</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommand>$(TargetDir)\NOLF2Srv.exe</LocalDebuggerCommand>
-    <LocalDebuggerCommandArguments>-rez NewGame</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-no-modernizer 1 -rez NewGame</LocalDebuggerCommandArguments>
   </PropertyGroup>
 </Project>

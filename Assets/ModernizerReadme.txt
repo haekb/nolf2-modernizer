@@ -43,7 +43,6 @@ Known Issues:
      - Switching to a lower resolution from a fullscreen windowed mode can make the window get stuck in borderless mode
      - Almost certainly there's a multiplayer browser crash in there somewhere!
      - Music can sometimes be a little jumpy (I've been told the base game had this issue too, but I'm looking into it!)
-     - Dedicated Server doesn't work (A new version will be released in a future release)
 
 Misc Notes:
  - Controller support is pretty bare bones, this will be touched up in a future patch
@@ -79,6 +78,9 @@ this is based off of the basic Xbox 360/One controller. However a PS4 or other c
 Custom Controller Mappings:
 The new input system was written to take advantage of SDL2's game controller api. This enables non-xinput devices to work as if they were xinput devices. If your controller won't work you could try community bindings located [here](https://github.com/gabomdq/SDL_GameControllerDB/).
 Simply drop the `gamecontrollerdb.txt` file into your NOLF 2 game folder and Modernizer will attempt to load it on start-up.
+
+Dedicated Server Information:
+The dedicated server will automatically load up modernizer. If you'd like to include additional .rez files you can add them with the `-rez <rez>` argument.
 
 Special Thanks:
  - My Partner - For putting up with quite a few late nights
