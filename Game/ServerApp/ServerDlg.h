@@ -187,7 +187,7 @@ private:
 	CString				FormatTime( CTimeSpan &timeSpan );
 
 	// Parses command line for certain parameters.
-	void				ParseCommandLine( bool bCheckForProfile, ServerGameOptions* pServerGameOptions );
+	void				ParseCommandLine( bool bCheckForProfile, ServerGameOptions* pServerGameOptions, bool bCheckForRez = false, CStringList* lstRez = nullptr);
 
 	// Initialize the error log.
 	bool				InitErrorLog( );
