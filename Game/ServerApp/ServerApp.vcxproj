@@ -177,7 +177,7 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <AdditionalIncludeDirectories>.\;..\..\libs\STLPORT-4.0\STLPORT_NO;..\..\Engine\sdk\inc;..\shared;..\shared\lang\en;..\..\libs\regmgr;..\..\libs\regmgr32;..\..\libs\lith;..\..\libs\butemgr;..\..\libs\cryptmgr;..\..\libs\stdlith;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;WIN32;_WINDOWS;_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;WIN32;_SERVERAPP;_WINDOWS;_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\Built\Debug\ServerApp\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
       <PrecompiledHeaderOutputFile>.\..\Built\Debug\ServerApp\ServerApp.pch</PrecompiledHeaderOutputFile>
@@ -277,8 +277,8 @@ copy $(TargetPath) $(GAME_MAIN_DIR) </Command>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <AdditionalIncludeDirectories>.\;..\..\libs\STLPORT-4.0\STLPORT;..\..\Engine\sdk\inc;..\shared;..\shared\lang\en;..\..\libs\regmgr;..\..\libs\regmgr32;..\..\libs\lith;..\..\libs\butemgr;..\..\libs\cryptmgr;..\..\libs\stdlith;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_FINAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\;..\..\libs\STLPORT-4.0\STLPORT_NO;..\..\Engine\sdk\inc;..\shared;..\shared\lang\en;..\..\libs\regmgr;..\..\libs\regmgr32;..\..\libs\lith;..\..\libs\butemgr;..\..\libs\cryptmgr;..\..\libs\stdlith;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_FINAL;_SERVERAPP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\Built\Final\ServerApp\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\..\Built\Final\ServerApp\ServerApp.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeader>Use</PrecompiledHeader>
