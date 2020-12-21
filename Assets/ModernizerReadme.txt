@@ -1,4 +1,4 @@
-No One Lives Forever 2 Modernizer - Beta 1
+No One Lives Forever 2 Modernizer - Beta 2
 ---------------------------------
 The goal of NOLF 2 Modernizer is to help fix some long standing bugs, and update some more outdated features of the game.
 
@@ -25,6 +25,10 @@ Features:
  - Jukebox to play some of your favourite in-game tunes
  - Several original game crashes have been fixed
  - Game updates are automatically checked in the Multiplayer Menu
+
+Beta 2 Fixes:
+ - Added a hopefully functional dedicated server
+ - Fixed the server browser not displaying servers (You had one job!!)
 
 Known Issues:
     The following might not be fixable:
