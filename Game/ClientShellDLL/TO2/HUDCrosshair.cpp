@@ -443,20 +443,13 @@ void CHUDCrosshair::RenderCamera()
 
 void CHUDCrosshair::RenderBlackBars(eOverlayMask eMask)
 {
-	// Black bars if we need it!
-	if (!g_pInterfaceResMgr->Get4x3Offset()) {
-		return;
-	}
-
-	// This will return stuff like 0.75f, we want an additive scale..
-	auto fInvScale = g_pLayoutMgr->GetMaskScale(eMask);
-	// Flip that inverse scale!
-	auto fScale = (1.0f - fInvScale) + 1.0f;
-
-	int width = g_pInterfaceResMgr->Get4x3Offset() * fScale;
+	return;//
+	int screenWidth = g_pInterfaceResMgr->GetScreenWidth();
 	int height = g_pInterfaceResMgr->GetScreenHeight();
 
-	int screenWidth = g_pInterfaceResMgr->GetScreenWidth();
+	// Basically from Get4x3Offset, but since overlays are now square..we don't need the 4x3-ness.
+	int ratio = (int)(0.5f * (screenWidth - (height)));
+	int width = ratio;
 
 	g_pDrawPrim->SetRGBA(&m_Poly[2], argbBlack);
 
