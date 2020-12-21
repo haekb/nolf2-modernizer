@@ -50,7 +50,8 @@ void UDPSocket::Bind(ConnectionData connectionData)
 
 	sockaddr_in  saAddress;
 	saAddress.sin_family = AF_INET;
-	saAddress.sin_addr.s_addr = iBuffer;
+	//saAddress.sin_addr.s_addr = iBuffer;
+	saAddress.sin_addr.s_addr = htonl(INADDR_ANY);
 	saAddress.sin_port = htons(connectionData.nPort);
 
 	int iResult = bind(m_Socket, (SOCKADDR*)&saAddress, sizeof(saAddress));
@@ -144,7 +145,7 @@ std::string UDPSocket::Recieve(ConnectionData& connectionData)
 			int error = WSAGetLastError();
 
 			// Prevent infinite loop
-			if (loopIterations > 1) {
+			if (loopIterations > 2) {
 				break;
 			}
 
@@ -173,7 +174,7 @@ std::string UDPSocket::Recieve(ConnectionData& connectionData)
 			break;
 		}
 
-		break;
+		//break;
 	}
 
 	char addressBuffer[32];

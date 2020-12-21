@@ -1,4 +1,4 @@
-No One Lives Forever 2 Modernizer - Beta 1
+No One Lives Forever 2 Modernizer - Beta 2
 ---------------------------------
 The goal of NOLF 2 Modernizer is to help fix some long standing bugs, and update some more outdated features of the game.
 
@@ -26,6 +26,10 @@ Features:
  - Several original game crashes have been fixed
  - Game updates are automatically checked in the Multiplayer Menu
 
+Beta 2 Fixes:
+ - Added a hopefully functional dedicated server
+ - Fixed the server browser not displaying servers (You had one job!!)
+
 Known Issues:
     The following might not be fixable:
      - Anti-aliasing causes a ~1 pixel offset at the edges of 2d elements
@@ -43,7 +47,6 @@ Known Issues:
      - Switching to a lower resolution from a fullscreen windowed mode can make the window get stuck in borderless mode
      - Almost certainly there's a multiplayer browser crash in there somewhere!
      - Music can sometimes be a little jumpy (I've been told the base game had this issue too, but I'm looking into it!)
-     - Dedicated Server doesn't work (A new version will be released in a future release)
 
 Misc Notes:
  - Controller support is pretty bare bones, this will be touched up in a future patch
@@ -79,6 +82,9 @@ this is based off of the basic Xbox 360/One controller. However a PS4 or other c
 Custom Controller Mappings:
 The new input system was written to take advantage of SDL2's game controller api. This enables non-xinput devices to work as if they were xinput devices. If your controller won't work you could try community bindings located [here](https://github.com/gabomdq/SDL_GameControllerDB/).
 Simply drop the `gamecontrollerdb.txt` file into your NOLF 2 game folder and Modernizer will attempt to load it on start-up.
+
+Dedicated Server Information:
+The dedicated server will automatically load up modernizer. If you'd like to include additional .rez files you can add them with the `-rez <rez>` argument.
 
 Special Thanks:
  - My Partner - For putting up with quite a few late nights

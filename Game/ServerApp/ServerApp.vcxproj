@@ -177,7 +177,7 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <AdditionalIncludeDirectories>.\;..\..\libs\STLPORT-4.0\STLPORT_NO;..\..\Engine\sdk\inc;..\shared;..\shared\lang\en;..\..\libs\regmgr;..\..\libs\regmgr32;..\..\libs\lith;..\..\libs\butemgr;..\..\libs\cryptmgr;..\..\libs\stdlith;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;WIN32;_WINDOWS;_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;WIN32;_SERVERAPP;_WINDOWS;_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\Built\Debug\ServerApp\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
       <PrecompiledHeaderOutputFile>.\..\Built\Debug\ServerApp\ServerApp.pch</PrecompiledHeaderOutputFile>
@@ -277,8 +277,8 @@ copy $(TargetPath) $(GAME_MAIN_DIR) </Command>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <AdditionalIncludeDirectories>.\;..\..\libs\STLPORT-4.0\STLPORT;..\..\Engine\sdk\inc;..\shared;..\shared\lang\en;..\..\libs\regmgr;..\..\libs\regmgr32;..\..\libs\lith;..\..\libs\butemgr;..\..\libs\cryptmgr;..\..\libs\stdlith;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_FINAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\;..\..\libs\STLPORT-4.0\STLPORT_NO;..\..\Engine\sdk\inc;..\shared;..\shared\lang\en;..\..\libs\regmgr;..\..\libs\regmgr32;..\..\libs\lith;..\..\libs\butemgr;..\..\libs\cryptmgr;..\..\libs\stdlith;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_FINAL;_SERVERAPP;_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\..\Built\Final\ServerApp\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\..\Built\Final\ServerApp\ServerApp.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -311,10 +311,10 @@ copy $(TargetPath) $(GAME_MAIN_DIR) </Command>
       <AdditionalDependencies>server.lib;regmgr32.lib;regmgr.lib;lib_lith.lib;ButeMgrMfcDll.lib;cryptmgrMfcDll.lib;lib_stdlith.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
-      <Command>Rem IncrediBuild_OutputFile $(TargetPath) 
-echo copy $(TargetPath) $(GAME_MAIN_DIR) 
-copy $(TargetPath) $(GAME_MAIN_DIR) </Command>
-      <Outputs>$(GAME_MAIN_DIR)\NOLF2Srv.exe;%(Outputs)</Outputs>
+      <Command>
+      </Command>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Final IT|Win32'">

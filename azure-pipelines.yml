@@ -50,6 +50,14 @@ steps:
 # Copy over some Game-level files
 ##################################
 
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '.\\'
+    flattenFolders: true
+    Contents: |
+      Game\\built\\Final\\ServerApp\\NOLF2Srv.exe
+    TargetFolder: '$(Pipeline.Workspace)\\Artifacts'
+
 # Our custom Dinput8.dll and modified Lithtech.exe
 - task: CopyFiles@2
   inputs:

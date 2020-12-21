@@ -917,10 +917,16 @@ PeerReturnData JServerDir::QueryServer(std::string sAddress)
 
 	{
 		UDPSocket* pSock = new UDPSocket();
-		ConnectionData connectionData = { sIPAddress, nPort };
+		ConnectionData connectionData = { sIPAddress, (1 + nPort) };
 
 		try {
 			pSock->Query("\\status\\", connectionData);
+#ifdef _DEBUG
+			if (!connectionData.sIp.empty())
+			{
+				m_pLTCSBase->CPrint("[DEBUG] Sending to <%s:%s>: %s", connectionData.sIp.c_str(), std::to_string(connectionData.nPort).c_str(), "\\status\\");
+			}
+#endif
 		}
 		catch (std::exception ex) {
 			SwitchStatus(eStatus_Error);
@@ -932,19 +938,40 @@ PeerReturnData JServerDir::QueryServer(std::string sAddress)
 			return retData;
 		}
 
-		Sleep(1000);
-
 		std::string sStatus = "";
+		int nAttempts = 0;
 
-		try {
-			sStatus = pSock->Recieve(connectionData);
-		}
-		catch (...)
+		// Try to recieve data 10 times (with a sleep of 100ms inbetween attempts, so basically try for 1 second)
+		while (nAttempts < 10)
 		{
-			// Intentionally empty. It'll error out below since sStatus is empty.
+
+			try {
+				sStatus = pSock->Recieve(connectionData);
+#ifdef _DEBUG
+				if (!sStatus.empty())
+				{
+					m_pLTCSBase->CPrint("[DEBUG] Recieved from <%s:%s>: %s", connectionData.sIp.c_str(), std::to_string(connectionData.nPort).c_str(), sStatus.c_str());
+				}
+#endif
+			}
+			catch (...)
+			{
+				// Intentionally empty. It'll error out below since sStatus is empty.
+			}
+
+			// This server is not responding...
+			// Give it some time and try again
+			if (sStatus.empty()) {
+				Sleep(100);
+				nAttempts++;
+				continue;
+			}
+
+			// Hey we've got something!
+			break;
 		}
 
-		// This server is not responding...
+		// This server is STILL not responding...
 		if (sStatus.empty()) {
 			delete pSock;
 			pSock = NULL;
@@ -1046,12 +1073,15 @@ void JServerDir::PublishServer(Peer peerParam)
 	UDPSocket* uSock = new UDPSocket();
 
 	Peer peer = peerParam;
+	int nPort = peer.m_PortData.nHostPort;
 
-	ConnectionData selfConnectionData = { "0.0.0.0", 27889 };
+	// We can't seem to bind the same address as we're hosting the server on, so we increment it by 1 to get around this...
+	// The query server stuff has the same logic
+	ConnectionData selfConnectionData = { "0.0.0.0", (1 + nPort) };
 	ConnectionData masterConnectionData = { m_MasterServerInfo.szServer, (unsigned short)m_MasterServerInfo.nPortUDP };
 	ConnectionData incomingConnectionData = { "0.0.0.0", 0 };
 
-	std::string heartbeat = getHeartbeat(m_iQueryNum, false);
+	std::string heartbeat = getHeartbeat(m_iQueryNum, nPort, false);
 	std::string gameInfo = encodeGameInfoToString(&peer);
 
 	if (!m_bBoundConnection) {
@@ -1078,6 +1108,8 @@ void JServerDir::PublishServer(Peer peerParam)
 		}
 
 	}
+
+	std::string initialResponse = uSock->Recieve(incomingConnectionData);
 
 	auto nCurrentTime = getTimestamp();
 	auto nLastHeartbeat = getTimestamp();
@@ -1108,9 +1140,27 @@ void JServerDir::PublishServer(Peer peerParam)
 		}
 
 		try {
-			incomingConnectionData = { "0.0.0.0", 0 };
+			
 
-			std::string result = uSock->Recieve(incomingConnectionData);
+			std::string result = "";
+
+			if (initialResponse.empty())
+			{
+				incomingConnectionData = { "0.0.0.0", 0 };
+				result = uSock->Recieve(incomingConnectionData);
+			}
+			else
+			{
+				result = initialResponse;
+				initialResponse = "";
+			}
+
+#ifdef _DEBUG
+			if (!result.empty())
+			{
+				m_pLTCSBase->CPrint("[DEBUG] Recieved from <%s:%s>: %s", incomingConnectionData.sIp.c_str(), std::to_string(incomingConnectionData.nPort).c_str(), result.c_str());
+			}
+#endif
 
 			// Handle status requests
 			if (result.find("\\status\\") != std::string::npos) {
@@ -1120,11 +1170,18 @@ void JServerDir::PublishServer(Peer peerParam)
 
 				uSock->Query(gameInfo, incomingConnectionData);
 
+#ifdef _DEBUG
+				if (!result.empty())
+				{
+					m_pLTCSBase->CPrint("[DEBUG] Sending to <%s:%s>: %s", incomingConnectionData.sIp.c_str(), std::to_string(incomingConnectionData.nPort).c_str(), gameInfo.c_str());
+				}
+#endif
+
 			}
 
 			// After 60 seconds, poke the master server
 			if (bStateChanged || nCurrentTime - nLastHeartbeat > 60) {
-				uSock->Query(getHeartbeat(m_iQueryNum, bStateChanged), masterConnectionData);
+				uSock->Query(getHeartbeat(m_iQueryNum, nPort, bStateChanged), masterConnectionData);
 				nLastHeartbeat = nCurrentTime;
 			}
 
@@ -1133,10 +1190,7 @@ void JServerDir::PublishServer(Peer peerParam)
 		catch (std::exception e) {
 			std::string message = e.what();
 
-			// todo: log
-			LPCWSTR str = (wchar_t*)message.c_str();
-			OutputDebugString(str);
-
+			m_pLTCSBase->CPrint("[PublishServer] Error: %s", message.c_str());
 		}
 
 		// If we want to stop, stop!
@@ -1145,7 +1199,7 @@ void JServerDir::PublishServer(Peer peerParam)
 			// TODO: This kinda sucks. Feed it into the main loop up there.
 			// Also it seems QTracker will just drop it, if we don't send it anything after a statechange. I'lllll take it!
 			try {
-				uSock->Query(getHeartbeat(m_iQueryNum, true), masterConnectionData);
+				uSock->Query(getHeartbeat(m_iQueryNum, nPort, true), masterConnectionData);
 			}
 			catch (...)
 			{

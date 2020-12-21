@@ -1521,9 +1521,6 @@ bool CServerDlg::AddResources( )
 	lstRez.AddTail( "gamep.rez" );
 	lstRez.AddTail( "gamep2.rez" );
 
-	// debug
-	lstRez.AddTail("NewGame");
-
 	// Open the registry.
 	CButeMgr buteMgr;
 	buteMgr.Init();
@@ -1544,6 +1541,9 @@ bool CServerDlg::AddResources( )
 	ReadRezFromRegCommandLine( lstRez, regMgr, "ContentNum", "ContentCommandLine" );
 	ReadRezFromRegCommandLine( lstRez, regMgr, "UpdateNum", "UpdateCommandLine" );
 #endif
+
+	// Check for any -rez args
+	ParseCommandLine(false, nullptr, true, &lstRez);
 
 	lstRez.AddTail( "custom" );
 
@@ -1659,9 +1659,10 @@ void CServerDlg::OnDblclkLevels(NMHDR* pNMHDR, LRESULT* pResult)
 	*pResult = 0;
 }
 
-void CServerDlg::ParseCommandLine( bool bCheckForProfile, ServerGameOptions* pServerGameOptions )
+void CServerDlg::ParseCommandLine( bool bCheckForProfile, ServerGameOptions* pServerGameOptions, bool bCheckForRez, CStringList* lstRez)
 {
 	int nArg;
+	bool bFoundNoModernizer = false;
 
 	// Search each command and find setting names with matching setting values.
 	for( nArg = 1; nArg < __argc; nArg++ )
@@ -1691,6 +1692,24 @@ void CServerDlg::ParseCommandLine( bool bCheckForProfile, ServerGameOptions* pSe
 					// Set the server name.
 					pServerGameOptions->SetSessionName(__argv[nArg + 1]);
 
+					// Skip the value.
+					nArg++;
+				}
+			}
+			// Sorry for the bad addition!
+			else if (bCheckForRez)
+			{
+				// Check for any extra rez
+				if (stricmp(__argv[nArg], "-rez") == 0)
+				{
+					lstRez->AddTail(__argv[nArg + 1]);
+
+					// Skip the value.
+					nArg++;
+				}
+				else if (stricmp(__argv[nArg], "-no-modernizer") == 0)
+				{
+					bFoundNoModernizer = true;
 					// Skip the value.
 					nArg++;
 				}
@@ -1736,6 +1755,11 @@ void CServerDlg::ParseCommandLine( bool bCheckForProfile, ServerGameOptions* pSe
 				nArg++;
 			}
 		}
+	}
+
+	if (bCheckForRez && !bFoundNoModernizer)
+	{
+		lstRez->AddTail("Custom\\Mods\\Modernizer\\MODERNIZER.REZ");
 	}
 }
 
