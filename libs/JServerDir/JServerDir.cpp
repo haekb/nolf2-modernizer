@@ -1062,7 +1062,9 @@ void JServerDir::PublishServer(Peer peerParam)
 	Peer peer = peerParam;
 	int nPort = peer.m_PortData.nHostPort;
 
-	ConnectionData selfConnectionData = { "0.0.0.0", 27889 };
+	// We can't seem to bind the same address as we're hosting the server on, so we increment it by 1 to get around this...
+	// The query server stuff has the same logic
+	ConnectionData selfConnectionData = { "0.0.0.0", (1 + nPort) };
 	ConnectionData masterConnectionData = { m_MasterServerInfo.szServer, (unsigned short)m_MasterServerInfo.nPortUDP };
 	ConnectionData incomingConnectionData = { "0.0.0.0", 0 };
 
