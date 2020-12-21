@@ -293,19 +293,20 @@ static inline float DistSqToAABB( const LTVector& pos, const LTVector& min, cons
 // update which subvolumes are visible and setup LOD
 bool CScatterFX::UpdateSubVolumes( void )
 {
-	if (activeSubVolumes.size() == 0) {
-		return true;
-	}
+	// I assume STLPort allows self modifying of iterables, however MSVC does not.
+	// So make a local copy, this allows the sub volume code to delete itself, 
+	// while keeping our loop crash free!
+	auto localActiveSubVolumes = std::set<CScatterFXSubVolume*>(activeSubVolumes);
 
 	// make sure there are no active subvolumes if scatter isn't enabled
 	if( !m_bEnabled )
 	{
-		std::set<CScatterFXSubVolume*>::iterator it = activeSubVolumes.begin();
-		for( ; it != activeSubVolumes.end(); it++ )
+		for (auto pVol : localActiveSubVolumes)
 		{
-			(*it)->Deactivate();
+			pVol->Deactivate();
 		}
-
+		
+		localActiveSubVolumes.clear();
 		return true;
 	}
 
@@ -316,11 +317,12 @@ bool CScatterFX::UpdateSubVolumes( void )
 	if( cameraDistSq > m_fMaxDrawDistSq )
 	{
 		// camera is farther away than the max draw distance for this volume, so kill all the subvolumes
-		std::set<CScatterFXSubVolume*>::iterator it = activeSubVolumes.begin();
-		for( ; it != activeSubVolumes.end(); it++ )
+		for (auto pVol : localActiveSubVolumes)
 		{
-			(*it)->Deactivate();
+			pVol->Deactivate();
 		}
+
+		localActiveSubVolumes.clear();
 
 		// don't test any of the subvolumes directly
 		return true;
