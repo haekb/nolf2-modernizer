@@ -938,27 +938,40 @@ PeerReturnData JServerDir::QueryServer(std::string sAddress)
 			return retData;
 		}
 
-		// This stupid sleep is here to make things work. 
-		// FIXME: Loop for 1 second or until data is here.
-		Sleep(1000);
-
 		std::string sStatus = "";
+		int nAttempts = 0;
 
-		try {
-			sStatus = pSock->Recieve(connectionData);
-#ifdef _DEBUG
-			if (!sStatus.empty())
-			{
-				m_pLTCSBase->CPrint("[DEBUG] Recieved from <%s:%s>: %s", connectionData.sIp.c_str(), std::to_string(connectionData.nPort).c_str(), sStatus.c_str());
-			}
-#endif
-		}
-		catch (...)
+		// Try to recieve data 10 times (with a sleep of 100ms inbetween attempts, so basically try for 1 second)
+		while (nAttempts < 10)
 		{
-			// Intentionally empty. It'll error out below since sStatus is empty.
+
+			try {
+				sStatus = pSock->Recieve(connectionData);
+#ifdef _DEBUG
+				if (!sStatus.empty())
+				{
+					m_pLTCSBase->CPrint("[DEBUG] Recieved from <%s:%s>: %s", connectionData.sIp.c_str(), std::to_string(connectionData.nPort).c_str(), sStatus.c_str());
+				}
+#endif
+			}
+			catch (...)
+			{
+				// Intentionally empty. It'll error out below since sStatus is empty.
+			}
+
+			// This server is not responding...
+			// Give it some time and try again
+			if (sStatus.empty()) {
+				Sleep(100);
+				nAttempts++;
+				continue;
+			}
+
+			// Hey we've got something!
+			break;
 		}
 
-		// This server is not responding...
+		// This server is STILL not responding...
 		if (sStatus.empty()) {
 			delete pSock;
 			pSock = NULL;
