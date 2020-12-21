@@ -4351,6 +4351,9 @@ void CInterfaceMgr::ScreenDimsChanged()
 
 	InterfaceFieldOfViewChanged();
 
+	// Correctly set the aspect ratio of our view models.
+	WriteConsoleFloat("pvmodelaspect", (float)dwWidth / (float)dwHeight);
+
 	// This may need to be changed to support in-game cinematics...
 	ResetMenuRestoreCamera(0, 0, dwWidth, dwHeight);
     g_pLTClient->SetCameraRect (m_hInterfaceCamera, LTTRUE, 0, 0, dwWidth, dwHeight);
