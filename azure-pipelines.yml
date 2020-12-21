@@ -59,7 +59,7 @@ steps:
       Lithtech.exe
       JServerInfo.txt
       ModernizerReadme.txt
-      Game\\built\\Final\\ServerApp\\NOLF2Srv.exe
+      .\\Game\\built\\Final\\ServerApp\\NOLF2Srv.exe
     TargetFolder: '$(Pipeline.Workspace)\\Artifacts'
 
 # Profile Stuff
