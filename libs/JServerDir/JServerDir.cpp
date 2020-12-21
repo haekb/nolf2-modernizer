@@ -917,10 +917,16 @@ PeerReturnData JServerDir::QueryServer(std::string sAddress)
 
 	{
 		UDPSocket* pSock = new UDPSocket();
-		ConnectionData connectionData = { sIPAddress, nPort };
+		ConnectionData connectionData = { sIPAddress, (1 + nPort) };
 
 		try {
 			pSock->Query("\\status\\", connectionData);
+#ifdef _DEBUG
+			if (!connectionData.sIp.empty())
+			{
+				m_pLTCSBase->CPrint("[DEBUG] Sending to <%s:%s>: %s", connectionData.sIp.c_str(), std::to_string(connectionData.nPort).c_str(), "\\status\\");
+			}
+#endif
 		}
 		catch (std::exception ex) {
 			SwitchStatus(eStatus_Error);
@@ -932,12 +938,20 @@ PeerReturnData JServerDir::QueryServer(std::string sAddress)
 			return retData;
 		}
 
+		// This stupid sleep is here to make things work. 
+		// FIXME: Loop for 1 second or until data is here.
 		Sleep(1000);
 
 		std::string sStatus = "";
 
 		try {
 			sStatus = pSock->Recieve(connectionData);
+#ifdef _DEBUG
+			if (!sStatus.empty())
+			{
+				m_pLTCSBase->CPrint("[DEBUG] Recieved from <%s:%s>: %s", connectionData.sIp.c_str(), std::to_string(connectionData.nPort).c_str(), sStatus.c_str());
+			}
+#endif
 		}
 		catch (...)
 		{
@@ -1111,9 +1125,27 @@ void JServerDir::PublishServer(Peer peerParam)
 		}
 
 		try {
-			incomingConnectionData = { "0.0.0.0", 0 };
+			
 
-			std::string result = uSock->Recieve(incomingConnectionData);
+			std::string result = "";
+
+			if (initialResponse.empty())
+			{
+				incomingConnectionData = { "0.0.0.0", 0 };
+				result = uSock->Recieve(incomingConnectionData);
+			}
+			else
+			{
+				result = initialResponse;
+				initialResponse = "";
+			}
+
+#ifdef _DEBUG
+			if (!result.empty())
+			{
+				m_pLTCSBase->CPrint("[DEBUG] Recieved from <%s:%s>: %s", incomingConnectionData.sIp.c_str(), std::to_string(incomingConnectionData.nPort).c_str(), result.c_str());
+			}
+#endif
 
 			// Handle status requests
 			if (result.find("\\status\\") != std::string::npos) {
@@ -1122,6 +1154,13 @@ void JServerDir::PublishServer(Peer peerParam)
 				gameInfo += std::to_string(++m_iQueryNum) + ".1";
 
 				uSock->Query(gameInfo, incomingConnectionData);
+
+#ifdef _DEBUG
+				if (!result.empty())
+				{
+					m_pLTCSBase->CPrint("[DEBUG] Sending to <%s:%s>: %s", incomingConnectionData.sIp.c_str(), std::to_string(incomingConnectionData.nPort).c_str(), gameInfo.c_str());
+				}
+#endif
 
 			}
 
@@ -1136,10 +1175,7 @@ void JServerDir::PublishServer(Peer peerParam)
 		catch (std::exception e) {
 			std::string message = e.what();
 
-			// todo: log
-			LPCWSTR str = (wchar_t*)message.c_str();
-			OutputDebugString(str);
-
+			m_pLTCSBase->CPrint("[PublishServer] Error: %s", message.c_str());
 		}
 
 		// If we want to stop, stop!
