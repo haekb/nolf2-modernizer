@@ -431,7 +431,10 @@ uint32 CScreenJoin::OnCommand(uint32 dwCommand, uint32 dwParam1, uint32 dwParam2
 
 	case CMD_SEARCH :
 	{
-		FindServers();
+		if (m_eCurState == eState_Waiting)
+		{
+			FindServers();
+		}
 		break;
 	}
 
