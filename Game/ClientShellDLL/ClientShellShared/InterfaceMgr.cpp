@@ -512,6 +512,9 @@ LTBOOL CInterfaceMgr::Init()
     g_pLTClient->SetCameraRect(m_hInterfaceCamera, LTFALSE, 0, 0, dwWidth, dwHeight);
     g_pLTClient->SetCameraFOV(m_hInterfaceCamera, DEG2RAD(g_vtInterfaceFOVX.GetFloat()), DEG2RAD(g_vtInterfaceFOVY.GetFloat()));
 
+	// Correctly set the aspect ratio of our view models.
+	WriteConsoleFloat("pvmodelaspect", (float)dwWidth / (float)dwHeight);
+
 	// read in the settings
     m_Settings.Init (g_pLTClient, g_pGameClientShell);
 
