@@ -42,6 +42,7 @@ CHUDCrosshair::CHUDCrosshair()
 	m_bEnabled = true;
 	m_bArmed = false;
 	m_pStr = LTNULL;
+	m_fSavedXRatio = 0.0f;
 	m_fScale = 0.0f;
 	m_x = 0.0f;
 	m_y = 0.0f;
@@ -250,9 +251,10 @@ void CHUDCrosshair::Update()
 	}
 
 
-	if (m_fScale != g_pInterfaceResMgr->GetYRatio())
+	if (m_fScale != g_pInterfaceResMgr->GetYRatio() || m_fSavedXRatio != g_pInterfaceResMgr->GetXRatio())
 	{
 		m_fScale = g_pInterfaceResMgr->GetYRatio();
+		m_fSavedXRatio = g_pInterfaceResMgr->GetXRatio();
 
 		ScalePolies();
 

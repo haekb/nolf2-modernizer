@@ -63,6 +63,7 @@ protected:
 	uint16			m_nDbgWidth;
 	uint32			m_DbgColor;
 
+	float			m_fSavedXRatio;
 	float			m_fScale;
 	float			m_x;
 	float			m_y;
