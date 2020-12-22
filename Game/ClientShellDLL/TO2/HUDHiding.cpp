@@ -169,10 +169,10 @@ void CHUDHiding::Update()
 		return;
 	}
 	
-	float x = (float)m_BasePos.x * g_pInterfaceResMgr->GetXRatio();
+	float x = (float)(m_BasePos.x * g_pInterfaceResMgr->GetYRatio()) + g_pInterfaceResMgr->Get4x3Offset();
 	float y = (float)m_BasePos.y * g_pInterfaceResMgr->GetYRatio();
 
-	float w = (float)m_BaseSize.x * g_pInterfaceResMgr->GetXRatio();
+	float w = (float)m_BaseSize.x * g_pInterfaceResMgr->GetYRatio();
 	float h = (float)m_BaseSize.y * g_pInterfaceResMgr->GetYRatio();
 
 	g_pDrawPrim->SetXYWH(&m_Poly[kHidePrim],x,y,w,h);
