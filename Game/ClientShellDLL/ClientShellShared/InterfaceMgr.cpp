@@ -512,6 +512,9 @@ LTBOOL CInterfaceMgr::Init()
     g_pLTClient->SetCameraRect(m_hInterfaceCamera, LTFALSE, 0, 0, dwWidth, dwHeight);
     g_pLTClient->SetCameraFOV(m_hInterfaceCamera, DEG2RAD(g_vtInterfaceFOVX.GetFloat()), DEG2RAD(g_vtInterfaceFOVY.GetFloat()));
 
+	// Correctly set the aspect ratio of our view models.
+	WriteConsoleFloat("pvmodelaspect", (float)dwWidth / (float)dwHeight);
+
 	// read in the settings
     m_Settings.Init (g_pLTClient, g_pGameClientShell);
 
@@ -4351,6 +4354,9 @@ void CInterfaceMgr::ScreenDimsChanged()
 
 	InterfaceFieldOfViewChanged();
 
+	// Correctly set the aspect ratio of our view models.
+	WriteConsoleFloat("pvmodelaspect", (float)dwWidth / (float)dwHeight);
+
 	// This may need to be changed to support in-game cinematics...
 	ResetMenuRestoreCamera(0, 0, dwWidth, dwHeight);
     g_pLTClient->SetCameraRect (m_hInterfaceCamera, LTTRUE, 0, 0, dwWidth, dwHeight);
@@ -4683,12 +4689,8 @@ void CInterfaceMgr::UpdateOverlays()
 	LTVector vDefault(0.024f, 0.02f, 1.0f);
 	g_vOverlaySpriteScale = vDefault;
 
-	float fMax = 600.0f / 800.0f;
-	float fCurrent = g_pInterfaceResMgr->GetInvAspectRatio();
-
-	float fScale = (fCurrent) / (fMax);
-
-	g_vOverlaySpriteScale.x *= fScale;
+	// Just make the overlay square
+	g_vOverlaySpriteScale.x = g_vOverlaySpriteScale.y;
 
 	//
 	// End fun scaling stuff

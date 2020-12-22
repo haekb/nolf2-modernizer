@@ -1831,9 +1831,9 @@ Scale9		= 0.05
 Sprite10		= "Interface\hud\Spr\warning.spr"
 Scale10		= 0.05
 Sprite11		= "Interface\hud\Spr\ssdead.spr"
-Scale11		= 0.18
+Scale11		= 0.23
 Sprite12		= "Interface\hud\Spr\rogue.spr"
-Scale12		= 0.18
+Scale12		= 0.23
 Sprite13		= "Interface\hud\Spr\SSMaskX.spr"
 Scale13		= 0.23
 

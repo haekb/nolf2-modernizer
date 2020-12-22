@@ -362,11 +362,10 @@ void CHUDCrosshair::RenderScope()
 	float cx = 320.0f * g_pInterfaceResMgr->GetYRatio();
 	float cy = 240.0f * g_pInterfaceResMgr->GetYRatio();
 
-	//
-
-	float hR = g_vtScopeLRRadius.GetFloat() * cx * 2.0f;
+	// Values are adjusted using what I like to call, trial and error. Very scientific.
+	float hR = g_vtScopeLRRadius.GetFloat() * (cx * 0.75f) * 2.0f;
 	float hGap = g_vtScopeLRGap.GetFloat() * g_pInterfaceResMgr->GetYRatio();
-	float vR = g_vtScopeUDRadius.GetFloat() * cx * 2.0f;
+	float vR = g_vtScopeUDRadius.GetFloat() * (cy * 1.10f) * 2.0f;
 	float vGap = g_vtScopeUDGap.GetFloat() * g_pInterfaceResMgr->GetYRatio();
 
 	cx += g_pInterfaceResMgr->Get4x3Offset();
@@ -443,20 +442,12 @@ void CHUDCrosshair::RenderCamera()
 
 void CHUDCrosshair::RenderBlackBars(eOverlayMask eMask)
 {
-	// Black bars if we need it!
-	if (!g_pInterfaceResMgr->Get4x3Offset()) {
-		return;
-	}
-
-	// This will return stuff like 0.75f, we want an additive scale..
-	auto fInvScale = g_pLayoutMgr->GetMaskScale(eMask);
-	// Flip that inverse scale!
-	auto fScale = (1.0f - fInvScale) + 1.0f;
-
-	int width = g_pInterfaceResMgr->Get4x3Offset() * fScale;
+	int screenWidth = g_pInterfaceResMgr->GetScreenWidth();
 	int height = g_pInterfaceResMgr->GetScreenHeight();
 
-	int screenWidth = g_pInterfaceResMgr->GetScreenWidth();
+	// Basically from Get4x3Offset, but since overlays are now square..we don't need the 4x3-ness.
+	int ratio = (int)(0.5f * (screenWidth - (height)));
+	int width = ratio;
 
 	g_pDrawPrim->SetRGBA(&m_Poly[2], argbBlack);
 

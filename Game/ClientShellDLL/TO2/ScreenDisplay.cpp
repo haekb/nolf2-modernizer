@@ -373,6 +373,16 @@ void CScreenDisplay::GetRendererData()
 			}
 			*/
 
+			// There's something about this resolution that just crashes. 
+			// It's so weird, for now let's put it in resolution jail!
+			if (pCurrentMode->m_Width == 1176
+				&& pCurrentMode->m_Height == 664)
+			{
+				// Go to the next render mode
+				pCurrentMode = pCurrentMode->m_pNext;
+				continue;
+			}
+
 			//disallow any that aren't hardware TnL
 			if(bHWTnL && !pCurrentMode->m_bHWTnL)
 			{
