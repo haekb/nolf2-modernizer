@@ -49,6 +49,7 @@ protected:
 	uint8		m_nBaseFontSize;		// The font size before scaling
 	uint32		m_nTextColor;
 	int			m_nOffset;
+	float		m_fCacheScale;
 	float		m_fScale;
 	float		m_fElapsedTime;			// The amount of time that has elapsed while this subtitle is displayed
 	LTBOOL		m_bVisible;

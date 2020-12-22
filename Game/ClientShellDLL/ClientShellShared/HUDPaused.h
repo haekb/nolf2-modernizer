@@ -38,6 +38,8 @@ protected:
 
     LTIntPt		m_BasePos;
 	MsgCreate	m_MsgFormat;
+
+	float		m_fCacheScale;
 	float		m_fScale;
 
 

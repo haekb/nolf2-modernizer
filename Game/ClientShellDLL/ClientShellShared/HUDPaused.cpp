@@ -23,6 +23,7 @@ CHUDPaused::CHUDPaused()
 LTBOOL CHUDPaused::Init()
 {
 	m_fScale = 1.0f;
+	m_fCacheScale = 1.0f;
 
 	UpdateLayout();
 
@@ -81,8 +82,10 @@ void CHUDPaused::UpdateLayout()
 
 void CHUDPaused::Update()
 {
-	if (m_fScale != g_pInterfaceResMgr->GetYRatio())
+	float fCurrentScale = g_pInterfaceResMgr->GetYRatio() + g_pInterfaceResMgr->GetXRatio();
+	if (m_fCacheScale != fCurrentScale)
 	{
+		m_fCacheScale = fCurrentScale;
 		m_fScale = g_pInterfaceResMgr->GetYRatio();
 		m_Msg.ApplyPosition(m_fScale, g_pInterfaceResMgr->Get4x3Offset());
 	}

@@ -38,6 +38,7 @@ CHUDSubtitles::CHUDSubtitles()
 	m_eLevel = kHUDRenderText;
 	m_bVisible = LTFALSE;
 	m_fScale = 1.0f;
+	m_fCacheScale = 1.0f;
 	m_nOffset = 0;
 	m_fElapsedTime = 0.0f;
 
@@ -133,7 +134,10 @@ void CHUDSubtitles::Update()
 		return;
 	}
 
-	if (m_fScale != g_pInterfaceResMgr->GetYRatio()) {
+	float fCurrentScale = g_pInterfaceResMgr->GetYRatio() + g_pInterfaceResMgr->GetXRatio();
+	if (m_fCacheScale != fCurrentScale)
+	{
+		m_fCacheScale = fCurrentScale;
 		ApplyPosition(g_pInterfaceResMgr->GetYRatio(), g_pInterfaceResMgr->Get4x3Offset());
 	}
 
