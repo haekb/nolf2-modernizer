@@ -93,6 +93,10 @@ AutoWeaponSwitch = 1
 LoadScreenTips = 1
 VehicleContour = 1
 
+[Experimental]
+EnableRagdolls = FALSE
+UnlockFramerate = FALSE
+
 
 [Sound]
 sound16bit = 1

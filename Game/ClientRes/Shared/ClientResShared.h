@@ -1044,6 +1044,13 @@
 #define IDS_HELP_GAMEPAD_AXIS_ACCEL     2230
 #define IDS_4X3_CINEMATICS              2231
 #define IDS_HELP_4X3_CINEMATICS         2232
+#define IDS_EXPERIMENTAL                2333
+#define IDS_HELP_EXPERIMENTAL           2334
+#define IDS_TITLE_EXPERIMENTAL          2335
+#define IDS_RAGDOLLS                    2336
+#define IDS_HELP_RAGDOLLS               2337
+#define IDS_UNLOCK_FPS                  2338
+#define IDS_HELP_UNLOCK_FPS             2339
 
 // Next default values for new objects
 // 

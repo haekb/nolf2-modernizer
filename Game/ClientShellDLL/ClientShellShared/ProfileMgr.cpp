@@ -255,6 +255,9 @@ CUserProfile::CUserProfile()
 	m_nStyle = 0;
     m_bDynamic = 1;
 
+	// experimental game options
+	m_bEnableRagdolls = LTFALSE;
+	m_bUnlockFPS = LTFALSE;
 
 	//sound
 	m_nSoundVolume=SOUND_DEFAULT_VOL;
@@ -405,6 +408,7 @@ void CUserProfile::Load()
 	LoadControls();
 	LoadMultiplayer();
 	LoadGameOptions();
+	LoadExperimentalGameOptions();
 	LoadSound(true);
 }
 
@@ -628,6 +632,14 @@ void CUserProfile::LoadGameOptions()
 
 }
 
+void CUserProfile::LoadExperimentalGameOptions()
+{
+	strcpy(s_aTagName, "Experimental");
+
+	m_bEnableRagdolls = m_buteMgr.GetBool(s_aTagName, "EnableRagdolls", false);
+	m_bUnlockFPS = m_buteMgr.GetBool(s_aTagName, "UnlockFramerate", false);
+}
+
 void CUserProfile::LoadSound(bool bApply)
 {
 	strcpy(s_aTagName,"Sound");
@@ -670,6 +682,7 @@ void CUserProfile::Save(bool bForceClose /*= false*/)
 	SaveControls();
 	SaveMultiplayer();
 	SaveGameOptions();
+	SaveExperimentalGameOptions();
 	SaveSound();
 	SavePerformance();
 
@@ -810,6 +823,14 @@ void CUserProfile::SaveGameOptions()
     m_buteMgr.SetInt(s_aTagName,"CrosshairDynamic",m_bDynamic);
 
 	m_buteMgr.SetBool( s_aTagName, "SPRadar", m_bSPRadar );
+}
+
+void CUserProfile::SaveExperimentalGameOptions()
+{
+	strcpy(s_aTagName, "Experimental");
+
+	m_buteMgr.SetBool(s_aTagName, "EnableRagdolls", m_bEnableRagdolls);
+	m_buteMgr.SetBool(s_aTagName, "UnlockFramerate", m_bUnlockFPS);
 }
 
 
@@ -1085,6 +1106,14 @@ void CUserProfile::ApplyGameOptions()
 	g_pMoveMgr->SetRunLock(m_bAlwaysRun);
 
 	g_pGameClientShell->UpdateGoreSettings();
+}
+
+void CUserProfile::ApplyExperimentalGameOptions()
+{
+	WriteConsoleInt("EnableRagdolls", m_bEnableRagdolls);
+
+	// Flip it!
+	WriteConsoleInt("LockFramerate", m_bUnlockFPS ? 0 : 1);
 }
 
 void CUserProfile::ApplyCrosshair()
@@ -1666,6 +1695,14 @@ void CUserProfile::SetGameOptions()
 	m_bVehicleContour = (LTBOOL)GetConsoleInt("VehicleContour",1);
 }
 
+void CUserProfile::SetExperimentalOptions()
+{
+	m_bEnableRagdolls = GetConsoleInt("EnableRagdolls", 0);
+
+	// Also flip it!
+	m_bUnlockFPS = GetConsoleInt("LockFramerate", 1) ? 0 : 1;
+}
+
 
 void CUserProfile::SetCrosshair()
 {
@@ -2020,6 +2057,8 @@ LTBOOL CUserProfile::RestoreDefaults(uint8 nFlags)
 		LoadMultiplayer();
 	if (nFlags & PROFILE_GAME)
 		LoadGameOptions();
+	if (nFlags & PROFILE_EXPERIMENTAL)
+		LoadExperimentalGameOptions();
 	if (nFlags & PROFILE_SOUND)
 		LoadSound(true);
 

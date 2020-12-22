@@ -427,6 +427,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
     </ClCompile>
+    <ClCompile Include="ScreenExperimental.cpp" />
     <ClCompile Include="ScreenFailure.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Final|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
@@ -647,6 +648,7 @@
     <ClInclude Include="ScreenEndCoopMission.h" />
     <ClInclude Include="ScreenEndDMMission.h" />
     <ClInclude Include="ScreenEndMission.h" />
+    <ClInclude Include="ScreenExperimental.h" />
     <ClInclude Include="ScreenFailure.h" />
     <ClInclude Include="ScreenGame.h" />
     <ClInclude Include="ScreenHost.h" />

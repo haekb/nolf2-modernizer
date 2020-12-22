@@ -212,6 +212,9 @@
     <ClCompile Include="ScreenJukebox.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="ScreenExperimental.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TO2ClientWeaponAllocator.h">
@@ -416,5 +419,8 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="InfoFromSE.h" />
+    <ClInclude Include="ScreenExperimental.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

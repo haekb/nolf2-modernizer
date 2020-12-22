@@ -1372,6 +1372,21 @@ BEGIN
     IDS_HELP_4X3_CINEMATICS "Adds black bars to the sides of your screen to help hide imperfections during cinematics."
 END
 
+STRINGTABLE
+BEGIN
+    IDS_EXPERIMENTAL        "Experimental Settings"
+    IDS_HELP_EXPERIMENTAL   "Adjust experimental gameplay options that MAY break the game, but are otherwise neat!"
+    IDS_TITLE_EXPERIMENTAL  "Experimental Settings"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_RAGDOLLS            "Ragdoll Physics"
+    IDS_HELP_RAGDOLLS       "This cut feature may cause corpses to clip through the world and become unreachable."
+    IDS_UNLOCK_FPS          "Unlock Framerate"
+    IDS_HELP_UNLOCK_FPS     "NOLF 2 has some issues above 60 fps, and may soft-lock the game."
+END
+
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 

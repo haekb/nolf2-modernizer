@@ -67,6 +67,7 @@ const uint8 PROFILE_MULTI		= 0x02;
 const uint8 PROFILE_GAME		= 0x04;
 const uint8 PROFILE_CROSSHAIR	= 0x08;
 const uint8 PROFILE_SOUND		= 0x10;
+const uint8 PROFILE_EXPERIMENTAL= 0x12;
 const uint8 PROFILE_ALL			= 0xFF;
 
 
@@ -155,6 +156,8 @@ public:
 	void		ApplyMultiplayer(bool bLAN);
 
 	void		ApplyGameOptions();
+	void		ApplyExperimentalGameOptions();
+
 	void		ApplyCrosshair();
 
 	void		ApplySound();
@@ -177,6 +180,8 @@ public:
 	void		SetMultiplayer();
 
 	void		SetGameOptions();
+	void		SetExperimentalOptions();
+
 	void		SetCrosshair();
 
 	void		SetSound();
@@ -264,7 +269,9 @@ public:
 	uint8				m_nStyle;
     LTBOOL				m_bDynamic;
 
-
+	//****************** experimental game options
+	LTBOOL				m_bEnableRagdolls;
+	LTBOOL				m_bUnlockFPS;
 
 	//****************** sound
 	int		m_nSoundVolume;
@@ -296,6 +303,7 @@ private:
 	void		LoadControls();
 	void		LoadMultiplayer();
 	void		LoadGameOptions();
+	void		LoadExperimentalGameOptions();
 	void		LoadSound(bool bApply); //optionlly defer applying these settings
 	void		LoadPerformance(bool bApply); //optionlly defer applying these settings
 
@@ -303,6 +311,7 @@ private:
 	void		SaveControls();
 	void		SaveMultiplayer();
 	void		SaveGameOptions();
+	void		SaveExperimentalGameOptions();
 	void		SaveSound();
 	void		SavePerformance();
 

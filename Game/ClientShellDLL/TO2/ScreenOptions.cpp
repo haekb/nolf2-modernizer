@@ -47,6 +47,7 @@ LTBOOL CScreenOptions::Build()
 	CLTGUITextCtrl* pGame = AddTextItem(IDS_GAME_OPTIONS, CMD_GAME, IDS_HELP_GAME_OPTIONS);
 	CLTGUITextCtrl* pPerf = AddTextItem(IDS_PERFORMANCE, CMD_PERFORMANCE, IDS_HELP_PERFORMANCE);
 	CLTGUITextCtrl* pJukebox = AddTextItem(IDS_JUKEBOX, CMD_JUKEBOX, IDS_HELP_JUKEBOX);
+	CLTGUITextCtrl* pExperimental = AddTextItem(IDS_EXPERIMENTAL, CMD_EXPERIMENTAL, IDS_HELP_EXPERIMENTAL);
 
 	// Make sure to call the base class
 	if (! CBaseScreen::Build()) return LTFALSE;
@@ -88,6 +89,11 @@ uint32 CScreenOptions::OnCommand(uint32 dwCommand, uint32 dwParam1, uint32 dwPar
 		{
 			m_pScreenMgr->SetCurrentScreen(SCREEN_ID_JUKEBOX);
 			break;
+		}
+	case CMD_EXPERIMENTAL:
+		{
+		m_pScreenMgr->SetCurrentScreen(SCREEN_ID_EXPERIMENTAL);
+		break;
 		}
 	default:
 		return CBaseScreen::OnCommand(dwCommand,dwParam1,dwParam2);

@@ -41,6 +41,7 @@
 #include "ScreenGame.h"
 #include "ScreenPerformance.h"
 #include "ScreenJukebox.h"
+#include "ScreenExperimental.h"
 
 //under multi/host
 #include "ScreenHostOptions.h"
@@ -254,6 +255,8 @@ void CTO2ScreenMgr::AddScreen(eScreenID screenID)
 	case SCREEN_ID_JUKEBOX:
 		pScreen = debug_new(CScreenJukebox);
 		break;
+	case SCREEN_ID_EXPERIMENTAL:
+		pScreen = debug_new(CScreenExperimental);
 	}
 
 	if (pScreen)
