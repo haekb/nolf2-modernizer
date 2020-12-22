@@ -1266,6 +1266,7 @@ uint32 CGameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
 	// Get the name of the mod we want to play.  If no mod specified then we consider that the 'Retail' mod...
 	// Set this when the game initializes and use g_pClientMultiplayerMgr->GetModName() in case the console var changes.
 
+	/*
 	HCONSOLEVAR	hModVar = g_pLTClient->GetConsoleVar( "Mod" );
 	if( hModVar )
 	{
@@ -1274,7 +1275,9 @@ uint32 CGameClientShell::OnEngineInitialized(RMode *pMode, LTGUID *pAppGuid)
 	else
 	{
 		g_pClientMultiplayerMgr->SetModName( LoadTempString( IDS_RETAIL ) );
-	}	
+	}
+	*/
+	g_pClientMultiplayerMgr->SetModName(LoadTempString(IDS_RETAIL));
 
 	// Process command line.
 
