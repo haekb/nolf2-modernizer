@@ -367,8 +367,12 @@ void ConsoleMgr::Show(bool bShow)
 		return;
 	}
 
-	// Pause the game
-	g_pGameClientShell->PauseGame(bShow, LTTRUE);
+	// Only pause in singleplayer
+	if (g_pGameClientShell->GetGameType() == eGameTypeSingle)
+	{
+		// Pause the game
+		g_pGameClientShell->PauseGame(bShow, LTTRUE);
+	}
 
 	// Clear our command string
 	m_pEdit->SetText("");

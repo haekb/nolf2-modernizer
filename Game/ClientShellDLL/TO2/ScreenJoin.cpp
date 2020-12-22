@@ -468,12 +468,15 @@ uint32 CScreenJoin::OnCommand(uint32 dwCommand, uint32 dwParam1, uint32 dwParam2
 			return 1;
 		}
 
+		// Don't actually care about this, we'll probably hit a dll mismatch error anywho.
+		/*
 		if( stricmp( m_cServerList[m_nSelectedServer].m_sModName.c_str(), g_pClientMultiplayerMgr->GetModName() ) != 0 )
 		{
 			MBCreate mb;
 			g_pInterfaceMgr->ShowMessageBox( IDS_SERVER_WRONGMOD, &mb );
 			return 1;
 		}
+		*/
 
 		if (g_pGameClientShell->IsWorldLoaded())
 		{
