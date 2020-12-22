@@ -81,7 +81,7 @@ void CHUDCompass::Update()
 
 	float cx = (float)(m_BasePos.x + m_nSize/2);
 	float cy = (float)(m_BasePos.y + m_nSize/2);
-	float fw = (float)(m_nSize) * g_pInterfaceResMgr->GetXRatio();
+	float fw = (float)(m_nSize) * g_pInterfaceResMgr->GetYRatio();
 	float r = (float)(m_nSize) / fRat;
 
 	float fx = (float)(m_BasePos.x) * g_pInterfaceResMgr->GetXRatio();

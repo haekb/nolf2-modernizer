@@ -1129,7 +1129,7 @@ DamageBasePos		= (24,240)
 DamageIconSize		= 24
 
 CompassPos			= (528,16)
-CompassSize			= 96
+CompassSize			= 80
 
 RadarObjectSize			= 12
 RadarMaxDistance		= 4000
