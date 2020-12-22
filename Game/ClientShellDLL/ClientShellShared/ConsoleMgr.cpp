@@ -373,6 +373,10 @@ void ConsoleMgr::Show(bool bShow)
 		// Pause the game
 		g_pGameClientShell->PauseGame(bShow, LTTRUE);
 	}
+	else
+	{
+		g_pGameClientShell->SetInputState(!bShow);
+	}
 
 	// Clear our command string
 	m_pEdit->SetText("");
