@@ -917,7 +917,7 @@ PeerReturnData JServerDir::QueryServer(std::string sAddress)
 
 	{
 		UDPSocket* pSock = new UDPSocket();
-		ConnectionData connectionData = { sIPAddress, (1 + nPort) };
+		ConnectionData connectionData = { sIPAddress, GetListeningPort(nPort) };
 
 		try {
 			pSock->Query("\\status\\", connectionData);
@@ -1077,7 +1077,7 @@ void JServerDir::PublishServer(Peer peerParam)
 
 	// We can't seem to bind the same address as we're hosting the server on, so we increment it by 1 to get around this...
 	// The query server stuff has the same logic
-	ConnectionData selfConnectionData = { "0.0.0.0", (1 + nPort) };
+	ConnectionData selfConnectionData = { "0.0.0.0", GetListeningPort(nPort) };
 	ConnectionData masterConnectionData = { m_MasterServerInfo.szServer, (unsigned short)m_MasterServerInfo.nPortUDP };
 	ConnectionData incomingConnectionData = { "0.0.0.0", 0 };
 
@@ -1178,6 +1178,17 @@ void JServerDir::PublishServer(Peer peerParam)
 #endif
 
 			}
+			else if (result.find("\\echo\\") != std::string::npos)
+			{
+				uSock->Query(result, incomingConnectionData);
+
+#ifdef _DEBUG
+				if (!result.empty())
+				{
+					m_pLTCSBase->CPrint("[DEBUG] Sending to <%s:%s>: %s", incomingConnectionData.sIp.c_str(), std::to_string(incomingConnectionData.nPort).c_str(), result.c_str());
+				}
+#endif
+			}
 
 			// After 60 seconds, poke the master server
 			if (bStateChanged || nCurrentTime - nLastHeartbeat > 60) {
@@ -1223,7 +1234,7 @@ void JServerDir::PingPeer(Peer* peer)
 	std::string pingQuery = "\\echo\\hello";
 
 	UDPSocket* pSock = new UDPSocket();
-	ConnectionData connectionData = { peer->GetAddress(), peer->m_PortData.nHostPort };
+	ConnectionData connectionData = { peer->GetAddress(), GetListeningPort(peer->m_PortData.nHostPort) };
 
 	auto startTime = getTimestampInMs();
 
@@ -1253,12 +1264,6 @@ void JServerDir::PingPeer(Peer* peer)
 
 		// This server is not responding...
 		if (sStatus.empty()) {
-			/*
-			peer->SetPing(INVALID_PING);
-			delete pSock;
-			pSock = NULL;
-			return;
-			*/
 
 			// Affects the ping code a little bit, 
 			// but we want some kind of predictable timing

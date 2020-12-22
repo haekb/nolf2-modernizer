@@ -297,6 +297,11 @@ public:
 	// JServerDir only functions
 	//
 
+	//
+	// The server listens on a second port, which is just the host port + 1...
+	//
+	inline int GetListeningPort(int nHostPort) { return nHostPort + 1; }
+
 	// Cheat a little
 	__declspec(dllexport) void Update();
 	__declspec(dllexport) void SetMasterServerInfo(MasterServerInfo info);
