@@ -29,6 +29,9 @@ Features:
 Beta 2 Fixes:
  - Added a hopefully functional dedicated server
  - Fixed the server browser not displaying servers (You had one job!!)
+ - Fixed scopes and most other overlays
+ - Fixed view models being slightly stretched
+ - Found and replanted the missing foilage
 
 Known Issues:
     The following might not be fixable:
