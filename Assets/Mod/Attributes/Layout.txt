@@ -230,10 +230,10 @@ LoopFX0			= "MainLoopFX"
 
 [ScreenGame]
 PageRect			= (76,160,585,385)
-FontSize			= 16
+FontSize			= 14
 ColumnWidth			= 280
 SliderWidth			= 200
-FrameRect			= (340,176,581,396)
+FrameRect			= (340,176,580,396)
 FrameTexture		= "interface\menu\sprtex\menuframe2.dtx"
 ScaleName0			= "mainASIHWtext"
 Light0				= "MainLeft"
@@ -1080,7 +1080,7 @@ FontSize4           = 24
 */
 
 [HUDLayout0]
-LayoutName			= 385
+LayoutName			= 809 //385
 BarHeight			= 12
 TextHeight			= 20
 BarScale			= 1
@@ -1199,7 +1199,7 @@ DisplayMeterScale		= 2
 DisplayMeterTexture		= "Interface\hud\bossbar.dtx"
 
 [HUDLayout1]
-LayoutName			= 386
+LayoutName			= 810 //386
 
 UseAmmoBar			= 0
 AmmoBasePos			= (624,450)
@@ -1229,7 +1229,7 @@ AirIconOffset		= (-20,-8)
 
 
 [HUDLayout2]
-LayoutName			= 387
+LayoutName			= 811 //387
 
 BarHeight			= 12
 BarScale			= 1

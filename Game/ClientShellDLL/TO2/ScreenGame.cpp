@@ -117,7 +117,7 @@ LTBOOL CScreenGame::Build()
 
 	FormatString(IDS_NEW_INSANE,szTmp,sizeof(szTmp));
 	m_pDifficultyCtrl->AddString(szTmp);
-/*
+
 	pCycle = AddCycle(IDS_HUDLAYOUT,IDS_HELP_HUDLAYOUT,kGap,&m_nLayout);
 	for (int hl = 0; hl < g_pLayoutMgr->GetNumHUDLayouts(); hl++)
 	{
@@ -125,7 +125,7 @@ LTBOOL CScreenGame::Build()
 		FormatString(g_pLayoutMgr->GetLayoutName(hl),szTmpBuffer,sizeof(szTmpBuffer));
 		pCycle->AddString(szTmpBuffer);
 	}
-*/
+
 
 	CLTGUISlider *pSlider=AddSlider(IDS_HEADBOB, IDS_HELP_HEADBOB, kGap, kWidth, -1, &m_nHeadBob);
 	pSlider->SetSliderRange(0, 10);
