@@ -84,10 +84,12 @@ void CHUDAmmo::Render()
 		m_Bar.Render();
 
 
-		float x = (float)(m_BasePos.x + m_ClipOffset.x) * g_pInterfaceResMgr->GetXRatio();
+		float x = (float)(m_BasePos.x + m_ClipOffset.x) * g_pInterfaceResMgr->GetYRatio();
+		x += (g_pInterfaceResMgr->Get4x3Offset() * 2.0f);
+
 		float y = (float)(m_BasePos.y + m_ClipOffset.y) * g_pInterfaceResMgr->GetYRatio();
 
-		float w = (float)m_ClipUnitSize.x * g_pInterfaceResMgr->GetXRatio();
+		float w = (float)m_ClipUnitSize.x * g_pInterfaceResMgr->GetYRatio();
 		float h = (float)m_ClipUnitSize.y * g_pInterfaceResMgr->GetYRatio();
 
 		g_pDrawPrim->SetTexture(m_hFull);
@@ -152,12 +154,14 @@ void CHUDAmmo::Update()
 	{
 		LTFLOAT fPercent = 100.0f * (LTFLOAT) (nAmmo + nAmmoInClip) /  (LTFLOAT) pAmmo->GetMaxAmount(LTNULL);
 
-  		float x = (float)(m_BasePos.x + m_BarOffset.x) * g_pInterfaceResMgr->GetXRatio();
-  		float y = (float)(m_BasePos.y + m_BarOffset.y) * g_pInterfaceResMgr->GetYRatio();
+  		float x = (float)(m_BasePos.x + m_BarOffset.x) * g_pInterfaceResMgr->GetYRatio();
+		x += (g_pInterfaceResMgr->Get4x3Offset() * 2.0f);
+
+		float y = (float)(m_BasePos.y + m_BarOffset.y) * g_pInterfaceResMgr->GetYRatio();
   		float h = (float)m_nBarHeight * g_pInterfaceResMgr->GetYRatio();
   
-  		float w = fPercent * m_fBarScale * g_pInterfaceResMgr->GetXRatio();
-		float maxW = 100.0f * m_fBarScale * g_pInterfaceResMgr->GetXRatio();
+  		float w = fPercent * m_fBarScale * g_pInterfaceResMgr->GetYRatio();
+		float maxW = 100.0f * m_fBarScale * g_pInterfaceResMgr->GetYRatio();
 
 		m_Bar.Update(x,y,w,maxW,h);
 
@@ -170,7 +174,9 @@ void CHUDAmmo::Update()
 
 		uint8 h = (uint8)((float)m_nTextHeight * g_pInterfaceResMgr->GetYRatio());
 
-		float x = (float)(m_BasePos.x + m_TextOffset.x) * g_pInterfaceResMgr->GetXRatio();
+		float x = (float)(m_BasePos.x + m_TextOffset.x) * g_pInterfaceResMgr->GetYRatio();
+		x += (g_pInterfaceResMgr->Get4x3Offset() * 2.0f);
+
 		float y = (float)(m_BasePos.y + m_TextOffset.y) * g_pInterfaceResMgr->GetYRatio();
 
 		m_pStr->SetText(str);
@@ -181,9 +187,11 @@ void CHUDAmmo::Update()
 	}
 
 
-	float x = (float)(m_BasePos.x + m_IconOffset.x) * g_pInterfaceResMgr->GetXRatio();
+	float x = (float)(m_BasePos.x + m_IconOffset.x) * g_pInterfaceResMgr->GetYRatio();
+	x += (g_pInterfaceResMgr->Get4x3Offset() * 2.0f);
+
 	float y = (float)(m_BasePos.y + m_IconOffset.y) * g_pInterfaceResMgr->GetYRatio();
-	float w = (float)m_nIconSize * g_pInterfaceResMgr->GetXRatio();
+	float w = (float)m_nIconSize * g_pInterfaceResMgr->GetYRatio();
 	float h = (float)m_nIconSize * g_pInterfaceResMgr->GetYRatio();
 	std::string icon = pAmmo->GetNormalIcon();
 	m_hIcon = g_pInterfaceResMgr->GetTexture(icon.c_str());
