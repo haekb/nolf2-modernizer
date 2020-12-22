@@ -241,6 +241,19 @@ SelectFXCenter		= 1
 FX0					= "MainBackFX"
 LoopFX0				= "MainLoopFX"
 
+[ScreenExperimental]
+PageRect			= (76,160,585,385)
+FontSize			= 16
+ColumnWidth			= 280
+SliderWidth			= 200
+FrameRect			= (340,156,581,396)
+FrameTexture		= "interface\menu\sprtex\menuframe2.dtx"
+ScaleName0			= "mainASIHWtext"
+Light0				= "MainLeft"
+SelectFXCenter		= 1
+FX0					= "MainBackFX"
+LoopFX0				= "MainLoopFX"
+
 [ScreenPerformance]
 PageRect			= (76,156,585,385)
 ResolutionPos		= (415,159)
