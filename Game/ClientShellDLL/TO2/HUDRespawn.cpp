@@ -46,6 +46,8 @@ CHUDRespawnBar::CHUDRespawnBar()
 
 void CHUDRespawnBar::Update()
 {
+	CBaseHUDItem::Update();
+
 	m_MeterBasePos.x	= 320 - (uint16)((float)m_dwMaxValue * m_fMeterScale/2.0f);
 
 	CHUDMeter::Update();
@@ -61,6 +63,7 @@ void CHUDRespawnBar::Update()
 
 void CHUDRespawnBar::UpdateLayout()
 {
+	CBaseHUDItem::UpdateLayout();
 
 	int nCurrentLayout = GetConsoleInt("HUDLayout",0);
 

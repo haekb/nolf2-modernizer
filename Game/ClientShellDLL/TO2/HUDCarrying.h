@@ -11,14 +11,14 @@
 #ifndef __HUD_CARRYING_H
 #define __HUD_CARRYING_H
 
-#include "HUDItem.h"
+#include "BaseHUDItem.h"
 
 
 
 //******************************************************************************************
 //** HUD Carry Icon display
 //******************************************************************************************
-class CHUDCarrying : public CHUDItem
+class CHUDCarrying : public CBaseHUDItem
 {
 public:
 	CHUDCarrying();

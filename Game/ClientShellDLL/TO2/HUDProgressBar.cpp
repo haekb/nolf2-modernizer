@@ -42,6 +42,8 @@ CHUDProgressBar::CHUDProgressBar()
 
 void CHUDProgressBar::Update()
 {
+	CBaseHUDItem::Update();
+
 	m_dwValue		= g_pPlayerStats->GetProgress();
 	m_dwMaxValue	= g_pPlayerStats->GetMaxProgress();
 
@@ -60,6 +62,8 @@ void CHUDProgressBar::Update()
 
 void CHUDProgressBar::UpdateLayout()
 {
+	CBaseHUDItem::UpdateLayout();
+
 	int nCurrentLayout = GetConsoleInt("HUDLayout",0);
 
 	m_MeterBasePos.y	= g_pLayoutMgr->GetProgressBarBasePosY( nCurrentLayout );

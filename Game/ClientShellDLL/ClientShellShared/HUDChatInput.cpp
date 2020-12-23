@@ -95,6 +95,8 @@ void CHUDChatInput::Render()
 
 void CHUDChatInput::Update()
 {
+	CBaseHUDItem::Update();
+
 
 	uint8 h = (uint8)((float)m_nFontSize * g_pInterfaceResMgr->GetYRatio());
 	m_pStr->SetCharScreenHeight(h);
@@ -166,7 +168,7 @@ void CHUDChatInput::Show(bool bShow, bool bTeam)
 
 void CHUDChatInput::UpdateLayout()
 {
-
+	CBaseHUDItem::UpdateLayout();
 }
 
 LTBOOL CHUDChatInput::HandleKeyDown(int key, int rep)

@@ -41,6 +41,8 @@ CHUDHidingBar::CHUDHidingBar()
 
 void CHUDHidingBar::Update()
 {
+	CBaseHUDItem::Update();
+
 	// Center the hiding bar in the middle of the screen...
 	m_MeterBasePos.x	= 320 - (uint16)(m_fMeterScale * (float)m_dwMaxValue / 2.0f);
 
@@ -57,6 +59,8 @@ void CHUDHidingBar::Update()
 
 void CHUDHidingBar::UpdateLayout()
 {
+	CBaseHUDItem::UpdateLayout();
+
 	int nCurrentLayout = GetConsoleInt("HUDLayout",0);
 
 	m_MeterBasePos.y	= g_pLayoutMgr->GetHidingBarBasePosY( nCurrentLayout );

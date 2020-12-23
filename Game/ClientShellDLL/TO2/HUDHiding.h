@@ -11,13 +11,13 @@
 #ifndef __HUD_HIDING_H
 #define __HUD_HIDING_H
 
-#include "HUDItem.h"
+#include "BaseHUDItem.h"
 #include "HUDHidingBar.h"
 
 //******************************************************************************************
 //** HUD Hiding display
 //******************************************************************************************
-class CHUDHiding : public CHUDItem
+class CHUDHiding : public CBaseHUDItem
 {
 public:
 	CHUDHiding();

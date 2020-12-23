@@ -84,6 +84,8 @@ void CHUDAir::Render()
 
 void CHUDAir::Update()
 {
+	CBaseHUDItem::Update();
+
 	LTFLOAT fPercent = g_pPlayerStats->GetAirPercent() * 100.0f;
 
 	m_bDraw = (fPercent < 100.0f);
@@ -134,6 +136,8 @@ void CHUDAir::Update()
 
 void CHUDAir::UpdateLayout()
 {
+	CBaseHUDItem::UpdateLayout();
+
 	int nCurrentLayout = GetConsoleInt("HUDLayout",0);
 
 	m_BasePos		= g_pLayoutMgr->GetAirBasePos(nCurrentLayout);

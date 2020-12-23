@@ -12,13 +12,13 @@
 #define __HUD_CROSSHAIR_H
 
 #include "Overlays.h"
-#include "HUDItem.h"
+#include "BaseHUDItem.h"
 
 
 //******************************************************************************************
 //** HUD crosshair
 //******************************************************************************************
-class CHUDCrosshair : public CHUDItem
+class CHUDCrosshair : public CBaseHUDItem
 {
 public:
 	CHUDCrosshair();

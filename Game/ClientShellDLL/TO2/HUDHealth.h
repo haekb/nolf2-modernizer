@@ -11,14 +11,14 @@
 #ifndef __HUD_HEALTH_H
 #define __HUD_HEALTH_H
 
-#include "HUDItem.h"
+#include "BaseHUDItem.h"
 #include "HUDBar.h"
 
 
 //******************************************************************************************
 //** HUD Health display
 //******************************************************************************************
-class CHUDHealth : public CHUDItem
+class CHUDHealth : public CBaseHUDItem
 {
 public:
 	CHUDHealth();

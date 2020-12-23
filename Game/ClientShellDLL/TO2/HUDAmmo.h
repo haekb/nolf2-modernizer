@@ -11,13 +11,13 @@
 #ifndef __HUD_AMMO_H
 #define __HUD_AMMO_H
 
-#include "HUDItem.h"
+#include "BaseHUDItem.h"
 #include "HUDBar.h"
 
 //******************************************************************************************
 //** HUD Ammo display
 //******************************************************************************************
-class CHUDAmmo : public CHUDItem
+class CHUDAmmo : public CBaseHUDItem
 {
 public:
 	CHUDAmmo();

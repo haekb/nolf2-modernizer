@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <SDL.h>
-#include "HUDItem.h"
+#include "BaseHUDItem.h"
 
 // HUD Take Damage
 // Replacement for TakingHealth FX
@@ -10,7 +10,7 @@
 // so I disabled the current one in PlayerMgr 
 // and re-created it as a HUD item.
 //
-class CHUDTakeDamage : public CHUDItem
+class CHUDTakeDamage : public CBaseHUDItem
 {
 public:
 	CHUDTakeDamage();

@@ -68,6 +68,8 @@ void CHUDFramerate::Update()
 		return;
 	}
 
+	CBaseHUDItem::Update();
+
 	CTO2PlayerStats* pPlayerStats = (CTO2PlayerStats*)g_pPlayerStats;
 
 	LTFLOAT fFPS = pPlayerStats->GetFramerate();
@@ -88,6 +90,8 @@ void CHUDFramerate::Update()
 
 void CHUDFramerate::UpdateLayout()
 {
+	CBaseHUDItem::UpdateLayout();
+
 	int nCurrentLayout = GetConsoleInt("HUDLayout", 0);
 
 	m_BasePos = LTIntPt(2, 462);

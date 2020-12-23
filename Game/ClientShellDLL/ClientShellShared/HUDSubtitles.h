@@ -11,12 +11,12 @@
 #ifndef __HUD_SUBTITLES_H
 #define __HUD_SUBTITLES_H
 
-#include "HUDItem.h"
+#include "BaseHUDItem.h"
 
 //******************************************************************************************
 //** HUD Message Queue
 //******************************************************************************************
-class CHUDSubtitles : public CHUDItem
+class CHUDSubtitles : public CBaseHUDItem
 {
 public:
 	CHUDSubtitles();

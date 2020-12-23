@@ -131,6 +131,7 @@ void CHUDAmmo::Render()
 
 void CHUDAmmo::Update()
 {
+	CBaseHUDItem::Update();
 
 	WEAPON const *pWeapon = g_pWeaponMgr->GetWeapon(g_pPlayerStats->GetCurrentWeapon());
 	AMMO const *pAmmo = g_pWeaponMgr->GetAmmo(g_pPlayerStats->GetCurrentAmmo());
@@ -201,6 +202,8 @@ void CHUDAmmo::Update()
 
 void CHUDAmmo::UpdateLayout()
 {
+	CBaseHUDItem::UpdateLayout();
+
 	int nCurrentLayout = GetConsoleInt("HUDLayout",0);
 
 	m_BasePos		= g_pLayoutMgr->GetAmmoBasePos(nCurrentLayout);

@@ -45,6 +45,9 @@ void CHUDTransmission::Render()
 void CHUDTransmission::Update()
 {
 	if (!m_Msg.IsVisible()) return;
+
+	CBaseHUDItem::Update();
+
 	m_Msg.Update();
 
 }
@@ -70,6 +73,8 @@ void CHUDTransmission::Show(const char *pszString)
 
 void CHUDTransmission::UpdateLayout()
 {
+	CBaseHUDItem::UpdateLayout();
+
 	char *pTag = "Transmission";
 	m_BasePos = g_pLayoutMgr->GetPoint(pTag,"BasePos");
 

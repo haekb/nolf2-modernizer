@@ -124,6 +124,7 @@ void CHUDSubtitles::Update()
 	if (GetConsoleInt("Subtitles",0) == 0) 
 		return;
 
+	CBaseHUDItem::Update();
 
 	//update the amount of time that has elapsed
 	m_fElapsedTime += g_pLTClient->GetFrameTime();
@@ -134,10 +135,8 @@ void CHUDSubtitles::Update()
 		return;
 	}
 
-	float fCurrentScale = g_pInterfaceResMgr->GetYRatio() + g_pInterfaceResMgr->GetXRatio();
-	if (m_fCacheScale != fCurrentScale)
+	if (m_bUpdateScale)
 	{
-		m_fCacheScale = fCurrentScale;
 		ApplyPosition(g_pInterfaceResMgr->GetYRatio(), g_pInterfaceResMgr->Get4x3Offset());
 	}
 
@@ -360,6 +359,7 @@ void CHUDSubtitles::ApplyPosition(float fScale, int nOffset)
 
 void CHUDSubtitles::UpdateLayout()
 {
+	CBaseHUDItem::UpdateLayout();
 
 	char *pTag = "Subtitle";
 

@@ -110,6 +110,8 @@ void CHUDHealth::Render()
 
 void CHUDHealth::Update()
 {
+	CBaseHUDItem::Update();
+
 	if (m_bUseHealthBar)
 	{
 		float x = (float)(m_HealthBasePos.x + m_HealthBarOffset.x) * g_pInterfaceResMgr->GetXRatio();
@@ -175,6 +177,8 @@ void CHUDHealth::Update()
 
 void CHUDHealth::UpdateLayout()
 {
+	CBaseHUDItem::UpdateLayout();
+
 	int nCurrentLayout = GetConsoleInt("HUDLayout",0);
 
 	m_HealthBasePos		= g_pLayoutMgr->GetHealthBasePos(nCurrentLayout);

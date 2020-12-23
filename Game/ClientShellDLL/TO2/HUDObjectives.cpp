@@ -22,7 +22,7 @@
 //******************************************************************************************
 
 CHUDObjectives::CHUDObjectives()
-:	CHUDItem			( ),
+: CBaseHUDItem( ),
 	m_BasePos			( 0, 0 ),
 	m_fBlinkSpeed		( 0.0f ),
 	m_fBlinkTime		( 0.0f ),
@@ -96,6 +96,8 @@ void CHUDObjectives::Update()
 {
 	if (!m_bShow) return;
 
+	CBaseHUDItem::Update();
+
 	float fx = (float)(m_BasePos.x) * g_pInterfaceResMgr->GetYRatio();
 	float fy = (float)(m_BasePos.y) * g_pInterfaceResMgr->GetYRatio();
 	float fw = (float)(m_BaseSize.x) * g_pInterfaceResMgr->GetYRatio();
@@ -107,6 +109,8 @@ void CHUDObjectives::Update()
 
 void CHUDObjectives::UpdateLayout()
 {
+	CBaseHUDItem::UpdateLayout();
+
 	int nCurrentLayout = GetConsoleInt("HUDLayout",0);
 
 	m_BasePos		= g_pLayoutMgr->GetObjectiveIconPos(nCurrentLayout);

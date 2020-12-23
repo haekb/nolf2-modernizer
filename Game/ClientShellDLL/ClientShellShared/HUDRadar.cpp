@@ -56,7 +56,7 @@ public:
 // ----------------------------------------------------------------------- //
 
 CHUDRadar::CHUDRadar()
-:	CHUDItem		(),
+:	CBaseHUDItem		(),
 	m_BasePos		( 0, 0 ),
 	m_NamePos		( 0, 0 ),
 	m_nBaseSize		( 0 ),
@@ -192,9 +192,10 @@ void CHUDRadar::Update()
 	if( !m_bDraw || (m_mapRadarObjects.size() == 0 && m_Players.size() == 0) )
 		return;
 
+	CBaseHUDItem::Update();
+
 	//see if we have changed ratios and need to recalculate the name positions
-	if(	(m_fNameXRatio != g_pInterfaceResMgr->GetXRatio()) ||
-		(m_fNameYRatio != g_pInterfaceResMgr->GetYRatio()))
+	if(m_bUpdateScale)
 	{
 		UpdateNamePositions();
 		m_fNameXRatio = g_pInterfaceResMgr->GetXRatio();
@@ -279,6 +280,8 @@ void CHUDRadar::Update()
 
 void CHUDRadar::UpdateLayout()
 {
+	CBaseHUDItem::UpdateLayout();
+
 	int nCurrentLayout = GetConsoleInt("HUDLayout",0);
 	
 	// Use the compass values to determine where the radar should go...

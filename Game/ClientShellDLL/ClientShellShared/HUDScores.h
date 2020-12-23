@@ -11,12 +11,12 @@
 #ifndef __HUD_SCORES_H
 #define __HUD_SCORES_H
 
-#include "HUDItem.h"
+#include "BaseHUDItem.h"
 
 //******************************************************************************************
 //** HUD Message Queue
 //******************************************************************************************
-class CHUDScores : public CHUDItem
+class CHUDScores : public CBaseHUDItem
 {
 public:
 	CHUDScores();

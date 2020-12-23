@@ -102,6 +102,8 @@ protected:
 	float	GetLifetime();
 
 protected:
+	float m_fXScale;
+
 	LTPoly_GT4	m_Poly;
 	HTEXTURE	m_hImage;
 

@@ -11,14 +11,14 @@
 #ifndef __HUD_DAMAGE_DIR_H
 #define __HUD_DAMAGE_DIR_H
 
-#include "HUDItem.h"
+#include "BaseHUDItem.h"
 
 
 
 //******************************************************************************************
 //** HUD directional damage display
 //******************************************************************************************
-class CHUDDamageDir : public CHUDItem
+class CHUDDamageDir : public CBaseHUDItem
 {
 public:
 	CHUDDamageDir();
