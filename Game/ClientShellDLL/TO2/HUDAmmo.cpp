@@ -131,8 +131,6 @@ void CHUDAmmo::Render()
 
 void CHUDAmmo::Update()
 {
-	CBaseHUDItem::Update();
-
 	WEAPON const *pWeapon = g_pWeaponMgr->GetWeapon(g_pPlayerStats->GetCurrentWeapon());
 	AMMO const *pAmmo = g_pWeaponMgr->GetAmmo(g_pPlayerStats->GetCurrentAmmo());
 
@@ -142,6 +140,8 @@ void CHUDAmmo::Update()
 		m_bDraw = LTFALSE;
 
 	if (!m_bDraw) return;
+
+	CBaseHUDItem::Update();
 
 	IClientWeaponBase* pClientWeapon = g_pPlayerMgr->GetCurrentClientWeapon( );
 	int nAmmoInClip = pClientWeapon ? pClientWeapon->GetAmmoInClip() : 0;

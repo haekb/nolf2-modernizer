@@ -2076,7 +2076,9 @@ void CBaseScreen::UpdateHelpText()
 			{
 				s_pHelpStr->SetText(szHelpText);
 				uint16 nWidth = (uint16)( (LTFLOAT)s_HelpWidth * g_pInterfaceResMgr->GetYRatio());
-				float helpX = (float)s_HelpRect.left * g_pInterfaceResMgr->GetXRatio();
+				float helpX = (float)s_HelpRect.left * g_pInterfaceResMgr->GetYRatio();
+				helpX += (g_pInterfaceResMgr->Get4x3Offset());
+
 				float helpY = (float)s_HelpRect.top * g_pInterfaceResMgr->GetYRatio();
 				uint8 nSize = (uint8)((LTFLOAT)s_HelpSize * g_pInterfaceResMgr->GetYRatio());
 
