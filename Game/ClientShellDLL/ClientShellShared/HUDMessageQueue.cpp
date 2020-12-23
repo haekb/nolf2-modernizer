@@ -212,6 +212,8 @@ void CHUDMessageQueue::Render()
 
 void CHUDMessageQueue::Update()
 {
+	CBaseHUDItem::Update();
+
 	MessageArray::iterator iter = m_ActiveMsgs.begin();
 	while (iter !=  m_ActiveMsgs.end())
 	{
@@ -358,6 +360,7 @@ void CHUDMessageQueue::DecHistoryOffset()
 
 void CHUDChatMsgQueue::UpdateLayout()
 {
+	CBaseHUDItem::UpdateLayout();
 
 	char *pTag = "ChatMessageQueue";
 	m_BasePos = g_pLayoutMgr->GetPoint(pTag,"BasePos");

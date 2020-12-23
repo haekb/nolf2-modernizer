@@ -15,11 +15,11 @@
 // Includes...
 //
 	
-	#include "HUDItem.h"
+	#include "BaseHUDItem.h"
 	#include "LTGuiMgr.h"
 
 
-class CHUDPopup : public CHUDItem
+class CHUDPopup : public CBaseHUDItem
 {
 public:
 	CHUDPopup();

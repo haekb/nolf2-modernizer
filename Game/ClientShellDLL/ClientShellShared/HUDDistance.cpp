@@ -27,7 +27,7 @@
 // ----------------------------------------------------------------------- //
 
 CHUDDistance::CHUDDistance()
-:	CHUDItem			( ),
+: CBaseHUDItem( ),
 	m_BasePos			( 0, 0 ),
 	m_fBlinkSpeed		( 0.0f ),
 	m_fAlpha			( 0.0f ),
@@ -141,6 +141,8 @@ void CHUDDistance::Update()
 	m_hIcon = g_pPlayerMgr->GetDistanceIndicatorIcon();
 	m_bDraw = (m_fDistPercent > 0.0f && m_hIcon);
 
+	CBaseHUDItem::Update();
+
 	if( !m_bDraw )
 	{
 		if( m_fAlpha > 0.0f )
@@ -194,6 +196,8 @@ void CHUDDistance::Update()
 
 void CHUDDistance::UpdateLayout()
 {
+	CBaseHUDItem::UpdateLayout();
+
 	int nCurrentLayout = GetConsoleInt( "HUDLayout", 0 );
 
 	m_BasePos		= g_pLayoutMgr->GetDistanceIconPos( nCurrentLayout );

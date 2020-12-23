@@ -11,13 +11,13 @@
 #ifndef __HUD_TRANSMISSION_H
 #define __HUD_TRANSMISSION_H
 
-#include "HUDItem.h"
+#include "BaseHUDItem.h"
 #include "HUDMessage.h"
 
 //******************************************************************************************
 //** HUD Message Queue
 //******************************************************************************************
-class CHUDTransmission : public CHUDItem
+class CHUDTransmission : public CBaseHUDItem
 {
 public:
 	CHUDTransmission();

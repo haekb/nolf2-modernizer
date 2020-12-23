@@ -168,6 +168,8 @@ void CHUDHiding::Update()
 
 		return;
 	}
+
+	CBaseHUDItem::Update();
 	
 	float x = (float)(m_BasePos.x * g_pInterfaceResMgr->GetYRatio()) + g_pInterfaceResMgr->Get4x3Offset();
 	float y = (float)m_BasePos.y * g_pInterfaceResMgr->GetYRatio();
@@ -193,6 +195,8 @@ void CHUDHiding::Update()
 
 void CHUDHiding::UpdateLayout()
 {
+	CBaseHUDItem::UpdateLayout();
+
 	int nCurrentLayout = GetConsoleInt("HUDLayout",0);
 
 	m_BasePos		= g_pLayoutMgr->GetHideIconPos(nCurrentLayout);

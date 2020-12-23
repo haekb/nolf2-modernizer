@@ -508,6 +508,7 @@
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Final|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
     </ClCompile>
+    <ClCompile Include="BaseHUDItem.cpp" />
     <ClCompile Include="BaseLineSystemFX.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> /Zm1000   /Zm1000 </AdditionalOptions>
@@ -1352,6 +1353,7 @@
     <ClInclude Include="..\..\Shared\WinUtil.h" />
     <ClInclude Include="..\TO2\HUDHealth.h" />
     <ClInclude Include="ActivateObjectFX.h" />
+    <ClInclude Include="BaseHUDItem.h" />
     <ClInclude Include="BaseLineSystemFX.h" />
     <ClInclude Include="BaseMenu.h" />
     <ClInclude Include="BaseParticleSystemFX.h" />

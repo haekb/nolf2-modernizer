@@ -11,14 +11,14 @@
 #ifndef __HUD_COMPASS_H
 #define __HUD_COMPASS_H
 
-#include "HUDItem.h"
+#include "BaseHUDItem.h"
 
 
 
 //******************************************************************************************
 //** HUD Compass display
 //******************************************************************************************
-class CHUDCompass : public CHUDItem
+class CHUDCompass : public CBaseHUDItem
 {
 public:
 	CHUDCompass();

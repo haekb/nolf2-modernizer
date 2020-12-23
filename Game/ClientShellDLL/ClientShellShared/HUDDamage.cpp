@@ -82,6 +82,8 @@ void CHUDDamage::Update()
 {
 	if (!m_bDraw) return;
 
+	CBaseHUDItem::Update();
+
 	float x = (float)m_BasePos.x * g_pInterfaceResMgr->GetXRatio();
 	float y = (float)m_BasePos.y * g_pInterfaceResMgr->GetYRatio();
 	float sz = m_nIconHt * g_pInterfaceResMgr->GetYRatio();
@@ -115,6 +117,8 @@ void CHUDDamage::Update()
 
 void CHUDDamage::UpdateLayout()
 {
+	CBaseHUDItem::UpdateLayout();
+
 	int nCurrentLayout = GetConsoleInt("HUDLayout",0);
 
 	m_BasePos		= g_pLayoutMgr->GetDamageBasePos(nCurrentLayout);

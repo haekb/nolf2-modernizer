@@ -15,11 +15,11 @@
 // Includes...
 //
 	
-	#include "HUDItem.h"
+	#include "BaseHUDItem.h"
 	#include "HUDBar.h"
 	#include "CommonUtilities.h"
 
-class CHUDMeter : public CHUDItem
+class CHUDMeter : public CBaseHUDItem
 {
 	public:  // Methods...
 

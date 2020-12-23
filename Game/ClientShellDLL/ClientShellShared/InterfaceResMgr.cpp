@@ -116,7 +116,7 @@ LTBOOL CInterfaceResMgr::Init()
 	m_pMsgText->SetFixedWidth(kBaseWidth-2*kIndent);
 	m_pMsgText->Enable(LTFALSE);
 
-		char szBack[128] = "";
+	char szBack[128] = "";
 	g_pLayoutMgr->GetDialogFrame(szBack,sizeof(szBack));
 
 	m_MsgDlg.Create(GetTexture(szBack),kBaseWidth,kBaseHeight);

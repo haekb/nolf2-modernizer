@@ -78,8 +78,12 @@ void CHUDDamageDir::Update()
 		return;
 	}
 
-	if (m_fScale != g_pInterfaceResMgr->GetXRatio())
+	CBaseHUDItem::Update();
+
+	if (m_bUpdateScale)
+	{
 		UpdateScale();
+	}
 
 	float fAlphaRange = g_vtDamageMaxAlpha.GetFloat() - g_vtDamageMinAlpha.GetFloat();
 
@@ -115,6 +119,8 @@ void CHUDDamageDir::Update()
 
 void CHUDDamageDir::UpdateLayout()
 {
+	CBaseHUDItem::UpdateLayout();
+
 	int nCurrentLayout = GetConsoleInt("HUDLayout",0);
 
 	m_nSize = g_pLayoutMgr->GetDamageSize(nCurrentLayout);

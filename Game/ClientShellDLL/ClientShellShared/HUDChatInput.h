@@ -11,7 +11,7 @@
 #ifndef __HUD_CHAT_H
 #define __HUD_CHAT_H
 
-#include "HUDItem.h"
+#include "BaseHUDItem.h"
 #include "LTGUIMgr.h"
 
 const int kMaxChatLength = 64;
@@ -20,7 +20,7 @@ const int kMaxChatHistory = 25;
 //******************************************************************************************
 //** HUD Chat display
 //******************************************************************************************
-class CHUDChatInput : public CHUDItem
+class CHUDChatInput : public CBaseHUDItem
 {
 public:
 	CHUDChatInput();

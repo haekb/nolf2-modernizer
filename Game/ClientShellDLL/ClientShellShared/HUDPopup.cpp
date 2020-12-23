@@ -29,7 +29,7 @@
 // ----------------------------------------------------------------------- //
 
 CHUDPopup::CHUDPopup()
-:	CHUDItem		( )
+: CBaseHUDItem( )
 {
 	m_UpdateFlags	= kHUDFrame;
 	m_bVisible		= LTFALSE;	
@@ -113,7 +113,9 @@ void CHUDPopup::Update()
 	// Sanity checks...
 	if( !IsVisible() ) return;
 
-	if (m_fScale != g_pInterfaceResMgr->GetYRatio())
+	CBaseHUDItem::Update();
+
+	if (m_bUpdateScale)
 	{
 		ApplyPosition(g_pInterfaceResMgr->GetYRatio(), g_pInterfaceResMgr->Get4x3Offset());
 	}

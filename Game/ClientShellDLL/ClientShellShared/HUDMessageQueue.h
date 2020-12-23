@@ -11,13 +11,13 @@
 #ifndef __HUD_MSG_Q_H
 #define __HUD_MSG_Q_H
 
-#include "HUDItem.h"
+#include "BaseHUDItem.h"
 #include "HUDMessage.h"
 
 //******************************************************************************************
 //** HUD Message Queue
 //******************************************************************************************
-class CHUDMessageQueue : public CHUDItem
+class CHUDMessageQueue : public CBaseHUDItem
 {
 public:
 	CHUDMessageQueue();

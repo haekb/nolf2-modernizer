@@ -11,14 +11,14 @@
 #ifndef __HUD_OBJECTIVES_H
 #define __HUD_OBJECTIVES_H
 
-#include "HUDItem.h"
+#include "BaseHUDItem.h"
 
 
 
 //******************************************************************************************
 //** HUD Carry Icon display
 //******************************************************************************************
-class CHUDObjectives : public CHUDItem
+class CHUDObjectives : public CBaseHUDItem
 {
 public:
 	CHUDObjectives();

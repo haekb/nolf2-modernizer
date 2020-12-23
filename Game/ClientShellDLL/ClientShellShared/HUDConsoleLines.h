@@ -11,13 +11,13 @@
 #ifndef __HUD__CONSOLELINES_H
 #define __HUD__CONSOLELINES_H
 
-#include "HUDItem.h"
+#include "BaseHUDItem.h"
 //#include "HUDHidingBar.h"
 
 //******************************************************************************************
 //** HUD showing framerate
 //******************************************************************************************
-class CHUDConsoleLines : public CHUDItem
+class CHUDConsoleLines : public CBaseHUDItem
 {
 public:
 	CHUDConsoleLines();

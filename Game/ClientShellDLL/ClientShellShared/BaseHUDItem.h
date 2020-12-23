@@ -8,41 +8,35 @@
 //
 // ----------------------------------------------------------------------- //
 
-#ifndef __HUD_PAUSED_H
-#define __HUD_PAUSED_H
+#ifndef __BASE_HUD_ITEM_H
+#define __BASE_HUD_ITEM_H
 
-#include "BaseHUDItem.h"
-#include "HUDMessage.h"
+#include "HUDItem.h"
 
 //******************************************************************************************
-//** HUD Message Queue
+//** Base HUD Item - Mostly handles scale cache busting
 //******************************************************************************************
-class CHUDPaused : public CBaseHUDItem
+class CBaseHUDItem : public CHUDItem
 {
 public:
-	CHUDPaused();
-	
+	CBaseHUDItem();
+	~CBaseHUDItem() {};
 
-    virtual LTBOOL      Init();
-	virtual void		Term();
+	virtual LTBOOL      Init() { return LTTRUE; };
+	virtual void		Term() {};
 
-    virtual void        Render();
-    virtual	void        Update();
+	virtual void        Render() {};
+	virtual	void        Update();
 
 	virtual void        UpdateLayout();
 
-	virtual	void		Show(LTBOOL bShow);
+	virtual	void		Show(LTBOOL bShow) {};
 
 protected:
-	CHUDMessage		m_Msg;
-
-    LTIntPt		m_BasePos;
-	MsgCreate	m_MsgFormat;
-
 	float		m_fCacheScale;
-	float		m_fScale;
 
-
+	// Check this bool to determine if we need to update UI elements
+	bool		m_bUpdateScale;
 };
 
 

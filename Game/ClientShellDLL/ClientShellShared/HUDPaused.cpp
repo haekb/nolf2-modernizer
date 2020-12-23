@@ -60,6 +60,8 @@ void CHUDPaused::Show(LTBOOL bShow)
 
 void CHUDPaused::UpdateLayout()
 {
+	CBaseHUDItem::UpdateLayout();
+
 	char *pTag = "PausedText";
 	m_BasePos = g_pLayoutMgr->GetPoint(pTag,"BasePos");
 
@@ -82,10 +84,10 @@ void CHUDPaused::UpdateLayout()
 
 void CHUDPaused::Update()
 {
-	float fCurrentScale = g_pInterfaceResMgr->GetYRatio() + g_pInterfaceResMgr->GetXRatio();
-	if (m_fCacheScale != fCurrentScale)
+	CBaseHUDItem::Update();
+
+	if (m_bUpdateScale)
 	{
-		m_fCacheScale = fCurrentScale;
 		m_fScale = g_pInterfaceResMgr->GetYRatio();
 		m_Msg.ApplyPosition(m_fScale, g_pInterfaceResMgr->Get4x3Offset());
 	}

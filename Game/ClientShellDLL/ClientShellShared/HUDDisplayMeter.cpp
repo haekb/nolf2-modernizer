@@ -43,6 +43,8 @@ CHUDDisplayMeter::CHUDDisplayMeter()
 
 void CHUDDisplayMeter::UpdateLayout()
 {
+	CBaseHUDItem::UpdateLayout();
+
 	int nCurrentLayout = GetConsoleInt("HUDLayout",0);
 
 	m_MeterBasePos.y	= g_pLayoutMgr->GetDisplayMeterBasePosY( nCurrentLayout );
