@@ -89,6 +89,11 @@ Simply drop the `gamecontrollerdb.txt` file into your NOLF 2 game folder and Mod
 Dedicated Server Information:
 The dedicated server will automatically load up modernizer. If you'd like to include additional .rez files you can add them with the `-rez <rez>` argument.
 
+Server Hosting Information:
+You'll need to open the port you're hosting your server on AND the port immediately above it. 
+
+Example: If you're hosting on port 27888, you'll also need to open 27889. 
+
 Special Thanks:
  - My Partner - For putting up with quite a few late nights
  - Nathan Grigg & Monolith Mark - For getting me some wonderful song title suggestions
