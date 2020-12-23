@@ -25,7 +25,7 @@
 // ----------------------------------------------------------------------- //
 
 CHUDMeter::CHUDMeter()
-:	CHUDItem		( ),
+: CBaseHUDItem( ),
 	m_MeterBasePos	( 0, 0 ),
 	m_MeterOffset	( 0, 0 ),
 	m_nMeterHeight	( 0 ),
@@ -111,6 +111,8 @@ void CHUDMeter::Update()
 		m_bDraw = false;
 		return;
 	}
+
+	CBaseHUDItem::Update();
 
 	m_bDraw = true;
 

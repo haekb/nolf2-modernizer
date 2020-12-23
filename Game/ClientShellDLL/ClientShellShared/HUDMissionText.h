@@ -11,13 +11,13 @@
 #ifndef __HUD_MISSIONTEXT_H
 #define __HUD_MISSIONTEXT_H
 
-#include "HUDItem.h"
+#include "BaseHUDItem.h"
 #include "TimedText.h"
 
 //******************************************************************************************
 //** HUD Message Queue
 //******************************************************************************************
-class CHUDMissionText : public CHUDItem
+class CHUDMissionText : public CBaseHUDItem
 {
 public:
 	CHUDMissionText();

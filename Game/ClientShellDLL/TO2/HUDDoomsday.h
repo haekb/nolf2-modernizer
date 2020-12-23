@@ -11,14 +11,14 @@
 #ifndef __HUD_DOOM_H
 #define __HUD_DOOM_H
 
-#include "HUDItem.h"
+#include "BaseHUDItem.h"
 
 
 
 //******************************************************************************************
 //** HUD Carry Icon display
 //******************************************************************************************
-class CHUDDoomsday : public CHUDItem
+class CHUDDoomsday : public CBaseHUDItem
 {
 public:
 	CHUDDoomsday();

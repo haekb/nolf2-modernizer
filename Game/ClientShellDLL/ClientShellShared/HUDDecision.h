@@ -11,13 +11,13 @@
 #ifndef __HUD_DECISION_H
 #define __HUD_DECISION_H
 
-#include "HUDItem.h"
+#include "BaseHUDItem.h"
 #include "ClientServerShared.h"
 
 //******************************************************************************************
 //** HUD Message Queue
 //******************************************************************************************
-class CHUDDecision : public CHUDItem
+class CHUDDecision : public CBaseHUDItem
 {
 public:
 	CHUDDecision();

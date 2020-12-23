@@ -75,6 +75,8 @@ void CHUDCompass::Update()
 {
 	if (!m_bDraw) return;
 
+	CBaseHUDItem::Update();
+
 	static float fRat = (2.0f * (float)sin(MATH_PI/4.0f));
 	float fWorldNorth = GetConsoleFloat("WorldNorth",0.0f);
 
@@ -122,6 +124,8 @@ void CHUDCompass::Update()
 
 void CHUDCompass::UpdateLayout()
 {
+	CBaseHUDItem::UpdateLayout();
+
 	int nCurrentLayout = GetConsoleInt("HUDLayout",0);
 
 	m_BasePos		= g_pLayoutMgr->GetCompassPos(nCurrentLayout);

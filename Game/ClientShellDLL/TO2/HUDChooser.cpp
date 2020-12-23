@@ -130,7 +130,9 @@ void CHUDWpnChooser::Update()
 	m_bDraw = !!g_pInterfaceMgr->IsChoosingWeapon();
 	if (!m_bDraw) return;
 
-	if (g_pInterfaceResMgr->GetScreenWidth() != m_nScreenWidth)
+	CBaseHUDItem::Update();
+
+	if (m_bUpdateScale)
 	{
 		m_nScreenWidth = g_pInterfaceResMgr->GetScreenWidth();
 		if (m_nScreenWidth < 1024)
@@ -285,6 +287,8 @@ void CHUDWpnChooser::Update()
 
 void CHUDWpnChooser::UpdateLayout()
 {
+	CBaseHUDItem::UpdateLayout();
+
 	int nCurrentLayout = GetConsoleInt("HUDLayout",0);
 
 

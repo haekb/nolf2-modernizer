@@ -137,6 +137,8 @@ void CHUDDoomsday::Update()
 {
 	if (g_pGameClientShell->GetGameType() != eGameTypeDoomsDay) return;
 
+	CBaseHUDItem::Update();
+
 	//clear status
 	for (int i = 0; i < kNumDDIcons; i++)
 	{
@@ -197,6 +199,8 @@ void CHUDDoomsday::Update()
 
 void CHUDDoomsday::UpdateLayout()
 {
+	CBaseHUDItem::UpdateLayout();
+
 	char *pTag = "Doomsday";
 	m_BasePos	= g_pLayoutMgr->GetPoint(pTag,"BasePos");
 	m_nSize		= (uint8)g_pLayoutMgr->GetInt(pTag,"IconSize");

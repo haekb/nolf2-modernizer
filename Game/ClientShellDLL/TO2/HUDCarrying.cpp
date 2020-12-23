@@ -116,6 +116,8 @@ void CHUDCarrying::Update()
 {
 	if (!g_pPlayerMgr->GetCarryingObject() && !g_pPlayerMgr->CanCarryObject()) return;
 
+	CBaseHUDItem::Update();
+
 	float fx = (float)(m_BasePos.x) * g_pInterfaceResMgr->GetYRatio();
 	float fy = (float)(m_BasePos.y) * g_pInterfaceResMgr->GetYRatio();
 	float fw = (float)(m_nSize) * g_pInterfaceResMgr->GetYRatio();
@@ -126,6 +128,8 @@ void CHUDCarrying::Update()
 
 void CHUDCarrying::UpdateLayout()
 {
+	CBaseHUDItem::UpdateLayout();
+
 	int nCurrentLayout = GetConsoleInt("HUDLayout",0);
 
 	m_BasePos		= g_pLayoutMgr->GetCarryIconPos(nCurrentLayout);

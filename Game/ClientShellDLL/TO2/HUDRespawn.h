@@ -27,7 +27,7 @@ class CHUDRespawnBar : public CHUDMeter
 //******************************************************************************************
 //** HUD Respawn display
 //******************************************************************************************
-class CHUDRespawn : public CHUDItem
+class CHUDRespawn : public CBaseHUDItem
 {
 public:
 	CHUDRespawn();

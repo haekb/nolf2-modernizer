@@ -11,13 +11,13 @@
 #ifndef __HUD_AIR_H
 #define __HUD_AIR_H
 
-#include "HUDItem.h"
+#include "BaseHUDItem.h"
 #include "HUDBar.h"
 
 //******************************************************************************************
 //** HUD Air display
 //******************************************************************************************
-class CHUDAir : public CHUDItem
+class CHUDAir : public CBaseHUDItem
 {
 public:
 	CHUDAir();

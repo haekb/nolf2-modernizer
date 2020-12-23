@@ -16,7 +16,7 @@
 // Includes...
 //
 
-	#include "HUDItem.h"
+	#include "BaseHUDItem.h"
 	#include "ltguimgr.h"
 
 struct RADAR_PLAYER_OBJ
@@ -63,7 +63,7 @@ struct RADAROBJECT
 
 
 
-class CHUDRadar : public CHUDItem
+class CHUDRadar : public CBaseHUDItem
 {
 	public: // Methods...
 

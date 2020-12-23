@@ -110,23 +110,25 @@ void CHUDHealth::Render()
 
 void CHUDHealth::Update()
 {
+	CBaseHUDItem::Update();
+
 	if (m_bUseHealthBar)
 	{
-		float x = (float)(m_HealthBasePos.x + m_HealthBarOffset.x) * g_pInterfaceResMgr->GetXRatio();
+		float x = (float)(m_HealthBasePos.x + m_HealthBarOffset.x) * g_pInterfaceResMgr->GetYRatio();
 		float y = (float)(m_HealthBasePos.y + m_HealthBarOffset.y) * g_pInterfaceResMgr->GetYRatio();
 
-		float w = (float)g_pPlayerStats->GetHealth() * m_fBarScale * g_pInterfaceResMgr->GetXRatio();
+		float w = (float)g_pPlayerStats->GetHealth() * m_fBarScale * g_pInterfaceResMgr->GetYRatio();
 		float h = (float)m_nBarHeight * g_pInterfaceResMgr->GetYRatio();
-		float maxW = (float)g_pPlayerStats->GetMaxHealth() * m_fBarScale * g_pInterfaceResMgr->GetXRatio();
+		float maxW = (float)g_pPlayerStats->GetMaxHealth() * m_fBarScale * g_pInterfaceResMgr->GetYRatio();
 
 		m_HealthBar.Update(x,y,w,maxW,h);
 
 
-		x = (float)(m_HealthBasePos.x + m_ArmorBarOffset.x) * g_pInterfaceResMgr->GetXRatio();
+		x = (float)(m_HealthBasePos.x + m_ArmorBarOffset.x) * g_pInterfaceResMgr->GetYRatio();
 		y = (float)(m_HealthBasePos.y + m_ArmorBarOffset.y) * g_pInterfaceResMgr->GetYRatio();
 
-		w = (float)g_pPlayerStats->GetArmor() * m_fBarScale * g_pInterfaceResMgr->GetXRatio();
-		maxW = (float)g_pPlayerStats->GetMaxArmor() * m_fBarScale * g_pInterfaceResMgr->GetXRatio();
+		w = (float)g_pPlayerStats->GetArmor() * m_fBarScale * g_pInterfaceResMgr->GetYRatio();
+		maxW = (float)g_pPlayerStats->GetMaxArmor() * m_fBarScale * g_pInterfaceResMgr->GetYRatio();
 
 		m_ArmorBar.Update(x,y,w,maxW,h);
 
@@ -134,7 +136,7 @@ void CHUDHealth::Update()
 
 	if (m_bUseHealthText)
 	{
-		float x = (float)(m_HealthBasePos.x + m_HealthTextOffset.x) * g_pInterfaceResMgr->GetXRatio();
+		float x = (float)(m_HealthBasePos.x + m_HealthTextOffset.x) * g_pInterfaceResMgr->GetYRatio();
 		float y = (float)(m_HealthBasePos.y + m_HealthTextOffset.y) * g_pInterfaceResMgr->GetYRatio();
 
 		uint8 h = (uint8)((float)m_nTextHeight * g_pInterfaceResMgr->GetYRatio());
@@ -145,7 +147,7 @@ void CHUDHealth::Update()
 		sprintf(szTmp,"%d",g_pPlayerStats->GetHealth());
 		m_pHealthStr->SetText(szTmp);
 
-		x = (float)(m_HealthBasePos.x + m_ArmorTextOffset.x) * g_pInterfaceResMgr->GetXRatio();
+		x = (float)(m_HealthBasePos.x + m_ArmorTextOffset.x) * g_pInterfaceResMgr->GetYRatio();
 		y = (float)(m_HealthBasePos.y + m_ArmorTextOffset.y) * g_pInterfaceResMgr->GetYRatio();
 
 		m_pArmorStr->SetPosition(x,y);
@@ -157,14 +159,14 @@ void CHUDHealth::Update()
 
 	if (m_bUseHealthIcon)
 	{
-		float x = (float)(m_HealthBasePos.x + m_HealthIconOffset.x) * g_pInterfaceResMgr->GetXRatio();
+		float x = (float)(m_HealthBasePos.x + m_HealthIconOffset.x) * g_pInterfaceResMgr->GetYRatio();
 		float y = (float)(m_HealthBasePos.y + m_HealthIconOffset.y) * g_pInterfaceResMgr->GetYRatio();
 
 		float w = (float)m_nHealthIconSize * g_pInterfaceResMgr->GetYRatio();
 
 		g_pDrawPrim->SetXYWH(&m_Poly[0],x,y,w,w);
 
-		x = (float)(m_HealthBasePos.x + m_ArmorIconOffset.x) * g_pInterfaceResMgr->GetXRatio();
+		x = (float)(m_HealthBasePos.x + m_ArmorIconOffset.x) * g_pInterfaceResMgr->GetYRatio();
 		y = (float)(m_HealthBasePos.y + m_ArmorIconOffset.y) * g_pInterfaceResMgr->GetYRatio();
 
 		g_pDrawPrim->SetXYWH(&m_Poly[1],x,y,w,w);
@@ -175,6 +177,8 @@ void CHUDHealth::Update()
 
 void CHUDHealth::UpdateLayout()
 {
+	CBaseHUDItem::UpdateLayout();
+
 	int nCurrentLayout = GetConsoleInt("HUDLayout",0);
 
 	m_HealthBasePos		= g_pLayoutMgr->GetHealthBasePos(nCurrentLayout);

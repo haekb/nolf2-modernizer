@@ -11,13 +11,13 @@
 #ifndef __HUD__FRAMERATE_H
 #define __HUD__FRAMERATE_H
 
-#include "HUDItem.h"
+#include "BaseHUDItem.h"
 //#include "HUDHidingBar.h"
 
 //******************************************************************************************
 //** HUD showing framerate
 //******************************************************************************************
-class CHUDFramerate : public CHUDItem
+class CHUDFramerate : public CBaseHUDItem
 {
 public:
 	CHUDFramerate();

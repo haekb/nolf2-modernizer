@@ -11,9 +11,9 @@
 #ifndef __HUD_CHOOSER_H
 #define __HUD_CHOOSER_H
 
-#include "HUDItem.h"
+#include "BaseHUDItem.h"
 
-class CHUDWpnChooser : public CHUDItem
+class CHUDWpnChooser : public CBaseHUDItem
 {
 public:
 	CHUDWpnChooser();

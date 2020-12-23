@@ -81,6 +81,8 @@ void CHUDConsoleLines::Update()
 		return;
 	}
 
+	CBaseHUDItem::Update();
+
 	std::string sLines = g_pConsoleMgr->GetConsoleLines();
 
 	uint8 h = (uint8)((float)m_nTextHeight * g_pInterfaceResMgr->GetYRatio());
@@ -96,6 +98,8 @@ void CHUDConsoleLines::Update()
 
 void CHUDConsoleLines::UpdateLayout()
 {
+	CBaseHUDItem::UpdateLayout();
+
 	int nCurrentLayout = GetConsoleInt("HUDLayout", 0);
 
 	m_BasePos = LTIntPt(2, 2);

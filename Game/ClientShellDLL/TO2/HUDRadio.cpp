@@ -90,9 +90,12 @@ void CHUDRadio::Update()
 	// Sanity checks...
 	if (!IsVisible()) return;
 
-	if (m_fScale != g_pInterfaceResMgr->GetYRatio())
-		ApplyPosition(g_pInterfaceResMgr->GetYRatio(), g_pInterfaceResMgr->Get4x3Offset());
+	CBaseHUDItem::Update();
 
+	if (m_bUpdateScale)
+	{
+		ApplyPosition(g_pInterfaceResMgr->GetYRatio(), g_pInterfaceResMgr->Get4x3Offset());
+	}
 }
 
 
@@ -162,6 +165,7 @@ void CHUDRadio::ApplyPosition(float fScale, int nOffset)
 
 void CHUDRadio::UpdateLayout()
 {
+	CBaseHUDItem::UpdateLayout();
 
 	char *pTag = "RadioWindow";
 

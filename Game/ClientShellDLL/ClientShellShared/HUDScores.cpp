@@ -121,12 +121,14 @@ void CHUDScores::Update()
 {
 	if (m_nDraw <= 0) return;
 
+	CBaseHUDItem::Update();
+
 	uint32 textCol = (m_bScreen ? m_nScreenTextColor : m_nTextColor);
 	uint32 playerTextCol = (m_bScreen ? m_nScreenPlayerTextColor : m_nPlayerTextColor);
 
 	float fScale = g_pInterfaceResMgr->GetYRatio();
 	int nOffset = g_pInterfaceResMgr->Get4x3Offset();
-	if (fScale != m_fScale)
+	if (m_bUpdateScale)
 	{
 		m_fScale = fScale;
 		m_Server.ApplyPosition(fScale, nOffset);
@@ -273,6 +275,8 @@ void CHUDScores::Update()
 
 void CHUDScores::UpdateLayout()
 {
+	CBaseHUDItem::UpdateLayout();
+
 	char *pTag = "Scores";
 	m_BasePos = g_pLayoutMgr->GetPoint(pTag,"BasePos");
 	uint8 nFont = (uint8)g_pLayoutMgr->GetInt(pTag,"Font");

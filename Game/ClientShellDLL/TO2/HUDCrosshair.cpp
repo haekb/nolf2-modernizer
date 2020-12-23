@@ -212,7 +212,7 @@ void CHUDCrosshair::Update()
 	if (!m_bEnabled)
 		return;
 
-
+	CBaseHUDItem::Update();
 	
 	IClientWeaponBase* pClientWeapon = g_pPlayerMgr->GetCurrentClientWeapon();
 
@@ -251,10 +251,9 @@ void CHUDCrosshair::Update()
 	}
 
 
-	if (m_fScale != g_pInterfaceResMgr->GetYRatio() || m_fSavedXRatio != g_pInterfaceResMgr->GetXRatio())
+	if (m_bUpdateScale)
 	{
 		m_fScale = g_pInterfaceResMgr->GetYRatio();
-		m_fSavedXRatio = g_pInterfaceResMgr->GetXRatio();
 
 		ScalePolies();
 
@@ -464,6 +463,8 @@ void CHUDCrosshair::RenderBlackBars(eOverlayMask eMask)
 
 void CHUDCrosshair::UpdateLayout()
 {
+	CBaseHUDItem::UpdateLayout();
+
 	int nCurrentLayout = GetConsoleInt("HUDLayout",0);
 
 	LTIntPt pos = g_pLayoutMgr->GetActivationTextPos(nCurrentLayout);

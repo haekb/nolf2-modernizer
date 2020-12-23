@@ -11,14 +11,14 @@
 #ifndef __HUD_RADIO_H
 #define __HUD_RADIO_H
 
-#include "HUDItem.h"
+#include "BaseHUDItem.h"
 #include "ClientServerShared.h"
 
 #define MAX_RADIO_CHOICES 6
 //******************************************************************************************
 //** HUD Radio dialog
 //******************************************************************************************
-class CHUDRadio : public CHUDItem
+class CHUDRadio : public CBaseHUDItem
 {
 public:
 	CHUDRadio();

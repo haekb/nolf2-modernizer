@@ -17,11 +17,11 @@
 // Includes...
 //
 
-	#include "HUDItem.h"
+	#include "BaseHUDItem.h"
 	#include "HUDBar.h"
 
 
-class CHUDDistance : public CHUDItem
+class CHUDDistance : public CBaseHUDItem
 {
 	public: // Methods...
 

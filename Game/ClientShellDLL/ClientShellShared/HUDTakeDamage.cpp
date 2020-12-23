@@ -49,6 +49,8 @@ void CHUDTakeDamage::Render()
 
 void CHUDTakeDamage::Update()
 {
+	CBaseHUDItem::Update();
+
 	int nAlpha = 0;
 
 	// Create a local copy to iterate over

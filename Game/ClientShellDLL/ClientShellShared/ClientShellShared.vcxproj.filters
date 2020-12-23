@@ -683,6 +683,9 @@
     <ClCompile Include="GameInputMgr.cpp">
       <Filter>Source Files\InputSystem</Filter>
     </ClCompile>
+    <ClCompile Include="BaseHUDItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ActivateObjectFX.h">
@@ -1329,6 +1332,9 @@
     </ClInclude>
     <ClInclude Include="InputMgr.h">
       <Filter>Header Files\InputSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseHUDItem.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

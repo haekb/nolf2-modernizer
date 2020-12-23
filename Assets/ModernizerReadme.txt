@@ -32,6 +32,8 @@ Beta 2 Fixes:
  - Fixed scopes and most other overlays
  - Fixed view models being slightly stretched
  - Found and replanted the missing foilage
+ - Lots of HUD stretching/position fixes
+ - Added some experimental options
 
 Known Issues:
     The following might not be fixable:
@@ -44,9 +46,7 @@ Known Issues:
      - Jukebox can occasionally crash while switching songs
      - Jukebox songs are sorted in alphabetical order
      - Some Jukebox Singles have duplicate songs
-     - Some cutscenes (with 4:3 mode disabled) contain overlays that don't have black bars
      - Controller support is only supported during gameplay, it doesn't work on menus
-     - Crosshair can be off-centered when switching to specific resolutions. A restart will fix this
      - Switching to a lower resolution from a fullscreen windowed mode can make the window get stuck in borderless mode
      - Almost certainly there's a multiplayer browser crash in there somewhere!
      - Music can sometimes be a little jumpy (I've been told the base game had this issue too, but I'm looking into it!)

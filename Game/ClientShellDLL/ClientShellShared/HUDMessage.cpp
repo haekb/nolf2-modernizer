@@ -42,6 +42,8 @@ CHUDMessage::CHUDMessage()
 	m_fAlpha = 1.0f;
 
 	m_bDropShadow = true;
+
+	m_fXScale = 1.0f;
 }
 
 
@@ -153,8 +155,11 @@ void CHUDMessage::Update()
 	// Sanity checks...
 	if (!IsVisible()) return;
 
-	if (m_fScale != g_pInterfaceResMgr->GetYRatio()) {
+
+	// This sucks, we don't inherit off of a HUD item, so do this live...
+	if (m_fScale != g_pInterfaceResMgr->GetYRatio() || m_fXScale != g_pInterfaceResMgr->GetXRatio()) {
 		ApplyPosition(g_pInterfaceResMgr->GetYRatio(), g_pInterfaceResMgr->Get4x3Offset());
+		m_fXScale = g_pInterfaceResMgr->GetXRatio();
 	}
 
 	if (m_fInitTime < 0.0f)

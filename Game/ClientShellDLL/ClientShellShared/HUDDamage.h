@@ -11,10 +11,10 @@
 #ifndef __HUD_DAMAGE_H
 #define __HUD_DAMAGE_H
 
-#include "HUDItem.h"
+#include "BaseHUDItem.h"
 
 
-class CHUDDamage : public CHUDItem
+class CHUDDamage : public CBaseHUDItem
 {
 public:
 	CHUDDamage();
