@@ -297,6 +297,8 @@ public:
 	// JServerDir only functions
 	//
 
+	bool AddPeerToList(Peer* pPeer);
+
 	//
 	// The server listens on a second port, which is just the host port + 1...
 	//

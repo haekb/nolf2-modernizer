@@ -124,7 +124,10 @@ bool JServerDir::QueueRequest(ERequest eNewRequest)
 		eJob = { eJobRequest_Query_Version, "", {} };
 		break;
 	case ERequest::eRequest_Update_List:
+	{
+		ClearPeerList();
 		eJob = { eJobRequest_Query_Master_Server, "", {} };
+	}
 		break;
 	case ERequest::eRequest_Publish_Server:
 		Peer peer = *m_Peers.at(m_nActivePeer);
@@ -440,13 +443,14 @@ bool JServerDir::SetActivePeer(const char* pAddr)
 	// See if we're already in the list!
 	int index = 0;
 	for (auto peer : m_Peers) {
-		if (peer->GetFullAddress().compare(activePeer) == 0) {
+		if (peer && peer->GetFullAddress().compare(activePeer) == 0) {
 			m_nActivePeer = index;
 			return true;
 		}
 		index++;
 	}
 
+	// If it doesn't exist in our list, make it!
 
 	Peer* peer = new Peer();
 
@@ -456,7 +460,12 @@ bool JServerDir::SetActivePeer(const char* pAddr)
 	peer->SetCreatedAt(m_pLTCSBase->GetTime());
 
 	// Throw in our new ActivePeer(TM)
-	m_Peers.push_back(peer);
+	if (!AddPeerToList(peer))
+	{
+		delete peer;
+		return false;
+	}
+
 	m_nActivePeer = m_Peers.size() - 1;
 
 	return true;
@@ -749,6 +758,22 @@ bool JServerDir::SetNetHeader(ILTMessage_Read& cMsg)
 	return false;
 }
 
+// Returns true if the peer was added to the list
+bool JServerDir::AddPeerToList(Peer* pPeer)
+{
+	for(auto pPeerInList : m_Peers)
+	{
+		// Oh there's a duplicate?
+		if (pPeerInList->GetFullAddress() == pPeer->GetFullAddress())
+		{
+			return false;
+		}
+	}
+
+	m_Peers.push_back(pPeer);
+	return true;
+}
+
 void JServerDir::Update()
 {
 
@@ -774,7 +799,11 @@ void JServerDir::Update()
 	switch (pRetData->eRequestType)
 	{
 	case eJobRequest_Query_Server:
-		m_Peers.push_back(pRetData->peer.pPeer);
+		if (!AddPeerToList(pRetData->peer.pPeer) && pRetData->peer.pPeer)
+		{
+			delete pRetData->peer.pPeer;
+		}
+
 		break;
 	case eJobRequest_Query_MOTD:
 		m_sSystemMOTD = pRetData->motd.szSystemMOTD;
@@ -1463,7 +1492,7 @@ void JServerDir::RequestQueueLoop()
 		case eJobRequest_Query_Server:
 			m_iQueryRefCounter++;
 			pRetData->peer = QueryServer(job.sData);
-			pRetData->bSet = true;
+			pRetData->bSet = (bool)pRetData->peer.pPeer;
 			m_iQueryRefCounter--;
 			break;
 		case eJobRequest_Publish_Server:

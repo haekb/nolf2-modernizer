@@ -534,6 +534,10 @@ void    CScreenJoin::OnFocus(LTBOOL bFocus)
 		m_pWait->Show(LTTRUE);
 		SetCapture(m_pWait);
 
+		// Prevent duplicate entries, I guess the previous ServerDir shut down after each request..
+		m_cServerList.clear();
+		m_pServerListCtrl->RemoveAll();
+
 		// Go!
 		if (m_eCurState == eState_Inactive)
 			ChangeState(eState_Startup);
@@ -829,7 +833,9 @@ void CScreenJoin::ReadDetails()
 		break;
 	}
 	
-	m_pOptions->SetString(sOptions.c_str());
+	// We don't have host options properly working right now...
+	m_pOptions->SetString("");
+	//m_pOptions->SetString(sOptions.c_str());
 
 	m_pJoin->Enable(LTTRUE);
 	m_pDetails->Show(LTTRUE);
