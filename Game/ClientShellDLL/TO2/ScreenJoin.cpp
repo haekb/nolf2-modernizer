@@ -590,7 +590,6 @@ void CScreenJoin::FindServers()
 
 void CScreenJoin::ReadCurServerList()
 {
-	m_nSelectedServer = 0;
 
 	IServerDirectory *pServerDir = g_pClientMultiplayerMgr->GetServerDir();
 	IServerDirectory::TPeerList cPeers = pServerDir->GetPeerList();
@@ -599,6 +598,9 @@ void CScreenJoin::ReadCurServerList()
 	// Entry testing
 	// Spawns a new fake entry every 1.5 seconds.
 	{
+		// Note: This will break selection!!
+		m_nSelectedServer = 0;
+
 		static Uint32 prevTicks = 0;
 		auto ticks = CWinUtil::GetTicks();
 

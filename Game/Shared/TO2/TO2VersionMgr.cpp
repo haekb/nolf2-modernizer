@@ -52,7 +52,7 @@ static const char* s_szVersion		= "Dev build";
 
 static const char* s_szBuild		= "Build 4M-Dev";
 static const uint32 s_nBuildNumber = 123;
-static const char* s_szNetVersion	= "1.0.0.4M BETA 2b";
+static const char* s_szNetVersion	= "1.0.0.4M BETA 2c";
 static const char* s_szNetGameName	= "NOLF2";
 
 const CVersionMgr::TSaveVersion CVersionMgr::kSaveVersion__1_1 = 72;

@@ -4743,21 +4743,6 @@ BOOL SetWindowSize(uint32 nWidth, uint32 nHeight)
 	}
 	*/
 
-
-	if (g_SDLWindow)
-	{
-		// Quickly splash the screen with black and delete the renderer
-		SDL_Renderer* renderer = SDL_CreateRenderer(g_SDLWindow, -1, 0);
-		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-		SDL_RenderClear(renderer);
-		SDL_RenderPresent(renderer);
-
-		// DX will now handle the rest.
-		SDL_DestroyRenderer(renderer);
-	}
-
-
-
 	return TRUE;
 }
 

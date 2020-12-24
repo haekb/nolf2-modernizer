@@ -741,9 +741,6 @@ void JServerDir::ClearPeerList()
 
 bool JServerDir::HandleNetMessage(ILTMessage_Read& cMsg, const char* pSender, uint16 nPort)
 {
-
-	
-
 	// We don't know any of the messages yet :thinking:
 	// Probably has to do with sending the challenge to the server, and getting lists and stuff.
 
@@ -761,10 +758,15 @@ bool JServerDir::SetNetHeader(ILTMessage_Read& cMsg)
 // Returns true if the peer was added to the list
 bool JServerDir::AddPeerToList(Peer* pPeer)
 {
+	if (!pPeer)
+	{
+		return false;
+	}
+
 	for(auto pPeerInList : m_Peers)
 	{
 		// Oh there's a duplicate?
-		if (pPeerInList->GetFullAddress() == pPeer->GetFullAddress())
+		if (pPeerInList && pPeerInList->GetFullAddress() == pPeer->GetFullAddress())
 		{
 			return false;
 		}
@@ -799,7 +801,7 @@ void JServerDir::Update()
 	switch (pRetData->eRequestType)
 	{
 	case eJobRequest_Query_Server:
-		if (!AddPeerToList(pRetData->peer.pPeer) && pRetData->peer.pPeer)
+		if (pRetData->peer.pPeer && !AddPeerToList(pRetData->peer.pPeer))
 		{
 			delete pRetData->peer.pPeer;
 		}
@@ -961,8 +963,6 @@ PeerReturnData JServerDir::QueryServer(std::string sAddress)
 			SwitchStatus(eStatus_Error);
 			delete pSock;
 			pSock = NULL;
-
-
 
 			return retData;
 		}
@@ -1266,6 +1266,7 @@ void JServerDir::PingPeer(Peer* peer)
 	ConnectionData connectionData = { peer->GetAddress(), GetListeningPort(peer->m_PortData.nHostPort) };
 
 	auto startTime = getTimestampInMs();
+
 
 	try {
 		pSock->Query(pingQuery, connectionData);
