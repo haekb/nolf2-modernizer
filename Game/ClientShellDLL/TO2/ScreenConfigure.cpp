@@ -355,6 +355,10 @@ void CScreenConfigure::SetControlText(CLTGUICtrl *pCtrl)
 				strcat(strControls,LoadTempString(IDS_MOUSE_RIGHTBUTTON));
 			else if (stricmp("##5",pData->strRealName[1]) == 0)
 				strcat(strControls,LoadTempString(IDS_MOUSE_MIDDLEBUTTON));
+			else if (stricmp("##6",pData->strRealName[1]) == 0)
+				strcat(strControls,"Mouse X1");
+			else if (stricmp("##7",pData->strRealName[1]) == 0)
+				strcat(strControls,"Mouse X2");
 			else
 			{
 				strcat(strControls,strDeviceNiceName[1]);

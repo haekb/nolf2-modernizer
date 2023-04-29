@@ -10,6 +10,8 @@ const std::map <DInputKey, int> g_mSDLMouseToDInputMouse = {
 	{ SDL_BUTTON_LEFT	 , 3  },
 	{ SDL_BUTTON_RIGHT	 , 4  },
 	{ SDL_BUTTON_MIDDLE	 , 5  },
+	{ SDL_BUTTON_X1      , 6  },
+	{ SDL_BUTTON_X2      , 7  },
 };
 
 // Jake: Man this sucks, but we need a fast way to convert DirectInput keys to SDL2 Scancodes
