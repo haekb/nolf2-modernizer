@@ -8,9 +8,9 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 [Info]
-Server="openspy.net"
+Server="master.openspy.net"
 PortHTTP=80
 PortTCP=28900
 PortUDP=27900
 SkipMOTD=False
-SkipVersionCheck=False
+SkipVersionCheck=True
