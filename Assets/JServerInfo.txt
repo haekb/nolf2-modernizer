@@ -1,15 +1,14 @@
 /////////////////////////////////////////////////////////////////////////////////////////
-// Jake's Server Directory Config File
-// 
-// Below are some various settings you can tweak 
-// in case my (HeyJake's) master server ever goes under
+// Server Directory Config File
 //
-// Master server runs on https://github.com/haekb/mgmse
-// But any re-implementation of that should work as well. 
+// Below are some various settings you can tweak
+// in case the master server ever goes under
+//
+// Master server provided by OpenSpy (https://openspy.net/)
 //
 /////////////////////////////////////////////////////////////////////////////////////////
 [Info]
-Server="178.62.4.245"
+Server="openspy.net"
 PortHTTP=80
 PortTCP=28900
 PortUDP=27900

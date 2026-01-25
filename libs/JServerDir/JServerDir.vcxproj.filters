@@ -42,6 +42,9 @@
     <ClInclude Include="TCPSocket.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="gsmsalg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

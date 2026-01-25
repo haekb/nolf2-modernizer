@@ -20,13 +20,16 @@
 
 #include "UDPSocket.h"
 
+#define HEARTBEAT_TIME_IN_SEC 300
+#define STATE_CHECK_TIME_IN_SEC 30
+#define GAMESPY_PW "g3Fo6x"
 #define FAKE_CD_KEY "ABC1-EFG2-IJK3-LMN4-5678"
 #define LOCAL_PEER "_LOCAL_PEER"
 #define NO_ACTIVE_PEER -1
 
 // These are defaults in case the JServerInfo.txt file is missing!
 #if 1
-#define MASTER_SERVER "178.62.4.245"
+#define MASTER_SERVER "userface.me"
 #define MASTER_PORT_HTTP 80
 #else
 #define MASTER_SERVER "127.0.0.1"
@@ -39,8 +42,9 @@
 // Default ping for bad timeouts
 #define INVALID_PING 999
 
-#define QUERY_CONNECT "\\gamename\\nolf2\\gamever\\1.3\\location\\0\\validate\\g3Fo6x\\final\\"
-#define QUERY_UPDATE_LIST "\\list\\\\gamename\\nolf2\\final\\"
+#define QUERY_CONNECT "\\gamename\\nolf2\\gamever\\1.4M\\location\\0"
+//\\final\\"
+#define QUERY_UPDATE_LIST "\\list\\cmp\\gamename\\nolf2\\final\\"
 
 // These are web routes. Maybe add to config..
 #if 1

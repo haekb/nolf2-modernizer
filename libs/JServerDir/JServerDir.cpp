@@ -2,6 +2,7 @@
 #include "JServerDir.h"
 #include "IServerDir.h"
 #include "AutoMessage.h"
+#include "gsmsalg.h"
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 #include "Helpers.h"
@@ -25,8 +26,7 @@ ILTCommon* g_pCommonLT;
 JServerDir* g_pJServerDir;
 
 //
-// Jake's Server Directory!
-// I'm bad at naming things.
+// A custom Server Directory!
 // ---
 // This class is a basic implementation of IServerDir + a few extra functions to help the request thread
 // I ended up threading all the requests, which turned out be a lot more work on the various UI screens in NOLF 2 then here!
@@ -828,7 +828,29 @@ void JServerDir::Update()
 
 void JServerDir::SetMasterServerInfo(MasterServerInfo info)
 {
+	WSADATA wsaData;
+	auto result = WSAStartup(MAKEWORD(2, 2), &wsaData);
+	if (result != 0) {
+		SwitchStatus(eStatus_Error);
+		m_pLTCSBase->CPrint("Failed to boot WSA to get ip addr, WSA Error Code [%d]\n", info.szServer, WSAGetLastError());
+		return;
+	}
+
+	hostent* hostname = gethostbyname(info.szServer);
+	m_pLTCSBase->CPrint("Looking up ip addr for [%s]\n", info.szServer);
+	if (!hostname) {
+		SwitchStatus(eStatus_Error);
+		m_pLTCSBase->CPrint("Failed to find ip addr for [%s], WSA Error Code [%d]\n", info.szServer, WSAGetLastError());
+		WSACleanup();
+		return;
+	}
+
+	auto serverIp = std::string(inet_ntoa(**(in_addr**)hostname->h_addr_list));
+	LTStrCpy(info.szServer, serverIp.c_str(), sizeof(info.szServer));
+
+	m_pLTCSBase->CPrint("Found ip addr for [%s]\n", info.szServer);
 	m_MasterServerInfo = info;
+	WSACleanup();
 }
 
 void JServerDir::UseDefaultMasterServerInfo()
@@ -842,7 +864,7 @@ void JServerDir::UseDefaultMasterServerInfo()
 	info.nPortTCP = MASTER_PORT;
 	info.nPortUDP = MASTER_PORT_UDP;
 
-	m_MasterServerInfo = info;
+	this->SetMasterServerInfo(info);
 }
 
 void JServerDir::QueryMasterServer()
@@ -852,29 +874,75 @@ void JServerDir::QueryMasterServer()
 	ConnectionData connectionData = { m_MasterServerInfo.szServer, m_MasterServerInfo.nPortTCP };
 
 	std::string sServerList = "";
+	std::string sResponse = "";
 
 	auto startTime = getTimestampInMs();
 
 	try {
 		pSock->Connect(connectionData);
 
-		std::string sResponse = QUERY_CONNECT;
-		sResponse += "queryid\\" + std::to_string(++m_iQueryNum) + ".1";
-
-		pSock->Query(sResponse, connectionData);
-
-		// We can pretty much ignore this response
+		// Challenge
 		auto sConnectResponse = pSock->Recieve(connectionData);
 
-		sResponse = QUERY_UPDATE_LIST;
-		sResponse += "queryid\\" + std::to_string(++m_iQueryNum) + ".1";
+		//#ifdef _DEBUG
+		if (!sConnectResponse.empty())
+		{
+			m_pLTCSBase->CPrint("[DEBUG] Recieved from <%s:%s>: %s", connectionData.sIp.c_str(), std::to_string(connectionData.nPort).c_str(), sConnectResponse.c_str());
+		}
+		//#endif
+
+#if 0
+		sResponse += handleValidationQuery(sConnectResponse);
+
 		pSock->Query(sResponse, connectionData);
 
+		//#ifdef _DEBUG
+		if (!sResponse.empty())
+		{
+			m_pLTCSBase->CPrint("[DEBUG] Sending to <%s:%s>: %s", connectionData.sIp.c_str(), std::to_string(connectionData.nPort).c_str(), sResponse.c_str());
+		}
+		//#endif
+#endif
+
+		// Hacky!
+		sResponse = QUERY_CONNECT;
+		sResponse += handleValidationQuery(sConnectResponse);
+		sResponse += "\\final\\";
+		
+
+		pSock->Query(sResponse, connectionData);
+
+		//#ifdef _DEBUG
+		if (!sResponse.empty())
+		{
+			m_pLTCSBase->CPrint("[DEBUG] Sending to <%s:%s>: %s", connectionData.sIp.c_str(), std::to_string(connectionData.nPort).c_str(), sResponse.c_str());
+		}
+		//#endif
+
+		sResponse = QUERY_UPDATE_LIST;
+		pSock->Query(sResponse, connectionData);
+
+		//#ifdef _DEBUG
+		if (!sResponse.empty())
+		{
+			m_pLTCSBase->CPrint("[DEBUG] Sending to <%s:%s>: %s", connectionData.sIp.c_str(), std::to_string(connectionData.nPort).c_str(), sResponse.c_str());
+		}
+		//#endif
+
 		sServerList = pSock->Recieve(connectionData);
+
+		//#ifdef _DEBUG
+		if (!sServerList.empty())
+		{
+			m_pLTCSBase->CPrint("[DEBUG] Recieved from <%s:%s>: %s", connectionData.sIp.c_str(), std::to_string(connectionData.nPort).c_str(), sServerList.c_str());
+		}
+		//#endif
 
 		bool done = true;
 	}
 	catch (std::exception ex) {
+		m_pLTCSBase->CPrint("[DEBUG] Socket error from <%s:%s>: %s", connectionData.sIp.c_str(), std::to_string(connectionData.nPort).c_str(), ex.what());
+
 		SwitchStatus(eStatus_Error);
 		delete pSock;
 		pSock = NULL;
@@ -908,6 +976,8 @@ void JServerDir::QueryMasterServer()
 		nCurrentPosition += sizeof(ipTest);
 
 		if (sCursor.find("\\final\\") == 0) {
+			m_pLTCSBase->CPrint("[DEBUG] Done checking servers");
+
 			break;
 		}
 
@@ -922,6 +992,11 @@ void JServerDir::QueryMasterServer()
 		sprintf(buffer, "%d.%d.%d.%d", serverIp->ip[0], serverIp->ip[1], serverIp->ip[2], serverIp->ip[3]);
 
 		ipBuffer = buffer;
+
+		{
+			m_pLTCSBase->CPrint("[DEBUG] Queueing Server: %s:%s", buffer, std::to_string(nPort).c_str());
+
+		}
 
 		// Loop through all the servers
 		Job job = { eJobRequest_Query_Server, ipBuffer + ":" + std::to_string(nPort), {} };
@@ -952,12 +1027,12 @@ PeerReturnData JServerDir::QueryServer(std::string sAddress)
 
 		try {
 			pSock->Query("\\status\\", connectionData);
-#ifdef _DEBUG
+//#ifdef _DEBUG
 			if (!connectionData.sIp.empty())
 			{
 				m_pLTCSBase->CPrint("[DEBUG] Sending to <%s:%s>: %s", connectionData.sIp.c_str(), std::to_string(connectionData.nPort).c_str(), "\\status\\");
 			}
-#endif
+//#endif
 		}
 		catch (std::exception ex) {
 			SwitchStatus(eStatus_Error);
@@ -976,12 +1051,12 @@ PeerReturnData JServerDir::QueryServer(std::string sAddress)
 
 			try {
 				sStatus = pSock->Recieve(connectionData);
-#ifdef _DEBUG
+//#ifdef _DEBUG
 				if (!sStatus.empty())
 				{
 					m_pLTCSBase->CPrint("[DEBUG] Recieved from <%s:%s>: %s", connectionData.sIp.c_str(), std::to_string(connectionData.nPort).c_str(), sStatus.c_str());
 				}
-#endif
+//#endif
 			}
 			catch (...)
 			{
@@ -1122,7 +1197,7 @@ void JServerDir::PublishServer(Peer peerParam)
 
 			m_bBoundConnection = true;
 
-			Sleep(500);
+			//Sleep(500);
 
 		}
 		catch (std::exception e) {
@@ -1138,10 +1213,18 @@ void JServerDir::PublishServer(Peer peerParam)
 
 	}
 
-	std::string initialResponse = uSock->Recieve(incomingConnectionData);
+	std::string initialResponse = "";// uSock->Recieve(incomingConnectionData);
+
+	// Old state
+	std::string prevHostname = peer.m_ServiceData.m_sHostName;
+	std::string prevMapName = peer.m_ServiceData.m_sCurWorld;
+	auto prevNumPlayers = peer.m_SummaryData.nCurrentPlayers;
+	auto prevGametype = peer.m_SummaryData.nGameType;
+	auto prevMaxPlayers = peer.m_ServiceData.m_nMaxNumPlayers;
 
 	auto nCurrentTime = getTimestamp();
 	auto nLastHeartbeat = getTimestamp();
+	auto nLastStateCheck = getTimestamp();
 
 	// TODO: figure out what counts as a state change
 	bool bStateChanged = false;
@@ -1184,12 +1267,12 @@ void JServerDir::PublishServer(Peer peerParam)
 				initialResponse = "";
 			}
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 			if (!result.empty())
 			{
 				m_pLTCSBase->CPrint("[DEBUG] Recieved from <%s:%s>: %s", incomingConnectionData.sIp.c_str(), std::to_string(incomingConnectionData.nPort).c_str(), result.c_str());
 			}
-#endif
+//#endif
 
 			// Handle status requests
 			if (result.find("\\status\\") != std::string::npos) {
@@ -1199,30 +1282,81 @@ void JServerDir::PublishServer(Peer peerParam)
 
 				uSock->Query(gameInfo, incomingConnectionData);
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 				if (!result.empty())
 				{
 					m_pLTCSBase->CPrint("[DEBUG] Sending to <%s:%s>: %s", incomingConnectionData.sIp.c_str(), std::to_string(incomingConnectionData.nPort).c_str(), gameInfo.c_str());
 				}
-#endif
+//#endif
 
 			}
 			else if (result.find("\\echo\\") != std::string::npos)
 			{
 				uSock->Query(result, incomingConnectionData);
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 				if (!result.empty())
 				{
 					m_pLTCSBase->CPrint("[DEBUG] Sending to <%s:%s>: %s", incomingConnectionData.sIp.c_str(), std::to_string(incomingConnectionData.nPort).c_str(), result.c_str());
 				}
-#endif
+//#endif
+			}
+			else if (result.find("\\secure\\") != std::string::npos) 
+			{
+				std::string query = handleValidationQuery(result);
+				uSock->Query(query, incomingConnectionData);
+
+				//#ifdef _DEBUG
+				if (!result.empty())
+				{
+					m_pLTCSBase->CPrint("[DEBUG] Sending to <%s:%s>: %s", incomingConnectionData.sIp.c_str(), std::to_string(incomingConnectionData.nPort).c_str(), query.c_str());
+				}
+				//#endif
+
+				// We need to send an initial heartbeat, so signal that state has changed.
+				bStateChanged = true;
+
+				// We need a short pause here...
+				Sleep(500);
 			}
 
-			// After 60 seconds, poke the master server
-			if (bStateChanged || nCurrentTime - nLastHeartbeat > 60) {
-				uSock->Query(getHeartbeat(m_iQueryNum, nPort, bStateChanged), masterConnectionData);
+			// Every STATE_CHECK_TIME_IN_SEC we check if any of the main peer data has changed
+			// If so we need to tell the master server about it.
+			if (nCurrentTime - nLastStateCheck > STATE_CHECK_TIME_IN_SEC) {
+
+				// If any of the basic information has changed, update state.
+				if (prevHostname != peer.m_ServiceData.m_sHostName
+					|| prevMapName != peer.m_ServiceData.m_sCurWorld
+					|| prevNumPlayers != peer.m_SummaryData.nCurrentPlayers
+					|| prevGametype != peer.m_SummaryData.nGameType
+					|| prevMaxPlayers != peer.m_ServiceData.m_nMaxNumPlayers) {
+					bStateChanged = true;
+
+					// We also reset the heartbeat timer
+					nLastHeartbeat = nCurrentTime;
+				}
+
+				prevHostname = peer.m_ServiceData.m_sHostName;
+				prevMapName = peer.m_ServiceData.m_sCurWorld;
+				prevNumPlayers = peer.m_SummaryData.nCurrentPlayers;
+				prevGametype = peer.m_SummaryData.nGameType;
+				prevMaxPlayers = peer.m_ServiceData.m_nMaxNumPlayers;
+
+				nLastStateCheck = nCurrentTime;
+			}
+
+			// After HEARTBEAT_TIME_IN_SEC seconds, poke the master server
+			if (bStateChanged || nCurrentTime - nLastHeartbeat > HEARTBEAT_TIME_IN_SEC) {
+				auto heartBeat = getHeartbeat(m_iQueryNum, nPort, bStateChanged);
+				uSock->Query(heartBeat, masterConnectionData);
 				nLastHeartbeat = nCurrentTime;
+
+				//#ifdef _DEBUG
+				if (!heartBeat.empty())
+				{
+					m_pLTCSBase->CPrint("[DEBUG] Sending to <%s:%s>: %s", incomingConnectionData.sIp.c_str(), std::to_string(incomingConnectionData.nPort).c_str(), heartBeat.c_str());
+				}
+				//#endif
 			}
 
 			bStateChanged = false;
@@ -1236,10 +1370,12 @@ void JServerDir::PublishServer(Peer peerParam)
 		// If we want to stop, stop!
 		if (m_bStopThread.load()) {
 
-			// TODO: This kinda sucks. Feed it into the main loop up there.
-			// Also it seems QTracker will just drop it, if we don't send it anything after a statechange. I'lllll take it!
+			peer.Shutdown();
+
+			// Send a heartbeat, if the master server queries again they'll see gamemode: exiting (from the shutdown above)
 			try {
 				uSock->Query(getHeartbeat(m_iQueryNum, nPort, true), masterConnectionData);
+
 			}
 			catch (...)
 			{
@@ -1328,6 +1464,15 @@ void JServerDir::SwitchStatus(EStatus eStatus)
 
 MOTDReturnData JServerDir::QueryMOTD()
 {
+#if 1
+	MOTDReturnData retData = {
+		"Hello! This latest patch updates the master server.\nThanks for keeping NOLF2 alive!",
+		"Master Server provided by OpenSpy.\n\nFor more information please visit openspy.net!"
+	};
+
+	m_bGotMOTD = true;
+	return retData;
+#else
 	std::string sGameMOTD = QueryHttpText(GAME_MOTD_ROUTE);
 	std::string sSystemMOTD = QueryHttpText(SYSTEM_MOTD_ROUTE);
 	
@@ -1342,20 +1487,29 @@ MOTDReturnData JServerDir::QueryMOTD()
 	m_bGotMOTD = true;
 
 	return retData;
+#endif
 }
 
 VersionReturnData JServerDir::QueryVersion()
 {
+#if 1
+	VersionReturnData retData;
+	LTStrCpy(retData.szVersion, m_sGameVersion.c_str(), sizeof(retData.szVersion));
+
+	return retData;
+#else
 	std::string sGameVersion = QueryHttpText(GAME_VERSION_ROUTE);
 
 	VersionReturnData retData;
 	LTStrCpy(retData.szVersion, sGameVersion.c_str(), sizeof(retData.szVersion));
 
 	return retData;
+#endif
 }
 
 std::string JServerDir::QueryHttpText(std::string sRoute)
 {
+#if 0
 	TCPSocket* pSock = new TCPSocket();
 
 	ConnectionData connectionData = { m_MasterServerInfo.szServer, (unsigned short)m_MasterServerInfo.nPortHTTP };
@@ -1393,6 +1547,7 @@ std::string JServerDir::QueryHttpText(std::string sRoute)
 	pSock = nullptr;
 
 	return sRet;
+#endif
 }
 
 //
