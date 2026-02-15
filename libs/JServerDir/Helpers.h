@@ -168,7 +168,7 @@ std::string getHeartbeat(int &iQueryNum, int iPort, bool bStateChanged = false)
 	std::string heartbeat = "\\heartbeat\\" + std::to_string(iPort) + "\\gamename\\nolf2\\";
 
 	if (bStateChanged) {
-		heartbeat += "statechanged\\\\";
+		heartbeat += "statechanged\\1\\";
 	}
 
 	heartbeat += "final\\\\queryid\\" + std::to_string(++iQueryNum) + ".1";
