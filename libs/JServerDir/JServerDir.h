@@ -20,7 +20,7 @@
 
 #include "UDPSocket.h"
 
-#define HEARTBEAT_TIME_IN_SEC 300
+#define HEARTBEAT_TIME_IN_SEC 60
 #define STATE_CHECK_TIME_IN_SEC 30
 #define GAMESPY_PW "g3Fo6x"
 #define FAKE_CD_KEY "ABC1-EFG2-IJK3-LMN4-5678"
