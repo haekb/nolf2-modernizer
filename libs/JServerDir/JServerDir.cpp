@@ -1213,8 +1213,6 @@ void JServerDir::PublishServer(Peer peerParam)
 
 	}
 
-	std::string initialResponse = "";// uSock->Recieve(incomingConnectionData);
-
 	// Old state
 	std::string prevHostname = peer.m_ServiceData.m_sHostName;
 	std::string prevMapName = peer.m_ServiceData.m_sCurWorld;
@@ -1256,16 +1254,8 @@ void JServerDir::PublishServer(Peer peerParam)
 
 			std::string result = "";
 
-			if (initialResponse.empty())
-			{
-				incomingConnectionData = { "0.0.0.0", 0 };
-				result = uSock->Recieve(incomingConnectionData);
-			}
-			else
-			{
-				result = initialResponse;
-				initialResponse = "";
-			}
+			incomingConnectionData = { "0.0.0.0", 0 };
+			result = uSock->Recieve(incomingConnectionData);
 
 //#ifdef _DEBUG
 			if (!result.empty())

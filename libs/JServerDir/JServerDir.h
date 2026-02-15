@@ -306,7 +306,7 @@ public:
 	//
 	// The server listens on a second port, which is just the host port + 1...
 	//
-	inline int GetListeningPort(int nHostPort) { return nHostPort + 1; }
+	inline int GetListeningPort(int nHostPort) { return nHostPort; }
 
 	// Cheat a little
 	__declspec(dllexport) void Update();
