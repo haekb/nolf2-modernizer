@@ -25,6 +25,8 @@
 ILTCommon* g_pCommonLT;
 JServerDir* g_pJServerDir;
 
+//#define LOG_SERVER_MSG
+
 //
 // A custom Server Directory!
 // ---
@@ -39,6 +41,11 @@ JServerDir* g_pJServerDir;
 // Update - (Main/Game Thread) Copies over data from the return data vector to the main thread.
 // QueueRequest - (Main/Game Thread) Pushes a job into the worker queue.
 // RequestQueueLoop - (Request Thread) Takes a job from the queue and runs it. Also pushes return data to its vector.
+// 
+// Important note:
+// NOLF2 will setup a udp socket on the game port (noted as hostport in the kv query), this code
+// will setup a query port. The queryport will always be specified in the heartbeat, while the gameport will 
+// always be specified in the status query under "hostport".
 //
 JServerDir::JServerDir(bool bClientSide, ILTCSBase& ltCSBase, HMODULE hResourceModule)
 {
@@ -59,6 +66,8 @@ JServerDir::JServerDir(bool bClientSide, ILTCSBase& ltCSBase, HMODULE hResourceM
 	m_sGameVersion = "";
 
 	m_bGotMOTD = false;
+
+	m_pNetHeader = nullptr;
 
 	// Blank out that struct
 	m_MasterServerInfo = { 0 };
@@ -272,7 +281,7 @@ IServerDirectory::ERequestResult JServerDir::GetLastRequestResult() const
 const char* JServerDir::GetLastRequestResultString() const
 {
 	// Used when the game boots you to the menu
-	return "T E S T";
+	return "There was an issue connecting to the server. Please try again later.";
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -580,6 +589,7 @@ bool JServerDir::SetActivePeerInfo(EPeerInfo eInfoType, ILTMessage_Read& cMsg)
 		break;
 	case ePeerInfo_Port:
 		peer->m_PortData.nHostPort = cMsg.Readuint16();
+		peer->m_PortData.nQueryPort = GetListeningPort(peer->m_PortData.nHostPort);
 		peer->SetHasPortData(true);
 		break;
 	case ePeerInfo_Service:
@@ -741,17 +751,15 @@ void JServerDir::ClearPeerList()
 
 bool JServerDir::HandleNetMessage(ILTMessage_Read& cMsg, const char* pSender, uint16 nPort)
 {
-	// We don't know any of the messages yet :thinking:
-	// Probably has to do with sending the challenge to the server, and getting lists and stuff.
-
+	//int messageId = cMsg.Readuint8();
+	//m_pLTCSBase->CPrint("Msg from %s:%s - msgid=%d", pSender, std::to_string(nPort).c_str(), messageId);
 	return false;
 }
 
 bool JServerDir::SetNetHeader(ILTMessage_Read& cMsg)
 {
-
-	// ????
-
+	//m_pLTCSBase->CPrint("Set netheader!");
+	//m_pNetHeader = cMsg.Clone();
 	return false;
 }
 
@@ -884,59 +892,45 @@ void JServerDir::QueryMasterServer()
 		// Challenge
 		auto sConnectResponse = pSock->Recieve(connectionData);
 
-		//#ifdef _DEBUG
+		#ifdef LOG_SERVER_MSG
 		if (!sConnectResponse.empty())
 		{
 			m_pLTCSBase->CPrint("[DEBUG] Recieved from <%s:%s>: %s", connectionData.sIp.c_str(), std::to_string(connectionData.nPort).c_str(), sConnectResponse.c_str());
 		}
-		//#endif
-
-#if 0
-		sResponse += handleValidationQuery(sConnectResponse);
-
-		pSock->Query(sResponse, connectionData);
-
-		//#ifdef _DEBUG
-		if (!sResponse.empty())
-		{
-			m_pLTCSBase->CPrint("[DEBUG] Sending to <%s:%s>: %s", connectionData.sIp.c_str(), std::to_string(connectionData.nPort).c_str(), sResponse.c_str());
-		}
-		//#endif
-#endif
+		#endif
 
 		// Hacky!
 		sResponse = QUERY_CONNECT;
 		sResponse += handleValidationQuery(sConnectResponse);
 		sResponse += "\\final\\";
-		
 
 		pSock->Query(sResponse, connectionData);
 
-		//#ifdef _DEBUG
+		#ifdef LOG_SERVER_MSG
 		if (!sResponse.empty())
 		{
 			m_pLTCSBase->CPrint("[DEBUG] Sending to <%s:%s>: %s", connectionData.sIp.c_str(), std::to_string(connectionData.nPort).c_str(), sResponse.c_str());
 		}
-		//#endif
+		#endif
 
 		sResponse = QUERY_UPDATE_LIST;
 		pSock->Query(sResponse, connectionData);
 
-		//#ifdef _DEBUG
+		#ifdef LOG_SERVER_MSG
 		if (!sResponse.empty())
 		{
 			m_pLTCSBase->CPrint("[DEBUG] Sending to <%s:%s>: %s", connectionData.sIp.c_str(), std::to_string(connectionData.nPort).c_str(), sResponse.c_str());
 		}
-		//#endif
+		#endif
 
 		sServerList = pSock->Recieve(connectionData);
 
-		//#ifdef _DEBUG
+		#ifdef LOG_SERVER_MSG
 		if (!sServerList.empty())
 		{
 			m_pLTCSBase->CPrint("[DEBUG] Recieved from <%s:%s>: %s", connectionData.sIp.c_str(), std::to_string(connectionData.nPort).c_str(), sServerList.c_str());
 		}
-		//#endif
+		#endif
 
 		bool done = true;
 	}
@@ -1023,16 +1017,16 @@ PeerReturnData JServerDir::QueryServer(std::string sAddress)
 
 	{
 		UDPSocket* pSock = new UDPSocket();
-		ConnectionData connectionData = { sIPAddress, GetListeningPort(nPort) };
+		ConnectionData connectionData = { sIPAddress, nPort };
 
 		try {
 			pSock->Query("\\status\\", connectionData);
-//#ifdef _DEBUG
+#ifdef LOG_SERVER_MSG
 			if (!connectionData.sIp.empty())
 			{
 				m_pLTCSBase->CPrint("[DEBUG] Sending to <%s:%s>: %s", connectionData.sIp.c_str(), std::to_string(connectionData.nPort).c_str(), "\\status\\");
 			}
-//#endif
+#endif
 		}
 		catch (std::exception ex) {
 			SwitchStatus(eStatus_Error);
@@ -1051,12 +1045,12 @@ PeerReturnData JServerDir::QueryServer(std::string sAddress)
 
 			try {
 				sStatus = pSock->Recieve(connectionData);
-//#ifdef _DEBUG
+#ifdef LOG_SERVER_MSG
 				if (!sStatus.empty())
 				{
 					m_pLTCSBase->CPrint("[DEBUG] Recieved from <%s:%s>: %s", connectionData.sIp.c_str(), std::to_string(connectionData.nPort).c_str(), sStatus.c_str());
 				}
-//#endif
+#endif
 			}
 			catch (...)
 			{
@@ -1088,7 +1082,12 @@ PeerReturnData JServerDir::QueryServer(std::string sAddress)
 		PeerInfo_Name name;
 		name.sHostName = mappy.at("hostname");
 
-
+		// Retrieve the hostport (port the game's udp socket is running on) and use that for listings
+		std::string gameAddress = sIPAddress;
+		std::string gamePort = mappy.at("hostport");
+		gameAddress += ":" + gamePort;
+		unsigned short gamePortInt = std::stoi(gamePort.c_str());
+		
 		// Set summary data
 		PeerInfo_Summary summary;
 		summary.bUsePassword = std::stoi(mappy.at("password"));
@@ -1151,10 +1150,11 @@ PeerReturnData JServerDir::QueryServer(std::string sAddress)
 		peer->SetAddress(sIPAddress);
 
 		// Address AND port
-		peer->SetFullAddress(sAddress);
+		peer->SetFullAddress(gameAddress);
 
 		PeerInfo_Port port;
-		port.nHostPort = nPort;
+		port.nHostPort = gamePortInt;
+		port.nQueryPort = nPort;
 		peer->m_PortData = port;
 
 		delete pSock;
@@ -1174,18 +1174,29 @@ PeerReturnData JServerDir::QueryServer(std::string sAddress)
 //
 void JServerDir::PublishServer(Peer peerParam)
 {
+#if 0
+	while (true) {
+		// If we want to stop, stop!
+		if (m_bStopThread.load()) {
+			break;
+		}
+		Sleep(33);
+	}
+	return;
+#endif
 	UDPSocket* uSock = new UDPSocket();
 
 	Peer peer = peerParam;
 	int nPort = peer.m_PortData.nHostPort;
+	int nQueryPort = peer.m_PortData.nQueryPort;
 
 	// We can't seem to bind the same address as we're hosting the server on, so we increment it by 1 to get around this...
 	// The query server stuff has the same logic
-	ConnectionData selfConnectionData = { "0.0.0.0", GetListeningPort(nPort) };
+	ConnectionData selfConnectionData = { "0.0.0.0", nQueryPort };
 	ConnectionData masterConnectionData = { m_MasterServerInfo.szServer, (unsigned short)m_MasterServerInfo.nPortUDP };
 	ConnectionData incomingConnectionData = { "0.0.0.0", 0 };
 
-	std::string heartbeat = getHeartbeat(m_iQueryNum, nPort, false);
+	std::string heartbeat = getHeartbeat(m_iQueryNum, nQueryPort, false);
 	std::string gameInfo = encodeGameInfoToString(&peer);
 
 	if (!m_bBoundConnection) {
@@ -1257,12 +1268,12 @@ void JServerDir::PublishServer(Peer peerParam)
 			incomingConnectionData = { "0.0.0.0", 0 };
 			result = uSock->Recieve(incomingConnectionData);
 
-//#ifdef _DEBUG
+#ifdef LOG_SERVER_MSG
 			if (!result.empty())
 			{
 				m_pLTCSBase->CPrint("[DEBUG] Recieved from <%s:%s>: %s", incomingConnectionData.sIp.c_str(), std::to_string(incomingConnectionData.nPort).c_str(), result.c_str());
 			}
-//#endif
+#endif
 
 			// Handle status requests
 			if (result.find("\\status\\") != std::string::npos) {
@@ -1272,36 +1283,36 @@ void JServerDir::PublishServer(Peer peerParam)
 
 				uSock->Query(gameInfo, incomingConnectionData);
 
-//#ifdef _DEBUG
+#ifdef LOG_SERVER_MSG
 				if (!result.empty())
 				{
 					m_pLTCSBase->CPrint("[DEBUG] Sending to <%s:%s>: %s", incomingConnectionData.sIp.c_str(), std::to_string(incomingConnectionData.nPort).c_str(), gameInfo.c_str());
 				}
-//#endif
+#endif
 
 			}
 			else if (result.find("\\echo\\") != std::string::npos)
 			{
 				uSock->Query(result, incomingConnectionData);
 
-//#ifdef _DEBUG
+#ifdef LOG_SERVER_MSG
 				if (!result.empty())
 				{
 					m_pLTCSBase->CPrint("[DEBUG] Sending to <%s:%s>: %s", incomingConnectionData.sIp.c_str(), std::to_string(incomingConnectionData.nPort).c_str(), result.c_str());
 				}
-//#endif
+#endif
 			}
 			else if (result.find("\\secure\\") != std::string::npos) 
 			{
 				std::string query = handleValidationQuery(result);
 				uSock->Query(query, incomingConnectionData);
 
-				//#ifdef _DEBUG
+				#ifdef LOG_SERVER_MSG
 				if (!result.empty())
 				{
 					m_pLTCSBase->CPrint("[DEBUG] Sending to <%s:%s>: %s", incomingConnectionData.sIp.c_str(), std::to_string(incomingConnectionData.nPort).c_str(), query.c_str());
 				}
-				//#endif
+				#endif
 
 				// We need to send an initial heartbeat, so signal that state has changed.
 				bStateChanged = true;
@@ -1337,16 +1348,16 @@ void JServerDir::PublishServer(Peer peerParam)
 
 			// After HEARTBEAT_TIME_IN_SEC seconds, poke the master server
 			if (bStateChanged || nCurrentTime - nLastHeartbeat > HEARTBEAT_TIME_IN_SEC) {
-				auto heartBeat = getHeartbeat(m_iQueryNum, nPort, bStateChanged);
+				auto heartBeat = getHeartbeat(m_iQueryNum, nQueryPort, bStateChanged);
 				uSock->Query(heartBeat, masterConnectionData);
 				nLastHeartbeat = nCurrentTime;
 
-				//#ifdef _DEBUG
+				#ifdef LOG_SERVER_MSG
 				if (!heartBeat.empty())
 				{
 					m_pLTCSBase->CPrint("[DEBUG] Sending to <%s:%s>: %s", incomingConnectionData.sIp.c_str(), std::to_string(incomingConnectionData.nPort).c_str(), heartBeat.c_str());
 				}
-				//#endif
+				#endif
 			}
 
 			bStateChanged = false;
@@ -1364,7 +1375,7 @@ void JServerDir::PublishServer(Peer peerParam)
 
 			// Send a heartbeat, if the master server queries again they'll see gamemode: exiting (from the shutdown above)
 			try {
-				uSock->Query(getHeartbeat(m_iQueryNum, nPort, true), masterConnectionData);
+				uSock->Query(getHeartbeat(m_iQueryNum, nQueryPort, true), masterConnectionData);
 
 			}
 			catch (...)
@@ -1389,7 +1400,7 @@ void JServerDir::PingPeer(Peer* peer)
 	std::string pingQuery = "\\echo\\hello";
 
 	UDPSocket* pSock = new UDPSocket();
-	ConnectionData connectionData = { peer->GetAddress(), GetListeningPort(peer->m_PortData.nHostPort) };
+	ConnectionData connectionData = { peer->GetAddress(), peer->m_PortData.nQueryPort };
 
 	auto startTime = getTimestampInMs();
 

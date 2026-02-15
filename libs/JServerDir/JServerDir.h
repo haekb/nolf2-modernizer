@@ -29,7 +29,7 @@
 
 // These are defaults in case the JServerInfo.txt file is missing!
 #if 1
-#define MASTER_SERVER "userface.me"
+#define MASTER_SERVER "master.openspy.net"
 #define MASTER_PORT_HTTP 80
 #else
 #define MASTER_SERVER "127.0.0.1"
@@ -306,7 +306,7 @@ public:
 	//
 	// The server listens on a second port, which is just the host port + 1...
 	//
-	inline int GetListeningPort(int nHostPort) { return nHostPort; }
+	inline int GetListeningPort(int nHostPort) { return nHostPort+1; }
 
 	// Cheat a little
 	__declspec(dllexport) void Update();
@@ -324,6 +324,7 @@ public:
 
 		StartupInfo_Titan m_StartupInfo;
 		MasterServerInfo m_MasterServerInfo;
+		ILTMessage_Read* m_pNetHeader;
 
 		// 
 

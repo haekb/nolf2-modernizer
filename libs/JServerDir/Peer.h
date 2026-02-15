@@ -36,6 +36,7 @@ struct PeerInfo_Details {
 
 struct PeerInfo_Port {
 	uint16 nHostPort;
+	uint16 nQueryPort;
 };
 
 class Peer
