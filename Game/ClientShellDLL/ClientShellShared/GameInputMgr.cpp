@@ -59,6 +59,8 @@ const TempBinding g_MouseBindings[] = {
 	{ "##3", "Left", MOUSE_LEFT_BUTTON, SDL_MOUSE_BUTTON_LEFT,  false },
 	{ "##4", "Right", MOUSE_RIGHT_BUTTON, SDL_MOUSE_BUTTON_RIGHT,  false } ,
 	{ "##5", "Middle", MOUSE_MIDDLE_BUTTON, SDL_MOUSE_BUTTON_MIDDLE,  false },
+	{ "##6", "X1", MOUSE_X1_BUTTON, SDL_MOUSE_BUTTON_X1, false },
+	{ "##7", "X2", MOUSE_X2_BUTTON, SDL_MOUSE_BUTTON_X2, false },
 	// Mouse Axis
 	{ "##x-axis", "Axis X", MOUSE_X_AXIS, SDL_MOUSE_AXIS_X, true },
 	{ "##y-axis", "Axis Y", MOUSE_Y_AXIS, SDL_MOUSE_AXIS_Y, true },
